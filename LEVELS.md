@@ -141,3 +141,22 @@ Source: grammar notes bijzin, die vs dat, imperfectum, reflexieve werkwoorden, z
 - Node types per district, later: core places (star), a practice ride built from your logged mistakes (dumbbell), a story ride with one long passenger (book), and a trophy ride that reviews the whole district before the next one opens.
 - Fork kinds now: word (English prompt, Dutch signs), reading (Dutch board, English signs), listening (you hear the Dutch, Dutch signs), build (gaps in a sentence).
 - The Duolingo content-engine prompt is the brief for Opus agents that write later districts, with `levels.js` items as the required output shape.
+
+
+## Path v2: 40 places in 8 districts (CEFR aligned, Duolingo themes folded in)
+
+Each place has a one-panel pixel intro with one line (Santi writes the running jokes).
+Source files are in the vault unless noted.
+
+| District | CEFR | Places | Theme and grammar |
+|---|---|---|---|
+| 1 Thuisstraat | A1 | 1 De honden · 2 De buren · 3 De brievenbus · 4 Ik ben · 5 Nachtwinkel | house words, greetings, numbers 0-20, zijn, shop words |
+| 2 De wijk | A1 | 6 De supermarkt · 7 De slager · 8 De of het · 9 Afhalen · 10 De kalender | shop phrases, numbers to 100, articles, polite phrases, days and months |
+| 3 Het dorp | A1→A2 | 11 Werkwoorden · 12 De weg kwijt · 13 Nieuwe mensen · 14 Niet of geen · 15 Mag ik? | presens, questions and directions, introductions and V2, negation, modals |
+| 4 Thuis en familie | A1/A2 | 16 De familie · 17 Kleuren · 18 Binnen · 19 Het restaurant · 20 Het weer | family, colours, rooms and furniture, ordering food (restaurant, pub), weather (MOC Het weer) |
+| 5 Het station | A2 | 21 In de trein (H15) · 22 Hoe laat? · 23 De sportschool (H14) · 24 De bioscoop (H16) · 25 De evenementenhal (H12) | travel, telling time and tickets, body and health, hobbies and free time, events |
+| 6 Kantoor en baan | A2 | 26 De standup · 27 Naar de golfbaan · 28 Uitlaten · 29 Morgen · 30 Aan het werk | perfectum, zijn/hebben, separable verbs, future and word order, aan het |
+| 7 De lange nacht | B1 | 31 Omdat · 32 Die of dat · 33 Vroeger · 34 Bij de politie (H18) · 35 Dageraad | sub-clauses, relative pronouns, imperfectum, reflexives and softeners, review |
+| 8 De stad | B1/B2 | 36 Meningen · 37 Het nieuws · 38 Ooit · 39 Uitdrukkingen · 40 De laatste nacht | opinions, passive voice and current events, plusquamperfectum and memories, idioms and particles, everything |
+
+Per district, later: a practice ride built from logged mistakes and a trophy ride before the next district opens.

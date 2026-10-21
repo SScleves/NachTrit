@@ -68,14 +68,20 @@ window.LEVELS = [
       { w: 'the shop', nl: 'de winkel' }, { look: true, prop: 'winkel', nl: 'de winkel', en: 'the shop' }, { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' },
     ] },
 
-  // ---- later acts: named, locked until their content lands ----
+  // ---- later districts: named, locked until their content lands ----
   { id: 6, act: 2, name: 'De supermarkt', soon: true }, { id: 7, act: 2, name: 'De slager', soon: true }, { id: 8, act: 2, name: 'De of het', soon: true },
   { id: 9, act: 2, name: 'Afhalen', soon: true }, { id: 10, act: 2, name: 'De kalender', soon: true },
   { id: 11, act: 3, name: 'Werkwoorden', soon: true }, { id: 12, act: 3, name: 'De weg kwijt', soon: true }, { id: 13, act: 3, name: 'Nieuwe mensen', soon: true },
   { id: 14, act: 3, name: 'Niet of geen', soon: true }, { id: 15, act: 3, name: 'Mag ik?', soon: true },
-  { id: 16, act: 4, name: 'De standup', soon: true }, { id: 17, act: 4, name: 'Naar de golfbaan', soon: true }, { id: 18, act: 4, name: 'Uitlaten', soon: true },
-  { id: 19, act: 4, name: 'Morgen', soon: true }, { id: 20, act: 4, name: 'Aan het werk', soon: true },
-  { id: 21, act: 5, name: 'Omdat', soon: true }, { id: 22, act: 5, name: 'Die of dat', soon: true }, { id: 23, act: 5, name: 'Vroeger', soon: true },
-  { id: 24, act: 5, name: 'Bij de politie', soon: true }, { id: 25, act: 5, name: 'Dageraad', soon: true },
+  { id: 16, act: 4, name: 'De familie', soon: true }, { id: 17, act: 4, name: 'Kleuren', soon: true }, { id: 18, act: 4, name: 'Binnen', soon: true },
+  { id: 19, act: 4, name: 'Het restaurant', soon: true }, { id: 20, act: 4, name: 'Het weer', soon: true },
+  { id: 21, act: 5, name: 'In de trein', soon: true }, { id: 22, act: 5, name: 'Hoe laat?', soon: true }, { id: 23, act: 5, name: 'De sportschool', soon: true },
+  { id: 24, act: 5, name: 'De bioscoop', soon: true }, { id: 25, act: 5, name: 'De evenementenhal', soon: true },
+  { id: 26, act: 6, name: 'De standup', soon: true }, { id: 27, act: 6, name: 'Naar de golfbaan', soon: true }, { id: 28, act: 6, name: 'Uitlaten', soon: true },
+  { id: 29, act: 6, name: 'Morgen', soon: true }, { id: 30, act: 6, name: 'Aan het werk', soon: true },
+  { id: 31, act: 7, name: 'Omdat', soon: true }, { id: 32, act: 7, name: 'Die of dat', soon: true }, { id: 33, act: 7, name: 'Vroeger', soon: true },
+  { id: 34, act: 7, name: 'Bij de politie', soon: true }, { id: 35, act: 7, name: 'Dageraad', soon: true },
+  { id: 36, act: 8, name: 'Meningen', soon: true }, { id: 37, act: 8, name: 'Het nieuws', soon: true }, { id: 38, act: 8, name: 'Ooit', soon: true },
+  { id: 39, act: 8, name: 'Uitdrukkingen', soon: true }, { id: 40, act: 8, name: 'De laatste nacht', soon: true },
 ];
-window.ACTS = { 1: 'Thuisstraat', 2: 'De wijk', 3: 'Het dorp', 4: 'Kantoor en baan', 5: 'De lange nacht' };
+window.ACTS = { 1: 'Thuisstraat', 2: 'De wijk', 3: 'Het dorp', 4: 'Thuis en familie', 5: 'Het station', 6: 'Kantoor en baan', 7: 'De lange nacht', 8: 'De stad' };
