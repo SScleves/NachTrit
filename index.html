@@ -43,7 +43,8 @@
   .place .st { color:#ffd27a; font-size:11px; letter-spacing:.1em; }
   .place .lv { display:inline-block; margin:3px 4px 0 0; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; font-size:12px; }
   #nl .town { cursor:pointer; }
-  #nl .town text { font: 600 2.7px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.04em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.8px; }
+  #nl .town text { font: 600 2.8px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.05em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.9px; }
+  #nl { border:1px solid rgba(255,255,255,.12); border-radius:6px; }
   #nl .town.locked text { fill:#5a6170; }
   #nl .town.locked circle { fill:#2a2f3a; stroke:#4a5160; }
   #grain { position:fixed; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:overlay; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -1201,37 +1202,63 @@ function towns() { return (window.TOWNS && window.TOWNS.length ? window.TOWNS : 
 function townLevels(t) { return LEVELS.filter(l => (l.town || TOWN_OF(l.id)) === t.id); }
 function townStars(t) { return townLevels(t).reduce((n, l) => n + (progress[l.id] || 0), 0); }
 function townOpen(t) { if (t.tier === 1) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
-// the Netherlands, roughly, as lon/lat
-const NL_OUTLINE = [[3.37, 51.37], [3.9, 51.2], [4.25, 51.37], [4.8, 51.43], [5.05, 51.4], [5.1, 51.3], [5.55, 51.22], [5.85, 51.05], [5.7, 50.78], [6.02, 50.76], [6.1, 51.0], [5.85, 51.1], [6.2, 51.45], [6.1, 51.6], [6.4, 51.85], [6.75, 51.9], [7.05, 52.25], [6.7, 52.5], [7.05, 52.65], [7.2, 53.0], [7.2, 53.25], [6.9, 53.42], [6.3, 53.45], [5.6, 53.37], [5.2, 53.05], [5.05, 52.95], [4.75, 52.95], [4.6, 52.6], [4.5, 52.3], [4.25, 52.05], [4.0, 51.95], [3.7, 51.78], [3.5, 51.6]];
-const NL_IJSSELMEER = [[5.05, 52.9], [5.45, 52.88], [5.72, 52.8], [5.6, 52.55], [5.3, 52.45], [5.08, 52.55]];
-const NL_ISLANDS = [[4.8, 53.08, 2.2], [5.3, 53.38, 2.0], [5.9, 53.47, 1.6], [6.3, 53.5, 1.1]];
+// the Netherlands as lon/lat, hand drawn
+const NL_OUTLINE = [[3.38, 51.38], [3.52, 51.29], [3.9, 51.21], [4.24, 51.36], [4.42, 51.46], [4.56, 51.43], [4.76, 51.5], [4.84, 51.42], [5.03, 51.47], [5.1, 51.35], [5.24, 51.26], [5.56, 51.22], [5.74, 51.18], [5.87, 51.05], [5.78, 50.95], [5.7, 50.78], [5.99, 50.75], [6.02, 50.98], [5.87, 51.1], [6.08, 51.18], [6.22, 51.36], [6.07, 51.6], [6.1, 51.85], [6.4, 51.84], [6.72, 51.9], [6.68, 52.05], [7.04, 52.24], [7.06, 52.4], [6.69, 52.55], [7.05, 52.65], [7.2, 53.0], [7.2, 53.22], [6.95, 53.33], [6.73, 53.46], [6.18, 53.42], [5.9, 53.39], [5.45, 53.3], [5.1, 53.05], [5.06, 52.93], [4.76, 52.96], [4.62, 52.75], [4.58, 52.48], [4.42, 52.2], [4.15, 52.05], [4.0, 51.95], [3.9, 51.8], [3.68, 51.72], [3.45, 51.6], [3.55, 51.47]];
+const NL_IJSSELMEER = [[5.06, 52.93], [5.4, 52.87], [5.72, 52.82], [5.85, 52.6], [5.62, 52.3], [5.2, 52.3], [5.05, 52.45], [5.0, 52.7]];
+const NL_FLEVOLAND = [[5.2, 52.7], [5.6, 52.7], [5.85, 52.55], [5.9, 52.45], [5.6, 52.32], [5.3, 52.38], [5.2, 52.5]];
+const NL_ISLANDS = [[4.8, 53.08, 2.2, 0.9], [5.3, 53.38, 2.0, 0.5], [5.9, 53.47, 1.6, 0.4], [6.3, 53.5, 1.1, 0.35]];
+const NL_RIVERS = [[[6.05, 51.86], [5.4, 51.88], [4.9, 51.82], [4.66, 51.86], [4.3, 51.9], [4.05, 51.96]], [[5.7, 50.8], [5.85, 51.2], [6.0, 51.6], [5.6, 51.75], [5.0, 51.75], [4.7, 51.79]]];
 function mapXY([lon, lat]) { const [x, y] = LL(lon, lat); return [x * 100, y * 100 + 4]; }
+const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
+  alblasserdam: 'M-2.2,0.6 L0,-1.6 L2.2,0.6 M-1.6,0.6 L-1.6,2.4 L1.6,2.4 L1.6,0.6 M0.3,1.1 h0.9 v1.3 h-0.9 z',
+  kinderdijk: 'M-1,2.4 L-0.6,-0.6 L0.6,-0.6 L1,2.4 z M0,-0.8 L-2,-2.6 M0,-0.8 L2,-2.6 M0,-0.8 L-2,1 M0,-0.8 L2,1',
+  gouda: 'M1.8,0 A1.8,1.8 0 1 1 0,-1.8 L0,0 z M-0.4,0.6 a0.25,0.25 0 1 0 0.5,0 a0.25,0.25 0 1 0 -0.5,0',
+  utrecht: 'M-1,2.4 L-1,-0.6 L1,-0.6 L1,2.4 z M-0.7,-0.6 L0,-2.8 L0.7,-0.6 M-1.4,2.4 h2.8',
+  rotterdam: 'M-2.4,1.6 L2.4,1.6 M0.6,1.6 L0.2,-2.4 M0.6,1.6 L-1.6,-1 M0.6,1.6 L-0.8,-1.8 M0.6,1.6 L1.4,-1.2',
+  amsterdam: 'M-1.6,2.4 L-1.6,0 L-1,0 L-1,-0.8 L-0.4,-0.8 L-0.4,-1.6 L0.4,-1.6 L0.4,-0.8 L1,-0.8 L1,0 L1.6,0 L1.6,2.4 z M-0.4,0.4 h0.8 v0.9 h-0.8 z M-0.4,2.4 v-0.8 h0.8 v0.8',
+};
 function drawWorld() {
   const svg = $('nl'); svg.innerHTML = '';
   const NS = 'http://www.w3.org/2000/svg';
   const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
-  const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + mapXY(p).map(v => v.toFixed(1)).join(',')).join(' ') + ' Z';
+  const path = (pts, close = true) => pts.map((p, i) => (i ? 'L' : 'M') + mapXY(p).map(v => v.toFixed(2)).join(',')).join(' ') + (close ? ' Z' : '');
+  const defs = el('defs', {}); defs.innerHTML = `
+    <pattern id="sea" width="2.4" height="2.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0,1.2 H2.4" stroke="#263040" stroke-width="0.25"/></pattern>
+    <filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0.55  0 0 0 0 0.58  0 0 0 0 0.65  0 0 0 0.07 0"/><feComposite in2="SourceGraphic" operator="over"/></filter>
+    <filter id="fog" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.4"/></filter>
+    <radialGradient id="glow"><stop offset="0" stop-color="#e8e4d8" stop-opacity="0.35"/><stop offset="1" stop-color="#e8e4d8" stop-opacity="0"/></radialGradient>`;
+  svg.appendChild(defs);
   svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#0b0f14' }));
-  svg.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1b2230', stroke: '#8a94a6', 'stroke-width': 0.5, 'stroke-linejoin': 'round' }));
-  svg.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#8a94a6', 'stroke-width': 0.35 }));
-  for (const [lon, lat, w] of NL_ISLANDS) { const [x, y] = mapXY([lon, lat]); svg.appendChild(el('ellipse', { cx: x, cy: y, rx: w * 1.3, ry: 0.5, fill: '#1b2230', stroke: '#8a94a6', 'stroke-width': 0.3 })); }
+  svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: 'url(#sea)' }));
+  svg.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1e2634', stroke: '#9aa6b8', 'stroke-width': 0.55, 'stroke-linejoin': 'round' }));
+  svg.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#9aa6b8', 'stroke-width': 0.35 }));
+  svg.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: 'url(#sea)' }));
+  svg.appendChild(el('path', { d: path(NL_FLEVOLAND), fill: '#1e2634', stroke: '#9aa6b8', 'stroke-width': 0.35 }));
+  for (const [lon, lat, w, h] of NL_ISLANDS) { const [x, y] = mapXY([lon, lat]); svg.appendChild(el('ellipse', { cx: x, cy: y, rx: w * 1.3, ry: h, fill: '#1e2634', stroke: '#9aa6b8', 'stroke-width': 0.3, transform: `rotate(-12 ${x} ${y})` })); }
+  for (const r of NL_RIVERS) svg.appendChild(el('path', { d: path(r, false), fill: 'none', stroke: '#6f7f96', 'stroke-width': 0.35, 'stroke-linecap': 'round' }));
+  svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#000', opacity: 0, filter: 'url(#paper)' }));
+  // cartouche and compass
+  const cart = el('g', {}); cart.innerHTML = `<rect x="4" y="88" width="38" height="18" fill="#0b0f14" stroke="#9aa6b8" stroke-width="0.35"/><text x="23" y="95" text-anchor="middle" style="font:700 4.2px 'Segoe UI',system-ui,sans-serif;fill:#e8e4d8;letter-spacing:.3em">NEDERLAND</text><text x="23" y="100.5" text-anchor="middle" style="font:italic 2.4px 'Segoe UI',system-ui,sans-serif;fill:#9fb0cc">na de mist · after the mist</text><g transform="translate(8,12)"><circle r="3.6" fill="none" stroke="#9aa6b8" stroke-width="0.3"/><path d="M0,-4.6 L1,0 L0,4.6 L-1,0 z" fill="#e8e4d8"/><path d="M-4.6,0 L0,1 L4.6,0 L0,-1 z" fill="#9aa6b8"/><text y="-5.6" text-anchor="middle" style="font:700 2.2px 'Segoe UI',system-ui,sans-serif;fill:#e8e4d8">N</text></g>`;
+  svg.appendChild(cart);
   const T = towns();
-  // the route between towns
   const pts = T.map(t => mapXY([3.3 + t.pos[0] * 3.9, 53.55 - t.pos[1] * 2.8]));
-  svg.appendChild(el('path', { d: pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.3, 'stroke-dasharray': '0.8 1.2', opacity: 0.6 }));
+  // the route: a dotted bike trail
+  svg.appendChild(el('path', { d: pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.35, 'stroke-dasharray': '0.6 1.4', 'stroke-linecap': 'round', opacity: 0.7 }));
+  const LAY = { rotterdam: [-3.4, 0.8, 'end'], kinderdijk: [1.2, 5.2, 'start'], alblasserdam: [3.4, 0.2, 'start'], gouda: [-3.2, -2.6, 'end'], utrecht: [3.4, 1, 'start'], amsterdam: [3.4, 1, 'start'] };
   T.forEach((t, i) => {
     const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t);
     const g = el('g', { class: 'town' + (open ? '' : ' locked') });
-    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 3.2, fill: 'none', stroke: '#8e1f1f', 'stroke-width': 0.4, opacity: 0.8 }));
-    g.appendChild(el('circle', { cx: x, cy: y, r: 1.6, fill: open ? '#e8e4d8' : '#2a2f3a', stroke: open ? '#8e1f1f' : '#4a5160', 'stroke-width': 0.4 }));
-    const LAY = { rotterdam: [-2.6, 1, 'end'], kinderdijk: [0.6, 4.4, 'start'], alblasserdam: [2.6, 0.2, 'start'], gouda: [-2.4, -2.2, 'end'], utrecht: [2.6, 1, 'start'], amsterdam: [2.6, 1, 'start'] };
-    const [dx, dy, anchor] = LAY[t.id] || [2.6, 1, 'start'];
+    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 6, fill: 'url(#glow)' }));
+    g.appendChild(el('circle', { cx: x, cy: y, r: 3.1, fill: '#0b0f14', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.4 }));
+    g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(0.8)` }));
+    if (!open) g.appendChild(el('circle', { cx: x, cy: y, r: 5, fill: '#1e2634', opacity: 0.75, filter: 'url(#fog)' }));
+    const [dx, dy, anchor] = LAY[t.id] || [3.4, 1, 'start'];
     const label = el('text', { x: x + dx, y: y + dy, 'text-anchor': anchor }); label.textContent = t.name + (open && stars ? ' ★' + stars : ''); g.appendChild(label);
     g.onclick = () => openTown(t);
     svg.appendChild(g);
   });
-  // the rider at the furthest open town
-  const cur = T.filter(townOpen).pop(); if (cur) { const [x, y] = pts[T.indexOf(cur)]; const r = el('circle', { cx: x, cy: y, r: 0.7, fill: '#8e1f1f' }); svg.appendChild(r); }
+  // the rider at the furthest open town: a small bike
+  const cur = T.filter(townOpen).pop(); if (cur) { const [x, y] = pts[T.indexOf(cur)]; const r = el('path', { d: 'M-1.4,0.6 a0.9,0.9 0 1 0 0.01,0 M1.4,0.6 a0.9,0.9 0 1 0 0.01,0 M-1.4,0.6 L-0.3,-1 L1.4,0.6 M-0.3,-1 L0.3,-1 L0.9,0.2 M-0.3,-1 L-0.1,-1.8', fill: 'none', stroke: '#b8282a', 'stroke-width': 0.4, transform: `translate(${x + 1.2} ${y - 5.6}) scale(0.9)` }); svg.appendChild(r); }
 }
 function openTown(t) {
   const open = townOpen(t);
