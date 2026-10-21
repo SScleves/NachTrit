@@ -32,7 +32,7 @@ async function fps(ms) {
   return page.evaluate(async (ms) => { const t0 = performance.now(); let n = 0, worst = 0, last = t0; await new Promise(res => { function f(t) { n++; worst = Math.max(worst, t - last); last = t; if (t - t0 < ms) requestAnimationFrame(f); else res(); } requestAnimationFrame(f); }); return { fps: Math.round(n / (ms / 1000)), worstMs: Math.round(worst) }; }, ms);
 }
 
-await page.addInitScript(() => { try { if (!window.__nrFresh) localStorage.setItem('nachtrit.intro', '1'); } catch (e) {} });
+await page.addInitScript(() => { try { localStorage.setItem('nachtrit.intro', '1'); const all = {}; for (let i = 1; i <= 40; i++) all[i] = 3; localStorage.setItem('nachtrit.progress', JSON.stringify(all)); } catch (e) {} });   // every district open for testing
 async function openGame() {
   await page.goto(URL, { waitUntil: 'load' });
   await page.waitForTimeout(1500);
