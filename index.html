@@ -169,8 +169,8 @@ addEventListener('resize', () => {
 });
 
 // lights
-scene.add(new THREE.HemisphereLight(0x3d4a5a, 0x08090b, 0.75));
-const moon = new THREE.DirectionalLight(0x7d8a9c, 0.5); moon.position.set(-30, 40, -20); scene.add(moon);
+scene.add(new THREE.HemisphereLight(0x4a5a70, 0x0a0c10, 1.0));
+const moon = new THREE.DirectionalLight(0x8a9ab0, 0.75); moon.position.set(-30, 40, -20); scene.add(moon);
 const lampLight = new THREE.SpotLight(0xdfe8ec, 4.2, 60, Math.PI / 6, 0.6, 1.0);
 lampLight.position.set(0, 1.1, 0.4);
 lampLight.target.position.set(0, 0.2, -20);
@@ -178,7 +178,7 @@ scene.add(lampLight, lampLight.target);
 
 // materials
 const M = {
-  road: new THREE.MeshLambertMaterial({ color: 0x2a2d36 }),
+  road: new THREE.MeshLambertMaterial({ color: 0x333842 }),
   ground: new THREE.MeshLambertMaterial({ color: 0x141f16 }),
   water: new THREE.MeshLambertMaterial({ color: 0x0b1424 }),
   wood: new THREE.MeshLambertMaterial({ color: 0x3b2a1c }),
@@ -245,14 +245,14 @@ const waterRib = makeRibbon(26, M.water); waterRib.visible = false;
 
 // ---------- props ----------
 const PM = {
-  wall: new THREE.MeshLambertMaterial({ color: 0x23262c }),
-  wall2: new THREE.MeshLambertMaterial({ color: 0x2c2a2e }),
+  wall: new THREE.MeshLambertMaterial({ color: 0x2e3540 }),
+  wall2: new THREE.MeshLambertMaterial({ color: 0x3a343c }),
   roof: new THREE.MeshLambertMaterial({ color: 0x15171b }),
   window: new THREE.MeshBasicMaterial({ color: 0x8c8260 }),
   windowOff: new THREE.MeshBasicMaterial({ color: 0x0c0d10 }),
   pole: new THREE.MeshLambertMaterial({ color: 0x1b1d21 }),
   bulb: new THREE.MeshBasicMaterial({ color: 0xcfd6d8 }),
-  stone: new THREE.MeshLambertMaterial({ color: 0x33363c }),
+  stone: new THREE.MeshLambertMaterial({ color: 0x3e434c }),
   reed: new THREE.MeshLambertMaterial({ color: 0x2a3326 }),
   leaf: new THREE.MeshLambertMaterial({ color: 0x1d2a22 }),
   dog: new THREE.MeshLambertMaterial({ color: 0x1a1a1e }),
@@ -409,20 +409,20 @@ const THEMES = {
   polder: { ground: 0x141f16, groundY: -0.9, canal: 1, curv: 0.0035, spawn: [
     { make: windmill, n: 5, gap: 50, side: 'both', xr: [12, 26], y: -0.6 }, { make: deadTree, n: 10, gap: 16, side: 'both', xr: [6.5, 14], y: -0.6 },
     { make: fencePost, n: 36, gap: 4.5, side: 'left', xr: [4.6, 4.6] } ] },
-  street: { ground: 0x101216, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
+  street: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
     { make: house, n: 16, gap: 8.5, side: 'alt', xr: [7, 8], y: 0 }, { make: lamppost, n: 10, gap: 15, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] }, { make: tree, n: 4, gap: 40, side: 'both', xr: [5.2, 5.6] } ] },
-  shops: { ground: 0x101216, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
+  shops: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 14, gap: 9, side: 'alt', xr: [6.8, 7.2], y: 0 }, { make: lamppost, n: 12, gap: 13, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 5, gap: 36, side: 'both', xr: [5.0, 5.0] } ] },
   dyke: { ground: 0x141f16, groundY: -0.9, canal: -1, curv: 0.004, spawn: [
     { make: windmill, n: 4, gap: 60, side: 'right', xr: [12, 26], y: -0.6 }, { make: reeds, n: 24, gap: 7, side: 'left', xr: [4.8, 5.4], y: -0.7 },
     { make: boat, n: 3, gap: 70, side: 'left', xr: [9, 13], y: 0 }, { make: fencePost, n: 36, gap: 4.5, side: 'right', xr: [4.6, 4.6] },
     { make: bridge, n: 1, gap: 160, side: 'left', xr: [4.2, 4.2] }, { make: tree, n: 5, gap: 34, side: 'right', xr: [6, 10], y: -0.6 } ] },
-  square: { ground: 0x121418, groundY: -0.05, canal: 0, curv: 0.002, spawn: [
+  square: { ground: 0x181c24, groundY: -0.05, canal: 0, curv: 0.002, spawn: [
     { make: church, n: 1, gap: 200, side: 'right', xr: [12, 12] }, { make: tree, n: 12, gap: 13, side: 'both', xr: [5.5, 9] },
     { make: lamppost, n: 8, gap: 18, side: 'alt', xr: [4.7, 4.7] }, { make: house, n: 8, gap: 16, side: 'left', xr: [9, 11] } ] },
-  nightshop: { ground: 0x0f1114, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
+  nightshop: { ground: 0x141820, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 12, gap: 10, side: 'alt', xr: [6.8, 7.2] }, { make: lamppost, n: 5, gap: 28, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 6, gap: 30, side: 'both', xr: [5.0, 5.0] }, { make: dogProp, n: 1, gap: 120, side: 'both', xr: [4.8, 5.2] } ] },
 };
@@ -471,8 +471,8 @@ const bike = new THREE.Group();
   const rear = P(0, 0.34, 0.62), front = P(0, 0.34, -0.62), crank = P(0, 0.36, 0.08), seat = P(0, 0.98, 0.3), head = P(0, 0.95, -0.5);
   [tube(rear, seat), tube(rear, crank), tube(crank, head, 0.03), tube(seat, head, 0.03), tube(head, front), tube(seat, P(0, 1.02, 0.3), 0.02)].forEach(t => bike.add(t));
   const wg = new THREE.TorusGeometry(0.34, 0.035, 8, 22);
-  const w1 = new THREE.Mesh(wg, M.dark); w1.position.copy(front); bike.add(w1);
-  const w2 = new THREE.Mesh(wg, M.dark); w2.position.copy(rear); bike.add(w2);
+  const w1 = new THREE.Mesh(wg, steel); w1.position.copy(front); bike.add(w1);
+  const w2 = new THREE.Mesh(wg, steel); w2.position.copy(rear); bike.add(w2);
   bike.userData.wheels = [w1, w2];
   for (const w of [w1, w2]) { const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.08, 8), steel); hub.rotation.z = Math.PI / 2; hub.position.copy(w.position); bike.add(hub); for (let i = 0; i < 6; i++) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.62, 0.01), steel); sp.position.copy(w.position); sp.rotation.x = i * Math.PI / 6; w.add(sp); sp.position.set(0, 0, 0); } }
   for (const w of [w1, w2]) { const mg = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 6, 16, Math.PI * 0.9), M.dark); mg.position.copy(w.position); mg.rotation.y = Math.PI / 2; mg.rotation.z = Math.PI * 0.05; bike.add(mg); }
