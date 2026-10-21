@@ -249,7 +249,7 @@ const clueLight = new THREE.SpotLight(0xe8f0f4, 0, 30, Math.PI / 14, 0.7, 1.0); 
 const toonRamp = (() => { const data = new Uint8Array([80, 80, 80, 255, 140, 140, 140, 255, 205, 205, 205, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(data, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();
 function Mat(opts = {}) { if (!POST) return new THREE.MeshLambertMaterial(opts); return new THREE.MeshToonMaterial(Object.assign({ gradientMap: toonRamp }, opts)); }
 const M = {
-  road: Mat({ color: 0x333842 }),
+  road: new THREE.MeshPhongMaterial({ color: 0x2c313b, specular: 0x6a7a90, shininess: 90 }),   // wet
   ground: Mat({ color: 0x141f16 }),
   water: Mat({ color: 0x0b1424 }),
   wood: Mat({ color: 0x3b2a1c }),
@@ -260,7 +260,7 @@ const M = {
   shirt: Mat({ color: 0x8e1f1f }),
   ghost: Mat({ color: 0xb9c4d6, emissive: 0x6f7fa8, emissiveIntensity: 0.35, transparent: true, opacity: 0.6, side: THREE.DoubleSide }),
   wisp: new THREE.MeshBasicMaterial({ color: 0xcfd8dc }),
-  puddle: Mat({ color: 0x0d1830 }),
+  puddle: new THREE.MeshPhongMaterial({ color: 0x141c2c, specular: 0x9ab0c8, shininess: 160 }),
   eye: new THREE.MeshBasicMaterial({ color: 0xff2a1a }),
   hay: Mat({ color: 0x4a3d20 }),
   shade: Mat({ color: 0x050507 }),
@@ -304,7 +304,7 @@ function updateRibbon(m, xc, y, scroll, vScale) {
   m.geometry.attributes.position.needsUpdate = true; m.geometry.attributes.uv.needsUpdate = true;
 }
 roadTex.repeat.set(1, 1);
-const roadRib = makeRibbon(ROAD_W, Mat({ map: roadTex }));
+const roadRib = makeRibbon(ROAD_W, new THREE.MeshPhongMaterial({ map: roadTex, specular: 0x6a7a90, shininess: 90 }));
 const kerbL = makeRibbon(0.5, M.ground), kerbR = makeRibbon(0.5, M.ground);
 // the bend: x offset of anything at relative distance z ahead of the bike
 function bend(z) { return z < 0 ? S.curv * z * z : 0; }
@@ -319,7 +319,13 @@ const PM = {
   wall: Mat({ color: 0x2e3540 }),
   wall2: Mat({ color: 0x3a343c }),
   roof: Mat({ color: 0x15171b }),
-  window: new THREE.MeshBasicMaterial({ color: 0x8c8260 }),
+  window: new THREE.MeshBasicMaterial({ color: 0xd9974a }),
+  windowDim: new THREE.MeshBasicMaterial({ color: 0x9a6a2a }),
+  orange: Mat({ color: 0xd9792a }),
+  cheese: Mat({ color: 0xe0b040, emissive: 0x6a4a10, emissiveIntensity: 0.6 }),
+  tulip: new THREE.MeshBasicMaterial({ color: 0xc8302a }),
+  bollard: Mat({ color: 0x4a2a2c }),
+  eyeGlow: new THREE.MeshBasicMaterial({ color: 0xffd36a }),
   windowOff: new THREE.MeshBasicMaterial({ color: 0x0c0d10 }),
   pole: Mat({ color: 0x1b1d21 }),
   bulb: new THREE.MeshBasicMaterial({ color: 0xcfd6d8 }),
@@ -381,15 +387,23 @@ function house(opts = {}) {
   const g = new THREE.Group();
   const w = opts.w || rnd(4, 5.5), h = opts.h || rnd(6, 9), dpt = 6;
   const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, dpt), Math.random() < 0.5 ? PM.wall : PM.wall2); body.position.y = h / 2; g.add(body);
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(w * 0.72, 2.2, 4), PM.roof); roof.position.y = h + 1.1; roof.rotation.y = Math.PI / 4; roof.scale.z = dpt / w * 0.95; g.add(roof);
+  if (opts.gable === 'step' || (opts.gable == null && Math.random() < 0.45)) {   // trapgevel: steps narrowing upward on the road side
+    const steps = 3 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < steps; i++) { const sw = w * (1 - (i + 1) / (steps + 1)); const st = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.8, sw), body.material); st.position.set(-w / 2 + 0.3, h + 0.4 + i * 0.8, 0); g.add(st); }
+    const back = new THREE.Mesh(new THREE.BoxGeometry(w - 0.6, 1.6, dpt - 1), PM.roof); back.position.set(0.3, h + 0.8, 0); back.rotation.x = 0; g.add(back);
+  } else {
+    const roof = new THREE.Mesh(new THREE.ConeGeometry(w * 0.72, 2.2, 4), PM.roof); roof.position.y = h + 1.1; roof.rotation.y = Math.PI / 4; roof.scale.z = dpt / w * 0.95; g.add(roof);
+  }
   const cols = Math.max(1, Math.round(dpt / 2.2)), rows = Math.max(1, Math.round(h / 2.4));
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    const lit = Math.random() < (opts.lit == null ? 0.35 : opts.lit);
-    const win = new THREE.Mesh(PG.win, lit ? PM.window : PM.windowOff);
+    const r0 = Math.random(); const litP = opts.lit == null ? 0.35 : opts.lit;
+    const win = new THREE.Mesh(PG.win, r0 < litP ? PM.window : r0 < litP + 0.2 ? PM.windowDim : PM.windowOff);
     win.position.set(-w / 2 - 0.01, 1.6 + r * 2.4, -dpt / 2 + 1.2 + c * 2.2);
     win.rotation.y = -Math.PI / 2; g.add(win);
   }
   const door = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.9), PM.roof); door.position.set(-w / 2 - 0.01, 0.95, dpt / 2 - 0.8); door.rotation.y = -Math.PI / 2; g.add(door);
+  if (Math.random() < 0.4) { const dl = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), PM.bulb); dl.position.set(-w / 2 - 0.1, 2.1, dpt / 2 - 0.8); g.add(dl); }
+  if (Math.random() < 0.35) { const tb = tulipBox(); tb.position.set(-w / 2 - 0.3, 0, -dpt / 2 + 1.2); g.add(tb); }
   if (opts.sign) {
     const tex = labelTexture(opts.sign, { bg: '#1b1d21', fg: '#d4cdb9' });
     const sgn = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9), Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45 }));
@@ -406,6 +420,32 @@ function graffitiWall(word) {
   const tag = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 1.6), new THREE.MeshBasicMaterial({ map: tex, transparent: true }));
   tag.position.set(-0.21, 1.35, 0); tag.rotation.y = -Math.PI / 2; tag.rotation.z = rnd(-0.08, 0.08); tag.userData.ownTex = true; g.add(tag);
   g.userData.faceRoad = true;
+  return g;
+}
+function tulipBox() {
+  const g = new THREE.Group();
+  const box = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.35, 1.0), M.wood); box.position.y = 0.18; g.add(box);
+  for (let i = 0; i < 5; i++) { const st = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.35, 4), PM.reed); st.position.set(rnd(-0.15, 0.15), 0.5, -0.4 + i * 0.2); g.add(st); const t = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 5), i % 3 === 2 ? PM.cheese : PM.tulip); t.position.set(st.position.x, 0.7, st.position.z); t.scale.y = 1.4; g.add(t); }
+  return g;
+}
+function bollard() { const g = new THREE.Group(); const b = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.85, 8), PM.bollard); b.position.y = 0.42; g.add(b); const cap = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 6), PM.bollard); cap.position.y = 0.85; g.add(cap); const band = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.06, 8), new THREE.MeshBasicMaterial({ color: 0xcfd6d8 })); band.position.y = 0.6; g.add(band); return g; }
+function bench() { const g = new THREE.Group(); for (let i = 0; i < 3; i++) { const sl = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 1.6), M.wood); sl.position.set(-0.15 + i * 0.15, 0.45, 0); g.add(sl); } for (const z of [-0.65, 0.65]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.06), PM.pole); leg.position.set(0, 0.22, z); g.add(leg); } for (let i = 0; i < 2; i++) { const bk = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, 1.6), M.wood); bk.position.set(0.22, 0.65 + i * 0.16, 0); g.add(bk); } g.userData.faceRoad = true; return g; }
+function fingerpost(words) {
+  const g = new THREE.Group(); const p = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 2.6, 6), PM.pole); p.position.y = 1.3; g.add(p);
+  words.forEach((w, i) => { const tex = labelTexture(w, { bg: '#1e2228', fg: '#e8e4d8' }); const b = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 0.32), new THREE.MeshBasicMaterial({ map: tex })); b.position.set((i % 2 ? -1 : 1) * 0.7, 2.3 - i * 0.4, 0); b.rotation.y = (i % 2 ? 1 : -1) * 0.25; b.userData.ownTex = true; g.add(b); });
+  return g;
+}
+function cheeseCart() {
+  const g = cart(); g.children[1].visible = false;   // hay off
+  for (let i = 0; i < 6; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.18, 12), PM.cheese); c.position.set((i % 2 ? 0.38 : -0.38), 1.2 + Math.floor(i / 2) * 0.2, -0.5 + (i % 3) * 0.5); c.rotation.x = Math.PI / 2 * (i % 2 ? 0 : 0); g.add(c); }
+  return g;
+}
+function drawbridge() {
+  const g = new THREE.Group();
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(10, 0.25, 2.4), M.wood); deck.position.set(-5, 0.3, 0); g.add(deck);
+  for (const sz of [-1, 1]) { const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4.5, 0.2), PM.pole); post.position.set(-6.5, 2.4, sz * 1.1); g.add(post); const beam = new THREE.Mesh(new THREE.BoxGeometry(5, 0.14, 0.14), PM.pole); beam.position.set(-5.5, 4.6, sz * 1.1); beam.rotation.z = 0.35; g.add(beam); }
+  const cw = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 2.6), PM.pole); cw.position.set(-8.2, 5.4, 0); g.add(cw);
+  for (let i = 0; i < 5; i++) for (const sz of [-1, 1]) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08), M.wood); r.position.set(-1 - i * 2, 0.85, sz * 1.1); g.add(r); }
   return g;
 }
 function reeds() {
@@ -490,20 +530,26 @@ const THEMES = {
     { make: fencePost, n: 36, gap: 4.5, side: 'left', xr: [4.6, 4.6] } ] },
   street: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
     { make: house, n: 16, gap: 8.5, side: 'alt', xr: [7, 8], y: 0 }, { make: lamppost, n: 10, gap: 15, side: 'alt', xr: [4.7, 4.7] },
-    { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] } ] },
+    { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] }, { make: bollard, n: 14, gap: 9, side: 'alt', xr: [4.4, 4.4], r: 0.2 },
+    { make: bench, n: 2, gap: 70, side: 'both', xr: [4.9, 4.9], r: 1 }, { make: () => fingerpost(['Dorp', 'Molen', 'Kerk']), n: 1, gap: 140, side: 'both', xr: [4.6, 4.6], r: 0.5 },
+    { make: 'zombieWalk', n: 3, gap: 50, side: 'both', xr: [4.8, 5.6], r: 0.6 } ] },
   shops: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 14, gap: 9, side: 'alt', xr: [6.8, 7.2], y: 0 }, { make: lamppost, n: 12, gap: 13, side: 'alt', xr: [4.7, 4.7] },
-    { make: 'graffiti', n: 5, gap: 36, side: 'both', xr: [5.0, 5.0] } ] },
+    { make: 'graffiti', n: 5, gap: 36, side: 'both', xr: [5.0, 5.0] }, { make: cheeseCart, n: 2, gap: 80, side: 'both', xr: [5.4, 5.6], r: 1.5 },
+    { make: bollard, n: 12, gap: 10, side: 'alt', xr: [4.4, 4.4], r: 0.2 }, { make: 'zombieWalk', n: 4, gap: 40, side: 'both', xr: [4.8, 5.4], r: 0.6 } ] },
   dyke: { ground: 0x141f16, groundY: -0.9, canal: -1, curv: 0.004, spawn: [
-    { make: windmill, n: 4, gap: 60, side: 'right', xr: [12, 26], y: -0.6 }, { make: reeds, n: 24, gap: 7, side: 'left', xr: [4.8, 5.4], y: -0.7 },
+    { make: windmill, n: 4, gap: 60, side: 'right', xr: [12, 26], y: -0.6 }, { make: reeds, n: 24, gap: 7, side: 'left', xr: [4.8, 5.4], y: -0.7 }, { make: lamppost, n: 5, gap: 36, side: 'right', xr: [4.7, 4.7] },
     { make: boat, n: 3, gap: 70, side: 'left', xr: [9, 13], y: 0 }, { make: fencePost, n: 36, gap: 4.5, side: 'right', xr: [4.6, 4.6] },
-    { make: bridge, n: 1, gap: 160, side: 'left', xr: [4.2, 4.2] }, { make: tree, n: 5, gap: 34, side: 'right', xr: [6, 10], y: -0.6 } ] },
+    { make: drawbridge, n: 1, gap: 160, side: 'left', xr: [4.2, 4.2] }, { make: tree, n: 5, gap: 34, side: 'right', xr: [6, 10], y: -0.6 },
+    { make: () => fingerpost(['Kinderdijk', 'Dordrecht']), n: 1, gap: 180, side: 'right', xr: [4.6, 4.6], r: 0.5 } ] },
   square: { ground: 0x181c24, groundY: -0.05, canal: 0, curv: 0.002, spawn: [
     { make: church, n: 1, gap: 200, side: 'right', xr: [12, 12] }, { make: tree, n: 12, gap: 13, side: 'both', xr: [5.5, 9] },
-    { make: lamppost, n: 8, gap: 18, side: 'alt', xr: [4.7, 4.7] }, { make: house, n: 8, gap: 16, side: 'left', xr: [9, 11] } ] },
+    { make: lamppost, n: 8, gap: 18, side: 'alt', xr: [4.7, 4.7] }, { make: house, n: 8, gap: 16, side: 'left', xr: [9, 11] },
+    { make: bench, n: 4, gap: 40, side: 'both', xr: [5.0, 5.2], r: 1 }, { make: tulipBox, n: 6, gap: 26, side: 'both', xr: [4.6, 4.8], r: 0.4 }, { make: 'zombieWalk', n: 3, gap: 55, side: 'both', xr: [5.0, 6.0], r: 0.6 } ] },
   nightshop: { ground: 0x141820, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 12, gap: 10, side: 'alt', xr: [6.8, 7.2] }, { make: lamppost, n: 5, gap: 28, side: 'alt', xr: [4.7, 4.7] },
-    { make: 'graffiti', n: 6, gap: 30, side: 'both', xr: [5.0, 5.0] }, { make: dogProp, n: 1, gap: 120, side: 'both', xr: [4.8, 5.2] } ] },
+    { make: 'graffiti', n: 6, gap: 30, side: 'both', xr: [5.0, 5.0] }, { make: dogProp, n: 1, gap: 120, side: 'both', xr: [4.8, 5.2] },
+    { make: cheeseCart, n: 1, gap: 120, side: 'both', xr: [5.4, 5.6], r: 1.5 }, { make: 'zombieWalk', n: 5, gap: 32, side: 'both', xr: [4.8, 5.4], r: 0.6 } ] },
 };
 const SHOP_SIGNS = ['BAKKER', 'SLAGER', 'KAPPER', 'APOTHEEK', 'CAFÉ', 'SUPERMARKT', 'FIETSENMAKER', 'BLOEMEN', 'KAAS', 'FRIET'];
 let scenery = [];
@@ -538,6 +584,7 @@ function buildScenery(th) {
       let mesh;
       if (sp.make === 'graffiti') { const w = S.wordPool && S.wordPool.length ? pick(S.wordPool) : pick(['gezellig', 'doei', 'huis', 'fiets']); mesh = graffitiWall(w); }
       else if (sp.make === 'shop') mesh = house({ sign: pick(SHOP_SIGNS), lit: 0.55 });
+      else if (sp.make === 'zombieWalk') { mesh = zombie(); mesh.userData.shuffle = rnd(0.3, 0.7); mesh.userData.faceRoad = false; }
       else mesh = sp.make();
       const o = { mesh, sp, i, z: -i * sp.gap - rnd(0, sp.gap * 0.5) - 8, span: sp.n * sp.gap, bx: 0 };
       sceneryPlace(o); scene.add(mesh); scenery.push(o);
@@ -622,8 +669,8 @@ function setFace(name, secs, lookBack = true) { faceState = { name, until: S.t +
 drawFace('deadpan');
 
 // the passenger on the achterop (back rack), Dutch style, sitting sideways
-const rackGhost = ghostFigure(); rackGhost.scale.setScalar(0.62); rackGhost.position.set(0, 0.55, 0.78); rackGhost.rotation.y = Math.PI / 2; rackGhost.visible = false; bike.add(rackGhost);
-function mountPassenger() { rackGhost.visible = true; rackGhost.position.y = 0.55; }
+const rackGhost = ghostFigure(true); rackGhost.scale.setScalar(0.42); rackGhost.position.set(0.05, 0.5, 0.8); rackGhost.traverse(m => { if (m.material && m.material.transparent) m.material.opacity = 0.4; }); rackGhost.rotation.y = Math.PI / 2; rackGhost.visible = false; bike.add(rackGhost);
+function mountPassenger() { rackGhost.visible = true; rackGhost.position.y = 0.5; }
 function dropPassenger() {
   if (!rackGhost.visible) return; rackGhost.visible = false;
   const g = ghostFigure(true); g.scale.setScalar(0.9); const side = Math.random() < 0.5 ? -1 : 1;
@@ -705,14 +752,19 @@ function ghostFigure(own) {
   g.userData.faceRoad = true; g.userData.ghost = true;
   return g;
 }
-function zombie() {
+function zombie(variant) {
   const g = new THREE.Group(); const zm = Mat({ color: 0x2a3338 });
-  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.7, 4, 8), zm); body.position.y = 1.0; g.add(body);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), zm); head.position.set(0, 1.62, 0.05); g.add(head);
-  for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.03, 5, 5), M.eye); e.position.set(sx * 0.07, 1.65, -0.16); g.add(e); }
-  for (const sx of [-1, 1]) { const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.6, 6), zm); leg.position.set(sx * 0.1, 0.3, 0); g.add(leg); }
-  const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 6), zm); arm.position.set(0.1, 1.15, -0.3); arm.rotation.x = Math.PI / 2; g.add(arm);
-  const phone = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.24), new THREE.MeshBasicMaterial({ color: 0x9fe8ff })); phone.position.set(0.1, 1.2, -0.62); phone.rotation.x = -0.4; g.add(phone);
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.75, 4, 8), zm); body.position.set(0, 1.05, -0.12); body.rotation.x = 0.38; g.add(body);   // hunched forward
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.17, 8, 8), zm); head.position.set(0, 1.5, -0.42); g.add(head);
+  for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), PM.eyeGlow); e.position.set(sx * 0.07, 1.52, -0.58); g.add(e); }
+  for (const sx of [-1, 1]) { const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.65, 6), zm); leg.position.set(sx * 0.1, 0.32, 0); g.add(leg); }
+  for (const sx of [-1, 1]) { const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.8, 6), zm); arm.position.set(sx * 0.26, 0.85, -0.35); arm.rotation.x = 0.5; arm.rotation.z = sx * 0.08; g.add(arm); }   // long arms hanging forward
+  const v = variant || pick(['plain', 'plain', 'hat', 'bonnet', 'cheese', 'phone', 'phone']);
+  if (v === 'hat') { const hat = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.16, 10), PM.orange); hat.position.set(0, 1.66, -0.42); g.add(hat); const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.03, 12), PM.orange); brim.position.set(0, 1.6, -0.42); g.add(brim); }
+  if (v === 'bonnet') { const bn = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), Mat({ color: 0xe6e2d6 })); bn.position.set(0, 1.5, -0.4); g.add(bn); const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.34, 0.6, 8), Mat({ color: 0x1f2630 })); skirt.position.set(0, 0.55, -0.05); g.add(skirt); }
+  if (v === 'cheese') { for (let i = 0; i < 3; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.16, 12), PM.cheese); c.position.set(0, 1.25 + i * 0.17, 0.3); g.add(c); } }
+  if (v === 'phone') { const phone = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.24), new THREE.MeshBasicMaterial({ color: 0x9fe8ff })); phone.position.set(0.22, 1.1, -0.75); phone.rotation.x = -0.4; g.add(phone); }
+  if (v === 'clogs') { for (const sx of [-1, 1]) { const cl = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.3), PM.cheese); cl.position.set(sx * 0.1, 0.05, -0.05); g.add(cl); } }
   g.rotation.y = rnd(-0.4, 0.4); g.userData.lean = rnd(0.5, 1.5);
   return g;
 }
@@ -1350,7 +1402,7 @@ function update(dt) {
   S.lean = lerp(S.lean, clamp(dx * 0.6, -1, 1), dt * 8);
   bike.position.x = S.x; bike.rotation.z = -S.lean * 0.4; bike.rotation.y = -S.lean * 0.15;
   bike.position.y = (S.stumble > 0 ? Math.sin(S.t * 40) * 0.05 * S.stumble : 0) + Math.sin(S.t * 6) * 0.01;
-  if (rackGhost.visible) rackGhost.position.y = 0.55 + Math.sin(S.t * 3) * 0.04;
+  if (rackGhost.visible) rackGhost.position.y = 0.5 + Math.sin(S.t * 3) * 0.04;
   bike.userData.wheels.forEach(w => w.rotation.x += S.speed * S.slow * dt * 1.4);
   if (faceState.name && S.t > faceState.until) { faceState = { name: '', until: 0, look: 0 }; drawFace('deadpan'); }
   const headTarget = faceState.look ? Math.PI * 0.8 : (S.activeFork ? S.lean * 0.3 : Math.sin(S.t * 0.7) * 0.15);
@@ -1385,6 +1437,7 @@ function update(dt) {
   for (const o of scenery) {
     o.z += adv;
     if (o.mesh.userData.blades) o.mesh.userData.blades.rotation.z += o.mesh.userData.spin * dt;
+    if (o.mesh.userData.shuffle) { o.z += o.mesh.userData.shuffle * dt * (riding ? 1 : 0); o.mesh.rotation.z = Math.sin(S.t * 2 + o.i) * 0.06; o.mesh.rotation.y = Math.PI; }
     if (o.z > 20) { o.z -= o.span; sceneryPlace(o); }
     o.mesh.position.z = o.z; o.mesh.position.x = o.bx + bend(o.z);
   }
