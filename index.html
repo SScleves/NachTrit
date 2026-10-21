@@ -201,22 +201,49 @@ const roadTex = (() => {
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1, 40); t.colorSpace = THREE.SRGBColorSpace;
   return t;
 })();
-const road = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_W, 400), new THREE.MeshLambertMaterial({ map: roadTex }));
-road.rotation.x = -Math.PI / 2; road.position.set(0, 0, -150); scene.add(road);
+const mistTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  const r = g.createRadialGradient(64, 64, 4, 64, 64, 64); r.addColorStop(0, 'rgba(210,220,255,.45)'); r.addColorStop(1, 'rgba(210,220,255,0)');
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+})();
+// the road is 50 short segments so it can bend
+const SEG_LEN = 6, SEG_N = 50;
+const roadSegs = [];
+const roadGeo = new THREE.PlaneGeometry(ROAD_W, SEG_LEN + 0.15);
+const roadMat = new THREE.MeshLambertMaterial({ map: roadTex });
+roadTex.repeat.set(1, 1);
+for (let i = 0; i < SEG_N; i++) { const m = new THREE.Mesh(roadGeo, roadMat); m.rotation.x = -Math.PI / 2; scene.add(m); roadSegs.push(m); }
+// the bend: x offset of anything at relative distance z ahead of the bike
+function bend(z) { return z < 0 ? S.curv * z * z : 0; }
 
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), M.ground);
 ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.9, -150); scene.add(ground);
-// dyke shoulders
-for (const s of [-1, 1]) {
-  const sh = new THREE.Mesh(new THREE.BoxGeometry(3, 1.0, 400), M.ground);
-  sh.position.set(s * (ROAD_W / 2 + 1.4), -0.5, -150); sh.rotation.z = s * 0.35; scene.add(sh);
-}
-// canal to the right
-const canal = new THREE.Mesh(new THREE.PlaneGeometry(60, 400), M.water);
-canal.rotation.x = -Math.PI / 2; canal.position.set(ROAD_W / 2 + 32, -0.85, -150); scene.add(canal);
+// water segments (canal on one side when the theme has one)
+const waterSegs = [];
+const waterGeo = new THREE.PlaneGeometry(26, SEG_LEN + 0.2);
+for (let i = 0; i < SEG_N; i++) { const m = new THREE.Mesh(waterGeo, M.water); m.rotation.x = -Math.PI / 2; m.visible = false; scene.add(m); waterSegs.push(m); }
 
-// recycled scenery
-const scenery = [];
+// ---------- props ----------
+const PM = {
+  wall: new THREE.MeshLambertMaterial({ color: 0x23262c }),
+  wall2: new THREE.MeshLambertMaterial({ color: 0x2c2a2e }),
+  roof: new THREE.MeshLambertMaterial({ color: 0x15171b }),
+  window: new THREE.MeshBasicMaterial({ color: 0x8c8260 }),
+  windowOff: new THREE.MeshBasicMaterial({ color: 0x0c0d10 }),
+  pole: new THREE.MeshLambertMaterial({ color: 0x1b1d21 }),
+  bulb: new THREE.MeshBasicMaterial({ color: 0xcfd6d8 }),
+  stone: new THREE.MeshLambertMaterial({ color: 0x33363c }),
+  reed: new THREE.MeshLambertMaterial({ color: 0x2a3326 }),
+  leaf: new THREE.MeshLambertMaterial({ color: 0x1d2a22 }),
+  dog: new THREE.MeshLambertMaterial({ color: 0x1a1a1e }),
+  boat: new THREE.MeshLambertMaterial({ color: 0x1e2229 }),
+};
+const PG = {
+  win: new THREE.PlaneGeometry(0.7, 1.0),
+  pole: new THREE.CylinderGeometry(0.06, 0.08, 4.2, 6),
+  bulb: new THREE.SphereGeometry(0.16, 6, 6),
+  reed: new THREE.CylinderGeometry(0.02, 0.04, 1.4, 4),
+};
 function windmill() {
   const g = new THREE.Group();
   const body = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 2.0, 7, 8), M.mill); body.position.y = 3.5; g.add(body);
@@ -231,7 +258,8 @@ function windmill() {
 }
 function deadTree() {
   const g = new THREE.Group();
-  const t = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.3, rnd(3, 5), 5), M.dark); t.position.y = t.geometry.parameters.height / 2; g.add(t);
+  const h = rnd(3, 5);
+  const t = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.3, h, 5), M.dark); t.position.y = h / 2; g.add(t);
   for (let i = 0; i < 3; i++) {
     const br = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.1, rnd(1.2, 2.2), 4), M.dark);
     br.position.set(0, rnd(1.8, 3.5), 0); br.rotation.z = rnd(0.5, 1.2) * (i % 2 ? 1 : -1); br.rotation.y = rnd(0, 6); g.add(br);
@@ -239,27 +267,172 @@ function deadTree() {
   g.rotation.z = rnd(-0.15, 0.15);
   return g;
 }
-function fencePost() {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.0, 0.12), M.wood); m.position.y = 0.5; return m;
+function tree() {
+  const g = new THREE.Group();
+  const t = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.3, 3, 6), M.dark); t.position.y = 1.5; g.add(t);
+  const c = new THREE.Mesh(new THREE.SphereGeometry(rnd(1.6, 2.4), 7, 6), PM.leaf); c.position.y = rnd(3.6, 4.4); c.scale.y = 1.2; g.add(c);
+  return g;
 }
-function placeScenery(obj, z) {
-  const side = Math.random() < 0.5 ? -1 : 1;
-  obj.position.z = z;
-  if (obj.userData.kind === 'mill') obj.position.x = side * rnd(12, 26);
-  else if (obj.userData.kind === 'tree') obj.position.x = side * rnd(6.5, 14);
-  else obj.position.x = -(ROAD_W / 2 + 0.6);
-  obj.position.y = obj.userData.kind === 'post' ? 0 : -0.6;
+function fencePost() { const m = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.0, 0.12), M.wood); m.position.y = 0.5; return m; }
+function lamppost() {
+  const g = new THREE.Group();
+  const p = new THREE.Mesh(PG.pole, PM.pole); p.position.y = 2.1; g.add(p);
+  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.06, 0.06), PM.pole); arm.position.set(-0.4, 4.1, 0); g.add(arm);
+  const b = new THREE.Mesh(PG.bulb, PM.bulb); b.position.set(-0.8, 4.0, 0); g.add(b);
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.5, color: 0xd8dde0 }));
+  glow.scale.set(3.5, 3.5, 1); glow.position.set(-0.8, 3.6, 0); g.add(glow);
+  g.userData.faceRoad = true;
+  return g;
 }
-for (let i = 0; i < 6; i++) { const m = windmill(); m.userData.kind = 'mill'; placeScenery(m, -i * 45 - 20); scene.add(m); scenery.push(m); }
-for (let i = 0; i < 12; i++) { const t = deadTree(); t.userData.kind = 'tree'; placeScenery(t, -i * 14 - 5); scene.add(t); scenery.push(t); }
-for (let i = 0; i < 40; i++) { const p = fencePost(); p.userData.kind = 'post'; placeScenery(p, -i * 4); scene.add(p); scenery.push(p); }
+// houses face the road with their -x side; sceneryPlace turns them for the left side
+function house(opts = {}) {
+  const g = new THREE.Group();
+  const w = opts.w || rnd(4, 5.5), h = opts.h || rnd(6, 9), dpt = 6;
+  const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, dpt), Math.random() < 0.5 ? PM.wall : PM.wall2); body.position.y = h / 2; g.add(body);
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(w * 0.72, 2.2, 4), PM.roof); roof.position.y = h + 1.1; roof.rotation.y = Math.PI / 4; roof.scale.z = dpt / w * 0.95; g.add(roof);
+  const cols = Math.max(1, Math.round(dpt / 2.2)), rows = Math.max(1, Math.round(h / 2.4));
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const lit = Math.random() < (opts.lit == null ? 0.35 : opts.lit);
+    const win = new THREE.Mesh(PG.win, lit ? PM.window : PM.windowOff);
+    win.position.set(-w / 2 - 0.01, 1.6 + r * 2.4, -dpt / 2 + 1.2 + c * 2.2);
+    win.rotation.y = -Math.PI / 2; g.add(win);
+  }
+  const door = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.9), PM.roof); door.position.set(-w / 2 - 0.01, 0.95, dpt / 2 - 0.8); door.rotation.y = -Math.PI / 2; g.add(door);
+  if (opts.sign) {
+    const tex = labelTexture(opts.sign, { bg: '#1b1d21', fg: '#d4cdb9' });
+    const sgn = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9), new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45 }));
+    sgn.position.set(-w / 2 - 0.05, 3.3, 0); sgn.rotation.y = -Math.PI / 2; sgn.userData.ownTex = true; g.add(sgn);
+    const shop = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.8), PM.window); shop.position.set(-w / 2 - 0.02, 1.4, -0.6); shop.rotation.y = -Math.PI / 2; g.add(shop);
+  }
+  g.userData.faceRoad = true;
+  return g;
+}
+function graffitiWall(word) {
+  const g = new THREE.Group();
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.6, 6), PM.stone); wall.position.y = 1.3; g.add(wall);
+  const tex = labelTexture(word, { plain: true, fg: '#cfc6b2' });
+  const tag = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 1.6), new THREE.MeshBasicMaterial({ map: tex, transparent: true }));
+  tag.position.set(-0.21, 1.35, 0); tag.rotation.y = -Math.PI / 2; tag.rotation.z = rnd(-0.08, 0.08); tag.userData.ownTex = true; g.add(tag);
+  g.userData.faceRoad = true;
+  return g;
+}
+function reeds() {
+  const g = new THREE.Group();
+  for (let i = 0; i < 7; i++) { const r = new THREE.Mesh(PG.reed, PM.reed); r.position.set(rnd(-0.8, 0.8), 0.7, rnd(-1.2, 1.2)); r.rotation.z = rnd(-0.2, 0.2); g.add(r); }
+  return g;
+}
+function boat() {
+  const g = new THREE.Group();
+  const b = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.6, 4.2), PM.boat); b.position.y = -0.55; g.add(b);
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 3, 5), PM.pole); m.position.y = 1.0; g.add(m);
+  return g;
+}
+function bridge() {
+  const g = new THREE.Group();
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(12, 0.3, 2.4), M.wood); deck.position.set(-6, 0.3, 0); g.add(deck);
+  for (let i = 0; i < 6; i++) for (const sdz of [-1, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.0, 0.1), M.wood); p.position.set(-1 - i * 2, 0.9, sdz * 1.1); g.add(p); }
+  return g;
+}
+function church() {
+  const g = new THREE.Group();
+  const nave = new THREE.Mesh(new THREE.BoxGeometry(8, 9, 16), PM.wall2); nave.position.y = 4.5; g.add(nave);
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(6, 3.5, 4), PM.roof); roof.position.y = 10.7; roof.rotation.y = Math.PI / 4; roof.scale.z = 2.1; g.add(roof);
+  const tower = new THREE.Mesh(new THREE.BoxGeometry(4, 18, 4), PM.wall); tower.position.set(0, 9, 10); g.add(tower);
+  const spire = new THREE.Mesh(new THREE.ConeGeometry(2.9, 7, 4), PM.roof); spire.position.set(0, 21.5, 10); spire.rotation.y = Math.PI / 4; g.add(spire);
+  const win = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 3), PM.window); win.position.set(-4.01, 5, 0); win.rotation.y = -Math.PI / 2; g.add(win);
+  g.userData.faceRoad = true;
+  return g;
+}
+function dogProp() {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.4, 0.95), PM.dog); body.position.y = 0.55; g.add(body);
+  const head = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.4), PM.dog); head.position.set(0, 0.85, -0.6); g.add(head);
+  for (const x of [-0.15, 0.15]) for (const z of [-0.3, 0.3]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.1), PM.dog); l.position.set(x, 0.2, z); g.add(l); }
+  for (const x of [-0.08, 0.08]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.03, 4, 4), M.eye); e.position.set(x, 0.9, -0.81); g.add(e); }
+  return g;
+}
+function bikeProp() {
+  const g = new THREE.Group();
+  const wg = new THREE.TorusGeometry(0.34, 0.04, 6, 16);
+  for (const z of [-0.6, 0.6]) { const w = new THREE.Mesh(wg, M.dark); w.position.set(0, 0.34, z); g.add(w); }
+  const f = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.5, 1.2), M.bike); f.position.y = 0.6; g.add(f);
+  g.rotation.z = 0.35; g.rotation.y = Math.PI / 2;
+  return g;
+}
+function numberPlate(n) {
+  const g = new THREE.Group();
+  const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.8, 0.1), PM.pole); p.position.y = 0.9; g.add(p);
+  const tex = labelTexture(String(n), { bg: '#2a2520', fg: '#e8e2d2' });
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.7), new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.5, side: THREE.DoubleSide }));
+  b.position.set(0, 1.9, 0); b.userData.ownTex = true; g.add(b);
+  return g;
+}
+function waterPatch() { // a short stretch of water right beside the road, with reeds
+  const g = new THREE.Group();
+  const w = new THREE.Mesh(new THREE.PlaneGeometry(9, 16), M.water); w.rotation.x = -Math.PI / 2; w.position.set(-4.5, -0.6, 0); g.add(w);
+  for (let i = 0; i < 3; i++) { const r = reeds(); r.position.set(-0.4, -0.7, -6 + i * 6); g.add(r); }
+  g.userData.faceRoad = true;
+  return g;
+}
+// props you can be asked about: builder + how far past the road edge they stand
+const PROPS = {
+  hond: { make: dogProp, off: 0.9 }, huis: { make: () => house({ lit: 0.5 }), off: 3.2 }, fiets: { make: bikeProp, off: 0.9 },
+  kerk: { make: church, off: 6 }, boom: { make: tree, off: 1.5 }, molen: { make: windmill, off: 6 }, brug: { make: bridge, off: 0.5 },
+  water: { make: waterPatch, off: 0.3 }, winkel: { make: () => house({ sign: 'WINKEL', lit: 0.6 }), off: 3.2 }, lamp: { make: lamppost, off: 0.8 },
+  deur: { make: () => house({ w: 4, lit: 0.2 }), off: 2.4 },
+  tuin: { make: () => { const g = new THREE.Group(); for (let i = 0; i < 5; i++) { const t = tree(); t.scale.setScalar(0.45); t.position.set(rnd(0, 3), 0, rnd(-3, 3)); g.add(t); } const f = fence(); f.rotation.y = Math.PI / 2; f.position.set(-0.3, 0, 0); g.add(f); return g; }, off: 0.6 },
+  nummer: { make: (v) => numberPlate(v), off: 0.6 },
+};
+
+// ---------- themes: what lines the road per place ----------
+const THEMES = {
+  polder: { ground: 0x141f16, groundY: -0.9, canal: 1, curv: 0.0035, spawn: [
+    { make: windmill, n: 5, gap: 50, side: 'both', xr: [12, 26], y: -0.6 }, { make: deadTree, n: 10, gap: 16, side: 'both', xr: [6.5, 14], y: -0.6 },
+    { make: fencePost, n: 36, gap: 4.5, side: 'left', xr: [4.6, 4.6] } ] },
+  street: { ground: 0x101216, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
+    { make: house, n: 16, gap: 8.5, side: 'alt', xr: [7, 8], y: 0 }, { make: lamppost, n: 10, gap: 15, side: 'alt', xr: [4.7, 4.7] },
+    { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] }, { make: tree, n: 4, gap: 40, side: 'both', xr: [5.2, 5.6] } ] },
+  shops: { ground: 0x101216, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
+    { make: 'shop', n: 14, gap: 9, side: 'alt', xr: [6.8, 7.2], y: 0 }, { make: lamppost, n: 12, gap: 13, side: 'alt', xr: [4.7, 4.7] },
+    { make: 'graffiti', n: 5, gap: 36, side: 'both', xr: [5.0, 5.0] } ] },
+  dyke: { ground: 0x141f16, groundY: -0.9, canal: -1, curv: 0.004, spawn: [
+    { make: windmill, n: 4, gap: 60, side: 'right', xr: [12, 26], y: -0.6 }, { make: reeds, n: 24, gap: 7, side: 'left', xr: [4.8, 5.4], y: -0.7 },
+    { make: boat, n: 3, gap: 70, side: 'left', xr: [9, 13], y: 0 }, { make: fencePost, n: 36, gap: 4.5, side: 'right', xr: [4.6, 4.6] },
+    { make: bridge, n: 1, gap: 160, side: 'left', xr: [4.2, 4.2] }, { make: tree, n: 5, gap: 34, side: 'right', xr: [6, 10], y: -0.6 } ] },
+  square: { ground: 0x121418, groundY: -0.05, canal: 0, curv: 0.002, spawn: [
+    { make: church, n: 1, gap: 200, side: 'right', xr: [12, 12] }, { make: tree, n: 12, gap: 13, side: 'both', xr: [5.5, 9] },
+    { make: lamppost, n: 8, gap: 18, side: 'alt', xr: [4.7, 4.7] }, { make: house, n: 8, gap: 16, side: 'left', xr: [9, 11] } ] },
+  nightshop: { ground: 0x0f1114, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
+    { make: 'shop', n: 12, gap: 10, side: 'alt', xr: [6.8, 7.2] }, { make: lamppost, n: 5, gap: 28, side: 'alt', xr: [4.7, 4.7] },
+    { make: 'graffiti', n: 6, gap: 30, side: 'both', xr: [5.0, 5.0] }, { make: dogProp, n: 1, gap: 120, side: 'both', xr: [4.8, 5.2] } ] },
+};
+const SHOP_SIGNS = ['BAKKER', 'SLAGER', 'KAPPER', 'APOTHEEK', 'CAFÉ', 'SUPERMARKT', 'FIETSENMAKER', 'BLOEMEN', 'KAAS', 'FRIET'];
+let scenery = [];
+let theme = THEMES.polder;
+function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } }); } scenery = []; }
+function sceneryPlace(o) {
+  const sp = o.sp; const side = sp.side === 'both' ? (Math.random() < 0.5 ? -1 : 1) : sp.side === 'left' ? -1 : sp.side === 'right' ? 1 : (o.i % 2 ? 1 : -1);
+  o.bx = side * rnd(sp.xr[0], sp.xr[1]);
+  o.mesh.position.y = sp.y || 0;
+  if (o.mesh.userData.faceRoad) o.mesh.rotation.y = side < 0 ? Math.PI : 0;
+}
+function buildScenery(th) {
+  clearScenery(); theme = th;
+  ground.material.color.set(th.ground); ground.position.y = th.groundY;
+  for (const sp of th.spawn) {
+    for (let i = 0; i < sp.n; i++) {
+      let mesh;
+      if (sp.make === 'graffiti') { const w = S.wordPool && S.wordPool.length ? pick(S.wordPool) : pick(['gezellig', 'doei', 'huis', 'fiets']); mesh = graffitiWall(w); }
+      else if (sp.make === 'shop') mesh = house({ sign: pick(SHOP_SIGNS), lit: 0.55 });
+      else mesh = sp.make();
+      const o = { mesh, sp, i, z: -i * sp.gap - rnd(0, sp.gap * 0.5) - 8, span: sp.n * sp.gap, bx: 0 };
+      sceneryPlace(o); scene.add(mesh); scenery.push(o);
+    }
+  }
+}
 
 // witte wieven: drifting mist sprites
-const mistTex = (() => {
-  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
-  const r = g.createRadialGradient(64, 64, 4, 64, 64, 64); r.addColorStop(0, 'rgba(210,220,255,.45)'); r.addColorStop(1, 'rgba(210,220,255,0)');
-  g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
-})();
+
 const wieven = [];
 for (let i = 0; i < 10; i++) {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: rnd(0.4, 0.9) }));
@@ -316,12 +489,11 @@ function labelTexture(text, opts = {}) {
   const W = 512, H = 250, pad = 30;
   const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
   // board
-  g.fillStyle = opts.bg || '#2b2118'; g.fillRect(0, 0, W, H);
-  g.strokeStyle = '#5a4531'; g.lineWidth = 7; g.strokeRect(5, 5, W - 10, H - 10);
+  if (!opts.plain) { g.fillStyle = opts.bg || '#2b2118'; g.fillRect(0, 0, W, H); g.strokeStyle = '#5a4531'; g.lineWidth = 7; g.strokeRect(5, 5, W - 10, H - 10); }
   g.fillStyle = opts.fg || '#efe6cf'; g.textAlign = 'center'; g.textBaseline = 'middle';
   let size = 60, lines;
   const wrap = (sz) => {
-    g.font = `bold ${sz}px "Segoe UI", system-ui, sans-serif`;
+    g.font = `${opts.plain ? 'italic 900' : 'bold'} ${sz}px "Segoe UI", system-ui, sans-serif`;
     const words = text.split(' '); const out = []; let cur = '';
     for (const w of words) {
       const t = cur ? cur + ' ' + w : w;
@@ -397,15 +569,18 @@ const S = {
   activeFork: null, forkZoom: 0, speedNorm: 0,
   mistakes: [], introT: 0, dieT: 0, stumble: 0,
   voice: true, heartT: 0,
-  sentencePool: [],
+  sentencePool: [], curv: 0, curvTarget: 0, curvNextAt: 60, wordPool: [],
 };
 let audioCtx = null;
 window.NR = S; // debug handle
+buildScenery(THEMES.polder);
 let L = null;                 // current level, null = endless
 let BASE = BASE_SPEED, MAXS = MAX_SPEED;
 let progress = {}; try { progress = JSON.parse(localStorage.getItem('nachtrit.progress') || '{}'); } catch (e) { progress = {}; }
 function saveProgress() { try { localStorage.setItem('nachtrit.progress', JSON.stringify(progress)); } catch (e) {} }
-function unlocked(lv) { return lv.id === 1 || (progress[lv.id - 1] || 0) >= 1 || (progress[lv.id] || 0) >= 1; }
+function districtStars(a) { return LEVELS.filter(l => l.act === a).reduce((n, l) => n + (progress[l.id] || 0), 0); }
+const DISTRICT_NEED = 5; // stars in the previous district to open the next
+function unlocked(lv) { return lv.act === 1 || districtStars(lv.act - 1) >= DISTRICT_NEED; }
 
 // turn a level item into an entry the planner understands
 function itemToEntry(item, pool) {
@@ -413,6 +588,11 @@ function itemToEntry(item, pool) {
   if (item.read) {
     const o = [item.en, ...others('en').filter(e => e !== item.en).slice(0, 2)];
     return { read: true, nl: item.nl, o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` };
+  }
+  if (item.look) {
+    const o = [item.nl, ...others('nl').filter(e => e !== item.nl).slice(0, 2)];
+    return { look: true, side: item.side || (Math.random() < 0.5 ? 'links' : 'rechts'), prop: item.prop, value: item.value, en: item.en, nl: item.nl,
+      parts: [{ o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` }] };
   }
   if (item.w || item.listen) {
     const o = [item.nl, ...others('nl').filter(e => e !== item.nl).slice(0, 2)];
@@ -434,9 +614,10 @@ function nextEntry() {
   return S.sentencePool.pop();
 }
 function add(obj, d, lane, type, extra = {}) {
-  obj.position.x = lane == null ? obj.position.x : LANE_X[lane];
+  const bx = lane == null ? (extra.bx != null ? extra.bx : obj.position.x) : LANE_X[lane];
+  obj.position.x = bx;
   scene.add(obj);
-  const o = Object.assign({ mesh: obj, d, lane, type, hit: false }, extra);
+  const o = Object.assign({ mesh: obj, d, lane, type, hit: false, bx }, extra);
   S.objs.push(o); return o;
 }
 function planFiller(len) {
@@ -477,8 +658,15 @@ function planSentence(entry) {
     return;
   }
   const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0 };
+  if (entry.look) { // the thing stands beside the road, the signs come right after it
+    const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
+    const mesh = pr.make(entry.value); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;
+    add(mesh, d0, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });
+    placeFork({ entry, st, idx: 0, o: st.forks[0].o, a: st.forks[0].a, r: 'woord', w: st.forks[0].w, read: false }, d0 + 14);
+    S.planCursor = d0 + 14 + 10; return;
+  }
   const d0 = S.planCursor + 12;
-  const g = ghostFigure(); g.position.x = ROAD_W / 2 + 1.0; add(g, d0, null, 'passenger', { st });
+  const g = ghostFigure(); add(g, d0, null, 'passenger', { st, bx: ROAD_W / 2 + 1.0 });
   let d = d0 + (L ? 38 : 54);
   st.forks.forEach((f, i) => {
     placeFork({ entry, st, idx: i, o: f.o, a: f.a, r: f.r, w: f.w, read: false }, d);
@@ -608,7 +796,7 @@ function openMap() {
   const box = $('places'); box.innerHTML = '';
   let act = 0;
   for (const lv of LEVELS) {
-    if (lv.act !== act) { act = lv.act; const h = document.createElement('div'); h.className = 'act'; h.textContent = `District ${act}: ${ACTS[act]}`; box.appendChild(h); }
+    if (lv.act !== act) { act = lv.act; const h = document.createElement('div'); h.className = 'act'; const need = act === 1 ? 0 : Math.max(0, DISTRICT_NEED - districtStars(act - 1)); h.textContent = `District ${act}: ${ACTS[act]}` + (need ? ` · ${need} more star${need === 1 ? '' : 's'} in district ${act - 1} to open` : ''); box.appendChild(h); }
     const el = document.createElement('div'); const ok = !lv.soon && unlocked(lv);
     el.className = 'place' + (ok ? '' : ' locked');
     const st = progress[lv.id] || 0;
@@ -632,12 +820,14 @@ function start(lv) {
   LANE_X = (L && L.lanes === 2) ? LANES2 : LANES3;
   BASE = L ? L.speed : BASE_SPEED; MAXS = L ? L.maxSpeed : MAX_SPEED;
   for (const id of ['start', 'summary', 'mission', 'map']) $(id).style.display = 'none';
+  S.wordPool = L ? L.items.map(i => i.nl).filter(Boolean) : [];
+  buildScenery(THEMES[(L && L.theme) || 'polder'] || THEMES.polder);
   reset(); S.mode = 'intro'; S.introT = 0;
 }
 function reset() {
   for (const o of S.objs) if (o.mesh) scene.remove(o.mesh);
   Object.assign(S, { t: 0, dist: 0, speed: BASE, slow: 1, slowTarget: 1, lane: LANE_X.length === 2 ? 0 : 1, x: 0, lean: 0, lamp: L ? 85 : 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
-    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100 });
+    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100 });
   follower.visible = false; follower.userData.glow.intensity = 0;
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
   hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0;
@@ -761,7 +951,7 @@ function update(dt) {
   bike.position.x = S.x; bike.rotation.z = -S.lean * 0.4; bike.rotation.y = -S.lean * 0.15;
   bike.position.y = (S.stumble > 0 ? Math.sin(S.t * 40) * 0.05 * S.stumble : 0) + Math.sin(S.t * 6) * 0.01;
   bike.userData.wheels.forEach(w => w.rotation.x += S.speed * S.slow * dt * 1.4);
-  lampLight.position.x = S.x; lampLight.target.position.x = S.x + S.lean * 1.5;
+  lampLight.position.x = S.x; lampLight.target.position.x = S.x + S.lean * 1.5 + bend(-20) * 0.8;
 
   // lamp look
   const Lf = S.lamp / 100;
@@ -777,12 +967,23 @@ function update(dt) {
     if (danger > 0.3 && S.heartT > period) { S.heartT = 0; thump(0.15 + danger * 0.5); setTimeout(() => thump(0.1 + danger * 0.3), 130); }
   }
 
-  // road scroll + scenery
-  roadTex.offset.y = (S.dist / 10) % 1;
-  for (const s of scenery) {
-    s.position.z += S.speed * S.slow * dt * (riding ? 1 : 0);
-    if (s.userData.blades) s.userData.blades.rotation.z += s.userData.spin * dt;
-    if (s.position.z > 20) { const back = s.userData.kind === 'mill' ? 270 : s.userData.kind === 'tree' ? 252 : 240; placeScenery(s, s.position.z - back); }
+  // the bend drifts slowly
+  if (riding) { if (S.dist > S.curvNextAt) { S.curvNextAt = S.dist + rnd(70, 130); S.curvTarget = (Math.random() < 0.3 ? 0 : rnd(-1, 1)) * theme.curv; } S.curv = lerp(S.curv, S.curvTarget, dt * 0.6); }
+  // road + water segments
+  const scroll = S.dist % SEG_LEN;
+  for (let i = 0; i < SEG_N; i++) {
+    const z = scroll - i * SEG_LEN + 10; const m = roadSegs[i];
+    m.position.set(bend(z), 0, z);
+    const w = waterSegs[i]; w.visible = !!theme.canal;
+    if (theme.canal) w.position.set(bend(z) + theme.canal * (ROAD_W / 2 + 1.2 + 13), -0.6, z);
+  }
+  // scenery
+  const adv = S.speed * S.slow * dt * (riding ? 1 : 0);
+  for (const o of scenery) {
+    o.z += adv;
+    if (o.mesh.userData.blades) o.mesh.userData.blades.rotation.z += o.mesh.userData.spin * dt;
+    if (o.z > 20) { o.z -= o.span; sceneryPlace(o); }
+    o.mesh.position.z = o.z; o.mesh.position.x = o.bx + bend(o.z);
   }
   for (const w of wieven) {
     w.position.z += S.speed * S.slow * dt * (riding ? 1 : 0) * 0.9;
@@ -795,7 +996,7 @@ function update(dt) {
   for (const o of S.objs) {
     const z = S.dist - o.d;
     if (o.mesh) {
-      o.mesh.position.z = z;
+      o.mesh.position.z = z; o.mesh.position.x = o.bx + bend(z);
       if (o.type === 'wisp' && !o.hit) o.mesh.position.y = 1.0 + Math.sin(S.t * 3 + o.d) * 0.15;
       if (o.type === 'passenger') o.mesh.position.y = Math.sin(S.t * 1.5 + o.d) * 0.08;
     }
@@ -827,6 +1028,7 @@ function update(dt) {
       g.armed = true; S.activeFork = g;
       const f = g.fork;
       if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.');
+      else if (f.entry.look) showCard(f.entry.side === 'links' ? '← On your left' : 'On your right →', 'What is that?', '<b>___</b>');
       else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx)); speak(f.entry.nl); }
       else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx));
       for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
@@ -854,7 +1056,7 @@ function update(dt) {
     camera.position.y = lerp(camera.position.y, ty, dt * 2.5);
     camera.position.z = lerp(camera.position.z, tz, dt * 2.5);
     camera.fov = lerp(camera.fov, 60 + sn * 10 + fz * 22, dt * 3); camera.updateProjectionMatrix();
-    camera.lookAt(S.x * (camera.aspect < 1 ? 0.7 : 0.3), 1 + fz * 0.4, -8 - fz * 6);
+    camera.lookAt(S.x * (camera.aspect < 1 ? 0.7 : 0.3) + bend(-14) * 0.6, 1 + fz * 0.4, -8 - fz * 6);
   }
 
   // HUD
