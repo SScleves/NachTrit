@@ -359,7 +359,7 @@ function lamppost() {
   const arm = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.06, 0.06), PM.pole); arm.position.set(-0.4, 4.1, 0); g.add(arm);
   const b = new THREE.Mesh(PG.bulb, PM.bulb); b.position.set(-0.8, 4.0, 0); g.add(b);
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.5, color: 0xd8dde0 }));
-  glow.scale.set(2.2, 2.2, 1); glow.material.opacity = 0.32; glow.position.set(-0.8, 3.6, 0); g.add(glow);
+  glow.scale.set(1.5, 1.5, 1); glow.material.opacity = 0.18; glow.position.set(-0.8, 3.6, 0); g.add(glow);
   g.userData.faceRoad = true;
   return g;
 }
