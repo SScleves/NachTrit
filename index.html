@@ -367,6 +367,7 @@ const S = {
   sentencePool: [],
 };
 let audioCtx = null;
+window.NR = S; // debug handle
 
 // ---------- planning ----------
 function nextEntry() {
@@ -408,7 +409,7 @@ function planSentence(entry) {
   const forkGap = 48;
   if (entry.read) {
     const d0 = S.planCursor + 14;
-    add(bigSign(entry.nl), d0, null, 'readsign').mesh.position.x = 0;
+    add(bigSign(entry.nl), d0, null, 'readsign', { nl: entry.nl }).mesh.position.x = 0;
     const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true };
     placeFork(fork, d0 + 34);
     S.planCursor = d0 + 34 + 10;
@@ -680,12 +681,14 @@ function update(dt) {
       if (o.type === 'wisp' && !o.hit) o.mesh.position.y = 1.0 + Math.sin(S.t * 3 + o.d) * 0.15;
       if (o.type === 'passenger') o.mesh.position.y = Math.sin(S.t * 1.5 + o.d) * 0.08;
     }
-    if (o.type === 'gate' && !o.gate.resolved && z < 0.6) {
-      if (!nearestGate || o.d < nearestGate.d) nearestGate = o;
+    if (o.type === 'gate' && !o.gate.resolved) {
+      if (z >= 0.5) { if (riding) { if (!o.gate.armed) { o.gate.armed = true; S.activeFork = o.gate; } resolveFork(o.gate); } }
+      else if (!nearestGate || o.d < nearestGate.d) nearestGate = o;
     }
     if (!riding) continue;
     // collisions at the bike
-    if (!o.hit && z > -0.9 && z < 0.9 && o.lane === S.lane) {
+    const pz = o.pz === undefined ? z : o.pz; o.pz = z;
+    if (!o.hit && z > -0.9 && pz < 0.9 && o.lane === S.lane) {
       if (o.type === 'wisp') { o.hit = true; o.mesh.visible = false; S.lamp = clamp(S.lamp + 2, 0, 100); S.speed = clamp(S.speed + 0.15, BASE_SPEED, MAX_SPEED); chime(true); }
       else if (o.type === 'puddle') { o.hit = true; S.speed = clamp(S.speed - 2, BASE_SPEED, MAX_SPEED); S.stumble = 0.6; }
       else if (o.type === 'obstacle') {
@@ -714,7 +717,6 @@ function update(dt) {
       $('lanes').style.opacity = 1;
     }
     if (g.armed) { const cells = $('lanes').children; for (let i = 0; i < 3; i++) cells[i].classList.toggle('here', i === S.lane); }
-    if (g.armed && z >= 0.5) resolveFork(g);
     S.forkZoom = lerp(S.forkZoom, g.armed ? clamp(1 - (-z) / 46, 0, 1) : 0, dt * 4);
   } else S.forkZoom = lerp(S.forkZoom, 0, dt * 4);
 
