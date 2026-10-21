@@ -44,7 +44,7 @@ async function playLevel(n) {
   await openGame();
   await page.click('#go'); await page.waitForTimeout(300);
   await shot(`map`);
-  const ok = await page.evaluate((n) => { const el = [...document.querySelectorAll('.place')][n - 1]; if (!el || el.classList.contains('locked')) return false; el.click(); return true; }, n);
+  const ok = await page.evaluate((n) => window.goLevel(n), n);
   if (!ok) { run.skipped = 'locked or missing'; report.runs.push(run); return; }
   await page.waitForTimeout(300); run.frames.push(await shot(`L${n}-mission`));
   await page.evaluate(() => { NR.lanesN = 3; });

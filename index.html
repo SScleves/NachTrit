@@ -37,12 +37,15 @@
   .hint { color:var(--dim); font-size:13px; margin-top:14px; }
   #summary { display:none; }
   #map .box::-webkit-scrollbar { display:none; }
-  #places { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; text-align:left; }
-  #places .act { grid-column:1/-1; color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-top:10px; }
-  .place { pointer-events:auto; background:var(--card); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:10px; cursor:pointer; }
-  .place small { display:block; color:var(--dim); font-size:11px; }
+  .place { pointer-events:auto; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:8px; cursor:pointer; text-align:left; font-size:13px; }
+  .place small { display:block; color:var(--dim); font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
   .place.locked { opacity:.35; cursor:default; }
-  .place .st { color:#ffd27a; font-size:12px; letter-spacing:.1em; }
+  .place .st { color:#ffd27a; font-size:11px; letter-spacing:.1em; }
+  .place .lv { display:inline-block; margin:3px 4px 0 0; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; font-size:12px; }
+  #nl .town { cursor:pointer; }
+  #nl .town text { font: 600 2.7px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.04em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.8px; }
+  #nl .town.locked text { fill:#5a6170; }
+  #nl .town.locked circle { fill:#2a2f3a; stroke:#4a5160; }
   #grain { position:fixed; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:overlay; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"); }
   #shade { position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%); }
   #summary .stats { display:flex; gap:10px; justify-content:center; margin:12px 0; }
@@ -95,12 +98,19 @@
       <div class="hint">Tap or press space to continue · <span id="skip" style="pointer-events:auto;cursor:pointer;text-decoration:underline">skip</span></div>
     </div>
   </div>
-  <div class="overlay" id="map" style="display:none">
-    <div class="box" style="max-width:720px;max-height:92vh;overflow:auto;scrollbar-width:none;padding-bottom:24px">
-      <h1 style="font-size:34px">THE TOWN</h1>
-      <div class="sub">Pick where to go. Each place has its own words. New districts open as you deliver.</div>
-      <div id="places"></div>
-      <div style="margin-top:14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
+  <div class="overlay" id="map" style="display:none;align-items:stretch;padding:0">
+    <div id="world" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
+      <div style="text-align:center;padding:calc(10px + env(safe-area-inset-top)) 12px 0">
+        <h1 style="font-size:clamp(26px,5vw,38px)">NEDERLAND</h1>
+        <div class="sub" style="margin:4px 0 0">Six towns, each harder than the last. Every town has the same seven places. Pick one.</div>
+      </div>
+      <div id="mapwrap" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px"><svg id="nl" viewBox="0 0 100 110" style="height:100%;max-height:78vh;aspect-ratio:100/110;pointer-events:auto"></svg></div>
+      <div style="text-align:center;padding:0 0 14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
+      <div id="town" style="position:absolute;left:50%;bottom:0;transform:translate(-50%,105%);transition:transform .3s;width:min(96vw,760px);background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));pointer-events:auto">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div><div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="t_tier"></div><h1 style="font-size:28px;margin:0" id="t_name"></h1></div><button class="ico" id="t_close">✕</button></div>
+        <div id="t_blurb" style="color:#c9d6ff;margin:6px 0 10px;font-size:14px"></div>
+        <div id="t_places" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px"></div>
+      </div>
     </div>
   </div>
   <div class="overlay" id="mission" style="display:none">
@@ -135,6 +145,7 @@
 <script src="levels.js"></script>
 <script src="content/district2.js"></script>
 <script src="content/district3.js"></script>
+<script src="content/towns.js"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
@@ -750,6 +761,7 @@ const S = {
 };
 let audioCtx = null;
 window.NR = S; // debug handle
+window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 buildScenery(THEMES.polder);
 let L = null;                 // current level, null = endless
 let BASE = BASE_SPEED, MAXS = MAX_SPEED;
@@ -757,7 +769,7 @@ let progress = {}; try { progress = JSON.parse(localStorage.getItem('nachtrit.pr
 function saveProgress() { try { localStorage.setItem('nachtrit.progress', JSON.stringify(progress)); } catch (e) {} }
 function districtStars(a) { return LEVELS.filter(l => l.act === a).reduce((n, l) => n + (progress[l.id] || 0), 0); }
 const DISTRICT_NEED = 5; // stars in the previous district to open the next
-function unlocked(lv) { return lv.act === 1 || districtStars(lv.act - 1) >= DISTRICT_NEED; }
+function unlocked(lv) { const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); return t ? townOpen(t) : lv.act === 1; }
 
 // turn a level item into an entry the planner understands
 function itemToEntry(item, pool) {
@@ -1116,26 +1128,83 @@ addEventListener('keydown', e => { if (onKey && $('intro').style.display !== 'no
 let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'); } catch (e) {}
 if (new URLSearchParams(location.search).has('intro')) introSeen = false;
 
+// ---------- the world map ----------
+const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen']];
+const TOWN_OF = id => id <= 5 ? 'alblasserdam' : id <= 10 ? 'kinderdijk' : id <= 15 ? 'gouda' : id <= 20 ? 'utrecht' : id <= 30 ? 'rotterdam' : 'amsterdam';
+const PLACE_OF = { 1: 'thuis', 2: 'mensen', 3: 'thuis', 4: 'mensen', 5: 'winkels', 6: 'winkels', 7: 'eten', 8: 'thuis', 9: 'eten', 10: 'station', 11: 'werk', 12: 'station', 13: 'mensen', 14: 'winkels', 15: 'sport' };
+const LL = (lon, lat) => [(lon - 3.3) / (7.2 - 3.3), 1 - (lat - 50.75) / (53.55 - 50.75)];
+const TOWNS_FALLBACK = [
+  { id: 'alblasserdam', name: 'Alblasserdam', tier: 1, cefr: 'A1', pos: LL(4.66, 51.87), blurb: 'Home. The dogs still need a walk.' },
+  { id: 'kinderdijk', name: 'Kinderdijk en Dordrecht', tier: 2, cefr: 'A1', pos: LL(4.68, 51.83), blurb: 'Nineteen mills and the oldest city. The water never sleeps.' },
+  { id: 'gouda', name: 'Gouda', tier: 3, cefr: 'A1-A2', pos: LL(4.71, 52.01), blurb: 'Cheese, stroopwafels, a town hall in the middle of the square.' },
+  { id: 'utrecht', name: 'Utrecht', tier: 4, cefr: 'A2', pos: LL(5.12, 52.09), blurb: 'The Dom, the wharves, more bikes than people.' },
+  { id: 'rotterdam', name: 'Rotterdam', tier: 5, cefr: 'A2-B1', pos: LL(4.48, 51.92), blurb: 'Big, loud, rebuilt. The harbour does not stop for the dead.' },
+  { id: 'amsterdam', name: 'Amsterdam', tier: 6, cefr: 'B1-B2', pos: LL(4.9, 52.37), blurb: 'Canals, trams, tourists, bells. The hardest night.' },
+];
+function towns() { return (window.TOWNS && window.TOWNS.length ? window.TOWNS : TOWNS_FALLBACK).slice().sort((a, b) => a.tier - b.tier); }
+function townLevels(t) { return LEVELS.filter(l => (l.town || TOWN_OF(l.id)) === t.id); }
+function townStars(t) { return townLevels(t).reduce((n, l) => n + (progress[l.id] || 0), 0); }
+function townOpen(t) { if (t.tier === 1) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
+// the Netherlands, roughly, as lon/lat
+const NL_OUTLINE = [[3.37, 51.37], [3.9, 51.2], [4.25, 51.37], [4.8, 51.43], [5.05, 51.4], [5.1, 51.3], [5.55, 51.22], [5.85, 51.05], [5.7, 50.78], [6.02, 50.76], [6.1, 51.0], [5.85, 51.1], [6.2, 51.45], [6.1, 51.6], [6.4, 51.85], [6.75, 51.9], [7.05, 52.25], [6.7, 52.5], [7.05, 52.65], [7.2, 53.0], [7.2, 53.25], [6.9, 53.42], [6.3, 53.45], [5.6, 53.37], [5.2, 53.05], [5.05, 52.95], [4.75, 52.95], [4.6, 52.6], [4.5, 52.3], [4.25, 52.05], [4.0, 51.95], [3.7, 51.78], [3.5, 51.6]];
+const NL_IJSSELMEER = [[5.05, 52.9], [5.45, 52.88], [5.72, 52.8], [5.6, 52.55], [5.3, 52.45], [5.08, 52.55]];
+const NL_ISLANDS = [[4.8, 53.08, 2.2], [5.3, 53.38, 2.0], [5.9, 53.47, 1.6], [6.3, 53.5, 1.1]];
+function mapXY([lon, lat]) { const [x, y] = LL(lon, lat); return [x * 100, y * 100 + 4]; }
+function drawWorld() {
+  const svg = $('nl'); svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + mapXY(p).map(v => v.toFixed(1)).join(',')).join(' ') + ' Z';
+  svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#0b0f14' }));
+  svg.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1b2230', stroke: '#8a94a6', 'stroke-width': 0.5, 'stroke-linejoin': 'round' }));
+  svg.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#8a94a6', 'stroke-width': 0.35 }));
+  for (const [lon, lat, w] of NL_ISLANDS) { const [x, y] = mapXY([lon, lat]); svg.appendChild(el('ellipse', { cx: x, cy: y, rx: w * 1.3, ry: 0.5, fill: '#1b2230', stroke: '#8a94a6', 'stroke-width': 0.3 })); }
+  const T = towns();
+  // the route between towns
+  const pts = T.map(t => mapXY([3.3 + t.pos[0] * 3.9, 53.55 - t.pos[1] * 2.8]));
+  svg.appendChild(el('path', { d: pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.3, 'stroke-dasharray': '0.8 1.2', opacity: 0.6 }));
+  T.forEach((t, i) => {
+    const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t);
+    const g = el('g', { class: 'town' + (open ? '' : ' locked') });
+    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 3.2, fill: 'none', stroke: '#8e1f1f', 'stroke-width': 0.4, opacity: 0.8 }));
+    g.appendChild(el('circle', { cx: x, cy: y, r: 1.6, fill: open ? '#e8e4d8' : '#2a2f3a', stroke: open ? '#8e1f1f' : '#4a5160', 'stroke-width': 0.4 }));
+    const LAY = { rotterdam: [-2.6, 1, 'end'], kinderdijk: [0.6, 4.4, 'start'], alblasserdam: [2.6, 0.2, 'start'], gouda: [-2.4, -2.2, 'end'], utrecht: [2.6, 1, 'start'], amsterdam: [2.6, 1, 'start'] };
+    const [dx, dy, anchor] = LAY[t.id] || [2.6, 1, 'start'];
+    const label = el('text', { x: x + dx, y: y + dy, 'text-anchor': anchor }); label.textContent = t.name + (open && stars ? ' ★' + stars : ''); g.appendChild(label);
+    g.onclick = () => openTown(t);
+    svg.appendChild(g);
+  });
+  // the rider at the furthest open town
+  const cur = T.filter(townOpen).pop(); if (cur) { const [x, y] = pts[T.indexOf(cur)]; const r = el('circle', { cx: x, cy: y, r: 0.7, fill: '#8e1f1f' }); svg.appendChild(r); }
+}
+function openTown(t) {
+  const open = townOpen(t);
+  $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
+  $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || '';
+  const box = $('t_places'); box.innerHTML = '';
+  for (const [pid, pname] of PLACES) {
+    const lvls = townLevels(t).filter(l => (l.place || PLACE_OF[l.id]) === pid && !l.soon);
+    const el = document.createElement('div'); el.className = 'place' + (open && lvls.length ? '' : ' locked');
+    const st = lvls.reduce((n, l) => n + (progress[l.id] || 0), 0);
+    el.innerHTML = `<small>${pname}</small>` + (lvls.length ? lvls.map(l => `<span class="lv">${l.name}${progress[l.id] ? ' ★' + progress[l.id] : ''}</span>`).join('') : `<span style="color:var(--dim);font-size:12px">soon</span>`);
+    if (open && lvls.length) { if (lvls.length === 1) el.onclick = () => openMission(lvls[0]); else el.querySelectorAll('.lv').forEach((b, i) => { b.style.cursor = 'pointer'; b.onclick = (e) => { e.stopPropagation(); openMission(lvls[i]); }; }); }
+    box.appendChild(el);
+  }
+  $('town').style.transform = 'translate(-50%,0)';
+}
+$('t_close').onclick = () => { $('town').style.transform = 'translate(-50%,105%)'; };
+
 function openMap() {
   warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   for (const id of ['start', 'summary', 'mission']) $(id).style.display = 'none';
-  const box = $('places'); box.innerHTML = '';
-  let act = 0;
-  for (const lv of LEVELS) {
-    if (lv.act !== act) { act = lv.act; const h = document.createElement('div'); h.className = 'act'; const need = act === 1 ? 0 : Math.max(0, DISTRICT_NEED - districtStars(act - 1)); h.textContent = `District ${act}: ${ACTS[act]}` + (need ? ` · ${need} more star${need === 1 ? '' : 's'} in district ${act - 1} to open` : ''); box.appendChild(h); }
-    const el = document.createElement('div'); const ok = !lv.soon && unlocked(lv);
-    el.className = 'place' + (ok ? '' : ' locked');
-    const st = progress[lv.id] || 0;
-    el.innerHTML = `<small>${lv.id}</small>${lv.name}<div class="st">${lv.soon ? 'soon' : ok ? ('★'.repeat(st) + '☆'.repeat(3 - st)) : 'locked'}</div>`;
-    if (ok) el.onclick = () => openMission(lv);
-    box.appendChild(el);
-  }
+  drawWorld(); $('town').style.transform = 'translate(-50%,105%)';
   $('map').style.display = 'flex'; S.mode = 'start';
 }
 let pendingLevel = null;
 function openMission(lv) {
   pendingLevel = lv; $('map').style.display = 'none';
-  $('m_act').textContent = `District ${lv.act}: ${ACTS[lv.act]} · level ${lv.id}`; $('m_name').textContent = lv.name;
+  const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); const pl = PLACES.find(p => p[0] === (lv.place || PLACE_OF[lv.id]));
+  $('m_act').textContent = `${t ? t.name : ''} · ${pl ? pl[1] : ''} · tier ${t ? t.tier : lv.act}`; $('m_name').textContent = lv.name;
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
   const words = lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.w || i.en}`).filter((v, i, a) => a.indexOf(v) === i);
   $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
@@ -1415,6 +1484,7 @@ function loop() {
   render();
 }
 const q = new URLSearchParams(location.search);
+if (q.has('map')) { introSeen = true; openMap(); if (q.get('map') !== '1') { const t = towns().find(x => x.id === q.get('map')); if (t) openTown(t); } }
 if (q.has('shot')) {
   start(q.has('level') ? LEVELS[+q.get('level') - 1] : null);
   if (q.has('look')) { const looks = S.queue.filter(e => e.look); if (looks.length) S.queue = looks.concat(looks); }
