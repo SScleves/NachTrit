@@ -89,7 +89,8 @@
         <canvas id="pix" width="192" height="108" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
         <canvas id="pixhi" width="1152" height="648" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
       </div>
-      <div id="pixtext" style="min-height:3.2em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:16px auto 6px;max-width:700px;color:#d8d4c8"></div>
+      <div id="pixtext" style="min-height:2.6em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:14px auto 2px;max-width:720px;color:#d8d4c8"></div>
+      <div id="pixnl" style="min-height:2.4em;font-size:clamp(13px,2vw,17px);line-height:1.4;margin:0 auto 6px;max-width:720px;color:#9fb0cc;font-style:italic"></div>
       <div class="hint">Tap or press space to continue · <span id="skip" style="pointer-events:auto;cursor:pointer;text-decoration:underline">skip</span></div>
     </div>
   </div>
@@ -857,25 +858,25 @@ addEventListener('mousedown', e => { if (S.mode === 'ride' && e.target === rende
 // ---------- game flow ----------
 // ---------- the intro: six pixel panels ----------
 const PANELS = [
-  { text: 'The night the mist came in, the windmills turned the wrong way.', draw: (g, t) => {
+  { text: 'The night the mist came in, the windmills turned the wrong way.', nl: 'De nacht dat de mist kwam, draaiden de molens de verkeerde kant op.', draw: (g, t) => {
       px_sky(g, '#0b1430', '#1d3a52'); px_stars(g, t); px_moon(g, 150, 22, 9); px_mist(g, t, 62, 0.5);
       px_ground(g, 78, '#0e1a22');
       px_windmill(g, 60, 78, 26, -t * 1.2); px_windmill(g, 130, 82, 16, -t * 1.6);
     } },
-  { text: 'By morning everyone had changed. They still split the bill. They just did it in Dutch now.', draw: (g, t) => {
+  { text: 'By morning everyone had changed. Two things had not: they still split the bill, and the women were still taller than him.', nl: 'Tegen de ochtend was iedereen veranderd. Twee dingen niet: ze deelden de rekening nog steeds, en de vrouwen waren nog steeds langer dan hij.', draw: (g, t) => {
       px_sky(g, '#13203a', '#2a4a5e'); px_ground(g, 84, '#101a24');
       for (let i = 0; i < 7; i++) px_house(g, i * 28 - 6, 84, 24, 36 + (i * 7) % 16, i % 2 === 0);
-      px_zombie(g, 40, 84, t, '€4,50'); px_zombie(g, 96, 84, t + 1, 'Tikkie?'); px_zombie(g, 150, 84, t + 2, '€4,50');
+      px_zombie(g, 30, 84, t, '€4,50'); px_zombie(g, 150, 84, t + 2, 'Tikkie?'); px_tallwoman(g, 108, 84, t + 1); px_man(g, 84, 62, t);
       px_mist(g, t, 90, 0.4);
     } },
-  { text: 'Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.', draw: (g, t) => {
+  { text: 'Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.', nl: 'Twee jaar hier en hij oefende nooit. Iedereen sprak Engels. Iedereen was er zo aardig over.', draw: (g, t) => {
       px_sky(g, '#2a4a5e', '#6d8ea0'); px_ground(g, 86, '#2b3a3e');
       px_cafe(g); px_man(g, 60, 60, t); px_bubble(g, 50, 30, 'Hoi!'); px_friend(g, 124, 62, t, 'English is fine!');
     } },
-  { text: 'Now the only ones who still understand him are two dogs and a grammar book he never opened.', draw: (g, t) => {
+  { text: 'Now the only ones who still understand him are two dogs and a grammar book he never opened.', nl: 'Nu zijn de enigen die hem nog begrijpen twee honden en een grammaticaboek dat hij nooit heeft opengeslagen.', draw: (g, t) => {
       px_room(g); px_man(g, 70, 56, t); px_dog(g, 120, 86, t); px_dog(g, 140, 88, t + 1); px_book(g, 92, 72);
     } },
-  { text: 'Page one: de or het. There is no rule. There is never a rule.', draw: (g, t) => {
+  { text: 'Page one: de or het. There is no rule. There is never a rule.', nl: 'Bladzijde één: de of het. Er is geen regel. Er is nooit een regel.', draw: (g, t) => {
       g.fillStyle = '#0a0b0e'; g.fillRect(0, 0, 192, 108);
       g.fillStyle = '#e4dcc6'; g.fillRect(28, 14, 64, 82); g.fillRect(100, 14, 64, 82);
       g.fillStyle = '#9a927f'; g.fillRect(92, 14, 8, 82);
@@ -884,13 +885,18 @@ const PANELS = [
       ['het huis', 'het brood', 'het ei', 'het water'].forEach((w, i) => px_text(108, 58 + i * 9, w, '#555', 7));
       if (Math.floor(t * 1.5) % 2) px_text(93, 88, '?', '#b8282a', 12, true);
     } },
-  { text: '...', draw: (g, t) => {
+  { text: '...', nl: '...', draw: (g, t) => {
       g.fillStyle = '#000'; g.fillRect(0, 0, 192, 108);
       const blink = Math.sin(t * 2.5) > 0.92;
       if (!blink) { g.fillStyle = '#e8e4d8'; [[70, 60], [78, 60], [112, 66], [120, 66]].forEach(([x, y]) => g.fillRect(x, y, 3, 2)); }
       g.fillStyle = '#8e1f1f'; g.fillRect(94, 30, 6, 10);
     } },
-  { text: 'Fak. Oké. One man, one omafiets, three hundred and sixty words. Nachtrit.', draw: (g, t) => {
+  { text: 'No helmet. A helmet would make him look enthusiastic.', nl: 'Geen helm. Met een helm zou hij enthousiast lijken.', draw: (g, t) => {
+      px_sky(g, '#0b1430', '#1a3246'); px_stars(g, t); px_ground(g, 88, '#0e1a22');
+      px_omafiets(g, 112, 88, t, true); px_man(g, 60, 64, t); g.fillStyle = '#e8e4d8'; g.fillRect(70, 82, 11, 6); g.fillStyle = '#b8282a'; g.fillRect(72, 88, 7, 1);
+      if (Math.floor(t * 2) % 3 === 0) px_text(52, 44, 'nee.', '#e8e4d8', 7, true);
+    } },
+  { text: 'Fak. Oké. One man, one omafiets, three hundred and sixty words. Nachtrit.', nl: 'Fak. Oké. Eén man, één omafiets, driehonderdzestig woorden. Nachtrit.', draw: (g, t) => {
       px_sky(g, '#0b1430', '#1a3246'); px_stars(g, t); px_ground(g, 88, '#0e1a22');
       px_omafiets(g, 88, 88, t); px_beam(g, 112, 72, t);
     } },
@@ -920,17 +926,19 @@ function px_zombie(g, x, y, t, label) {
   g.fillStyle = '#b8282a'; g.fillRect(x - 1 + lean, y - 22, 1, 1); g.fillRect(x + 2 + lean, y - 22, 1, 1);
   px_text(x - 6, y - 28, label, '#e8e4d8', 6, true);
 }
+function px_tallwoman(g, x, y, t) { const lean = Math.round(Math.sin(t * 1.5) * 2); g.fillStyle = '#263238'; g.fillRect(x - 3 + lean, y - 38, 7, 7); g.fillRect(x - 5 + lean, y - 31, 11, 20); g.fillRect(x - 4 + lean, y - 11, 3, 11); g.fillRect(x + 1 + lean, y - 11, 3, 11); g.fillStyle = '#3a2a2e'; g.fillRect(x - 4 + lean, y - 40, 9, 4); g.fillStyle = '#b8282a'; g.fillRect(x - 1 + lean, y - 35, 1, 1); g.fillRect(x + 2 + lean, y - 35, 1, 1); g.fillStyle = '#7fe0ff'; g.fillRect(x + 7 + lean, y - 28, 4, 6); }
 function px_cafe(g) { g.fillStyle = '#5a4634'; g.fillRect(40, 70, 110, 3); g.fillRect(44, 73, 3, 14); g.fillRect(143, 73, 3, 14); g.fillStyle = '#d9d2bf'; g.fillRect(84, 62, 8, 8); g.fillStyle = '#6b4a2b'; g.fillRect(85, 64, 6, 4); g.fillStyle = '#e0b45a'; g.fillRect(20, 20, 14, 14); g.fillRect(158, 20, 14, 14); }
 function px_bubble(g, x, y, txt) { g.fillStyle = '#f2eee2'; g.fillRect(x, y, txt.length * 4.4 + 6, 11); g.fillRect(x + 4, y + 11, 3, 3); px_text(x + 3, y + 8, txt, '#1a1a1e', 7, true); }
 function px_friend(g, x, y, t, txt) { const bob = Math.round(Math.sin(t * 2 + 1)); g.fillStyle = '#e8c9a0'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#3f6e8c'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); px_bubble(g, x - 40, y - 36, txt); }
 function px_room(g) { g.fillStyle = '#1a1c24'; g.fillRect(0, 0, 192, 108); g.fillStyle = '#262330'; g.fillRect(0, 70, 192, 38); g.fillStyle = '#2f4a66'; g.fillRect(20, 16, 30, 26); g.fillStyle = '#e0b45a'; g.fillRect(150, 10, 10, 10); g.fillStyle = '#5a4634'; g.fillRect(80, 66, 50, 4); g.fillRect(82, 70, 3, 20); g.fillRect(125, 70, 3, 20); }
 function px_man(g, x, y, t) { const bob = Math.round(Math.sin(t * 2)); g.fillStyle = '#e8c9a0'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#2a2a2e'; g.fillRect(x - 3, y - 16 + bob, 7, 3); g.fillStyle = '#b8282a'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); }
-function px_omafiets(g, x, y, t) {
+function px_omafiets(g, x, y, t, empty) {
   // wheels, mudguards, swept frame, basket, rider sitting upright, lamp
   g.strokeStyle = '#8a9096'; g.lineWidth = 2; g.beginPath(); g.arc(x - 14, y - 2, 8, 0, 7); g.arc(x + 14, y - 2, 8, 0, 7); g.stroke();
   g.strokeStyle = '#1a1d22'; g.lineWidth = 1; g.beginPath(); g.arc(x - 14, y - 2, 9, Math.PI, Math.PI * 1.9); g.arc(x + 14, y - 2, 9, Math.PI * 1.1, Math.PI * 2); g.stroke();
   g.strokeStyle = '#2b4a5e'; g.lineWidth = 2; g.beginPath(); g.moveTo(x - 14, y - 2); g.lineTo(x - 2, y - 20); g.lineTo(x + 12, y - 20); g.lineTo(x + 14, y - 2); g.moveTo(x - 2, y - 20); g.quadraticCurveTo(x + 4, y - 8, x + 14, y - 2); g.stroke();
   g.fillStyle = '#6b4a2b'; g.fillRect(x + 8, y - 30, 12, 8); g.fillStyle = '#8a6a3b'; for (let i = 0; i < 3; i++) g.fillRect(x + 9 + i * 4, y - 29, 1, 6);
+  if (empty) return;
   g.fillStyle = '#e8c9a0'; g.fillRect(x - 4, y - 38, 7, 6); g.fillStyle = '#2a2a2e'; g.fillRect(x - 4, y - 40, 7, 3);
   g.fillStyle = '#b8282a'; g.fillRect(x - 6, y - 32, 11, 13); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y - 19, 4, 9); g.fillRect(x + 2, y - 19, 4, 11);
   g.fillStyle = '#eaf2f5'; g.fillRect(x + 20, y - 22, 3, 3);
@@ -950,7 +958,7 @@ const SCENES = {
 };
 function showLevelIntro(lv, then) {
   if (!lv.intro) return then();
-  const panel = { text: lv.intro, draw: SCENES[lv.theme] || SCENES.street };
+  const panel = { text: lv.intro, nl: lv.introNl || '', draw: SCENES[lv.theme] || SCENES.street };
   showIntro(then, [panel]);
 }
 
@@ -959,19 +967,20 @@ function showIntro(then, panels) {
   const PANELS_ = panels || PANELS;
   introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
   const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
-  const txt = $('pixtext');
+  const txt = $('pixtext'), nlEl = $('pixnl'); PANELS_.forEach(p => { p._nlShown = false; });
   let last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
     const p = PANELS_[introI]; pxLabels = []; p.draw(g, introT);
     hg.clearRect(0, 0, 1152, 648); for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * 6}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * 6, l.y * 6); }
     introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
+    if (introTyped >= p.text.length && !p._nlShown) { p._nlShown = true; nlEl.textContent = p.nl || ''; if (p.nl && p.nl !== '...') speak(p.nl); } else if (introTyped < p.text.length) { nlEl.textContent = ''; }
     introRaf = requestAnimationFrame(frame);
   };
   introRaf = requestAnimationFrame(frame);
   const next = () => {
     if (introTyped < PANELS_[introI].text.length) { introTyped = PANELS_[introI].text.length; return; }
-    introI++; introTyped = 0; introT = 0;
+    introI++; introTyped = 0; introT = 0; nlEl.textContent = '';
     if (introI >= PANELS_.length) finish();
   };
   const finish = () => { cancelAnimationFrame(introRaf); $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null; if (!panels) { try { localStorage.setItem('nachtrit.intro', '1'); } catch (e) {} } then(); };

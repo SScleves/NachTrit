@@ -14,7 +14,7 @@ const A1 = { lanes: 2, speed: 11, maxSpeed: 13, ramp: false, lampDecay: 0.35, fo
 const FK = (o, a, r, w) => ({ o, a, r, w });
 
 window.LEVELS = [
-  { id: 1, act: 1, name: 'De honden', ...A1, theme: 'street', intro: 'The dogs need a walk. The dogs always need a walk. The apocalypse changed nothing about that.',
+  { id: 1, act: 1, name: 'De honden', ...A1, theme: 'street', intro: 'The dogs need a walk. The dogs always need a walk. The apocalypse changed nothing about that.', introNl: 'De honden moeten uit. De honden moeten altijd uit. Daar heeft de apocalyps niets aan veranderd.',
     mission: { where: 'Your own street, to the end and back.', carry: 'Two dogs on a leash. They know the way, you don\'t.', want: 'The dead at each door want to hear the word for what you carry past them.' },
     items: [
       { w: 'the dog', nl: 'de hond' }, { w: 'the house', nl: 'het huis' }, { w: 'the woman', nl: 'de vrouw' }, { w: 'the garden', nl: 'de tuin' },
@@ -24,7 +24,7 @@ window.LEVELS = [
       { look: true, prop: 'tuin', nl: 'de tuin', en: 'the garden' }, { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
     ] },
 
-  { id: 2, act: 1, name: 'De buren', ...A1, theme: 'street', intro: 'The neighbours used to say hi in English. Now they say hoi, and wait.',
+  { id: 2, act: 1, name: 'De buren', ...A1, theme: 'street', intro: 'The neighbours used to say hi in English. Now they say hoi, and wait.', introNl: 'De buren zeiden vroeger hi in het Engels. Nu zeggen ze hoi, en wachten ze.',
     mission: { where: 'The neighbours, three doors down.', carry: 'A candle. Theirs went out with everything else.', want: 'They only answer to greetings. Say the right one and the door opens.' },
     items: [
       { w: 'hello', nl: 'hallo' }, { w: 'good morning', nl: 'goedemorgen' }, { w: 'good evening', nl: 'goedenavond' }, { w: 'bye', nl: 'doei' },
@@ -32,7 +32,7 @@ window.LEVELS = [
       { read: true, nl: 'Hallo', en: 'Hello' }, { read: true, nl: 'Goedenavond', en: 'Good evening' }, { read: true, nl: 'Dank je wel', en: 'Thank you' }, { read: true, nl: 'Doei', en: 'Bye' },
     ] },
 
-  { id: 3, act: 1, name: 'De brievenbus', ...A1, theme: 'dyke', intro: 'Ten houses on the dyke. The post still comes. Nobody knows who sends it.', obstacles: 'puddles',
+  { id: 3, act: 1, name: 'De brievenbus', ...A1, theme: 'dyke', intro: 'Ten houses on the dyke. The post still comes. Nobody knows who sends it.', introNl: 'Tien huizen op de dijk. De post komt nog steeds. Niemand weet wie hem stuurt.', obstacles: 'puddles',
     mission: { where: 'Ten houses on the dyke road.', carry: 'Letters. Nobody wrote them, everybody is waiting for them.', want: 'The numbers are the only thing left on the doors. Match them or ride on.' },
     items: [
       { w: '0', nl: 'nul' }, { w: '1', nl: 'een' }, { w: '2', nl: 'twee' }, { w: '3', nl: 'drie' }, { w: '4', nl: 'vier' }, { w: '5', nl: 'vijf' }, { w: '6', nl: 'zes' },
@@ -41,7 +41,7 @@ window.LEVELS = [
       { look: true, prop: 'nummer', value: 4, nl: 'vier', en: '4' }, { look: true, prop: 'nummer', value: 8, nl: 'acht', en: '8' }, { look: true, prop: 'nummer', value: 11, nl: 'elf', en: '11' }, { look: true, prop: 'nummer', value: 6, nl: 'zes', en: '6' },
     ] },
 
-  { id: 4, act: 1, name: 'Ik ben', ...A1, theme: 'square', intro: 'Someone is still ringing the church bell. It wants to know who you are. Keep it simple.', obstacles: 'puddles', filler: [30, 40],
+  { id: 4, act: 1, name: 'Ik ben', ...A1, theme: 'square', intro: 'Someone is still ringing the church bell. It wants to know who you are. Keep it simple.', introNl: 'Iemand luidt nog steeds de kerkklok. Hij wil weten wie je bent. Hou het simpel.', obstacles: 'puddles', filler: [30, 40],
     mission: { where: 'The church. Someone is still ringing the bell.', carry: 'Your name. It\'s all they ask for.', want: 'Say who you are, who they are, who we all are. The verb zijn, nothing else.' },
     items: [
       { en: 'I am', parts: ['Ik', FK(['ben', 'bent'], 0, 'zijn', 'ik ben. Always.')] },
@@ -58,7 +58,7 @@ window.LEVELS = [
       { read: true, nl: 'Wij zijn buren.', en: 'We are neighbours.' },
     ] },
 
-  { id: 5, act: 1, name: 'Nachtwinkel', ...A1, theme: 'nightshop', intro: 'The night shop is open. The lights are off. The prices are not.', obstacles: 'puddles', filler: [28, 38], deliveries: 8,
+  { id: 5, act: 1, name: 'Nachtwinkel', ...A1, theme: 'nightshop', intro: 'The night shop is open. The lights are off. The prices are not.', introNl: 'De nachtwinkel is open. De lichten zijn uit. De prijzen niet.', obstacles: 'puddles', filler: [28, 38], deliveries: 8,
     mission: { where: 'The corner shop. Open at 3 AM, lights off.', carry: 'A shopping list in a dead man\'s handwriting.', want: 'Milk, bread, eggs. The shelves whisper the prices. Pay and leave.' },
     items: [
       { w: 'the milk', nl: 'de melk' }, { w: 'the bread', nl: 'het brood' }, { w: 'the egg', nl: 'het ei' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'the apple', nl: 'de appel' },
