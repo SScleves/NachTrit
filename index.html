@@ -764,6 +764,7 @@ function itemToEntry(item, pool) {
   const sameKind = p => p !== item && (item.read ? p.read : (p.w || p.listen || p.look) && !p.read && !p.parts);
   const others = kind => pool.filter(p => sameKind(p) && p[kind]).map(p => p[kind]).filter((v, i, a) => a.indexOf(v) === i).sort(() => Math.random() - 0.5);
   const wrongFirst = list => item.wrong ? [item.wrong, ...list.filter(v => v !== item.wrong)] : list;
+  if (item.read && item.o) return { read: true, nl: item.nl, o: item.o.slice(), a: item.a || 0, r: item.r || 'woord', w: item.w || '' };
   if (item.read) {
     const o = [item.en, ...others('en').filter(e => e !== item.en).slice(0, 2)];
     return { read: true, nl: item.nl, o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` };

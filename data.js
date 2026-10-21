@@ -21,7 +21,7 @@ window.RULES = {
   soft:   { name: 'Softeners: wel, even, maar',    note: 'zachtmakers - wel even maar' },
   dehet:  { name: 'de vs het',                     note: 'de vs het' },
   adj:    { name: 'Adjective -e',                  note: 'de vs het' },
-  mag:    { name: 'moet niet vs mag niet',         note: 'mogen' },
+  mag:    { name: 'moet niet, mag niet, hoeft niet', note: 'mogen' },
   al:     { name: 'Still going on: present + al',  note: 'wonen' },
   cult:   { name: 'Culture words',                 note: 'gezellig' },
 };
@@ -186,13 +186,16 @@ window.SENTENCES = [
       "Present tense of a separable verb: the prefix breaks off and goes to the end. Ga ... mee.")] },
 
   // ---- Reading signposts ----
-  { read: true, nl: "Je moet niet gaan.", theme: 'buren',
+  { read: true, nl: "Je hoeft niet te gaan.", theme: 'buren',
     o: ["You don't have to go.", "You mustn't go.", "You shouldn't go."], a: 0, r: 'mag',
-    w: "moet niet means don't have to. Forbidden is mag niet. The classic Spanish-instinct trap." },
+    w: "hoeft niet te is don't have to. Forbidden is mag niet. Je moet niet is advice: you shouldn't." },
+  { read: true, nl: "Je moet niet gaan.", theme: 'buren',
+    o: ["You shouldn't go.", "You don't have to go.", "You're not allowed to go."], a: 0, r: 'mag',
+    w: "In the Netherlands je moet niet is advice: don't, you shouldn't. Not 'don't have to', that is hoeft niet te." },
 
   { read: true, nl: "Je mag niet gaan.", theme: 'buren',
     o: ["You're not allowed to go.", "You don't have to go.", "You don't want to go."], a: 0, r: 'mag',
-    w: "mag niet is the prohibition. moet niet would be the one that lets you off." },
+    w: "mag niet is the prohibition. hoeft niet te would be the one that lets you off." },
 
   { read: true, nl: "Ik heb geen blockers.", theme: 'werk',
     o: ["I have no blockers.", "I'm not blocked yet.", "I'm blocking nobody."], a: 0, r: 'neg',
