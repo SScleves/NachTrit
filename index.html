@@ -760,18 +760,21 @@ function unlocked(lv) { return lv.act === 1 || districtStars(lv.act - 1) >= DIST
 
 // turn a level item into an entry the planner understands
 function itemToEntry(item, pool) {
-  const others = kind => pool.filter(p => p !== item && p[kind]).map(p => p[kind]).filter((v, i, a) => a.indexOf(v) === i).sort(() => Math.random() - 0.5);
+  // wrong options come from items of the same kind: nouns for noun forks, readings for reading forks
+  const sameKind = p => p !== item && (item.read ? p.read : (p.w || p.listen || p.look) && !p.read && !p.parts);
+  const others = kind => pool.filter(p => sameKind(p) && p[kind]).map(p => p[kind]).filter((v, i, a) => a.indexOf(v) === i).sort(() => Math.random() - 0.5);
+  const wrongFirst = list => item.wrong ? [item.wrong, ...list.filter(v => v !== item.wrong)] : list;
   if (item.read) {
     const o = [item.en, ...others('en').filter(e => e !== item.en).slice(0, 2)];
     return { read: true, nl: item.nl, o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` };
   }
   if (item.look) {
-    const o = [item.nl, ...others('nl').filter(e => e !== item.nl).slice(0, 2)];
+    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, 2)];
     return { look: true, side: item.side || (Math.random() < 0.5 ? 'links' : 'rechts'), prop: item.prop, value: item.value, en: item.en, nl: item.nl,
       parts: [{ o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` }] };
   }
   if (item.w || item.listen) {
-    const o = [item.nl, ...others('nl').filter(e => e !== item.nl).slice(0, 2)];
+    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, 2)];
     return { en: item.w || item.en, nl: item.nl, listen: !!item.listen, parts: [{ o, a: 0, r: item.listen ? 'woord' : (/^\d+$/.test(item.w || '') ? 'getal' : 'woord'), w: `${item.nl} = ${item.w || item.en}` }] };
   }
   return item; // build entry
@@ -899,6 +902,7 @@ function hideCard() { card.style.opacity = 0; }
 function say(msg, cls, why, secs = 2.4) {
   toast.className = cls; toast.innerHTML = msg + (why ? `<span class="why">${why}</span>` : ''); toast.style.opacity = 1; toastT = secs;
 }
+function firstLetterHint(answer) { if (/^(de|het|een|dit|deze)$/i.test(answer.trim())) return ''; const w = answer.replace(/^(de|het|een)\s+/i, ''); return w.slice(0, 1) + '…'; }
 function assembled(st, upToIdx, mark) {
   // Dutch so far: fixed parts + chosen; current fork shown as ___ ; later parts as …
   let out = [], fi = 0;
@@ -1362,7 +1366,7 @@ function update(dt) {
       if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.');
       else if (f.entry.look) showCard('Look', f.entry.side === 'links' ? '← What is that, on your left?' : 'What is that, on your right? →', 'The thing under the marker.');
       else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx)); speak(f.entry.nl); }
-      else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx));
+      else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx) + (L && L.hint === 'letter' && firstLetterHint(f.o[f.a]) ? ` <span style="color:#9fb0cc">(${firstLetterHint(f.o[f.a])})</span>` : ''));
       for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
       const cells = $('lanes').children; for (let i = 0; i < 3; i++) { const p = g.posts.find(q => q.lane === i); cells[i].style.display = i < LANE_X.length ? '' : 'none'; cells[i].textContent = p ? p.fork.o[p.oi] : '✕'; }
       $('lanes').style.opacity = 1;
