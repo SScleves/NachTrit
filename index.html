@@ -78,11 +78,18 @@
     <div class="box">
       <h1>NACHTRIT</h1>
       <div class="sub">Cycle home. Understand the dead before dawn.</div>
-      <button class="btn" id="go">Start</button>
+      <button class="btn" id="go">Start</button> <button class="btn ghost" id="replay">Intro</button>
       <div class="hint">Left / right: arrow keys, A / D, or swipe and tap.<br>Ride through the right sign. Every mistake dims the lamp.</div>
     </div>
   </div>
 
+  <div class="overlay" id="intro" style="display:none;background:#000">
+    <div class="box" style="max-width:860px">
+      <canvas id="pix" width="192" height="108" style="width:min(92vw,860px);aspect-ratio:16/9;image-rendering:pixelated;image-rendering:crisp-edges;display:block;margin:0 auto;border:1px solid #1a1d24"></canvas>
+      <div id="pixtext" style="min-height:3.2em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:16px auto 6px;max-width:700px;color:#d8d4c8"></div>
+      <div class="hint">Tap or press space to continue · <span id="skip" style="pointer-events:auto;cursor:pointer;text-decoration:underline">skip</span></div>
+    </div>
+  </div>
   <div class="overlay" id="map" style="display:none">
     <div class="box" style="max-width:720px;max-height:92vh;overflow:auto">
       <h1 style="font-size:34px">THE TOWN</h1>
@@ -206,22 +213,35 @@ const mistTex = (() => {
   const r = g.createRadialGradient(64, 64, 4, 64, 64, 64); r.addColorStop(0, 'rgba(210,220,255,.45)'); r.addColorStop(1, 'rgba(210,220,255,0)');
   g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
 })();
-// the road is 50 short segments so it can bend
-const SEG_LEN = 6, SEG_N = 50;
-const roadSegs = [];
-const roadGeo = new THREE.PlaneGeometry(ROAD_W, SEG_LEN + 0.15);
-const roadMat = new THREE.MeshLambertMaterial({ map: roadTex });
+// the road is one ribbon whose vertices follow the bend every frame
+const RIB_ROWS = 120, RIB_STEP = 2.5;
+function makeRibbon(width, material) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(RIB_ROWS * 2 * 3), uv = new Float32Array(RIB_ROWS * 2 * 2), nrm = new Float32Array(RIB_ROWS * 2 * 3);
+  const idx = [];
+  for (let i = 0; i < RIB_ROWS; i++) { nrm.set([0, 1, 0, 0, 1, 0], i * 6); uv.set([0, i, 1, i], i * 4); if (i) idx.push((i - 1) * 2, i * 2, (i - 1) * 2 + 1, (i - 1) * 2 + 1, i * 2, i * 2 + 1); }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); geo.setAttribute('normal', new THREE.BufferAttribute(nrm, 3)); geo.setIndex(idx);
+  const m = new THREE.Mesh(geo, material); m.frustumCulled = false; m.userData.width = width; scene.add(m); return m;
+}
+function updateRibbon(m, xc, y, scroll, vScale) {
+  const a = m.geometry.attributes.position.array, u = m.geometry.attributes.uv.array, w = m.userData.width;
+  for (let i = 0; i < RIB_ROWS; i++) {
+    const z = 10 + scroll - i * RIB_STEP; const xo = xc + bend(z);
+    a[i * 6] = xo - w / 2; a[i * 6 + 1] = y; a[i * 6 + 2] = z; a[i * 6 + 3] = xo + w / 2; a[i * 6 + 4] = y; a[i * 6 + 5] = z;
+    const v = (S.dist + 10 - z) / vScale; u[i * 4 + 1] = v; u[i * 4 + 3] = v;
+  }
+  m.geometry.attributes.position.needsUpdate = true; m.geometry.attributes.uv.needsUpdate = true;
+}
 roadTex.repeat.set(1, 1);
-for (let i = 0; i < SEG_N; i++) { const m = new THREE.Mesh(roadGeo, roadMat); m.rotation.x = -Math.PI / 2; scene.add(m); roadSegs.push(m); }
+const roadRib = makeRibbon(ROAD_W, new THREE.MeshLambertMaterial({ map: roadTex }));
+const kerbL = makeRibbon(0.5, M.ground), kerbR = makeRibbon(0.5, M.ground);
 // the bend: x offset of anything at relative distance z ahead of the bike
 function bend(z) { return z < 0 ? S.curv * z * z : 0; }
 
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), M.ground);
 ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.9, -150); scene.add(ground);
-// water segments (canal on one side when the theme has one)
-const waterSegs = [];
-const waterGeo = new THREE.PlaneGeometry(26, SEG_LEN + 0.2);
-for (let i = 0; i < SEG_N; i++) { const m = new THREE.Mesh(waterGeo, M.water); m.rotation.x = -Math.PI / 2; m.visible = false; scene.add(m); waterSegs.push(m); }
+// the canal is a second ribbon on one side when the theme has one
+const waterRib = makeRibbon(26, M.water); waterRib.visible = false;
 
 // ---------- props ----------
 const PM = {
@@ -661,6 +681,10 @@ function planSentence(entry) {
   if (entry.look) { // the thing stands beside the road, the signs come right after it
     const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
     const mesh = pr.make(entry.value); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;
+    // a marker floats over it and a soft light sits on it, so you know what is being asked
+    const box = new THREE.Box3().setFromObject(mesh); const top = Math.min(box.max.y, 9) + 0.9;
+    const mk = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.8, 4), new THREE.MeshBasicMaterial({ color: 0xe8e4d8 })); mk.rotation.x = Math.PI; mk.position.y = top; mesh.add(mk); mesh.userData.marker = mk;
+    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.55, color: 0xdfe6ea })); gl.scale.set(7, 5, 1); gl.position.y = Math.min(top * 0.5, 3); mesh.add(gl);
     add(mesh, d0 + 12, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });   // beside you when you reach the signs
     placeFork({ entry, st, idx: 0, o: st.forks[0].o, a: st.forks[0].a, r: 'woord', w: st.forks[0].w, read: false }, d0 + 14);
     S.planCursor = d0 + 14 + 10; return;
@@ -776,7 +800,7 @@ function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir
 addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') steer(-1);
   else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') steer(1);
-  else if ((e.key === ' ' || e.key === 'Enter') && S.mode === 'start') start();
+  else if ((e.key === ' ' || e.key === 'Enter') && S.mode === 'start' && $('start').style.display !== 'none') $('go').click();
 });
 let touchX = null, touchT = 0;
 addEventListener('touchstart', e => { touchX = e.touches[0].clientX; touchT = performance.now(); }, { passive: true });
@@ -790,6 +814,89 @@ addEventListener('touchend', e => {
 addEventListener('mousedown', e => { if (S.mode === 'ride' && e.target === renderer.domElement) steer(e.clientX < innerWidth / 2 ? -1 : 1); });
 
 // ---------- game flow ----------
+// ---------- the intro: six pixel panels ----------
+const PANELS = [
+  { text: 'The night the mist came in, the windmills turned the wrong way.', draw: (g, t) => {
+      px_sky(g, 0.05); px_moon(g, 150, 22, 9); px_mist(g, t, 60, 0.35);
+      px_silhouetteGround(g, 78);
+      px_windmill(g, 60, 78, 26, -t * 1.2); px_windmill(g, 130, 82, 16, -t * 1.6);
+    } },
+  { text: 'By morning, everyone who spoke Dutch was gone. Or changed.', draw: (g, t) => {
+      px_sky(g, 0.1); px_silhouetteGround(g, 84);
+      for (let i = 0; i < 7; i++) px_houseP(g, i * 28 - 6, 84, 24, 36 + (i * 7) % 16, i === 3 && Math.floor(t * 2) % 2 === 0);
+      px_bakfiets(g, 96, 90); px_mist(g, t, 88, 0.5);
+    } },
+  { text: 'One man was left to deliver what the town needed. He had two dogs, a bike, and a grammar book he had never opened.', draw: (g, t) => {
+      px_room(g); px_man(g, 70, 56, t); px_dog(g, 120, 86, t); px_dog(g, 140, 88, t + 1); px_book(g, 92, 72);
+    } },
+  { text: 'Page one: de or het. There was no rule. There is never a rule.', draw: (g, t) => {
+      g.fillStyle = '#0a0b0e'; g.fillRect(0, 0, 192, 108);
+      g.fillStyle = '#d9d2bf'; g.fillRect(28, 14, 64, 82); g.fillRect(100, 14, 64, 82);
+      g.fillStyle = '#9a927f'; g.fillRect(92, 14, 8, 82);
+      g.fillStyle = '#2a2a2e'; g.font = 'bold 14px monospace'; g.fillText('DE', 48, 44); g.fillText('HET', 118, 44);
+      g.font = '7px monospace'; g.fillStyle = '#555';
+      ['de hond', 'de vrouw', 'de fiets', 'de nacht'].forEach((w, i) => g.fillText(w, 36, 58 + i * 9));
+      ['het huis', 'het brood', 'het ei', 'het water'].forEach((w, i) => g.fillText(w, 108, 58 + i * 9));
+      if (Math.floor(t * 1.5) % 2) { g.fillStyle = '#8e1f1f'; g.fillText('?', 96, 86); }
+    } },
+  { text: '...', draw: (g, t) => {
+      g.fillStyle = '#000'; g.fillRect(0, 0, 192, 108);
+      const blink = Math.sin(t * 2.5) > 0.92;
+      if (!blink) { g.fillStyle = '#e8e4d8'; [[70, 60], [78, 60], [112, 66], [120, 66]].forEach(([x, y]) => g.fillRect(x, y, 3, 2)); }
+      g.fillStyle = '#8e1f1f'; g.fillRect(94, 30, 6, 10); // the shirt, barely
+    } },
+  { text: 'Fak. Oké. Nachtrit.', draw: (g, t) => {
+      px_sky(g, 0.03); px_silhouetteGround(g, 86);
+      px_manHelmet(g, 96, 86, t); px_beam(g, 100, 70, t);
+    } },
+];
+function px_sky(g, k) { const gr = g.createLinearGradient(0, 0, 0, 108); gr.addColorStop(0, '#05070b'); gr.addColorStop(1, `rgb(${18 + k * 60},${22 + k * 60},${30 + k * 60})`); g.fillStyle = gr; g.fillRect(0, 0, 192, 108); }
+function px_moon(g, x, y, r) { g.fillStyle = '#c9cfd4'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.fillStyle = '#9aa0a6'; g.fillRect(x - 3, y - 2, 2, 2); g.fillRect(x + 2, y + 3, 3, 2); }
+function px_mist(g, t, y, a) { g.fillStyle = `rgba(190,200,210,${a * 0.5})`; for (let i = 0; i < 4; i++) { const x = ((i * 61 + t * 6) % 230) - 30; g.fillRect(x, y + i * 4, 50 + i * 10, 5); } }
+function px_silhouetteGround(g, y) { g.fillStyle = '#07080a'; g.fillRect(0, y, 192, 108 - y); }
+function px_windmill(g, x, y, h, a) {
+  g.fillStyle = '#0d0f12'; g.fillRect(x - 4, y - h, 8, h); g.fillRect(x - 6, y - h - 4, 12, 4);
+  g.strokeStyle = '#0d0f12'; g.lineWidth = 2;
+  for (let i = 0; i < 4; i++) { const ang = a + i * Math.PI / 2; g.beginPath(); g.moveTo(x, y - h - 2); g.lineTo(x + Math.cos(ang) * h * 0.8, y - h - 2 + Math.sin(ang) * h * 0.8); g.stroke(); }
+}
+function px_houseP(g, x, y, w, h, lit) {
+  g.fillStyle = '#0c0e12'; g.fillRect(x, y - h, w, h); g.beginPath(); g.moveTo(x - 2, y - h); g.lineTo(x + w / 2, y - h - 10); g.lineTo(x + w + 2, y - h); g.fill();
+  g.fillStyle = lit ? '#8c8260' : '#141619'; g.fillRect(x + 6, y - h + 10, 4, 5); g.fillRect(x + w - 10, y - h + 10, 4, 5); g.fillRect(x + 6, y - 20, 4, 5);
+}
+function px_bakfiets(g, x, y) { g.fillStyle = '#1a1c21'; g.fillRect(x, y - 4, 22, 5); g.beginPath(); g.arc(x - 3, y + 2, 4, 0, 7); g.arc(x + 26, y + 2, 4, 0, 7); g.fill(); g.fillRect(x + 20, y - 10, 2, 7); }
+function px_room(g) { g.fillStyle = '#121216'; g.fillRect(0, 0, 192, 108); g.fillStyle = '#1c1a1e'; g.fillRect(0, 70, 192, 38); g.fillStyle = '#2a3340'; g.fillRect(20, 16, 30, 26); g.fillStyle = '#9a8f6a'; g.fillRect(150, 10, 10, 10); g.fillStyle = '#3a2d22'; g.fillRect(80, 66, 50, 4); g.fillRect(82, 70, 3, 20); g.fillRect(125, 70, 3, 20); }
+function px_man(g, x, y, t) { const bob = Math.round(Math.sin(t * 2)); g.fillStyle = '#1a1a1e'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#8e1f1f'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); }
+function px_manHelmet(g, x, y, t) { g.fillStyle = '#e8e4d8'; g.fillRect(x - 5, y - 38, 11, 7); g.fillStyle = '#1a1a1e'; g.fillRect(x - 3, y - 31, 7, 5); g.fillStyle = '#8e1f1f'; g.fillRect(x - 6, y - 26, 13, 14); g.fillStyle = '#1a1a1e'; g.fillRect(x - 5, y - 12, 4, 12); g.fillRect(x + 1, y - 12, 4, 12); g.strokeStyle = '#2a2d33'; g.lineWidth = 2; g.beginPath(); g.arc(x - 12, y - 2, 6, 0, 7); g.arc(x + 14, y - 2, 6, 0, 7); g.stroke(); }
+function px_beam(g, x, y, t) { g.fillStyle = `rgba(220,230,235,${0.12 + Math.sin(t * 6) * 0.03})`; g.beginPath(); g.moveTo(x, y); g.lineTo(192, y - 30); g.lineTo(192, y + 24); g.fill(); g.fillStyle = '#eaf2f5'; g.fillRect(x - 1, y - 1, 3, 3); }
+function px_dog(g, x, y, t) { const w = Math.round(Math.sin(t * 5)) ; g.fillStyle = '#17171a'; g.fillRect(x, y - 6, 12, 6); g.fillRect(x + 10, y - 10, 5, 5); g.fillRect(x + 1, y, 2, 4); g.fillRect(x + 9, y, 2, 4); g.fillRect(x - 3, y - 8 + w, 3, 2); g.fillStyle = '#e8e4d8'; g.fillRect(x + 13, y - 9, 1, 1); }
+function px_book(g, x, y) { g.fillStyle = '#d9d2bf'; g.fillRect(x, y - 6, 14, 6); g.fillStyle = '#8e1f1f'; g.fillRect(x, y - 7, 14, 1); }
+
+let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
+function showIntro(then) {
+  introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
+  const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
+  const txt = $('pixtext');
+  let last = performance.now();
+  const frame = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
+    const p = PANELS[introI]; p.draw(g, introT);
+    introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
+    introRaf = requestAnimationFrame(frame);
+  };
+  introRaf = requestAnimationFrame(frame);
+  const next = () => {
+    if (introTyped < PANELS[introI].text.length) { introTyped = PANELS[introI].text.length; return; }
+    introI++; introTyped = 0; introT = 0;
+    if (introI >= PANELS.length) finish();
+  };
+  const finish = () => { cancelAnimationFrame(introRaf); $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null; try { localStorage.setItem('nachtrit.intro', '1'); } catch (e) {} then(); };
+  $('intro').onclick = (e) => { if (e.target.id === 'skip') finish(); else next(); };
+  onKey = (e) => { if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') next(); else if (e.key === 'Escape') finish(); };
+}
+let onKey = null;
+addEventListener('keydown', e => { if (onKey && $('intro').style.display !== 'none') { onKey(e); e.preventDefault(); } });
+let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'); } catch (e) {}
+
 function openMap() {
   warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   for (const id of ['start', 'summary', 'mission']) $(id).style.display = 'none';
@@ -858,7 +965,8 @@ function showSummary(won) {
   $('summary').style.display = 'flex';
 }
 function levelDone() { S.mode = 'dying'; S.dieT = 10; showSummary(true); }
-$('go').onclick = openMap; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
+$('go').onclick = () => { initAudio(); if (!introSeen) { introSeen = true; $('start').style.display = 'none'; showIntro(openMap); } else openMap(); };
+$('replay').onclick = () => { $('start').style.display = 'none'; showIntro(openMap); }; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
 $('m_go').onclick = () => start(pendingLevel); $('m_back').onclick = openMap;
 $('again').onclick = () => {
   if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon) return openMission(next); return openMap(); }
@@ -969,14 +1077,12 @@ function update(dt) {
 
   // the bend drifts slowly
   if (riding) { if (S.dist > S.curvNextAt) { S.curvNextAt = S.dist + rnd(70, 130); S.curvTarget = (Math.random() < 0.3 ? 0 : rnd(-1, 1)) * theme.curv; } S.curv = lerp(S.curv, S.curvTarget, dt * 0.6); }
-  // road + water segments
-  const scroll = S.dist % SEG_LEN;
-  for (let i = 0; i < SEG_N; i++) {
-    const z = scroll - i * SEG_LEN + 10; const m = roadSegs[i];
-    m.position.set(bend(z), 0, z);
-    const w = waterSegs[i]; w.visible = !!theme.canal;
-    if (theme.canal) w.position.set(bend(z) + theme.canal * (ROAD_W / 2 + 1.2 + 13), -0.6, z);
-  }
+  // road + canal ribbons
+  const scroll = S.dist % RIB_STEP;
+  updateRibbon(roadRib, 0, 0, scroll, 6);
+  updateRibbon(kerbL, -ROAD_W / 2 - 0.25, 0.08, scroll, 6); updateRibbon(kerbR, ROAD_W / 2 + 0.25, 0.08, scroll, 6);
+  waterRib.visible = !!theme.canal;
+  if (theme.canal) updateRibbon(waterRib, theme.canal * (ROAD_W / 2 + 1.2 + 13), -0.6, scroll, 6);
   // scenery
   const adv = S.speed * S.slow * dt * (riding ? 1 : 0);
   for (const o of scenery) {
@@ -999,6 +1105,7 @@ function update(dt) {
       o.mesh.position.z = z; o.mesh.position.x = o.bx + bend(z);
       if (o.type === 'wisp' && !o.hit) o.mesh.position.y = 1.0 + Math.sin(S.t * 3 + o.d) * 0.15;
       if (o.type === 'passenger') o.mesh.position.y = Math.sin(S.t * 1.5 + o.d) * 0.08;
+      if (o.type === 'lookprop' && o.mesh.userData.marker) { const mk = o.mesh.userData.marker; mk.rotation.y += dt * 2; mk.position.y += Math.sin(S.t * 4) * dt * 0.6; }
     }
     if (o.type === 'gate' && !o.gate.resolved) {
       if (z >= 0.5) { if (riding) { if (!o.gate.armed) { o.gate.armed = true; S.activeFork = o.gate; } resolveFork(o.gate); } }
@@ -1028,7 +1135,7 @@ function update(dt) {
       g.armed = true; S.activeFork = g;
       const f = g.fork;
       if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.');
-      else if (f.entry.look) showCard(f.entry.side === 'links' ? '← On your left' : 'On your right →', 'What is that?', '<b>___</b>');
+      else if (f.entry.look) showCard('Look', f.entry.side === 'links' ? '← What is that, on your left?' : 'What is that, on your right? →', 'The thing under the marker.');
       else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx)); speak(f.entry.nl); }
       else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx));
       for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
