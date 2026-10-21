@@ -479,7 +479,7 @@ function planSentence(entry) {
   const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0 };
   const d0 = S.planCursor + 12;
   const g = ghostFigure(); g.position.x = ROAD_W / 2 + 1.0; add(g, d0, null, 'passenger', { st });
-  let d = d0 + 54;
+  let d = d0 + (L ? 38 : 54);
   st.forks.forEach((f, i) => {
     placeFork({ entry, st, idx: i, o: f.o, a: f.a, r: f.r, w: f.w, read: false }, d);
     d += forkGap;
@@ -833,7 +833,7 @@ function update(dt) {
       const cells = $('lanes').children; for (let i = 0; i < 3; i++) { const p = g.posts.find(q => q.lane === i); cells[i].style.display = i < LANE_X.length ? '' : 'none'; cells[i].textContent = p ? p.fork.o[p.oi] : '✕'; }
       $('lanes').style.opacity = 1;
     }
-    if (g.armed) S.slowTarget = z > -16 ? (L ? L.forkSlow : 0.55) : (L ? 0.8 : 0.9);
+    if (g.armed) S.slowTarget = z > -13 ? (L ? L.forkSlow : 0.55) : (L ? 0.85 : 0.9);
     if (g.armed) { const cells = $('lanes').children; for (let i = 0; i < 3; i++) cells[i].classList.toggle('here', i === S.lane); }
     S.forkZoom = lerp(S.forkZoom, g.armed ? clamp(1 - (-z) / 46, 0, 1) : 0, dt * 4);
   } else S.forkZoom = lerp(S.forkZoom, 0, dt * 4);

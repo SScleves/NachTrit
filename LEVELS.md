@@ -132,3 +132,12 @@ Source: grammar notes bijzin, die vs dat, imperfectum, reflexieve werkwoorden, z
 4. Level select screen with acts, stars, and locked levels.
 5. Acts 2-3 content, generated from the vault situation files by a script.
 6. Acts 4-5, mostly from the sentence set that already exists in `data.js`.
+
+## CEFR and node types (from the Duolingo structure Santi shared)
+
+- Acts 1-2 are A1: single words, then phrases, sentences of at most 6 words, present tense of zijn, hebben, willen, no inversion before level 13.
+- Acts 3-4 are A2: at most 10 words, perfectum, modals, V2 inversion, separable verbs in the present.
+- Act 5 is B1: at most 15 words, imperfectum, sub-clauses, reflexives, zou + infinitive.
+- Node types per district, later: core places (star), a practice ride built from your logged mistakes (dumbbell), a story ride with one long passenger (book), and a trophy ride that reviews the whole district before the next one opens.
+- Fork kinds now: word (English prompt, Dutch signs), reading (Dutch board, English signs), listening (you hear the Dutch, Dutch signs), build (gaps in a sentence).
+- The Duolingo content-engine prompt is the brief for Opus agents that write later districts, with `levels.js` items as the required output shape.
