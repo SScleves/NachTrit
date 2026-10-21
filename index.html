@@ -10,7 +10,7 @@
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { margin:0; height:100%; background:#060810; color:var(--ink); font-family:"Segoe UI",system-ui,-apple-system,sans-serif; overflow:hidden; touch-action:none; -webkit-user-select:none; user-select:none; }
   canvas { display:block; }
-  #ui { position:fixed; inset:0; pointer-events:none; }
+  #ui { position:fixed; inset:0; pointer-events:none; z-index:2; }
   #vignette { position:fixed; inset:0; pointer-events:none; opacity:0;
     background:radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(120,0,0,.55) 80%, rgba(40,0,0,.95) 100%); transition:opacity .3s; }
   #flash { position:fixed; inset:0; pointer-events:none; opacity:0; background:#fff; }
@@ -100,7 +100,7 @@ const LANE_X = [-2.2, 0, 2.2];
 const ROAD_W = 8;
 const BASE_SPEED = 14, MAX_SPEED = 40;
 const LOOK = 170;              // how far ahead we plan, in track units
-const BG = 0x060810;
+const BG = 0x0a0d18;
 
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -131,9 +131,9 @@ addEventListener('resize', () => {
 });
 
 // lights
-scene.add(new THREE.HemisphereLight(0x3a4a7a, 0x050507, 0.35));
-const moon = new THREE.DirectionalLight(0x6f86c8, 0.25); moon.position.set(-30, 40, -20); scene.add(moon);
-const lampLight = new THREE.SpotLight(0xffe0a0, 2.2, 55, Math.PI / 7, 0.6, 1.2);
+scene.add(new THREE.HemisphereLight(0x4a5c90, 0x0a0a0c, 0.7));
+const moon = new THREE.DirectionalLight(0x8fa4e0, 0.55); moon.position.set(-30, 40, -20); scene.add(moon);
+const lampLight = new THREE.SpotLight(0xffe0a0, 4.0, 60, Math.PI / 6, 0.6, 1.0);
 lampLight.position.set(0, 1.1, 0.4);
 lampLight.target.position.set(0, 0.2, -20);
 scene.add(lampLight, lampLight.target);
@@ -141,8 +141,8 @@ const lampGlow = new THREE.PointLight(0xffd080, 0.6, 8); lampGlow.position.set(0
 
 // materials
 const M = {
-  road: new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.95 }),
-  ground: new THREE.MeshStandardMaterial({ color: 0x0a120c, roughness: 1 }),
+  road: new THREE.MeshStandardMaterial({ color: 0x2a2d36, roughness: 0.95 }),
+  ground: new THREE.MeshStandardMaterial({ color: 0x141f16, roughness: 1 }),
   water: new THREE.MeshStandardMaterial({ color: 0x0b1424, roughness: 0.15, metalness: 0.6 }),
   wood: new THREE.MeshStandardMaterial({ color: 0x3b2a1c, roughness: 0.9 }),
   dark: new THREE.MeshStandardMaterial({ color: 0x15161b, roughness: 0.9 }),
@@ -160,10 +160,10 @@ const M = {
 const roadTex = (() => {
   const c = document.createElement('canvas'); c.width = 256; c.height = 256;
   const g = c.getContext('2d');
-  g.fillStyle = '#1b1d22'; g.fillRect(0, 0, 256, 256);
-  g.fillStyle = '#3a3b3f';
+  g.fillStyle = '#2a2d36'; g.fillRect(0, 0, 256, 256);
+  g.fillStyle = '#5a5d66';
   [256 / 3 * 1 - 2, 256 / 3 * 2 - 2].forEach(x => { for (let y = 0; y < 256; y += 64) g.fillRect(x, y, 4, 36); });
-  g.fillStyle = '#4a4740'; g.fillRect(0, 0, 6, 256); g.fillRect(250, 0, 6, 256);
+  g.fillStyle = '#6a6354'; g.fillRect(0, 0, 6, 256); g.fillRect(250, 0, 6, 256);
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1, 40); t.colorSpace = THREE.SRGBColorSpace;
   return t;
 })();
@@ -534,7 +534,7 @@ $('go').onclick = start; $('again').onclick = start;
 $('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Gekopieerd'; setTimeout(() => $('copy').textContent = 'Kopieer fouten', 1500); };
 
 function resolveFork(gate) {
-  const { fork } = gate; gate.resolved = true; S.activeFork = null; S.slowTarget = 1; $('lanes').style.opacity = 0;
+  const { fork } = gate; gate.resolved = true; S.activeFork = null; S.slowTarget = 1; $('lanes').style.opacity = 0; hideCard();
   const post = gate.posts.find(p => p.lane === S.lane);
   const chosenIdx = post ? post.oi : -1;
   const ok = chosenIdx === fork.a;
@@ -620,9 +620,9 @@ function update(dt) {
 
   // lamp look
   const L = S.lamp / 100;
-  lampLight.intensity = 0.5 + L * 2.4; lampGlow.intensity = 0.2 + L * 0.6;
+  lampLight.intensity = 0.8 + L * 4.0; lampGlow.intensity = 0.3 + L * 0.8;
   bike.userData.lampMesh.material.color.setHSL(0.11, 0.8, 0.3 + L * 0.6);
-  scene.fog.density = 0.05 - L * 0.024 + S.forkZoom * 0.004;
+  scene.fog.density = 0.042 - L * 0.02 + S.forkZoom * 0.003;
   $('lampfill').style.width = S.lamp + '%';
   const danger = 1 - L;
   $('vignette').style.opacity = Math.pow(danger, 1.6) * 0.95;
@@ -700,11 +700,12 @@ function update(dt) {
   if (riding) {
     const sn = S.speedNorm, fz = S.forkZoom;
     const ty = 3.2 + sn * 0.9 - fz * 1.0, tz = 7 + sn * 2.8 - fz * 2.6;
-    camera.position.x = lerp(camera.position.x, S.x * 0.45, dt * 4);
+    const follow = camera.aspect < 1 ? 0.85 : 0.45;   // phones: keep the bike in frame
+    camera.position.x = lerp(camera.position.x, S.x * follow, dt * 4);
     camera.position.y = lerp(camera.position.y, ty, dt * 2.5);
     camera.position.z = lerp(camera.position.z, tz, dt * 2.5);
     camera.fov = lerp(camera.fov, 60 + sn * 10 + fz * 22, dt * 3); camera.updateProjectionMatrix();
-    camera.lookAt(S.x * 0.3, 1 + fz * 0.4, -8 - fz * 6);
+    camera.lookAt(S.x * (camera.aspect < 1 ? 0.7 : 0.3), 1 + fz * 0.4, -8 - fz * 6);
   }
 
   // HUD
@@ -727,6 +728,13 @@ if (q.has('shot')) {
   start();
   const secs = parseFloat(q.get('shot')) || 0;
   for (let i = 0; i < secs * 60; i++) { update(1 / 60); if (q.has('lane') && S.mode === 'ride') S.lane = +q.get('lane'); }
+  if (q.has('gate')) { // ride on until the next fork is this close
+    const want = parseFloat(q.get('gate')) || 12; let n = 0;
+    while (n++ < 60 * 120 && S.mode === 'ride' && !(S.activeFork && S.dist - S.activeFork.d > -want)) { update(1 / 60); if (q.has('lane')) S.lane = +q.get('lane'); }
+  }
+  renderer.render(scene, camera);
+  // headless screenshots cannot see WebGL canvases: copy the frame into an image
+  const img = new Image(); img.src = renderer.domElement.toDataURL(); img.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1'; document.body.appendChild(img);
 }
 loop();
 </script>
