@@ -311,9 +311,9 @@ function signpost(text) {
 }
 function bigSign(text) { // the reading board, wider, stands over the road
   const g = new THREE.Group();
-  for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 2.2, 6), M.wood); p.position.set(s * 2.4, 1.1, 0); g.add(p); }
+  for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 4.2, 6), M.wood); p.position.set(s * 4.3, 2.1, 0); g.add(p); }
   const board = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.4), new THREE.MeshLambertMaterial({ map: labelTexture(text, { bg: '#1d1a22', fg: '#d8dcff' }), emissive: 0xffffff, emissiveMap: labelTexture(text, { bg: '#1d1a22', fg: '#d8dcff' }), emissiveIntensity: 0.3, side: THREE.DoubleSide }));
-  board.position.y = 2.6; g.add(board);
+  board.position.y = 3.6; board.scale.set(1.5, 1, 1); g.add(board);
   return g;
 }
 function ghostFigure() {
@@ -341,6 +341,17 @@ function puddle() {
 function wisp() {
   const m = new THREE.Mesh(G.wisp, M.wisp); m.position.y = 1.0;
   return m;
+}
+
+// ---------- warm-up: compile every material variant once so nothing stalls mid-ride ----------
+function warmUp() {
+  const tmp = [signpost('warm'), bigSign('warm'), ghostFigure(), fence(), cart(), puddle(), wisp()];
+  tmp.forEach(o => { o.position.set(0, -50, -5); scene.add(o); });
+  follower.visible = true;
+  renderer.compile(scene, camera);
+  renderer.render(scene, camera);
+  follower.visible = false;
+  tmp.forEach(o => { scene.remove(o); o.traverse(m => { if (m.material && m.material.map) { m.material.map.dispose(); m.material.dispose(); } }); });
 }
 
 // ---------- state ----------
@@ -521,7 +532,7 @@ addEventListener('mousedown', e => { if (S.mode === 'ride' && e.target === rende
 
 // ---------- game flow ----------
 function start() {
-  initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   $('start').style.display = 'none'; $('summary').style.display = 'none';
   reset(); S.mode = 'intro'; S.introT = 0;
 }
