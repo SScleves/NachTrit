@@ -58,8 +58,8 @@
 </head>
 <body>
 <div id="ui">
-  <div id="shade"></div>
-  <div id="grain"></div>
+  <div id="shade" class="css-look"></div>
+  <div id="grain" class="css-look"></div>
   <div id="vignette"></div>
   <div id="flash"></div>
   <div id="hud">
@@ -134,8 +134,14 @@
 <script src="levels.js"></script>
 <script src="content/district2.js"></script>
 <script src="content/district3.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
-import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.module.min.js';
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+const POST = !/post=0/.test(location.search);   // ?post=0 turns the whole look pipeline off
 
 // ---------- constants ----------
 const LANES3 = [-2.2, 0, 2.2], LANES2 = [-1.5, 1.5];
@@ -155,13 +161,14 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 // ---------- renderer / scene ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-let DPR = Math.min(devicePixelRatio, 1.5); renderer.setPixelRatio(DPR);
+let DPR = Math.min(devicePixelRatio, 1.25); renderer.setPixelRatio(DPR);
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = false;
 let frameAcc = 0, frameN = 0;
 document.body.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
+let composer = null, inkPass = null, bloomPass = null, gradePass = null;
 scene.background = new THREE.Color(BG);
 scene.fog = new THREE.FogExp2(BG, 0.03);
 
@@ -169,9 +176,51 @@ const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 40
 camera.position.set(0, 22, 14);
 camera.lookAt(0, 0, -30);
 
+function postSize() { if (!composer) return; composer.setPixelRatio(DPR); composer.setSize(innerWidth, innerHeight); const w = Math.floor(innerWidth * DPR), h = Math.floor(innerHeight * DPR); inkPass.uniforms.res.value.set(w, h); gradePass.uniforms.res.value.set(w, h); }
+function buildPost() {
+  if (!POST) return;
+  const w = Math.floor(innerWidth * DPR), h = Math.floor(innerHeight * DPR);
+  const rt = new THREE.WebGLRenderTarget(w, h, { depthTexture: new THREE.DepthTexture(w, h), depthBuffer: true, samples: 2 });
+  composer = new EffectComposer(renderer, rt);
+  composer.addPass(new RenderPass(scene, camera));
+  inkPass = new ShaderPass({
+    uniforms: { tDiffuse: { value: null }, tDepth: { value: rt.depthTexture }, res: { value: new THREE.Vector2(w, h) }, near: { value: camera.near }, far: { value: camera.far }, strength: { value: 0.9 } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `uniform sampler2D tDiffuse, tDepth; uniform vec2 res; uniform float near, far, strength; varying vec2 vUv;
+      float lin(float d){ float z = d*2.0-1.0; return (2.0*near*far)/(far+near-z*(far-near)); }
+      void main(){ vec2 px = 1.0/res; float c = lin(texture2D(tDepth, vUv).x);
+        float l = lin(texture2D(tDepth, vUv-vec2(px.x,0.)).x), r = lin(texture2D(tDepth, vUv+vec2(px.x,0.)).x);
+        float u = lin(texture2D(tDepth, vUv-vec2(0.,px.y)).x), d = lin(texture2D(tDepth, vUv+vec2(0.,px.y)).x);
+        float dd = abs(2.0*c-l-r) + abs(2.0*c-u-d);
+        float e = dd / (c*0.035 + 0.04);
+        float ink = smoothstep(0.7, 1.8, e) * strength * smoothstep(140.0, 25.0, c);
+        vec4 col = texture2D(tDiffuse, vUv); gl_FragColor = vec4(col.rgb * (1.0 - ink*0.9), col.a); }`,
+  });
+  composer.addPass(inkPass);
+  bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(innerWidth / 2), Math.floor(innerHeight / 2)), 0.32, 0.55, 0.82);
+  composer.addPass(bloomPass);
+  gradePass = new ShaderPass({
+    uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(w, h) }, danger: { value: 0 } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float time, danger; uniform vec2 res; varying vec2 vUv;
+      void main(){ vec3 c = texture2D(tDiffuse, vUv).rgb;
+        c = pow(max(c, 0.0), vec3(1.0/2.2));                      // linear to sRGB, the composer has no output pass
+        float l = dot(c, vec3(0.299,0.587,0.114));
+        c *= mix(vec3(0.86,0.94,1.12), vec3(1.06,1.0,0.92), smoothstep(0.05, 0.7, l));
+        c = (c - 0.5) * 1.08 + 0.5 + 0.01;
+        float v = smoothstep(1.25, 0.3, length(vUv - 0.5)); c *= mix(0.45, 1.0, v);
+        c = mix(c, vec3(0.35, 0.02, 0.02), (1.0 - v) * danger * 0.9);
+        float n = fract(sin(dot(floor(vUv * res) + time, vec2(12.9898, 78.233))) * 43758.5453); c += (n - 0.5) * 0.05;
+        gl_FragColor = vec4(clamp(c, 0.0, 1.0), 1.0); }`,
+  });
+  composer.addPass(gradePass);
+}
+buildPost();
+if (POST) document.querySelectorAll('.css-look').forEach(e => e.style.display = 'none');
+function render() { if (composer) { gradePass.uniforms.time.value = (performance.now() % 100000) / 1000; composer.render(); } else renderer.render(scene, camera); }
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+  renderer.setSize(innerWidth, innerHeight); postSize();
 });
 
 // lights
@@ -181,26 +230,28 @@ const lampLight = new THREE.SpotLight(0xdfe8ec, 4.2, 60, Math.PI / 6, 0.6, 1.0);
 lampLight.position.set(0, 1.1, 0.4);
 lampLight.target.position.set(0, 0.2, -20);
 scene.add(lampLight, lampLight.target);
-const clueLight = new THREE.SpotLight(0xe8f0f4, 0, 34, Math.PI / 9, 0.5, 1.0); clueLight.position.set(0, 9, 0); scene.add(clueLight, clueLight.target);
+const clueLight = new THREE.SpotLight(0xe8f0f4, 0, 30, Math.PI / 14, 0.7, 1.0); clueLight.position.set(0, 9, 0); scene.add(clueLight, clueLight.target);
 
-// materials
+// materials: toon bands when the look pipeline is on, plain Lambert otherwise
+const toonRamp = (() => { const data = new Uint8Array([80, 80, 80, 255, 140, 140, 140, 255, 205, 205, 205, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(data, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();
+function Mat(opts = {}) { if (!POST) return new THREE.MeshLambertMaterial(opts); return new THREE.MeshToonMaterial(Object.assign({ gradientMap: toonRamp }, opts)); }
 const M = {
-  road: new THREE.MeshLambertMaterial({ color: 0x333842 }),
-  ground: new THREE.MeshLambertMaterial({ color: 0x141f16 }),
-  water: new THREE.MeshLambertMaterial({ color: 0x0b1424 }),
-  wood: new THREE.MeshLambertMaterial({ color: 0x3b2a1c }),
-  dark: new THREE.MeshLambertMaterial({ color: 0x15161b }),
-  mill: new THREE.MeshLambertMaterial({ color: 0x2a2520 }),
-  bike: new THREE.MeshLambertMaterial({ color: 0x8c8c94 }),
-  rider: new THREE.MeshLambertMaterial({ color: 0x14161b }),
-  shirt: new THREE.MeshLambertMaterial({ color: 0x8e1f1f }),
-  ghost: new THREE.MeshLambertMaterial({ color: 0xb9c4d6, emissive: 0x6f7fa8, emissiveIntensity: 0.35, transparent: true, opacity: 0.6, side: THREE.DoubleSide }),
+  road: Mat({ color: 0x333842 }),
+  ground: Mat({ color: 0x141f16 }),
+  water: Mat({ color: 0x0b1424 }),
+  wood: Mat({ color: 0x3b2a1c }),
+  dark: Mat({ color: 0x15161b }),
+  mill: Mat({ color: 0x2a2520 }),
+  bike: Mat({ color: 0x8c8c94 }),
+  rider: Mat({ color: 0x14161b }),
+  shirt: Mat({ color: 0x8e1f1f }),
+  ghost: Mat({ color: 0xb9c4d6, emissive: 0x6f7fa8, emissiveIntensity: 0.35, transparent: true, opacity: 0.6, side: THREE.DoubleSide }),
   wisp: new THREE.MeshBasicMaterial({ color: 0xcfd8dc }),
-  puddle: new THREE.MeshLambertMaterial({ color: 0x0d1830 }),
+  puddle: Mat({ color: 0x0d1830 }),
   eye: new THREE.MeshBasicMaterial({ color: 0xff2a1a }),
-  hay: new THREE.MeshLambertMaterial({ color: 0x4a3d20 }),
-  shade: new THREE.MeshLambertMaterial({ color: 0x050507 }),
-  board: new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.0, side: THREE.DoubleSide }),
+  hay: Mat({ color: 0x4a3d20 }),
+  shade: Mat({ color: 0x050507 }),
+  board: Mat({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.0, side: THREE.DoubleSide }),
 };
 
 // ---------- world ----------
@@ -240,7 +291,7 @@ function updateRibbon(m, xc, y, scroll, vScale) {
   m.geometry.attributes.position.needsUpdate = true; m.geometry.attributes.uv.needsUpdate = true;
 }
 roadTex.repeat.set(1, 1);
-const roadRib = makeRibbon(ROAD_W, new THREE.MeshLambertMaterial({ map: roadTex }));
+const roadRib = makeRibbon(ROAD_W, Mat({ map: roadTex }));
 const kerbL = makeRibbon(0.5, M.ground), kerbR = makeRibbon(0.5, M.ground);
 // the bend: x offset of anything at relative distance z ahead of the bike
 function bend(z) { return z < 0 ? S.curv * z * z : 0; }
@@ -252,19 +303,19 @@ const waterRib = makeRibbon(26, M.water); waterRib.visible = false;
 
 // ---------- props ----------
 const PM = {
-  wall: new THREE.MeshLambertMaterial({ color: 0x2e3540 }),
-  wall2: new THREE.MeshLambertMaterial({ color: 0x3a343c }),
-  roof: new THREE.MeshLambertMaterial({ color: 0x15171b }),
+  wall: Mat({ color: 0x2e3540 }),
+  wall2: Mat({ color: 0x3a343c }),
+  roof: Mat({ color: 0x15171b }),
   window: new THREE.MeshBasicMaterial({ color: 0x8c8260 }),
   windowOff: new THREE.MeshBasicMaterial({ color: 0x0c0d10 }),
-  pole: new THREE.MeshLambertMaterial({ color: 0x1b1d21 }),
+  pole: Mat({ color: 0x1b1d21 }),
   bulb: new THREE.MeshBasicMaterial({ color: 0xcfd6d8 }),
-  stone: new THREE.MeshLambertMaterial({ color: 0x3e434c }),
-  reed: new THREE.MeshLambertMaterial({ color: 0x2a3326 }),
-  leaf: new THREE.MeshLambertMaterial({ color: 0x1d2a22 }),
-  dog: new THREE.MeshLambertMaterial({ color: 0x6b5340 }),
-  silver: new THREE.MeshLambertMaterial({ color: 0x9aa4ae }),
-  boat: new THREE.MeshLambertMaterial({ color: 0x1e2229 }),
+  stone: Mat({ color: 0x3e434c }),
+  reed: Mat({ color: 0x2a3326 }),
+  leaf: Mat({ color: 0x1d2a22 }),
+  dog: Mat({ color: 0x6b5340 }),
+  silver: Mat({ color: 0x9aa4ae }),
+  boat: Mat({ color: 0x1e2229 }),
 };
 const PG = {
   win: new THREE.PlaneGeometry(0.7, 1.0),
@@ -328,7 +379,7 @@ function house(opts = {}) {
   const door = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.9), PM.roof); door.position.set(-w / 2 - 0.01, 0.95, dpt / 2 - 0.8); door.rotation.y = -Math.PI / 2; g.add(door);
   if (opts.sign) {
     const tex = labelTexture(opts.sign, { bg: '#1b1d21', fg: '#d4cdb9' });
-    const sgn = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9), new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45 }));
+    const sgn = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9), Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45 }));
     sgn.position.set(-w / 2 - 0.05, 3.3, 0); sgn.rotation.y = -Math.PI / 2; sgn.userData.ownTex = true; g.add(sgn);
     const shop = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.8), PM.window); shop.position.set(-w / 2 - 0.02, 1.4, -0.6); shop.rotation.y = -Math.PI / 2; g.add(shop);
   }
@@ -377,7 +428,7 @@ function dogProp() {
   const head = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.4), PM.dog); head.position.set(0, 0.85, -0.6); g.add(head);
   for (const sx of [-1, 1]) { const ear = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.22, 0.08), PM.dog); ear.position.set(sx * 0.16, 1.05, -0.55); g.add(ear); }
   const tail = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.45), PM.dog); tail.position.set(0, 0.8, 0.65); tail.rotation.x = -0.6; g.add(tail); g.userData.tail = tail;
-  const snout = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.15, 0.2), new THREE.MeshLambertMaterial({ color: 0x2a2126 })); snout.position.set(0, 0.78, -0.88); g.add(snout);
+  const snout = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.15, 0.2), Mat({ color: 0x2a2126 })); snout.position.set(0, 0.78, -0.88); g.add(snout);
   for (const x of [-0.15, 0.15]) for (const z of [-0.3, 0.3]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.1), PM.dog); l.position.set(x, 0.2, z); g.add(l); }
   for (const x of [-0.08, 0.08]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.03, 4, 4), M.eye); e.position.set(x, 0.9, -0.81); g.add(e); }
   return g;
@@ -390,7 +441,7 @@ function bikeProp() {
   const tube = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 1.0), PM.silver); tube.position.set(0, 0.85, -0.05); g.add(tube);
   const post = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 0.06), PM.silver); post.position.set(0, 0.85, 0.35); g.add(post);
   const bars = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.05, 0.05), PM.silver); bars.position.set(0, 0.95, -0.55); g.add(bars);
-  const basket = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, 0.28), new THREE.MeshLambertMaterial({ color: 0x6b4a2b })); basket.position.set(0, 0.95, -0.8); g.add(basket);
+  const basket = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, 0.28), Mat({ color: 0x6b4a2b })); basket.position.set(0, 0.95, -0.8); g.add(basket);
   g.rotation.z = 0.35; g.rotation.y = Math.PI / 2;
   return g;
 }
@@ -398,7 +449,7 @@ function numberPlate(n) {
   const g = new THREE.Group();
   const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.8, 0.1), PM.pole); p.position.y = 0.9; g.add(p);
   const tex = labelTexture(String(n), { bg: '#2a2520', fg: '#e8e2d2' });
-  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.7), new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.5, side: THREE.DoubleSide }));
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.7), Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.5, side: THREE.DoubleSide }));
   b.position.set(0, 1.9, 0); b.userData.ownTex = true; g.add(b);
   return g;
 }
@@ -494,8 +545,8 @@ for (let i = 0; i < 10; i++) {
 const bike = new THREE.Group();
 {
   // an omafiets: swept frame, mudguards, chain guard, front basket, upright rider
-  const steel = new THREE.MeshLambertMaterial({ color: 0x3b4a56 });
-  const frameMat = new THREE.MeshLambertMaterial({ color: 0x2b4a5e });
+  const steel = Mat({ color: 0x3b4a56 });
+  const frameMat = Mat({ color: 0x2b4a5e });
   const tube = (a, b, r = 0.035) => { const d = new THREE.Vector3().subVectors(b, a); const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, d.length(), 6), frameMat); m.position.copy(a).add(b).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize()); return m; };
   const P = (x, y, z) => new THREE.Vector3(x, y, z);
   const rear = P(0, 0.34, 0.62), front = P(0, 0.34, -0.62), crank = P(0, 0.36, 0.08), seat = P(0, 0.98, 0.3), head = P(0, 0.95, -0.5);
@@ -508,13 +559,13 @@ const bike = new THREE.Group();
   for (const w of [w1, w2]) { const mg = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 6, 16, Math.PI * 0.9), M.dark); mg.position.copy(w.position); mg.rotation.y = Math.PI / 2; mg.rotation.z = Math.PI * 0.05; bike.add(mg); }
   const guard = new THREE.Mesh(new THREE.CircleGeometry(0.18, 12), M.dark); guard.position.set(0.05, 0.36, 0.08); guard.rotation.y = Math.PI / 2; bike.add(guard);
   const bars = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.025, 6, 12, Math.PI), steel); bars.position.set(0, 1.0, -0.5); bars.rotation.x = Math.PI / 2; bars.rotation.z = Math.PI; bike.add(bars);
-  const saddle = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.26), new THREE.MeshLambertMaterial({ color: 0x4a3222 })); saddle.position.set(0, 1.03, 0.3); bike.add(saddle);
-  const basket = new THREE.Group(); const bm = new THREE.MeshLambertMaterial({ color: 0x6b4a2b });
+  const saddle = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.26), Mat({ color: 0x4a3222 })); saddle.position.set(0, 1.03, 0.3); bike.add(saddle);
+  const basket = new THREE.Group(); const bm = Mat({ color: 0x6b4a2b });
   basket.add(new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.02, 0.3), bm)); for (const sx of [-1, 1]) { const side = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.22, 0.3), bm); side.position.set(sx * 0.17, 0.11, 0); basket.add(side); } for (const sz of [-1, 1]) { const side = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.22, 0.02), bm); side.position.set(0, 0.11, sz * 0.14); basket.add(side); }
   basket.position.set(0, 0.86, -0.78); bike.add(basket);
   const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.shirt); torso.position.set(0, 1.42, 0.2); torso.rotation.x = -0.12; bike.add(torso);
   const headG = new THREE.Group(); headG.position.set(0, 1.92, 0.1); bike.add(headG); bike.userData.head = headG;
-  const headM = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), new THREE.MeshLambertMaterial({ color: 0xd9b48c })); headG.add(headM);
+  const headM = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), Mat({ color: 0xd9b48c })); headG.add(headM);
   const hair = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), M.rider); hair.position.y = 0.03; headG.add(hair);
   const faceC = document.createElement('canvas'); faceC.width = faceC.height = 128; const faceTex = new THREE.CanvasTexture(faceC); faceTex.colorSpace = THREE.SRGBColorSpace;
   const face = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.26), new THREE.MeshBasicMaterial({ map: faceTex, transparent: true })); face.position.set(0, -0.01, -0.165); face.rotation.y = Math.PI; headG.add(face);
@@ -618,14 +669,14 @@ function signpost(text) {
   const g = new THREE.Group();
   const post = new THREE.Mesh(G.post, M.wood); post.position.y = 0.8; g.add(post);
   const tex = labelTexture(text);
-  const board = new THREE.Mesh(G.board, new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.25, side: THREE.DoubleSide }));
+  const board = new THREE.Mesh(G.board, Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.25, side: THREE.DoubleSide }));
   board.position.y = 1.7; g.add(board); g.userData.board = board;
   return g;
 }
 function bigSign(text) { // the reading board, wider, stands over the road
   const g = new THREE.Group();
   for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 4.2, 6), M.wood); p.position.set(s * 4.3, 2.1, 0); g.add(p); }
-  const board = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.4), new THREE.MeshLambertMaterial({ map: labelTexture(text, { bg: '#1d1a22', fg: '#d8dcff' }), emissive: 0xffffff, emissiveMap: labelTexture(text, { bg: '#1d1a22', fg: '#d8dcff' }), emissiveIntensity: 0.3, side: THREE.DoubleSide }));
+  const board = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.4), Mat({ map: labelTexture(text, { bg: '#1d1a22', fg: '#d8dcff' }), emissive: 0xffffff, emissiveMap: labelTexture(text, { bg: '#1d1a22', fg: '#d8dcff' }), emissiveIntensity: 0.3, side: THREE.DoubleSide }));
   board.position.y = 3.6; board.scale.set(1.5, 1, 1); g.add(board);
   return g;
 }
@@ -642,7 +693,7 @@ function ghostFigure(own) {
   return g;
 }
 function zombie() {
-  const g = new THREE.Group(); const zm = new THREE.MeshLambertMaterial({ color: 0x2a3338 });
+  const g = new THREE.Group(); const zm = Mat({ color: 0x2a3338 });
   const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.7, 4, 8), zm); body.position.y = 1.0; g.add(body);
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), zm); head.position.set(0, 1.62, 0.05); g.add(head);
   for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.03, 5, 5), M.eye); e.position.set(sx * 0.07, 1.65, -0.16); g.add(e); }
@@ -792,7 +843,7 @@ function planSentence(entry) {
     const mk = new THREE.Mesh(new THREE.ConeGeometry(0.5, 1.1, 4), new THREE.MeshBasicMaterial({ color: 0xe8e4d8 })); mk.rotation.x = Math.PI; mk.scale.setScalar(1 / (pr.scale || 1));
     const sc = pr.scale || 1; mk.position.set(0, top / sc, 0); if (tall) { const toRoad = -(pr.off + 1.2); mk.position.set((mesh.userData.faceRoad ? -1 : -side) * 0 + (side < 0 ? toRoad : -toRoad) * 0, top / sc, 0); mk.userData.world = { dx: -side * (pr.off + 1.4) }; }
     mesh.add(mk); mesh.userData.marker = mk;
-    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.55, color: 0xdfe6ea })); gl.scale.set(7, 5, 1); gl.position.y = Math.min(top * 0.5, 3); mesh.add(gl);
+    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.3, color: 0xdfe6ea })); gl.scale.set(4.5, 3.5, 1); gl.position.y = Math.min(top * 0.5, 3); mesh.add(gl);
     add(mesh, d0 + 12, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });   // beside you when you reach the signs
     const zNow = S.dist - (d0 + 12); for (const q of scenery) { if ((Math.sign(q.bx) || 1) === side && Math.abs(q.z - zNow) < footprint(q.sp) + 4 && footprint(q.sp) >= 1) q.mesh.visible = false; }
     placeFork({ entry, st, idx: 0, o: st.forks[0].o, a: st.forks[0].a, r: 'woord', w: st.forks[0].w, read: false }, d0 + 14);
@@ -1235,7 +1286,8 @@ function update(dt) {
   scene.fog.density = 0.042 - Lf * 0.02 + S.forkZoom * 0.003;
   const lw = Math.round(S.lamp); if (lw !== S.lampLast) { S.lampLast = lw; $('lampfill').style.width = lw + '%'; }
   const danger = 1 - Lf;
-  const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = vo; }
+  const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = composer ? 0 : vo; }
+  if (gradePass) gradePass.uniforms.danger.value = Math.pow(danger, 1.6);
   if (riding) {
     S.heartT += dt; const period = 1.25 - danger * 0.85;
     if (danger > 0.3 && S.heartT > period) { S.heartT = 0; thump(0.15 + danger * 0.5); setTimeout(() => thump(0.1 + danger * 0.3), 130); }
@@ -1299,7 +1351,7 @@ function update(dt) {
   }
   // the clue light sits on the thing you are being asked about
   let clue = null; for (const o of S.objs) if (o.type === 'lookprop') { const z = S.dist - o.d; if (z > -40 && z < 4 && (!clue || o.d < clue.d)) clue = o; }
-  if (clue) { const z = S.dist - clue.d; clueLight.intensity = lerp(clueLight.intensity, 3.5, dt * 4); clueLight.position.set(clue.mesh.position.x * 0.5, 9, z + 3); clueLight.target.position.set(clue.mesh.position.x, 1, z); }
+  if (clue) { const z = S.dist - clue.d; clueLight.intensity = lerp(clueLight.intensity, 1.4, dt * 4); clueLight.position.set(clue.mesh.position.x * 0.5, 9, z + 3); clueLight.target.position.set(clue.mesh.position.x, 1, z); }
   else clueLight.intensity = lerp(clueLight.intensity, 0, dt * 4);
   // fork approach
   if (riding && nearestGate) {
@@ -1348,13 +1400,13 @@ function loop() {
   requestAnimationFrame(loop);
   const raw = clock.getDelta(); const dt = Math.min(0.05, raw);
   if (S.mode === 'ride') { frameAcc += raw; if (++frameN >= 90) { const avg = frameAcc / frameN; frameAcc = 0; frameN = 0;
-    if (avg > 0.028 && DPR > 0.7) { DPR = Math.max(0.7, DPR - 0.25); renderer.setPixelRatio(DPR); } } }
+    if (avg > 0.028 && DPR > 0.7) { DPR = Math.max(0.7, DPR - 0.25); renderer.setPixelRatio(DPR); postSize(); } } }
   if (S.mode !== 'start') update(dt);
   else { // idle drift on the title
     for (const w of wieven) w.position.x += Math.sin(S.t += dt * 0.01) * 0.002;
     camera.position.y = 22 + Math.sin(performance.now() / 2000) * 0.4;
   }
-  renderer.render(scene, camera);
+  render();
 }
 const q = new URLSearchParams(location.search);
 if (q.has('shot')) {
@@ -1366,7 +1418,7 @@ if (q.has('shot')) {
     const want = parseFloat(q.get('gate')) || 12; let n = 0;
     while (n++ < 60 * 120 && S.mode === 'ride' && !(S.activeFork && S.dist - S.activeFork.d > -want)) { update(1 / 60); if (q.has('lane')) S.lane = +q.get('lane'); }
   }
-  renderer.render(scene, camera);
+  render();
   // headless screenshots cannot see WebGL canvases: copy the frame into an image
   const img = new Image(); img.src = renderer.domElement.toDataURL(); img.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1'; document.body.appendChild(img);
 }
