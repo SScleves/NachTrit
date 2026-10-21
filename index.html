@@ -108,7 +108,8 @@
       <div style="text-align:center;padding:0 0 14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
       <div id="town" style="position:absolute;left:50%;bottom:0;transform:translate(-50%,105%);transition:transform .3s;width:min(96vw,760px);background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));pointer-events:auto">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div><div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="t_tier"></div><h1 style="font-size:28px;margin:0" id="t_name"></h1></div><button class="ico" id="t_close">✕</button></div>
-        <div id="t_blurb" style="color:#c9d6ff;margin:6px 0 10px;font-size:14px"></div>
+        <div id="t_blurb" style="color:#d8d4c8;margin:6px 0 2px;font-size:14px"></div>
+        <div id="t_blurbnl" style="color:#9fb0cc;margin:0 0 10px;font-size:13px;font-style:italic"></div>
         <div id="t_places" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px"></div>
       </div>
     </div>
@@ -1180,7 +1181,7 @@ function drawWorld() {
 function openTown(t) {
   const open = townOpen(t);
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
-  $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || '';
+  $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || ''; $('t_blurbnl').textContent = t.blurbNl || '';
   const box = $('t_places'); box.innerHTML = '';
   for (const [pid, pname] of PLACES) {
     const lvls = townLevels(t).filter(l => (l.place || PLACE_OF[l.id]) === pid && !l.soon);
