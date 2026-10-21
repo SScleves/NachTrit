@@ -175,7 +175,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 // ---------- renderer / scene ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-let DPR = Math.min(devicePixelRatio, 1.25); renderer.setPixelRatio(DPR);
+let DPR = Math.min(devicePixelRatio, POST ? 1.0 : 1.5); renderer.setPixelRatio(DPR);
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = false;
 let frameAcc = 0, frameN = 0;
@@ -183,6 +183,12 @@ document.body.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
 let composer = null, inkPass = null, bloomPass = null, gradePass = null;
+renderer.domElement.addEventListener('webglcontextlost', (e) => {
+  e.preventDefault();
+  try { localStorage.setItem('nachtrit.lost', String((+localStorage.getItem('nachtrit.lost') || 0) + 1)); } catch (err) {}
+  document.getElementById('err').textContent = 'The graphics card dropped the picture. Reloading in a lighter mode.';
+  setTimeout(() => { const u = new URL(location.href); u.searchParams.set('post', '0'); location.href = u.toString(); }, 1200);
+});
 scene.background = new THREE.Color(BG);
 scene.fog = new THREE.FogExp2(BG, 0.03);
 
@@ -194,7 +200,7 @@ function postSize() { if (!composer) return; composer.setPixelRatio(DPR); compos
 function buildPost() {
   if (!POST) return;
   const w = Math.floor(innerWidth * DPR), h = Math.floor(innerHeight * DPR);
-  const rt = new THREE.WebGLRenderTarget(w, h, { depthTexture: new THREE.DepthTexture(w, h), depthBuffer: true, samples: 2 });
+  const rt = new THREE.WebGLRenderTarget(w, h, { depthTexture: new THREE.DepthTexture(w, h), depthBuffer: true });
   composer = new EffectComposer(renderer, rt);
   composer.addPass(new RenderPass(scene, camera));
   inkPass = new ShaderPass({
@@ -211,7 +217,7 @@ function buildPost() {
         vec4 col = texture2D(tDiffuse, vUv); gl_FragColor = vec4(col.rgb * (1.0 - ink*0.9), col.a); }`,
   });
   composer.addPass(inkPass);
-  bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(innerWidth / 2), Math.floor(innerHeight / 2)), 0.32, 0.55, 0.82);
+  bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(innerWidth / 4), Math.floor(innerHeight / 4)), 0.32, 0.6, 0.82);
   composer.addPass(bloomPass);
   gradePass = new ShaderPass({
     uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(w, h) }, danger: { value: 0 } },
@@ -555,7 +561,7 @@ const THEMES = {
 const SHOP_SIGNS = ['BAKKER', 'SLAGER', 'KAPPER', 'APOTHEEK', 'CAFÉ', 'SUPERMARKT', 'FIETSENMAKER', 'BLOEMEN', 'KAAS', 'FRIET'];
 let scenery = [];
 let theme = THEMES.polder;
-function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } }); } scenery = []; }
+function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); } scenery = []; }
 function footprint(sp) { return sp.r != null ? sp.r : (sp.make === house || sp.make === 'shop') ? 4.5 : sp.make === church ? 10 : sp.make === windmill ? 4 : sp.make === tree || sp.make === deadTree ? 2.4 : sp.make === 'graffiti' ? 3.5 : sp.make === bridge ? 2 : sp.make === boat ? 2.5 : 0.6; }
 function overlaps(z, side, r, except) {
   for (const q of scenery) {
@@ -815,6 +821,7 @@ const S = {
 };
 let audioCtx = null;
 window.NR = S; // debug handle
+window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, calls: renderer.info.render.calls, dpr: DPR, post: !!composer });
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 buildScenery(THEMES.polder);
 let L = null;                 // current level, null = endless
@@ -1535,7 +1542,7 @@ function update(dt) {
   // cleanup
   for (let i = S.objs.length - 1; i >= 0; i--) {
     const o = S.objs[i]; if (S.dist - o.d > 14) {
-      if (o.mesh) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.material && m.material.map) { m.material.map.dispose(); m.material.dispose(); } }); }
+      if (o.mesh) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.material && m.material.map) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); }
       S.objs.splice(i, 1); }
   }
 
