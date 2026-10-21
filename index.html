@@ -722,7 +722,7 @@ function planSentence(entry) {
     const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
     const mesh = pr.make(entry.value); if (pr.scale) mesh.scale.setScalar(pr.scale); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;
     // a marker floats over it and a soft light sits on it, so you know what is being asked
-    const box = new THREE.Box3().setFromObject(mesh); const top = Math.min(box.max.y, 9) + 0.9;
+    const box = new THREE.Box3().setFromObject(mesh); const top = Math.min(box.max.y, 4.6) + 0.9;
     const mk = new THREE.Mesh(new THREE.ConeGeometry(0.5, 1.1, 4), new THREE.MeshBasicMaterial({ color: 0xe8e4d8 })); mk.rotation.x = Math.PI; mk.position.y = top / (pr.scale || 1); mk.scale.setScalar(1 / (pr.scale || 1)); mesh.add(mk); mesh.userData.marker = mk;
     const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.55, color: 0xdfe6ea })); gl.scale.set(7, 5, 1); gl.position.y = Math.min(top * 0.5, 3); mesh.add(gl);
     add(mesh, d0 + 12, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });   // beside you when you reach the signs
