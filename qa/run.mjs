@@ -49,6 +49,7 @@ async function playLevel(n) {
   await page.waitForTimeout(300); run.frames.push(await shot(`L${n}-mission`));
   await page.evaluate(() => { NR.lanesN = 3; });
   await page.click('#m_go');
+  await page.waitForTimeout(900); run.frames.push(await shot(`L${n}-intro`)); await page.keyboard.press('Space'); await page.waitForTimeout(150); await page.keyboard.press('Space'); await page.waitForTimeout(200);
   await page.evaluate(() => { NR.lanesN = document.querySelectorAll('#lanes div[style*="display: none"]').length ? 2 : 3; });
   await page.waitForTimeout(4200); run.frames.push(await shot(`L${n}-ride-start`));
   const t0 = Date.now(); let lastShot = 0, shotIdx = 0, lastForkD = -1;

@@ -85,7 +85,10 @@
 
   <div class="overlay" id="intro" style="display:none;background:#000">
     <div class="box" style="max-width:860px">
-      <canvas id="pix" width="192" height="108" style="width:min(92vw,860px);aspect-ratio:16/9;image-rendering:pixelated;image-rendering:crisp-edges;display:block;margin:0 auto;border:1px solid #1a1d24"></canvas>
+      <div style="position:relative;width:min(92vw,860px);aspect-ratio:16/9;margin:0 auto;border:1px solid #1a1d24">
+        <canvas id="pix" width="192" height="108" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
+        <canvas id="pixhi" width="1152" height="648" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+      </div>
       <div id="pixtext" style="min-height:3.2em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:16px auto 6px;max-width:700px;color:#d8d4c8"></div>
       <div class="hint">Tap or press space to continue · <span id="skip" style="pointer-events:auto;cursor:pointer;text-decoration:underline">skip</span></div>
     </div>
@@ -255,7 +258,8 @@ const PM = {
   stone: new THREE.MeshLambertMaterial({ color: 0x3e434c }),
   reed: new THREE.MeshLambertMaterial({ color: 0x2a3326 }),
   leaf: new THREE.MeshLambertMaterial({ color: 0x1d2a22 }),
-  dog: new THREE.MeshLambertMaterial({ color: 0x1a1a1e }),
+  dog: new THREE.MeshLambertMaterial({ color: 0x6b5340 }),
+  silver: new THREE.MeshLambertMaterial({ color: 0x9aa4ae }),
   boat: new THREE.MeshLambertMaterial({ color: 0x1e2229 }),
 };
 const PG = {
@@ -367,6 +371,9 @@ function dogProp() {
   const g = new THREE.Group();
   const body = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.4, 0.95), PM.dog); body.position.y = 0.55; g.add(body);
   const head = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.4), PM.dog); head.position.set(0, 0.85, -0.6); g.add(head);
+  for (const sx of [-1, 1]) { const ear = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.22, 0.08), PM.dog); ear.position.set(sx * 0.16, 1.05, -0.55); g.add(ear); }
+  const tail = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.45), PM.dog); tail.position.set(0, 0.8, 0.65); tail.rotation.x = -0.6; g.add(tail); g.userData.tail = tail;
+  const snout = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.15, 0.2), new THREE.MeshLambertMaterial({ color: 0x2a2126 })); snout.position.set(0, 0.78, -0.88); g.add(snout);
   for (const x of [-0.15, 0.15]) for (const z of [-0.3, 0.3]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.1), PM.dog); l.position.set(x, 0.2, z); g.add(l); }
   for (const x of [-0.08, 0.08]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.03, 4, 4), M.eye); e.position.set(x, 0.9, -0.81); g.add(e); }
   return g;
@@ -374,8 +381,12 @@ function dogProp() {
 function bikeProp() {
   const g = new THREE.Group();
   const wg = new THREE.TorusGeometry(0.34, 0.04, 6, 16);
-  for (const z of [-0.6, 0.6]) { const w = new THREE.Mesh(wg, M.dark); w.position.set(0, 0.34, z); g.add(w); }
-  const f = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.5, 1.2), M.bike); f.position.y = 0.6; g.add(f);
+  for (const z of [-0.6, 0.6]) { const w = new THREE.Mesh(wg, PM.silver); w.position.set(0, 0.34, z); g.add(w); }
+  const f = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 1.2), PM.silver); f.position.y = 0.6; g.add(f);
+  const tube = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 1.0), PM.silver); tube.position.set(0, 0.85, -0.05); g.add(tube);
+  const post = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 0.06), PM.silver); post.position.set(0, 0.85, 0.35); g.add(post);
+  const bars = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.05, 0.05), PM.silver); bars.position.set(0, 0.95, -0.55); g.add(bars);
+  const basket = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, 0.28), new THREE.MeshLambertMaterial({ color: 0x6b4a2b })); basket.position.set(0, 0.95, -0.8); g.add(basket);
   g.rotation.z = 0.35; g.rotation.y = Math.PI / 2;
   return g;
 }
@@ -396,7 +407,7 @@ function waterPatch() { // a short stretch of water right beside the road, with 
 }
 // props you can be asked about: builder + how far past the road edge they stand
 const PROPS = {
-  hond: { make: dogProp, off: 0.5, scale: 1.8 }, huis: { make: () => house({ lit: 0.5 }), off: 3.2 }, fiets: { make: bikeProp, off: 0.6, scale: 1.6 },
+  hond: { make: dogProp, off: 0.4, scale: 2.0 }, huis: { make: () => house({ lit: 0.5 }), off: 3.2 }, fiets: { make: bikeProp, off: 0.4, scale: 1.8 },
   kerk: { make: church, off: 6 }, boom: { make: tree, off: 1.5 }, molen: { make: windmill, off: 6 }, brug: { make: bridge, off: 0.5 },
   water: { make: waterPatch, off: 0.3 }, winkel: { make: () => house({ sign: 'WINKEL', lit: 0.6 }), off: 3.2 }, lamp: { make: lamppost, off: 0.8 },
   deur: { make: () => house({ w: 4, lit: 0.2 }), off: 2.4 },
@@ -411,7 +422,7 @@ const THEMES = {
     { make: fencePost, n: 36, gap: 4.5, side: 'left', xr: [4.6, 4.6] } ] },
   street: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
     { make: house, n: 16, gap: 8.5, side: 'alt', xr: [7, 8], y: 0 }, { make: lamppost, n: 10, gap: 15, side: 'alt', xr: [4.7, 4.7] },
-    { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] }, { make: tree, n: 4, gap: 40, side: 'both', xr: [5.2, 5.6] } ] },
+    { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] } ] },
   shops: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 14, gap: 9, side: 'alt', xr: [6.8, 7.2], y: 0 }, { make: lamppost, n: 12, gap: 13, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 5, gap: 36, side: 'both', xr: [5.0, 5.0] } ] },
@@ -430,9 +441,24 @@ const SHOP_SIGNS = ['BAKKER', 'SLAGER', 'KAPPER', 'APOTHEEK', 'CAFÉ', 'SUPERMAR
 let scenery = [];
 let theme = THEMES.polder;
 function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } }); } scenery = []; }
+function footprint(sp) { return sp.r != null ? sp.r : (sp.make === house || sp.make === 'shop') ? 4.5 : sp.make === church ? 10 : sp.make === windmill ? 4 : sp.make === tree || sp.make === deadTree ? 2.4 : sp.make === 'graffiti' ? 3.5 : sp.make === bridge ? 2 : sp.make === boat ? 2.5 : 0.6; }
+function overlaps(z, side, r, except) {
+  for (const q of scenery) {
+    if (q === except || !q.mesh.visible) continue;
+    if ((Math.sign(q.bx) || 1) !== side) continue;
+    const qr = footprint(q.sp); if (qr < 1 && r < 1) continue;
+    if (Math.abs(q.z - z) < r + qr) return q;
+  }
+  return null;
+}
 function sceneryPlace(o) {
-  const sp = o.sp; const side = sp.side === 'both' ? (Math.random() < 0.5 ? -1 : 1) : sp.side === 'left' ? -1 : sp.side === 'right' ? 1 : (o.i % 2 ? 1 : -1);
+  const sp = o.sp; let side = sp.side === 'both' ? (Math.random() < 0.5 ? -1 : 1) : sp.side === 'left' ? -1 : sp.side === 'right' ? 1 : (o.i % 2 ? 1 : -1);
+  const r = footprint(sp);
   o.bx = side * rnd(sp.xr[0], sp.xr[1]);
+  o.mesh.visible = true;
+  // flip side once, then push back along the road until it does not sit inside something else
+  for (let tries = 0; tries < 6 && overlaps(o.z, side, r, o); tries++) { if (sp.side === 'both' && tries === 0) { side = -side; o.bx = -o.bx; } else o.z -= r + 3; }
+  if (overlaps(o.z, side, r, o)) o.mesh.visible = false;
   o.mesh.position.y = sp.y || 0;
   if (o.mesh.userData.faceRoad) o.mesh.rotation.y = side < 0 ? Math.PI : 0;
 }
@@ -484,7 +510,6 @@ const bike = new THREE.Group();
   basket.position.set(0, 0.86, -0.78); bike.add(basket);
   const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.shirt); torso.position.set(0, 1.42, 0.2); torso.rotation.x = -0.12; bike.add(torso);
   const headM = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), M.rider); headM.position.set(0, 1.92, 0.1); bike.add(headM);
-  const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.19, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0xd8d4c8 })); helmet.position.set(0, 1.93, 0.1); bike.add(helmet);
   for (const sx of [-1, 1]) { const arm = tube(P(sx * 0.2, 1.6, 0.15), P(sx * 0.26, 1.02, -0.45), 0.045); arm.material = M.shirt; bike.add(arm); const leg = tube(P(sx * 0.1, 1.05, 0.28), P(sx * 0.12, 0.42, 0.05), 0.055); leg.material = M.rider; bike.add(leg); }
   const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), new THREE.MeshBasicMaterial({ color: 0xeaf2f5 })); lamp.position.set(0, 0.78, -0.98); bike.add(lamp);
   bike.userData.lampMesh = lamp;
@@ -701,6 +726,7 @@ function planSentence(entry) {
     const mk = new THREE.Mesh(new THREE.ConeGeometry(0.5, 1.1, 4), new THREE.MeshBasicMaterial({ color: 0xe8e4d8 })); mk.rotation.x = Math.PI; mk.position.y = top / (pr.scale || 1); mk.scale.setScalar(1 / (pr.scale || 1)); mesh.add(mk); mesh.userData.marker = mk;
     const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.55, color: 0xdfe6ea })); gl.scale.set(7, 5, 1); gl.position.y = Math.min(top * 0.5, 3); mesh.add(gl);
     add(mesh, d0 + 12, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });   // beside you when you reach the signs
+    const zNow = S.dist - (d0 + 12); for (const q of scenery) { if ((Math.sign(q.bx) || 1) === side && Math.abs(q.z - zNow) < footprint(q.sp) + 4 && footprint(q.sp) >= 1) q.mesh.visible = false; }
     placeFork({ entry, st, idx: 0, o: st.forks[0].o, a: st.forks[0].a, r: 'woord', w: st.forks[0].w, read: false }, d0 + 14);
     S.planCursor = d0 + 14 + 10; return;
   }
@@ -853,11 +879,10 @@ const PANELS = [
       g.fillStyle = '#0a0b0e'; g.fillRect(0, 0, 192, 108);
       g.fillStyle = '#e4dcc6'; g.fillRect(28, 14, 64, 82); g.fillRect(100, 14, 64, 82);
       g.fillStyle = '#9a927f'; g.fillRect(92, 14, 8, 82);
-      g.fillStyle = '#2a2a2e'; g.font = 'bold 14px monospace'; g.fillText('DE', 48, 44); g.fillText('HET', 118, 44);
-      g.font = '7px monospace'; g.fillStyle = '#555';
-      ['de hond', 'de vrouw', 'de fiets', 'de nacht'].forEach((w, i) => g.fillText(w, 36, 58 + i * 9));
-      ['het huis', 'het brood', 'het ei', 'het water'].forEach((w, i) => g.fillText(w, 108, 58 + i * 9));
-      if (Math.floor(t * 1.5) % 2) { g.fillStyle = '#b8282a'; g.font = 'bold 12px monospace'; g.fillText('?', 94, 88); }
+      px_text(48, 44, 'DE', '#2a2a2e', 14, true); px_text(116, 44, 'HET', '#2a2a2e', 14, true);
+      ['de hond', 'de vrouw', 'de fiets', 'de nacht'].forEach((w, i) => px_text(36, 58 + i * 9, w, '#555', 7));
+      ['het huis', 'het brood', 'het ei', 'het water'].forEach((w, i) => px_text(108, 58 + i * 9, w, '#555', 7));
+      if (Math.floor(t * 1.5) % 2) px_text(93, 88, '?', '#b8282a', 12, true);
     } },
   { text: '...', draw: (g, t) => {
       g.fillStyle = '#000'; g.fillRect(0, 0, 192, 108);
@@ -870,6 +895,8 @@ const PANELS = [
       px_omafiets(g, 88, 88, t); px_beam(g, 112, 72, t);
     } },
 ];
+let pxLabels = [];
+function px_text(x, y, str, color, size = 7, bold = false) { pxLabels.push({ x, y, str, color, size, bold }); }
 function px_sky(g, top, bottom) { const gr = g.createLinearGradient(0, 0, 0, 108); gr.addColorStop(0, top); gr.addColorStop(1, bottom); g.fillStyle = gr; g.fillRect(0, 0, 192, 108); }
 function px_stars(g, t) { g.fillStyle = '#c9d4e0'; for (let i = 0; i < 18; i++) { if (Math.sin(t * 2 + i * 7) > -0.3) g.fillRect((i * 37) % 192, (i * 23) % 50, 1, 1); } }
 function px_moon(g, x, y, r) { g.fillStyle = '#e6e2c8'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.fillStyle = '#b9b49a'; g.fillRect(x - 3, y - 2, 2, 2); g.fillRect(x + 2, y + 3, 3, 2); }
@@ -891,10 +918,10 @@ function px_zombie(g, x, y, t, label) {
   g.fillStyle = '#2f3d44'; g.fillRect(x + 5 + lean, y - 16, 8, 2);
   g.fillStyle = '#7fe0ff'; g.fillRect(x + 11 + lean, y - 19, 4, 6);
   g.fillStyle = '#b8282a'; g.fillRect(x - 1 + lean, y - 22, 1, 1); g.fillRect(x + 2 + lean, y - 22, 1, 1);
-  g.fillStyle = '#e8e4d8'; g.font = '6px monospace'; g.fillText(label, x - 6, y - 28);
+  px_text(x - 6, y - 28, label, '#e8e4d8', 6, true);
 }
 function px_cafe(g) { g.fillStyle = '#5a4634'; g.fillRect(40, 70, 110, 3); g.fillRect(44, 73, 3, 14); g.fillRect(143, 73, 3, 14); g.fillStyle = '#d9d2bf'; g.fillRect(84, 62, 8, 8); g.fillStyle = '#6b4a2b'; g.fillRect(85, 64, 6, 4); g.fillStyle = '#e0b45a'; g.fillRect(20, 20, 14, 14); g.fillRect(158, 20, 14, 14); }
-function px_bubble(g, x, y, txt) { g.fillStyle = '#f2eee2'; g.fillRect(x, y, txt.length * 5 + 6, 11); g.fillRect(x + 4, y + 11, 3, 3); g.fillStyle = '#1a1a1e'; g.font = '7px monospace'; g.fillText(txt, x + 3, y + 8); }
+function px_bubble(g, x, y, txt) { g.fillStyle = '#f2eee2'; g.fillRect(x, y, txt.length * 4.4 + 6, 11); g.fillRect(x + 4, y + 11, 3, 3); px_text(x + 3, y + 8, txt, '#1a1a1e', 7, true); }
 function px_friend(g, x, y, t, txt) { const bob = Math.round(Math.sin(t * 2 + 1)); g.fillStyle = '#e8c9a0'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#3f6e8c'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); px_bubble(g, x - 40, y - 36, txt); }
 function px_room(g) { g.fillStyle = '#1a1c24'; g.fillRect(0, 0, 192, 108); g.fillStyle = '#262330'; g.fillRect(0, 70, 192, 38); g.fillStyle = '#2f4a66'; g.fillRect(20, 16, 30, 26); g.fillStyle = '#e0b45a'; g.fillRect(150, 10, 10, 10); g.fillStyle = '#5a4634'; g.fillRect(80, 66, 50, 4); g.fillRect(82, 70, 3, 20); g.fillRect(125, 70, 3, 20); }
 function px_man(g, x, y, t) { const bob = Math.round(Math.sin(t * 2)); g.fillStyle = '#e8c9a0'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#2a2a2e'; g.fillRect(x - 3, y - 16 + bob, 7, 3); g.fillStyle = '#b8282a'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); }
@@ -904,7 +931,7 @@ function px_omafiets(g, x, y, t) {
   g.strokeStyle = '#1a1d22'; g.lineWidth = 1; g.beginPath(); g.arc(x - 14, y - 2, 9, Math.PI, Math.PI * 1.9); g.arc(x + 14, y - 2, 9, Math.PI * 1.1, Math.PI * 2); g.stroke();
   g.strokeStyle = '#2b4a5e'; g.lineWidth = 2; g.beginPath(); g.moveTo(x - 14, y - 2); g.lineTo(x - 2, y - 20); g.lineTo(x + 12, y - 20); g.lineTo(x + 14, y - 2); g.moveTo(x - 2, y - 20); g.quadraticCurveTo(x + 4, y - 8, x + 14, y - 2); g.stroke();
   g.fillStyle = '#6b4a2b'; g.fillRect(x + 8, y - 30, 12, 8); g.fillStyle = '#8a6a3b'; for (let i = 0; i < 3; i++) g.fillRect(x + 9 + i * 4, y - 29, 1, 6);
-  g.fillStyle = '#e8c9a0'; g.fillRect(x - 4, y - 38, 7, 6); g.fillStyle = '#e8e4d8'; g.fillRect(x - 5, y - 41, 9, 4);
+  g.fillStyle = '#e8c9a0'; g.fillRect(x - 4, y - 38, 7, 6); g.fillStyle = '#2a2a2e'; g.fillRect(x - 4, y - 40, 7, 3);
   g.fillStyle = '#b8282a'; g.fillRect(x - 6, y - 32, 11, 13); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y - 19, 4, 9); g.fillRect(x + 2, y - 19, 4, 11);
   g.fillStyle = '#eaf2f5'; g.fillRect(x + 20, y - 22, 3, 3);
 }
@@ -912,25 +939,42 @@ function px_beam(g, x, y, t) { g.fillStyle = `rgba(220,230,235,${0.14 + Math.sin
 function px_dog(g, x, y, t) { const w = Math.round(Math.sin(t * 5)); g.fillStyle = '#3a2f28'; g.fillRect(x, y - 6, 12, 6); g.fillRect(x + 10, y - 10, 5, 5); g.fillRect(x + 1, y, 2, 4); g.fillRect(x + 9, y, 2, 4); g.fillRect(x - 3, y - 8 + w, 3, 2); g.fillStyle = '#e8e4d8'; g.fillRect(x + 13, y - 9, 1, 1); }
 function px_book(g, x, y) { g.fillStyle = '#e4dcc6'; g.fillRect(x, y - 6, 14, 6); g.fillStyle = '#b8282a'; g.fillRect(x, y - 7, 14, 1); }
 
+// one-panel scenes per theme, used by the level intros
+const SCENES = {
+  street: (g, t) => { px_sky(g, '#0b1430', '#1d3a52'); px_stars(g, t); px_ground(g, 84, '#101a24'); for (let i = 0; i < 7; i++) px_house(g, i * 28 - 6, 84, 24, 36 + (i * 7) % 16, i % 3 === 0); px_dog(g, 40, 92, t); px_dog(g, 60, 94, t + 1); px_omafiets(g, 120, 92, t); px_mist(g, t, 88, 0.3); },
+  dyke: (g, t) => { px_sky(g, '#0b1430', '#1d3a52'); px_stars(g, t); px_moon(g, 150, 22, 9); px_ground(g, 78, '#0e1a22'); g.fillStyle = '#16303c'; g.fillRect(0, 90, 192, 18); px_windmill(g, 60, 78, 26, -t * 1.2); px_windmill(g, 130, 82, 16, -t * 1.6); px_mist(g, t, 70, 0.4); },
+  square: (g, t) => { px_sky(g, '#0b1430', '#1d3a52'); px_stars(g, t); px_ground(g, 86, '#121a24'); g.fillStyle = '#1a2430'; g.fillRect(80, 30, 34, 56); g.fillRect(90, 10, 14, 20); g.beginPath(); g.moveTo(88, 10); g.lineTo(97, -2); g.lineTo(106, 10); g.fill(); g.fillStyle = '#e0b45a'; g.fillRect(94, 40, 6, 12); g.fillStyle = '#1d2a22'; g.beginPath(); g.arc(30, 70, 14, 0, 7); g.arc(160, 72, 12, 0, 7); g.fill(); g.fillStyle = '#17171a'; g.fillRect(28, 70, 4, 16); g.fillRect(158, 72, 4, 14); if (Math.floor(t * 2) % 2) px_text(96, 28, '♪', '#e8e4d8', 7, true); },
+  nightshop: (g, t) => { px_sky(g, '#0a0f1c', '#162638'); px_ground(g, 86, '#121820'); g.fillStyle = '#1a2430'; g.fillRect(50, 30, 92, 56); g.fillStyle = '#8fd0ff'; g.fillRect(58, 48, 76, 30); g.fillStyle = '#0d1420'; for (let i = 0; i < 4; i++) g.fillRect(62 + i * 18, 52, 12, 22); g.fillStyle = '#1b1d21'; g.fillRect(54, 34, 84, 10); px_text(70, 42, 'NACHTWINKEL', Math.floor(t * 3) % 4 ? '#ffd27a' : '#5a4a2a', 7, true); px_zombie(g, 150, 86, t, '€4,50'); },
+  shops: (g, t) => { px_sky(g, '#0a0f1c', '#162638'); px_ground(g, 86, '#121820'); [['BAKKER', 10], ['SLAGER', 70], ['KAAS', 130]].forEach(([n, x], i) => { g.fillStyle = i % 2 ? '#2a2e38' : '#1a2430'; g.fillRect(x, 36, 54, 50); g.fillStyle = '#e0b45a'; g.fillRect(x + 8, 60, 38, 20); px_text(x + 6, 48, n, '#e8e4d8', 7, true); }); px_zombie(g, 100, 86, t, 'Tikkie?'); },
+  polder: (g, t) => SCENES.dyke(g, t),
+};
+function showLevelIntro(lv, then) {
+  if (!lv.intro) return then();
+  const panel = { text: lv.intro, draw: SCENES[lv.theme] || SCENES.street };
+  showIntro(then, [panel]);
+}
+
 let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
-function showIntro(then) {
+function showIntro(then, panels) {
+  const PANELS_ = panels || PANELS;
   introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
-  const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
+  const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
   const txt = $('pixtext');
   let last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
-    const p = PANELS[introI]; p.draw(g, introT);
+    const p = PANELS_[introI]; pxLabels = []; p.draw(g, introT);
+    hg.clearRect(0, 0, 1152, 648); for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * 6}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * 6, l.y * 6); }
     introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
     introRaf = requestAnimationFrame(frame);
   };
   introRaf = requestAnimationFrame(frame);
   const next = () => {
-    if (introTyped < PANELS[introI].text.length) { introTyped = PANELS[introI].text.length; return; }
+    if (introTyped < PANELS_[introI].text.length) { introTyped = PANELS_[introI].text.length; return; }
     introI++; introTyped = 0; introT = 0;
-    if (introI >= PANELS.length) finish();
+    if (introI >= PANELS_.length) finish();
   };
-  const finish = () => { cancelAnimationFrame(introRaf); $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null; try { localStorage.setItem('nachtrit.intro', '1'); } catch (e) {} then(); };
+  const finish = () => { cancelAnimationFrame(introRaf); $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null; if (!panels) { try { localStorage.setItem('nachtrit.intro', '1'); } catch (e) {} } then(); };
   $('intro').onclick = (e) => { if (e.target.id === 'skip') finish(); else next(); };
   onKey = (e) => { if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') next(); else if (e.key === 'Escape') finish(); };
 }
@@ -1009,7 +1053,7 @@ function showSummary(won) {
 function levelDone() { S.mode = 'dying'; S.dieT = 10; showSummary(true); }
 $('go').onclick = () => { initAudio(); if (!introSeen) { introSeen = true; $('start').style.display = 'none'; showIntro(openMap); } else openMap(); };
 $('replay').onclick = () => { $('start').style.display = 'none'; showIntro(openMap); }; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
-$('m_go').onclick = () => start(pendingLevel); $('m_back').onclick = openMap;
+$('m_go').onclick = () => { const lv = pendingLevel; $('mission').style.display = 'none'; showLevelIntro(lv, () => start(lv)); }; $('m_back').onclick = openMap;
 $('again').onclick = () => {
   if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon) return openMission(next); return openMap(); }
   start(L);
