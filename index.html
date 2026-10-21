@@ -1267,6 +1267,24 @@ function drawWorld() {
   // the rider at the furthest open town: a small bike
   const cur = T.filter(townOpen).pop(); if (cur) { const [x, y] = pts[T.indexOf(cur)]; const r = el('path', { d: 'M-1.4,0.6 a0.9,0.9 0 1 0 0.01,0 M1.4,0.6 a0.9,0.9 0 1 0 0.01,0 M-1.4,0.6 L-0.3,-1 L1.4,0.6 M-0.3,-1 L0.3,-1 L0.9,0.2 M-0.3,-1 L-0.1,-1.8', fill: 'none', stroke: '#b8282a', 'stroke-width': 0.4, transform: `translate(${x + 1.2} ${y - 5.6}) scale(0.9)` }); svg.appendChild(r); }
 }
+// a de/het bonus level per town, built from every noun with an article in that town and the towns before it
+function dehetBonus(t) {
+  const seen = new Map();
+  for (const lv of LEVELS) {
+    if (lv.soon || !lv.items) continue; const lt = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); if (!lt || lt.tier > t.tier) continue;
+    for (const it of lv.items) {
+      const nl = it.dehet ? `${it.art} ${it.nl}` : it.nl; const en = it.w || it.en; if (!nl || !en) continue;
+      const m = /^(de|het)\s+(\S.*)$/.exec(nl); if (!m || /^\d/.test(en)) continue;
+      if (!seen.has(m[2])) seen.set(m[2], { dehet: true, nl: m[2], art: m[1], en, w: it.w && it.wrong ? '' : (it.w || '') });
+    }
+  }
+  const items = [...seen.values()];
+  const tierKnobs = { 1: { lanes: 2, speed: 12, forkSlow: 0.45 }, 2: { lanes: 2, speed: 13, forkSlow: 0.4 }, 3: { lanes: 2, speed: 14, forkSlow: 0.35 } }[t.tier] || { lanes: 2, speed: 15, forkSlow: 0.3 };
+  return { id: 1000 + t.tier, act: t.tier, name: 'De of het', theme: 'street', town: t.id, place: 'bonus', ...tierKnobs, maxSpeed: tierKnobs.speed + 3, ramp: true, lampDecay: 0.4 + t.tier * 0.05, hint: null, obstacles: 'puddles', filler: [14, 20], deliveries: Math.min(24, Math.max(12, Math.floor(items.length / 2))), cefr: t.cefr, maxWords: 2,
+    intro: `${items.length} nouns from ${t.name} and everything before it. De left, het right. There is still no rule.`, introNl: `${items.length} woorden uit ${t.name} en alles daarvoor. De links, het rechts. Er is nog steeds geen regel.`,
+    mission: { where: `Every door in ${t.name}.`, carry: 'A roll of labels. Half say de, half say het.', want: 'The dead hold up a thing. Steer left for de, right for het. Fast, no hints.' },
+    items };
+}
 function openTown(t) {
   const open = townOpen(t);
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
@@ -1280,6 +1298,10 @@ function openTown(t) {
     if (open && lvls.length) { if (lvls.length === 1) el.onclick = () => openMission(lvls[0]); else el.querySelectorAll('.lv').forEach((b, i) => { b.style.cursor = 'pointer'; b.onclick = (e) => { e.stopPropagation(); openMission(lvls[i]); }; }); }
     box.appendChild(el);
   }
+  const bonus = dehetBonus(t); const bel = document.createElement('div'); bel.className = 'place' + (open ? '' : ' locked'); bel.style.borderColor = 'rgba(255,210,122,.4)';
+  bel.innerHTML = `<small>Bonus</small><span class="lv">De of het · ${bonus.items.length}${progress[bonus.id] ? ' ★' + progress[bonus.id] : ''}</span>`;
+  if (open) bel.onclick = () => openMission(bonus);
+  box.appendChild(bel);
   $('town').style.transform = 'translate(-50%,0)';
 }
 $('t_close').onclick = () => { $('town').style.transform = 'translate(-50%,105%)'; };
@@ -1296,7 +1318,7 @@ function openMission(lv) {
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); const pl = PLACES.find(p => p[0] === (lv.place || PLACE_OF[lv.id]));
   $('m_act').textContent = `${t ? t.name : ''} · ${pl ? pl[1] : ''} · tier ${t ? t.tier : lv.act}`; $('m_name').textContent = lv.name;
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
-  const words = lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.w || i.en}`).filter((v, i, a) => a.indexOf(v) === i);
+  const words = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.w || i.en}`).filter((v, i, a) => a.indexOf(v) === i);
   $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
   $('mission').style.display = 'flex';
 }
@@ -1347,7 +1369,7 @@ $('go').onclick = () => { initAudio(); if (!introSeen) { introSeen = true; $('st
 $('replay').onclick = () => { $('start').style.display = 'none'; showIntro(openMap); }; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
 $('m_go').onclick = () => { const lv = pendingLevel; $('mission').style.display = 'none'; showLevelIntro(lv, () => start(lv)); }; $('m_back').onclick = openMap;
 $('again').onclick = () => {
-  if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon) return openMission(next); return openMap(); }
+  if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon && L.id < 1000) return openMission(next); return openMap(); }
   start(L);
 };
 $('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy mistakes', 1500); };
