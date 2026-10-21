@@ -19,7 +19,7 @@
   .pill small { color:var(--dim); display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
   #lampwrap { width:min(44vw,220px); }
   #lampbar { height:8px; border-radius:4px; background:#1b1f2a; overflow:hidden; margin-top:4px; }
-  #lampfill { height:100%; width:70%; background:linear-gradient(90deg,#f0c060,#fff2b0); box-shadow:0 0 10px #f0c060; transition:width .25s; }
+  #lampfill { height:100%; width:70%; background:linear-gradient(90deg,#b9c9d1,#eef5f8); box-shadow:0 0 10px #cfe0e8; transition:width .25s; }
   #card { position:absolute; left:50%; top:calc(72px + env(safe-area-inset-top)); transform:translateX(-50%); width:min(92vw,560px); background:var(--card); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:12px 16px; text-align:center; opacity:0; transition:opacity .25s; }
   #card .who { color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
   #card .en { font-size:clamp(16px,2.6vw,22px); margin:4px 0 6px; }
@@ -36,6 +36,14 @@
   .btn.ghost { background:transparent; color:var(--ink); border:1px solid rgba(255,255,255,.25); }
   .hint { color:var(--dim); font-size:13px; margin-top:14px; }
   #summary { display:none; }
+  #places { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; text-align:left; }
+  #places .act { grid-column:1/-1; color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-top:10px; }
+  .place { pointer-events:auto; background:var(--card); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:10px; cursor:pointer; }
+  .place small { display:block; color:var(--dim); font-size:11px; }
+  .place.locked { opacity:.35; cursor:default; }
+  .place .st { color:#ffd27a; font-size:12px; letter-spacing:.1em; }
+  #grain { position:fixed; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:overlay; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  #shade { position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%); }
   #summary .stats { display:flex; gap:10px; justify-content:center; margin:12px 0; }
   #summary .stats .pill { min-width:80px; }
   #log { width:100%; height:140px; background:#0b0e16; color:#cfd3dc; border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:8px; font:12px/1.4 ui-monospace,monospace; resize:none; }
@@ -50,13 +58,15 @@
 </head>
 <body>
 <div id="ui">
+  <div id="shade"></div>
+  <div id="grain"></div>
   <div id="vignette"></div>
   <div id="flash"></div>
   <div id="hud">
     <div class="pill" id="lampwrap"><small>Lamp</small><div id="lampbar"><div id="lampfill"></div></div></div>
-    <div class="pill"><small>Zielen</small><span id="souls">0</span></div>
-    <div class="pill"><small>Reeks</small><span id="streak">0</span></div>
-    <div class="pill"><small>Afstand</small><span id="dist">0 m</span></div>
+    <div class="pill"><small>Delivered</small><span id="souls">0</span></div>
+    <div class="pill"><small>Streak</small><span id="streak">0</span></div>
+    <div class="pill"><small>Distance</small><span id="dist">0 m</span></div>
   </div>
   <div id="topright"><button class="ico" id="snd" title="Dutch voice">🔊</button></div>
   <div id="card"><div class="who"></div><div class="en"></div><div class="nl"></div></div>
@@ -67,40 +77,60 @@
   <div class="overlay" id="start">
     <div class="box">
       <h1>NACHTRIT</h1>
-      <div class="sub">Fiets naar huis. De doden willen begrepen worden voor het licht wordt.</div>
-      <button class="btn" id="go">Rijden</button>
-      <div class="hint">Links / rechts: pijltjes, A / D, of veeg en tik.<br>Rijd door het juiste bord. Elke fout maakt de lamp zwakker.</div>
+      <div class="sub">Cycle home. Understand the dead before dawn.</div>
+      <button class="btn" id="go">Start</button>
+      <div class="hint">Left / right: arrow keys, A / D, or swipe and tap.<br>Ride through the right sign. Every mistake dims the lamp.</div>
     </div>
   </div>
 
+  <div class="overlay" id="map" style="display:none">
+    <div class="box" style="max-width:720px;max-height:92vh;overflow:auto">
+      <h1 style="font-size:34px">THE TOWN</h1>
+      <div class="sub">Pick where to go. Each place has its own words. New districts open as you deliver.</div>
+      <div id="places"></div>
+      <div style="margin-top:14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
+    </div>
+  </div>
+  <div class="overlay" id="mission" style="display:none">
+    <div class="box">
+      <div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="m_act"></div>
+      <h1 style="font-size:40px" id="m_name"></h1>
+      <div style="text-align:left;margin:14px auto;max-width:460px;line-height:1.5" id="m_lines"></div>
+      <div id="m_words" style="text-align:left;margin:0 auto 14px;max-width:460px;font-size:13px;color:#c9d6ff;line-height:1.6"></div>
+      <button class="btn" id="m_go">Ride</button> <button class="btn ghost" id="m_back">Back</button>
+    </div>
+  </div>
   <div class="overlay" id="summary">
     <div class="box">
-      <h1 style="font-size:40px">HET HEEFT JE.</h1>
+      <h1 style="font-size:40px" id="sumtitle">IT HAS YOU.</h1>
       <div class="sub" id="sumline"></div>
       <div class="stats">
-        <div class="pill"><small>Zielen</small><span id="s_souls">0</span></div>
-        <div class="pill"><small>Afstand</small><span id="s_dist">0</span></div>
-        <div class="pill"><small>Goed</small><span id="s_good">0</span></div>
-        <div class="pill"><small>Fout</small><span id="s_bad">0</span></div>
+        <div class="pill"><small>Delivered</small><span id="s_souls">0</span></div>
+        <div class="pill"><small>Distance</small><span id="s_dist">0</span></div>
+        <div class="pill"><small>Right</small><span id="s_good">0</span></div>
+        <div class="pill"><small>Wrong</small><span id="s_bad">0</span></div>
       </div>
       <textarea id="log" readonly></textarea>
-      <div><button class="btn ghost" id="copy">Kopieer fouten</button><button class="btn" id="again">Opnieuw</button></div>
-      <div class="hint">De fouten staan in het formaat van ⚠️ Mistakes &amp; Drills.</div>
+      <div id="stars" style="font-size:34px;letter-spacing:.2em;margin:4px 0 10px"></div>
+      <div><button class="btn ghost" id="copy">Copy mistakes</button><button class="btn ghost" id="tomap">Map</button><button class="btn" id="again">Again</button></div>
+      <div class="hint">Mistakes are in the format of ⚠️ Mistakes &amp; Drills in your vault.</div>
     </div>
   </div>
 </div>
 
 <script>window.onerror=(m,src,l,c)=>{document.getElementById('err').textContent+=`${m} (${l}:${c})\n`;};</script>
 <script src="data.js"></script>
+<script src="levels.js"></script>
 <script type="module">
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.module.min.js';
 
 // ---------- constants ----------
-const LANE_X = [-2.2, 0, 2.2];
+const LANES3 = [-2.2, 0, 2.2], LANES2 = [-1.5, 1.5];
+let LANE_X = LANES3;
 const ROAD_W = 8;
 const BASE_SPEED = 14, MAX_SPEED = 40;
 const LOOK = 170;              // how far ahead we plan, in track units
-const BG = 0x0a0d18;
+const BG = 0x0b0f14;
 
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -132,9 +162,9 @@ addEventListener('resize', () => {
 });
 
 // lights
-scene.add(new THREE.HemisphereLight(0x4a5c90, 0x0a0a0c, 0.7));
-const moon = new THREE.DirectionalLight(0x8fa4e0, 0.55); moon.position.set(-30, 40, -20); scene.add(moon);
-const lampLight = new THREE.SpotLight(0xffe0a0, 4.0, 60, Math.PI / 6, 0.6, 1.0);
+scene.add(new THREE.HemisphereLight(0x3d4a5a, 0x08090b, 0.75));
+const moon = new THREE.DirectionalLight(0x7d8a9c, 0.5); moon.position.set(-30, 40, -20); scene.add(moon);
+const lampLight = new THREE.SpotLight(0xdfe8ec, 4.2, 60, Math.PI / 6, 0.6, 1.0);
 lampLight.position.set(0, 1.1, 0.4);
 lampLight.target.position.set(0, 0.2, -20);
 scene.add(lampLight, lampLight.target);
@@ -148,9 +178,10 @@ const M = {
   dark: new THREE.MeshLambertMaterial({ color: 0x15161b }),
   mill: new THREE.MeshLambertMaterial({ color: 0x2a2520 }),
   bike: new THREE.MeshLambertMaterial({ color: 0x8c8c94 }),
-  rider: new THREE.MeshLambertMaterial({ color: 0x202430 }),
+  rider: new THREE.MeshLambertMaterial({ color: 0x14161b }),
+  shirt: new THREE.MeshLambertMaterial({ color: 0x8e1f1f }),
   ghost: new THREE.MeshLambertMaterial({ color: 0xdfe6ff, emissive: 0x9aa8ff, emissiveIntensity: 0.5, transparent: true, opacity: 0.55 }),
-  wisp: new THREE.MeshBasicMaterial({ color: 0xbfe8ff }),
+  wisp: new THREE.MeshBasicMaterial({ color: 0xcfd8dc }),
   puddle: new THREE.MeshLambertMaterial({ color: 0x0d1830 }),
   eye: new THREE.MeshBasicMaterial({ color: 0xff2a1a }),
   hay: new THREE.MeshLambertMaterial({ color: 0x4a3d20 }),
@@ -245,11 +276,13 @@ const bike = new THREE.Group();
   const w1 = new THREE.Mesh(wg, M.dark); w1.position.set(0, 0.34, -0.6); bike.add(w1);
   const w2 = new THREE.Mesh(wg, M.dark); w2.position.set(0, 0.34, 0.6); bike.add(w2);
   bike.userData.wheels = [w1, w2];
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.rider); torso.position.set(0, 1.15, 0.05); torso.rotation.x = -0.35; bike.add(torso);
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.shirt); torso.position.set(0, 1.15, 0.05); torso.rotation.x = -0.35; bike.add(torso);
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), M.rider); head.position.set(0, 1.62, -0.2); bike.add(head);
-  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), new THREE.MeshBasicMaterial({ color: 0xfff1c0 })); lamp.position.set(0, 0.8, -0.78); bike.add(lamp);
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), new THREE.MeshBasicMaterial({ color: 0xeaf2f5 })); lamp.position.set(0, 0.8, -0.78); bike.add(lamp);
   bike.userData.lampMesh = lamp;
 }
+const beam = new THREE.Mesh(new THREE.ConeGeometry(2.4, 26, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xcfe0e8, transparent: true, opacity: 0.05, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide }));
+beam.rotation.x = Math.PI / 2; beam.position.set(0, 0.9, -13.6); bike.add(beam);
 scene.add(bike);
 
 // the follower, only shown at the end
@@ -368,6 +401,32 @@ const S = {
 };
 let audioCtx = null;
 window.NR = S; // debug handle
+let L = null;                 // current level, null = endless
+let BASE = BASE_SPEED, MAXS = MAX_SPEED;
+let progress = {}; try { progress = JSON.parse(localStorage.getItem('nachtrit.progress') || '{}'); } catch (e) { progress = {}; }
+function saveProgress() { try { localStorage.setItem('nachtrit.progress', JSON.stringify(progress)); } catch (e) {} }
+function unlocked(lv) { return lv.id === 1 || (progress[lv.id - 1] || 0) >= 1 || (progress[lv.id] || 0) >= 1; }
+
+// turn a level item into an entry the planner understands
+function itemToEntry(item, pool) {
+  const others = kind => pool.filter(p => p !== item && p[kind]).map(p => p[kind]).filter((v, i, a) => a.indexOf(v) === i).sort(() => Math.random() - 0.5);
+  if (item.read) {
+    const o = [item.en, ...others('en').filter(e => e !== item.en).slice(0, 2)];
+    return { read: true, nl: item.nl, o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` };
+  }
+  if (item.w || item.listen) {
+    const o = [item.nl, ...others('nl').filter(e => e !== item.nl).slice(0, 2)];
+    return { en: item.w || item.en, nl: item.nl, listen: !!item.listen, parts: [{ o, a: 0, r: item.listen ? 'woord' : (/^\d+$/.test(item.w || '') ? 'getal' : 'woord'), w: `${item.nl} = ${item.w || item.en}` }] };
+  }
+  return item; // build entry
+}
+function levelQueue(lv) {
+  const items = lv.items.slice().sort(() => Math.random() - 0.5);
+  const q = []; while (q.length < lv.deliveries) q.push(...items.slice(0, lv.deliveries - q.length));
+  // the pool for distractors is every item that shares a kind
+  const pool = lv.items.map(i => i.read ? { en: i.en, nl: i.nl, read: true } : i.w || i.listen ? { nl: i.nl, en: i.w || i.en } : null).filter(Boolean);
+  return q.map(i => itemToEntry(i, lv.items));
+}
 
 // ---------- planning ----------
 function nextEntry() {
@@ -385,20 +444,22 @@ function planFiller(len) {
   let d = start + 10;
   while (d < end - 8) {
     const gap = 11 + S.speed * 0.5;
-    if (Math.random() < 0.72) {
-      const lane = Math.floor(Math.random() * 3);
-      const kind = Math.random();
-      if (kind < 0.5) add(fence(), d, lane, 'obstacle');
+    const obRate = !L ? 0.72 : L.obstacles === 'none' ? 0 : L.obstacles === 'puddles' ? 0.35 : L.obstacles === 'light' ? 0.5 : 0.72;
+    if (Math.random() < obRate) {
+      const lane = Math.floor(Math.random() * LANE_X.length);
+      const kind = Math.random(); const ob = L ? L.obstacles : 'normal';
+      if (ob === 'puddles') add(puddle(), d, lane, 'puddle');
+      else if (kind < 0.5) add(fence(), d, lane, 'obstacle');
       else if (kind < 0.75) add(cart(), d, lane, 'obstacle');
       else add(puddle(), d, lane, 'puddle');
       S.lastObstacleD = d;
       // wisps in a free lane, just after
       if (Math.random() < 0.6) {
-        const free = [0, 1, 2].filter(l => l !== lane); const wl = pick(free);
+        const free = [...Array(LANE_X.length).keys()].filter(l => l !== lane); const wl = pick(free);
         for (let i = 0; i < 4; i++) add(wisp(), d + 4 + i * 2.2, wl, 'wisp');
       }
     } else {
-      const wl = Math.floor(Math.random() * 3);
+      const wl = Math.floor(Math.random() * LANE_X.length);
       for (let i = 0; i < 5; i++) add(wisp(), d + i * 2.2, wl, 'wisp');
     }
     d += gap;
@@ -415,7 +476,7 @@ function planSentence(entry) {
     S.planCursor = d0 + 34 + 10;
     return;
   }
-  const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string') };
+  const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0 };
   const d0 = S.planCursor + 12;
   const g = ghostFigure(); g.position.x = ROAD_W / 2 + 1.0; add(g, d0, null, 'passenger', { st });
   let d = d0 + 54;
@@ -426,24 +487,33 @@ function planSentence(entry) {
   S.planCursor = d - forkGap + 12;
 }
 function placeFork(fork, d) {
+  const NL = LANE_X.length;
+  if (fork.o.length > NL) { // keep the answer, drop extra distractors
+    const keep = [fork.a]; const rest = fork.o.map((t, i) => i).filter(i => i !== fork.a).sort(() => Math.random() - 0.5);
+    while (keep.length < NL) keep.push(rest.pop());
+    const o = keep.map(i => fork.o[i]); fork.a = 0; fork.o = o;
+  }
   const n = fork.o.length;
-  const lanes = [0, 1, 2].sort(() => Math.random() - 0.5).slice(0, n);
-  // shuffle option order onto lanes
+  const allLanes = [...Array(NL).keys()];
+  const lanes = allLanes.slice().sort(() => Math.random() - 0.5).slice(0, n);
   const order = fork.o.map((t, i) => i).sort(() => Math.random() - 0.5);
   const posts = [];
   lanes.forEach((lane, k) => {
     const oi = order[k];
     const sp = signpost(fork.o[oi]);
+    if (L && L.hint === 'glow') sp.userData.board.material.emissiveIntensity = oi === fork.a ? 0.75 : 0.12;
     posts.push(add(sp, d, lane, 'sign', { fork, oi }));
   });
-  for (const lane of [0, 1, 2]) if (!lanes.includes(lane)) add(fence(), d, lane, 'obstacle', { forkFence: true, fork });
+  for (const lane of allLanes) if (!lanes.includes(lane)) add(fence(), d, lane, 'obstacle', { forkFence: true, fork });
   const gate = { fork, d, posts, armed: false, resolved: false };
   S.objs.push({ mesh: null, d, lane: null, type: 'gate', gate });
 }
 function plan() {
   while (S.planCursor < S.dist + LOOK) {
-    planFiller(rnd(55, 85));
-    planSentence(nextEntry());
+    if (!L) { planFiller(rnd(55, 85)); planSentence(nextEntry()); continue; }
+    if (S.queue.length) { planFiller(rnd(L.filler[0], L.filler[1])); planSentence(S.queue.shift()); continue; }
+    if (!S.finishPlanned) { S.finishPlanned = true; planFiller(30); const d = S.planCursor + 10; add(bigSign('THUIS'), d, null, 'finish', {}).mesh.position.x = 0; S.planCursor = d + 60; }
+    else S.planCursor += 60;
   }
 }
 
@@ -514,7 +584,7 @@ function speak(text, whisper = false) {
 $('snd').onclick = () => { S.voice = !S.voice; $('snd').textContent = S.voice ? '🔊' : '🔇'; };
 
 // ---------- input ----------
-function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir, 0, 2); }
+function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir, 0, LANE_X.length - 1); }
 addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') steer(-1);
   else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') steer(1);
@@ -532,15 +602,42 @@ addEventListener('touchend', e => {
 addEventListener('mousedown', e => { if (S.mode === 'ride' && e.target === renderer.domElement) steer(e.clientX < innerWidth / 2 ? -1 : 1); });
 
 // ---------- game flow ----------
-function start() {
+function openMap() {
   warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-  $('start').style.display = 'none'; $('summary').style.display = 'none';
+  for (const id of ['start', 'summary', 'mission']) $(id).style.display = 'none';
+  const box = $('places'); box.innerHTML = '';
+  let act = 0;
+  for (const lv of LEVELS) {
+    if (lv.act !== act) { act = lv.act; const h = document.createElement('div'); h.className = 'act'; h.textContent = `District ${act}: ${ACTS[act]}`; box.appendChild(h); }
+    const el = document.createElement('div'); const ok = !lv.soon && unlocked(lv);
+    el.className = 'place' + (ok ? '' : ' locked');
+    const st = progress[lv.id] || 0;
+    el.innerHTML = `<small>${lv.id}</small>${lv.name}<div class="st">${lv.soon ? 'soon' : ok ? ('★'.repeat(st) + '☆'.repeat(3 - st)) : 'locked'}</div>`;
+    if (ok) el.onclick = () => openMission(lv);
+    box.appendChild(el);
+  }
+  $('map').style.display = 'flex'; S.mode = 'start';
+}
+let pendingLevel = null;
+function openMission(lv) {
+  pendingLevel = lv; $('map').style.display = 'none';
+  $('m_act').textContent = `District ${lv.act}: ${ACTS[lv.act]} · level ${lv.id}`; $('m_name').textContent = lv.name;
+  $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
+  const words = lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.w || i.en}`).filter((v, i, a) => a.indexOf(v) === i);
+  $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
+  $('mission').style.display = 'flex';
+}
+function start(lv) {
+  L = lv || null;
+  LANE_X = (L && L.lanes === 2) ? LANES2 : LANES3;
+  BASE = L ? L.speed : BASE_SPEED; MAXS = L ? L.maxSpeed : MAX_SPEED;
+  for (const id of ['start', 'summary', 'mission', 'map']) $(id).style.display = 'none';
   reset(); S.mode = 'intro'; S.introT = 0;
 }
 function reset() {
   for (const o of S.objs) if (o.mesh) scene.remove(o.mesh);
-  Object.assign(S, { t: 0, dist: 0, speed: BASE_SPEED, slow: 1, slowTarget: 1, lane: 1, x: 0, lean: 0, lamp: 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
-    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [] });
+  Object.assign(S, { t: 0, dist: 0, speed: BASE, slow: 1, slowTarget: 1, lane: LANE_X.length === 2 ? 0 : 1, x: 0, lean: 0, lamp: L ? 85 : 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
+    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100 });
   follower.visible = false; follower.userData.glow.intensity = 0;
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
   hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0;
@@ -551,16 +648,33 @@ function die() {
   follower.visible = true; follower.position.set(0, 0, 11); follower.lookAt(0, 4, 0);
   speak('Je bent te laat.');
 }
-function showSummary() {
+
+function showSummary(won) {
   S.mode = 'dead';
-  $('s_souls').textContent = S.souls; $('s_dist').textContent = Math.round(S.dist) + ' m';
+  $('s_souls').textContent = L ? `${S.delivered}/${S.deliveriesTotal}` : S.souls; $('s_dist').textContent = Math.round(S.dist) + ' m';
   $('s_good').textContent = S.good; $('s_bad').textContent = S.bad;
-  $('sumline').textContent = S.bad === 0 ? 'Geen enkele fout. Het kreeg je alleen omdat de lamp opraakte.' : `${S.mistakes.length} fout${S.mistakes.length === 1 ? '' : 'en'} om te oefenen.`;
-  $('log').value = S.mistakes.map(m => `- ${today()} — ${m.said} → ${m.should} → [[${m.note}]]`).join('\n') || '(geen fouten)';
+  let stars = 0;
+  if (L && won) {
+    const ratio = S.delivered / S.deliveriesTotal;
+    stars = ratio >= 1 && S.lampMin >= 50 ? 3 : ratio >= 0.83 ? 2 : ratio >= 0.66 ? 1 : 0;
+    if (stars > (progress[L.id] || 0)) { progress[L.id] = stars; saveProgress(); }
+  }
+  $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
+  $('stars').textContent = L && won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+  $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.mistakes.length} mistake${S.mistakes.length === 1 ? '' : 's'} to practise.`)
+    : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : 'Delivered. Three stars need every one right with a healthy lamp.') : 'You need 4 of 6 right to open the next place.';
+  $('again').textContent = L && won && stars ? 'Next place' : 'Again';
+  $('log').value = S.mistakes.map(m => `- ${today()} — ${m.said} → ${m.should} → [[${m.note}]]`).join('\n') || '(no mistakes)';
   $('summary').style.display = 'flex';
 }
-$('go').onclick = start; $('again').onclick = start;
-$('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Gekopieerd'; setTimeout(() => $('copy').textContent = 'Kopieer fouten', 1500); };
+function levelDone() { S.mode = 'dying'; S.dieT = 10; showSummary(true); }
+$('go').onclick = openMap; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
+$('m_go').onclick = () => start(pendingLevel); $('m_back').onclick = openMap;
+$('again').onclick = () => {
+  if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon) return openMission(next); return openMap(); }
+  start(L);
+};
+$('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy mistakes', 1500); };
 
 function resolveFork(gate) {
   const { fork } = gate; gate.resolved = true; S.activeFork = null; S.slowTarget = 1; $('lanes').style.opacity = 0; hideCard();
@@ -570,18 +684,18 @@ function resolveFork(gate) {
   const rule = RULES[fork.r] || { name: fork.r, note: fork.r };
   if (ok) {
     S.good++; S.streak++; S.wrongRow = 0;
-    S.lamp = clamp(S.lamp + 18, 0, 100); S.speed = clamp(S.speed + 1.6, BASE_SPEED, MAX_SPEED);
+    S.lamp = clamp(S.lamp + 18, 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
-    if (fork.read) { say(`<b>${fork.o[fork.a]}</b>`, 'good', fork.w, 3); speak(fork.entry.nl); }
+    if (fork.read) { S.souls++; S.delivered++; say(`<b>${fork.o[fork.a]}</b>`, 'good', fork.w, 3); speak(fork.entry.nl); }
     else {
       fork.st.chosen.push(fork.o[fork.a]);
       const done = fork.idx === fork.st.forks.length - 1;
-      if (done) { S.souls++; say(`<b>${fork.entry.nl}</b>`, 'good', 'De ziel is thuis.', 3.2); speak(fork.entry.nl); hideCard(); }
+      if (done) { S.souls++; if (fork.st.wrong === 0) S.delivered++; say(`<b>${fork.entry.nl}</b>`, 'good', L ? fork.w : 'Delivered.', 3.2); speak(fork.entry.nl); hideCard(); }
       else { say(`<b>${fork.o[fork.a]}</b>`, 'good', null, 1.6); speak(fork.o[fork.a], true); }
     }
   } else {
     S.bad++; S.streak = 0; S.wrongRow++;
-    S.lamp = clamp(S.lamp - 22, 0, 100); S.speed = clamp(S.speed - 3, BASE_SPEED, MAX_SPEED);
+    S.lamp = clamp(S.lamp - (L ? 14 : 22), 0, 100); S.speed = clamp(S.speed - 3, BASE, MAXS);
     flash('#a01010', 0.45); chime(false); S.stumble = 1;
     const saidTxt = chosenIdx >= 0 ? fork.o[chosenIdx] : '(geen keuze)';
     if (fork.read) {
@@ -592,8 +706,9 @@ function resolveFork(gate) {
       say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', fork.w, 3.6);
       S.mistakes.push({ said: wrongSentence, should: fork.entry.nl, note: rule.note });
       fork.st.chosen.push(fork.o[fork.a]); // the sentence continues with the right word
+      fork.st.wrong++;
       const done = fork.idx === fork.st.forks.length - 1;
-      if (done) { hideCard(); speak(fork.entry.nl); }
+      if (done) { S.souls++; hideCard(); speak(fork.entry.nl); }
     }
     if (S.wrongRow >= 3) S.lamp = 0;
   }
@@ -609,9 +724,10 @@ function update(dt) {
     S.introT += dt; const k = smooth(clamp(S.introT / 3.6, 0, 1));
     camera.position.set(0, lerp(22, 3.2, k), lerp(14, 7, k));
     const look = new THREE.Vector3(0, lerp(0, 1, k), lerp(-30, -8, k)); camera.lookAt(look);
-    if (S.introT > 3.6) { S.mode = 'ride'; say('Rijd door het juiste bord.', 'good', null, 2.2); }
+    if (S.introT > 3.6) { S.mode = 'ride'; say(L ? L.mission.where : 'Ride through the right sign.', 'good', null, 2.2); }
   }
   if (S.mode === 'dying') {
+    if (S.dieT >= 10) return;
     S.dieT += dt; const k = smooth(clamp(S.dieT / 1.6, 0, 1));
     camera.position.set(lerp(camera.position.x, 0, 0.1), lerp(3.2, 1.6, k), lerp(7, 2, k));
     camera.lookAt(0, lerp(1, 4, k), lerp(-8, 11, k));
@@ -627,15 +743,16 @@ function update(dt) {
   const riding = S.mode === 'ride';
   if (riding) {
     S.slow = lerp(S.slow, S.slowTarget, dt * 3);
-    S.speed = clamp(S.speed + dt * 0.08, BASE_SPEED, MAX_SPEED);      // slow ramp with time
+    if (!L || L.ramp) S.speed = clamp(S.speed + dt * 0.08, BASE, MAXS);      // slow ramp with time
     const v = S.speed * S.slow * (S.stumble > 0 ? 0.6 : 1);
     S.dist += v * dt;
-    S.lamp -= dt * (1.1 + (S.speed < 17 ? 0.6 : 0));
+    S.lamp -= dt * (L ? L.lampDecay : (1.1 + (S.speed < 17 ? 0.6 : 0)));
+    S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
     if (S.lamp <= 0) { S.lamp = 0; die(); return; }
     plan();
   }
-  S.speedNorm = (S.speed - BASE_SPEED) / (MAX_SPEED - BASE_SPEED);
+  S.speedNorm = MAXS > BASE ? (S.speed - BASE) / (MAXS - BASE) : 0;
 
   // lane movement + lean
   const tx = LANE_X[S.lane]; const dx = tx - S.x;
@@ -647,12 +764,13 @@ function update(dt) {
   lampLight.position.x = S.x; lampLight.target.position.x = S.x + S.lean * 1.5;
 
   // lamp look
-  const L = S.lamp / 100;
-  lampLight.intensity = 0.8 + L * 4.0;
-  bike.userData.lampMesh.material.color.setHSL(0.11, 0.8, 0.3 + L * 0.6);
-  scene.fog.density = 0.042 - L * 0.02 + S.forkZoom * 0.003;
+  const Lf = S.lamp / 100;
+  lampLight.intensity = 0.8 + Lf * 4.0;
+  bike.userData.lampMesh.material.color.setHSL(0.55, 0.15, 0.3 + Lf * 0.65);
+  beam.material.opacity = 0.02 + Lf * 0.04;
+  scene.fog.density = 0.042 - Lf * 0.02 + S.forkZoom * 0.003;
   const lw = Math.round(S.lamp); if (lw !== S.lampLast) { S.lampLast = lw; $('lampfill').style.width = lw + '%'; }
-  const danger = 1 - L;
+  const danger = 1 - Lf;
   const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = vo; }
   if (riding) {
     S.heartT += dt; const period = 1.25 - danger * 0.85;
@@ -689,33 +807,33 @@ function update(dt) {
     // collisions at the bike
     const pz = o.pz === undefined ? z : o.pz; o.pz = z;
     if (!o.hit && z > -0.9 && pz < 0.9 && o.lane === S.lane) {
-      if (o.type === 'wisp') { o.hit = true; o.mesh.visible = false; S.lamp = clamp(S.lamp + 2, 0, 100); S.speed = clamp(S.speed + 0.15, BASE_SPEED, MAX_SPEED); chime(true); }
-      else if (o.type === 'puddle') { o.hit = true; S.speed = clamp(S.speed - 2, BASE_SPEED, MAX_SPEED); S.stumble = 0.6; }
+      if (o.type === 'wisp') { o.hit = true; o.mesh.visible = false; S.lamp = clamp(S.lamp + 2, 0, 100); S.speed = clamp(S.speed + 0.15, BASE, MAXS); chime(true); }
+      else if (o.type === 'puddle') { o.hit = true; S.speed = clamp(S.speed - 2, BASE, MAXS); S.stumble = 0.6; }
       else if (o.type === 'obstacle') {
         o.hit = true; S.stumble = 1; flash('#000', 0.6); thump(0.8);
-        if (!o.forkFence) { S.lamp = clamp(S.lamp - 10, 0, 100); S.speed = BASE_SPEED; say('Au.', 'bad', null, 1); }
+        if (!o.forkFence) { S.lamp = clamp(S.lamp - 10, 0, 100); S.speed = BASE; say('Au.', 'bad', null, 1); }
       }
     }
     if (o.type === 'passenger' && !o.hit && z > -2) {
       o.hit = true; S.slowTarget = 0.6; setTimeout(() => { if (S.activeFork == null) S.slowTarget = 1; }, 1800);
-      showCard('De passagier zegt', o.st.entry.en, assembled(o.st, 0)); thump(0.5);
+      if (o.st.entry.listen) { showCard('Listen', '🔊 …', assembled(o.st, 0)); speak(o.st.entry.nl); } else showCard('The passenger says', o.st.entry.en, assembled(o.st, 0)); thump(0.5);
     }
-    if (o.type === 'readsign' && !o.hit && z > -36) {
-      o.hit = true;
-    }
+    if (o.type === 'finish' && !o.hit && z > 0) { o.hit = true; levelDone(); return; }
   }
   // fork approach
   if (riding && nearestGate) {
     const g = nearestGate.gate; const z = S.dist - g.d;   // negative while ahead
     if (!g.armed && z > -46) {
-      g.armed = true; S.activeFork = g; S.slowTarget = 0.55;
+      g.armed = true; S.activeFork = g;
       const f = g.fork;
-      if (f.read) showCard('Wat staat er?', f.entry.nl, 'Rijd door de juiste betekenis.');
-      else showCard('De passagier zegt', f.entry.en, assembled(f.st, f.idx));
-      for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = 0.6;
-      const cells = $('lanes').children; for (let i = 0; i < 3; i++) { const p = g.posts.find(q => q.lane === i); cells[i].textContent = p ? p.fork.o[p.oi] : '✕'; }
+      if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.');
+      else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx)); speak(f.entry.nl); }
+      else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx));
+      for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
+      const cells = $('lanes').children; for (let i = 0; i < 3; i++) { const p = g.posts.find(q => q.lane === i); cells[i].style.display = i < LANE_X.length ? '' : 'none'; cells[i].textContent = p ? p.fork.o[p.oi] : '✕'; }
       $('lanes').style.opacity = 1;
     }
+    if (g.armed) S.slowTarget = z > -16 ? (L ? L.forkSlow : 0.55) : (L ? 0.8 : 0.9);
     if (g.armed) { const cells = $('lanes').children; for (let i = 0; i < 3; i++) cells[i].classList.toggle('here', i === S.lane); }
     S.forkZoom = lerp(S.forkZoom, g.armed ? clamp(1 - (-z) / 46, 0, 1) : 0, dt * 4);
   } else S.forkZoom = lerp(S.forkZoom, 0, dt * 4);
@@ -758,7 +876,7 @@ function loop() {
 }
 const q = new URLSearchParams(location.search);
 if (q.has('shot')) {
-  start();
+  start(q.has('level') ? LEVELS[+q.get('level') - 1] : null);
   const secs = parseFloat(q.get('shot')) || 0;
   for (let i = 0; i < secs * 60; i++) { update(1 / 60); if (q.has('lane') && S.mode === 'ride') S.lane = +q.get('lane'); }
   if (q.has('gate')) { // ride on until the next fork is this close
