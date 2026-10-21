@@ -90,3 +90,28 @@ window.ACTS = { 1: 'Thuisstraat', 2: 'De wijk', 3: 'Het dorp', 4: 'Thuis en fami
 window.defineLevels = function (list) {
   for (const lv of list) { const i = window.LEVELS.findIndex(l => l.id === lv.id); if (i >= 0) window.LEVELS[i] = Object.assign({}, window.LEVELS[i], lv, { soon: false }); else window.LEVELS.push(lv); }
 };
+
+// De of het: the whole of district 1's nouns, de always on the left, het always on the right.
+window.defineLevels([
+  { id: 41, act: 1, name: 'De of het', theme: 'street', town: 'alblasserdam', place: 'thuis', lanes: 2, speed: 12, maxSpeed: 15, ramp: true, lampDecay: 0.4, forkSlow: 0.45, hint: null, obstacles: 'puddles', filler: [16, 22], deliveries: 16, cefr: 'A1', maxWords: 2,
+    intro: 'Page one of the grammar book, at last. De on the left, het on the right. There is no rule.',
+    introNl: 'Bladzijde één van het grammaticaboek, eindelijk. De links, het rechts. Er is geen regel.',
+    mission: { where: 'Your own street, every door.', carry: 'A roll of labels. Half say de, half say het.', want: 'The dead hold up a thing. You steer left for de, right for het. Fast.' },
+    items: [
+      { dehet: true, nl: 'hond', art: 'de', en: 'the dog' }, { dehet: true, nl: 'huis', art: 'het', en: 'the house', w: 'het huis. Most things you live in are het: het huis, het dorp.' },
+      { dehet: true, nl: 'vrouw', art: 'de', en: 'the woman', w: 'People are de: de vrouw, de man, de buurman.' }, { dehet: true, nl: 'tuin', art: 'de', en: 'the garden' },
+      { dehet: true, nl: 'deur', art: 'de', en: 'the door' }, { dehet: true, nl: 'straat', art: 'de', en: 'the street' }, { dehet: true, nl: 'fiets', art: 'de', en: 'the bike' },
+      { dehet: true, nl: 'lamp', art: 'de', en: 'the lamp' }, { dehet: true, nl: 'nacht', art: 'de', en: 'the night' }, { dehet: true, nl: 'mist', art: 'de', en: 'the mist' },
+      { dehet: true, nl: 'melk', art: 'de', en: 'the milk' }, { dehet: true, nl: 'brood', art: 'het', en: 'the bread' }, { dehet: true, nl: 'ei', art: 'het', en: 'the egg' },
+      { dehet: true, nl: 'kaas', art: 'de', en: 'the cheese' }, { dehet: true, nl: 'appel', art: 'de', en: 'the apple' }, { dehet: true, nl: 'water', art: 'het', en: 'the water' },
+      { dehet: true, nl: 'koffie', art: 'de', en: 'the coffee' }, { dehet: true, nl: 'thee', art: 'de', en: 'the tea' }, { dehet: true, nl: 'bier', art: 'het', en: 'the beer' },
+      { dehet: true, nl: 'wijn', art: 'de', en: 'the wine' }, { dehet: true, nl: 'kerk', art: 'de', en: 'the church' }, { dehet: true, nl: 'boom', art: 'de', en: 'the tree' },
+      { dehet: true, nl: 'winkel', art: 'de', en: 'the shop' }, { dehet: true, nl: 'honden', art: 'de', en: 'the dogs', w: 'Every plural is de, even het huis becomes de huizen.' },
+      { dehet: true, nl: 'huizen', art: 'de', en: 'the houses', w: 'Plural, so de. The het only counts for one house.' }, { dehet: true, nl: 'biertje', art: 'het', en: 'the small beer', w: 'Every -je word is het: het biertje, het hondje.' },
+      { dehet: true, nl: 'hondje', art: 'het', en: 'the little dog', w: 'A diminutive is always het, even for de hond.' }, { dehet: true, nl: 'weekend', art: 'het', en: 'the weekend' },
+      { dehet: true, nl: 'werk', art: 'het', en: 'the work' }, { dehet: true, nl: 'buurman', art: 'de', en: 'the neighbour' }, { dehet: true, nl: 'dorp', art: 'het', en: 'the village' },
+      { dehet: true, nl: 'molen', art: 'de', en: 'the windmill' }, { dehet: true, nl: 'brug', art: 'de', en: 'the bridge' }, { dehet: true, nl: 'golfbaan', art: 'de', en: 'the golf course' },
+      { dehet: true, nl: 'vergadering', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de.' }, { dehet: true, nl: 'dashboard', art: 'het', en: 'the dashboard' },
+      { dehet: true, nl: 'Nederlands', art: 'het', en: 'the Dutch language', w: 'Languages are het.' }, { dehet: true, nl: 'nummer', art: 'het', en: 'the number' },
+    ] },
+]);

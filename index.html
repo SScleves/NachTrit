@@ -783,6 +783,9 @@ function itemToEntry(item, pool) {
     const o = [item.en, ...others('en').filter(e => e !== item.en).slice(0, 2)];
     return { read: true, nl: item.nl, o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` };
   }
+  if (item.dehet) {
+    return { en: item.en, nl: `${item.art} ${item.nl}`, dehet: true, parts: [{ o: ['de', 'het'], a: item.art === 'de' ? 0 : 1, r: 'dehet', w: item.w || `${item.art} ${item.nl}`, fixed: true }, item.nl] };
+  }
   if (item.look) {
     const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, 2)];
     return { look: true, side: item.side || (Math.random() < 0.5 ? 'links' : 'rechts'), prop: item.prop, value: item.value, en: item.en, nl: item.nl,
@@ -871,7 +874,7 @@ function planSentence(entry) {
   const g = ghostFigure(); add(g, d0, null, 'passenger', { st, bx: ROAD_W / 2 + 1.0 });
   let d = d0 + (L ? 38 : 54);
   st.forks.forEach((f, i) => {
-    placeFork({ entry, st, idx: i, o: f.o, a: f.a, r: f.r, w: f.w, read: false }, d);
+    placeFork({ entry, st, idx: i, o: f.o, a: f.a, r: f.r, w: f.w, read: false, fixed: !!f.fixed }, d);
     d += forkGap;
   });
   S.planCursor = d - forkGap + 12;
@@ -885,8 +888,8 @@ function placeFork(fork, d) {
   }
   const n = fork.o.length;
   const allLanes = [...Array(NL).keys()];
-  const lanes = allLanes.slice().sort(() => Math.random() - 0.5).slice(0, n);
-  const order = fork.o.map((t, i) => i).sort(() => Math.random() - 0.5);
+  const lanes = fork.fixed ? allLanes.slice(0, n) : allLanes.slice().sort(() => Math.random() - 0.5).slice(0, n);
+  const order = fork.fixed ? fork.o.map((t, i) => i) : fork.o.map((t, i) => i).sort(() => Math.random() - 0.5);
   const posts = [];
   lanes.forEach((lane, k) => {
     const oi = order[k];
@@ -1131,8 +1134,8 @@ if (new URLSearchParams(location.search).has('intro')) introSeen = false;
 
 // ---------- the world map ----------
 const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen']];
-const TOWN_OF = id => id <= 5 ? 'alblasserdam' : id <= 10 ? 'kinderdijk' : id <= 15 ? 'gouda' : id <= 20 ? 'utrecht' : id <= 30 ? 'rotterdam' : 'amsterdam';
-const PLACE_OF = { 1: 'thuis', 2: 'mensen', 3: 'thuis', 4: 'mensen', 5: 'winkels', 6: 'winkels', 7: 'eten', 8: 'thuis', 9: 'eten', 10: 'station', 11: 'werk', 12: 'station', 13: 'mensen', 14: 'winkels', 15: 'sport' };
+const TOWN_OF = id => id === 41 ? 'alblasserdam' : id <= 5 ? 'alblasserdam' : id <= 10 ? 'kinderdijk' : id <= 15 ? 'gouda' : id <= 20 ? 'utrecht' : id <= 30 ? 'rotterdam' : 'amsterdam';
+const PLACE_OF = { 41: 'thuis', 1: 'thuis', 2: 'mensen', 3: 'thuis', 4: 'mensen', 5: 'winkels', 6: 'winkels', 7: 'eten', 8: 'thuis', 9: 'eten', 10: 'station', 11: 'werk', 12: 'station', 13: 'mensen', 14: 'winkels', 15: 'sport' };
 const LL = (lon, lat) => [(lon - 3.3) / (7.2 - 3.3), 1 - (lat - 50.75) / (53.55 - 50.75)];
 const TOWNS_FALLBACK = [
   { id: 'alblasserdam', name: 'Alblasserdam', tier: 1, cefr: 'A1', pos: LL(4.66, 51.87), blurb: 'Home. The dogs still need a walk.' },
@@ -1421,7 +1424,7 @@ function update(dt) {
     }
     if (o.type === 'passenger' && !o.hit && z > -2) {
       o.hit = true; o.mesh.visible = false; mountPassenger(); S.slowTarget = 0.6; setTimeout(() => { if (S.activeFork == null) S.slowTarget = 1; }, 1800);
-      if (o.st.entry.listen) { showCard('Listen', '🔊 …', assembled(o.st, 0)); speak(o.st.entry.nl); } else showCard('The passenger says', o.st.entry.en, assembled(o.st, 0)); thump(0.5);
+      if (o.st.entry.listen) { showCard('Listen', '🔊 …', assembled(o.st, 0)); speak(o.st.entry.nl); } else if (o.st.entry.dehet) showCard('De or het?', o.st.entry.parts[1], '<b>___</b> ' + o.st.entry.parts[1]); else showCard('The passenger says', o.st.entry.en, assembled(o.st, 0)); thump(0.5);
     }
     if (o.type === 'finish' && !o.hit && z > 0) { o.hit = true; levelDone(); return; }
   }
@@ -1437,6 +1440,7 @@ function update(dt) {
       const f = g.fork;
       if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.');
       else if (f.entry.look) showCard('Look', f.entry.side === 'links' ? '← What is that, on your left?' : 'What is that, on your right? →', 'The thing under the marker.');
+      else if (f.entry.dehet) showCard('De or het?', f.entry.parts[1], '<b>___</b> ' + f.entry.parts[1] + ' <span style="color:#9fb0cc">· ' + f.entry.en + '</span>');
       else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx)); speak(f.entry.nl); }
       else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx) + (L && L.hint === 'letter' && firstLetterHint(f.o[f.a]) ? ` <span style="color:#9fb0cc">(${firstLetterHint(f.o[f.a])})</span>` : ''));
       for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
