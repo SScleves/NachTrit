@@ -36,6 +36,7 @@
   .btn.ghost { background:transparent; color:var(--ink); border:1px solid rgba(255,255,255,.25); }
   .hint { color:var(--dim); font-size:13px; margin-top:14px; }
   #summary { display:none; }
+  #map .box::-webkit-scrollbar { display:none; }
   #places { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; text-align:left; }
   #places .act { grid-column:1/-1; color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-top:10px; }
   .place { pointer-events:auto; background:var(--card); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:10px; cursor:pointer; }
@@ -95,7 +96,7 @@
     </div>
   </div>
   <div class="overlay" id="map" style="display:none">
-    <div class="box" style="max-width:720px;max-height:92vh;overflow:auto">
+    <div class="box" style="max-width:720px;max-height:92vh;overflow:auto;scrollbar-width:none;padding-bottom:24px">
       <h1 style="font-size:34px">THE TOWN</h1>
       <div class="sub">Pick where to go. Each place has its own words. New districts open as you deliver.</div>
       <div id="places"></div>
