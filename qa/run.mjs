@@ -66,13 +66,11 @@ async function playLevel(n) {
 }
 
 async function playIntro() {
-  await page.goto(URL, { waitUntil: 'load' });
-  await page.evaluate(() => { try { localStorage.removeItem('nachtrit.intro'); } catch (e) {} });
-  await page.reload({ waitUntil: 'load' }); await page.evaluate(() => { try { localStorage.removeItem('nachtrit.intro'); } catch (e) {} });
+  await page.goto(URL + '?intro=1', { waitUntil: 'load' });
   await page.waitForTimeout(1200);
   await shot('title');
   await page.click('#go');
-  for (let i = 0; i < 6; i++) { await page.waitForTimeout(2600); await shot(`intro${i + 1}`); await page.keyboard.press('Space'); await page.waitForTimeout(150); await page.keyboard.press('Space'); }
+  for (let i = 0; i < 7; i++) { await page.waitForTimeout(2600); await shot(`intro${i + 1}`); await page.keyboard.press('Space'); await page.waitForTimeout(150); await page.keyboard.press('Space'); }
   await page.waitForTimeout(400); await shot('after-intro');
   report.runs.push({ intro: true, err: await errBox() });
 }

@@ -463,19 +463,34 @@ for (let i = 0; i < 10; i++) {
 // ---------- the bike ----------
 const bike = new THREE.Group();
 {
-  const frame = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 1.3), M.bike); frame.position.y = 0.55; bike.add(frame);
-  const bar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.06, 0.06), M.bike); bar.position.set(0, 0.95, -0.55); bike.add(bar);
-  const wg = new THREE.TorusGeometry(0.34, 0.05, 8, 20);
-  const w1 = new THREE.Mesh(wg, M.dark); w1.position.set(0, 0.34, -0.6); bike.add(w1);
-  const w2 = new THREE.Mesh(wg, M.dark); w2.position.set(0, 0.34, 0.6); bike.add(w2);
+  // an omafiets: swept frame, mudguards, chain guard, front basket, upright rider
+  const steel = new THREE.MeshLambertMaterial({ color: 0x3b4a56 });
+  const frameMat = new THREE.MeshLambertMaterial({ color: 0x2b4a5e });
+  const tube = (a, b, r = 0.035) => { const d = new THREE.Vector3().subVectors(b, a); const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, d.length(), 6), frameMat); m.position.copy(a).add(b).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize()); return m; };
+  const P = (x, y, z) => new THREE.Vector3(x, y, z);
+  const rear = P(0, 0.34, 0.62), front = P(0, 0.34, -0.62), crank = P(0, 0.36, 0.08), seat = P(0, 0.98, 0.3), head = P(0, 0.95, -0.5);
+  [tube(rear, seat), tube(rear, crank), tube(crank, head, 0.03), tube(seat, head, 0.03), tube(head, front), tube(seat, P(0, 1.02, 0.3), 0.02)].forEach(t => bike.add(t));
+  const wg = new THREE.TorusGeometry(0.34, 0.035, 8, 22);
+  const w1 = new THREE.Mesh(wg, M.dark); w1.position.copy(front); bike.add(w1);
+  const w2 = new THREE.Mesh(wg, M.dark); w2.position.copy(rear); bike.add(w2);
   bike.userData.wheels = [w1, w2];
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.shirt); torso.position.set(0, 1.15, 0.05); torso.rotation.x = -0.35; bike.add(torso);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), M.rider); head.position.set(0, 1.62, -0.2); bike.add(head);
-  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), new THREE.MeshBasicMaterial({ color: 0xeaf2f5 })); lamp.position.set(0, 0.8, -0.78); bike.add(lamp);
+  for (const w of [w1, w2]) { const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.08, 8), steel); hub.rotation.z = Math.PI / 2; hub.position.copy(w.position); bike.add(hub); for (let i = 0; i < 6; i++) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.62, 0.01), steel); sp.position.copy(w.position); sp.rotation.x = i * Math.PI / 6; w.add(sp); sp.position.set(0, 0, 0); } }
+  for (const w of [w1, w2]) { const mg = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 6, 16, Math.PI * 0.9), M.dark); mg.position.copy(w.position); mg.rotation.y = Math.PI / 2; mg.rotation.z = Math.PI * 0.05; bike.add(mg); }
+  const guard = new THREE.Mesh(new THREE.CircleGeometry(0.18, 12), M.dark); guard.position.set(0.05, 0.36, 0.08); guard.rotation.y = Math.PI / 2; bike.add(guard);
+  const bars = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.025, 6, 12, Math.PI), steel); bars.position.set(0, 1.0, -0.5); bars.rotation.x = Math.PI / 2; bars.rotation.z = Math.PI; bike.add(bars);
+  const saddle = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.26), new THREE.MeshLambertMaterial({ color: 0x4a3222 })); saddle.position.set(0, 1.03, 0.3); bike.add(saddle);
+  const basket = new THREE.Group(); const bm = new THREE.MeshLambertMaterial({ color: 0x6b4a2b });
+  basket.add(new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.02, 0.3), bm)); for (const sx of [-1, 1]) { const side = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.22, 0.3), bm); side.position.set(sx * 0.17, 0.11, 0); basket.add(side); } for (const sz of [-1, 1]) { const side = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.22, 0.02), bm); side.position.set(0, 0.11, sz * 0.14); basket.add(side); }
+  basket.position.set(0, 0.86, -0.78); bike.add(basket);
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.shirt); torso.position.set(0, 1.42, 0.2); torso.rotation.x = -0.12; bike.add(torso);
+  const headM = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), M.rider); headM.position.set(0, 1.92, 0.1); bike.add(headM);
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.19, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0xd8d4c8 })); helmet.position.set(0, 1.93, 0.1); bike.add(helmet);
+  for (const sx of [-1, 1]) { const arm = tube(P(sx * 0.2, 1.6, 0.15), P(sx * 0.26, 1.02, -0.45), 0.045); arm.material = M.shirt; bike.add(arm); const leg = tube(P(sx * 0.1, 1.05, 0.28), P(sx * 0.12, 0.42, 0.05), 0.055); leg.material = M.rider; bike.add(leg); }
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), new THREE.MeshBasicMaterial({ color: 0xeaf2f5 })); lamp.position.set(0, 0.78, -0.98); bike.add(lamp);
   bike.userData.lampMesh = lamp;
 }
 const beam = new THREE.Mesh(new THREE.ConeGeometry(2.4, 26, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xcfe0e8, transparent: true, opacity: 0.05, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide }));
-beam.rotation.x = Math.PI / 2; beam.position.set(0, 0.9, -13.6); bike.add(beam);
+beam.rotation.x = Math.PI / 2; beam.position.set(0, 0.9, -13.8); bike.add(beam);
 scene.add(bike);
 
 // the follower, only shown at the end
@@ -817,59 +832,85 @@ addEventListener('mousedown', e => { if (S.mode === 'ride' && e.target === rende
 // ---------- the intro: six pixel panels ----------
 const PANELS = [
   { text: 'The night the mist came in, the windmills turned the wrong way.', draw: (g, t) => {
-      px_sky(g, 0.05); px_moon(g, 150, 22, 9); px_mist(g, t, 60, 0.35);
-      px_silhouetteGround(g, 78);
+      px_sky(g, '#0b1430', '#1d3a52'); px_stars(g, t); px_moon(g, 150, 22, 9); px_mist(g, t, 62, 0.5);
+      px_ground(g, 78, '#0e1a22');
       px_windmill(g, 60, 78, 26, -t * 1.2); px_windmill(g, 130, 82, 16, -t * 1.6);
     } },
-  { text: 'By morning, everyone who spoke Dutch was gone. Or changed.', draw: (g, t) => {
-      px_sky(g, 0.1); px_silhouetteGround(g, 84);
-      for (let i = 0; i < 7; i++) px_houseP(g, i * 28 - 6, 84, 24, 36 + (i * 7) % 16, i === 3 && Math.floor(t * 2) % 2 === 0);
-      px_bakfiets(g, 96, 90); px_mist(g, t, 88, 0.5);
+  { text: 'By morning everyone had changed. They still split the bill. They just did it in Dutch now.', draw: (g, t) => {
+      px_sky(g, '#13203a', '#2a4a5e'); px_ground(g, 84, '#101a24');
+      for (let i = 0; i < 7; i++) px_house(g, i * 28 - 6, 84, 24, 36 + (i * 7) % 16, i % 2 === 0);
+      px_zombie(g, 40, 84, t, '€4,50'); px_zombie(g, 96, 84, t + 1, 'Tikkie?'); px_zombie(g, 150, 84, t + 2, '€4,50');
+      px_mist(g, t, 90, 0.4);
     } },
-  { text: 'One man was left to deliver what the town needed. He had two dogs, a bike, and a grammar book he had never opened.', draw: (g, t) => {
+  { text: 'Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.', draw: (g, t) => {
+      px_sky(g, '#2a4a5e', '#6d8ea0'); px_ground(g, 86, '#2b3a3e');
+      px_cafe(g); px_man(g, 60, 60, t); px_bubble(g, 50, 30, 'Hoi!'); px_friend(g, 124, 62, t, 'English is fine!');
+    } },
+  { text: 'Now the only ones who still understand him are two dogs and a grammar book he never opened.', draw: (g, t) => {
       px_room(g); px_man(g, 70, 56, t); px_dog(g, 120, 86, t); px_dog(g, 140, 88, t + 1); px_book(g, 92, 72);
     } },
-  { text: 'Page one: de or het. There was no rule. There is never a rule.', draw: (g, t) => {
+  { text: 'Page one: de or het. There is no rule. There is never a rule.', draw: (g, t) => {
       g.fillStyle = '#0a0b0e'; g.fillRect(0, 0, 192, 108);
-      g.fillStyle = '#d9d2bf'; g.fillRect(28, 14, 64, 82); g.fillRect(100, 14, 64, 82);
+      g.fillStyle = '#e4dcc6'; g.fillRect(28, 14, 64, 82); g.fillRect(100, 14, 64, 82);
       g.fillStyle = '#9a927f'; g.fillRect(92, 14, 8, 82);
       g.fillStyle = '#2a2a2e'; g.font = 'bold 14px monospace'; g.fillText('DE', 48, 44); g.fillText('HET', 118, 44);
       g.font = '7px monospace'; g.fillStyle = '#555';
       ['de hond', 'de vrouw', 'de fiets', 'de nacht'].forEach((w, i) => g.fillText(w, 36, 58 + i * 9));
       ['het huis', 'het brood', 'het ei', 'het water'].forEach((w, i) => g.fillText(w, 108, 58 + i * 9));
-      if (Math.floor(t * 1.5) % 2) { g.fillStyle = '#8e1f1f'; g.fillText('?', 96, 86); }
+      if (Math.floor(t * 1.5) % 2) { g.fillStyle = '#b8282a'; g.font = 'bold 12px monospace'; g.fillText('?', 94, 88); }
     } },
   { text: '...', draw: (g, t) => {
       g.fillStyle = '#000'; g.fillRect(0, 0, 192, 108);
       const blink = Math.sin(t * 2.5) > 0.92;
       if (!blink) { g.fillStyle = '#e8e4d8'; [[70, 60], [78, 60], [112, 66], [120, 66]].forEach(([x, y]) => g.fillRect(x, y, 3, 2)); }
-      g.fillStyle = '#8e1f1f'; g.fillRect(94, 30, 6, 10); // the shirt, barely
+      g.fillStyle = '#8e1f1f'; g.fillRect(94, 30, 6, 10);
     } },
-  { text: 'Fak. Oké. Nachtrit.', draw: (g, t) => {
-      px_sky(g, 0.03); px_silhouetteGround(g, 86);
-      px_manHelmet(g, 96, 86, t); px_beam(g, 100, 70, t);
+  { text: 'Fak. Oké. One man, one omafiets, three hundred and sixty words. Nachtrit.', draw: (g, t) => {
+      px_sky(g, '#0b1430', '#1a3246'); px_stars(g, t); px_ground(g, 88, '#0e1a22');
+      px_omafiets(g, 88, 88, t); px_beam(g, 112, 72, t);
     } },
 ];
-function px_sky(g, k) { const gr = g.createLinearGradient(0, 0, 0, 108); gr.addColorStop(0, '#05070b'); gr.addColorStop(1, `rgb(${18 + k * 60},${22 + k * 60},${30 + k * 60})`); g.fillStyle = gr; g.fillRect(0, 0, 192, 108); }
-function px_moon(g, x, y, r) { g.fillStyle = '#c9cfd4'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.fillStyle = '#9aa0a6'; g.fillRect(x - 3, y - 2, 2, 2); g.fillRect(x + 2, y + 3, 3, 2); }
-function px_mist(g, t, y, a) { g.fillStyle = `rgba(190,200,210,${a * 0.5})`; for (let i = 0; i < 4; i++) { const x = ((i * 61 + t * 6) % 230) - 30; g.fillRect(x, y + i * 4, 50 + i * 10, 5); } }
-function px_silhouetteGround(g, y) { g.fillStyle = '#07080a'; g.fillRect(0, y, 192, 108 - y); }
+function px_sky(g, top, bottom) { const gr = g.createLinearGradient(0, 0, 0, 108); gr.addColorStop(0, top); gr.addColorStop(1, bottom); g.fillStyle = gr; g.fillRect(0, 0, 192, 108); }
+function px_stars(g, t) { g.fillStyle = '#c9d4e0'; for (let i = 0; i < 18; i++) { if (Math.sin(t * 2 + i * 7) > -0.3) g.fillRect((i * 37) % 192, (i * 23) % 50, 1, 1); } }
+function px_moon(g, x, y, r) { g.fillStyle = '#e6e2c8'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.fillStyle = '#b9b49a'; g.fillRect(x - 3, y - 2, 2, 2); g.fillRect(x + 2, y + 3, 3, 2); }
+function px_mist(g, t, y, a) { g.fillStyle = `rgba(190,205,215,${a * 0.5})`; for (let i = 0; i < 4; i++) { const x = ((i * 61 + t * 6) % 230) - 30; g.fillRect(x, y + i * 4, 50 + i * 10, 5); } }
+function px_ground(g, y, c) { g.fillStyle = c; g.fillRect(0, y, 192, 108 - y); }
 function px_windmill(g, x, y, h, a) {
-  g.fillStyle = '#0d0f12'; g.fillRect(x - 4, y - h, 8, h); g.fillRect(x - 6, y - h - 4, 12, 4);
-  g.strokeStyle = '#0d0f12'; g.lineWidth = 2;
+  g.fillStyle = '#1c2a36'; g.fillRect(x - 4, y - h, 8, h); g.fillRect(x - 6, y - h - 4, 12, 4);
+  g.fillStyle = '#c9a04a'; g.fillRect(x - 1, y - h + 6, 2, 3);
+  g.strokeStyle = '#223344'; g.lineWidth = 2;
   for (let i = 0; i < 4; i++) { const ang = a + i * Math.PI / 2; g.beginPath(); g.moveTo(x, y - h - 2); g.lineTo(x + Math.cos(ang) * h * 0.8, y - h - 2 + Math.sin(ang) * h * 0.8); g.stroke(); }
 }
-function px_houseP(g, x, y, w, h, lit) {
-  g.fillStyle = '#0c0e12'; g.fillRect(x, y - h, w, h); g.beginPath(); g.moveTo(x - 2, y - h); g.lineTo(x + w / 2, y - h - 10); g.lineTo(x + w + 2, y - h); g.fill();
-  g.fillStyle = lit ? '#8c8260' : '#141619'; g.fillRect(x + 6, y - h + 10, 4, 5); g.fillRect(x + w - 10, y - h + 10, 4, 5); g.fillRect(x + 6, y - 20, 4, 5);
+function px_house(g, x, y, w, h, lit) {
+  g.fillStyle = '#1a2430'; g.fillRect(x, y - h, w, h); g.fillStyle = '#121a24'; g.beginPath(); g.moveTo(x - 2, y - h); g.lineTo(x + w / 2, y - h - 10); g.lineTo(x + w + 2, y - h); g.fill();
+  g.fillStyle = lit ? '#e0b45a' : '#0e141c'; g.fillRect(x + 6, y - h + 10, 4, 5); g.fillRect(x + w - 10, y - h + 10, 4, 5); g.fillRect(x + 6, y - 20, 4, 5);
 }
-function px_bakfiets(g, x, y) { g.fillStyle = '#1a1c21'; g.fillRect(x, y - 4, 22, 5); g.beginPath(); g.arc(x - 3, y + 2, 4, 0, 7); g.arc(x + 26, y + 2, 4, 0, 7); g.fill(); g.fillRect(x + 20, y - 10, 2, 7); }
-function px_room(g) { g.fillStyle = '#121216'; g.fillRect(0, 0, 192, 108); g.fillStyle = '#1c1a1e'; g.fillRect(0, 70, 192, 38); g.fillStyle = '#2a3340'; g.fillRect(20, 16, 30, 26); g.fillStyle = '#9a8f6a'; g.fillRect(150, 10, 10, 10); g.fillStyle = '#3a2d22'; g.fillRect(80, 66, 50, 4); g.fillRect(82, 70, 3, 20); g.fillRect(125, 70, 3, 20); }
-function px_man(g, x, y, t) { const bob = Math.round(Math.sin(t * 2)); g.fillStyle = '#1a1a1e'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#8e1f1f'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); }
-function px_manHelmet(g, x, y, t) { g.fillStyle = '#e8e4d8'; g.fillRect(x - 5, y - 38, 11, 7); g.fillStyle = '#1a1a1e'; g.fillRect(x - 3, y - 31, 7, 5); g.fillStyle = '#8e1f1f'; g.fillRect(x - 6, y - 26, 13, 14); g.fillStyle = '#1a1a1e'; g.fillRect(x - 5, y - 12, 4, 12); g.fillRect(x + 1, y - 12, 4, 12); g.strokeStyle = '#2a2d33'; g.lineWidth = 2; g.beginPath(); g.arc(x - 12, y - 2, 6, 0, 7); g.arc(x + 14, y - 2, 6, 0, 7); g.stroke(); }
-function px_beam(g, x, y, t) { g.fillStyle = `rgba(220,230,235,${0.12 + Math.sin(t * 6) * 0.03})`; g.beginPath(); g.moveTo(x, y); g.lineTo(192, y - 30); g.lineTo(192, y + 24); g.fill(); g.fillStyle = '#eaf2f5'; g.fillRect(x - 1, y - 1, 3, 3); }
-function px_dog(g, x, y, t) { const w = Math.round(Math.sin(t * 5)) ; g.fillStyle = '#17171a'; g.fillRect(x, y - 6, 12, 6); g.fillRect(x + 10, y - 10, 5, 5); g.fillRect(x + 1, y, 2, 4); g.fillRect(x + 9, y, 2, 4); g.fillRect(x - 3, y - 8 + w, 3, 2); g.fillStyle = '#e8e4d8'; g.fillRect(x + 13, y - 9, 1, 1); }
-function px_book(g, x, y) { g.fillStyle = '#d9d2bf'; g.fillRect(x, y - 6, 14, 6); g.fillStyle = '#8e1f1f'; g.fillRect(x, y - 7, 14, 1); }
+function px_zombie(g, x, y, t, label) {
+  const lean = Math.round(Math.sin(t * 1.5) * 2);
+  g.fillStyle = '#263238'; g.fillRect(x - 3 + lean, y - 24, 7, 6); g.fillRect(x - 4 + lean, y - 18, 9, 12); g.fillRect(x - 3 + lean, y - 6, 3, 6); g.fillRect(x + 1 + lean, y - 6, 3, 6);
+  g.fillStyle = '#2f3d44'; g.fillRect(x + 5 + lean, y - 16, 8, 2);
+  g.fillStyle = '#7fe0ff'; g.fillRect(x + 11 + lean, y - 19, 4, 6);
+  g.fillStyle = '#b8282a'; g.fillRect(x - 1 + lean, y - 22, 1, 1); g.fillRect(x + 2 + lean, y - 22, 1, 1);
+  g.fillStyle = '#e8e4d8'; g.font = '6px monospace'; g.fillText(label, x - 6, y - 28);
+}
+function px_cafe(g) { g.fillStyle = '#5a4634'; g.fillRect(40, 70, 110, 3); g.fillRect(44, 73, 3, 14); g.fillRect(143, 73, 3, 14); g.fillStyle = '#d9d2bf'; g.fillRect(84, 62, 8, 8); g.fillStyle = '#6b4a2b'; g.fillRect(85, 64, 6, 4); g.fillStyle = '#e0b45a'; g.fillRect(20, 20, 14, 14); g.fillRect(158, 20, 14, 14); }
+function px_bubble(g, x, y, txt) { g.fillStyle = '#f2eee2'; g.fillRect(x, y, txt.length * 5 + 6, 11); g.fillRect(x + 4, y + 11, 3, 3); g.fillStyle = '#1a1a1e'; g.font = '7px monospace'; g.fillText(txt, x + 3, y + 8); }
+function px_friend(g, x, y, t, txt) { const bob = Math.round(Math.sin(t * 2 + 1)); g.fillStyle = '#e8c9a0'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#3f6e8c'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); px_bubble(g, x - 40, y - 36, txt); }
+function px_room(g) { g.fillStyle = '#1a1c24'; g.fillRect(0, 0, 192, 108); g.fillStyle = '#262330'; g.fillRect(0, 70, 192, 38); g.fillStyle = '#2f4a66'; g.fillRect(20, 16, 30, 26); g.fillStyle = '#e0b45a'; g.fillRect(150, 10, 10, 10); g.fillStyle = '#5a4634'; g.fillRect(80, 66, 50, 4); g.fillRect(82, 70, 3, 20); g.fillRect(125, 70, 3, 20); }
+function px_man(g, x, y, t) { const bob = Math.round(Math.sin(t * 2)); g.fillStyle = '#e8c9a0'; g.fillRect(x - 3, y - 14 + bob, 7, 7); g.fillStyle = '#2a2a2e'; g.fillRect(x - 3, y - 16 + bob, 7, 3); g.fillStyle = '#b8282a'; g.fillRect(x - 5, y - 7 + bob, 11, 16); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y + 9 + bob, 4, 14); g.fillRect(x + 1, y + 9 + bob, 4, 14); }
+function px_omafiets(g, x, y, t) {
+  // wheels, mudguards, swept frame, basket, rider sitting upright, lamp
+  g.strokeStyle = '#8a9096'; g.lineWidth = 2; g.beginPath(); g.arc(x - 14, y - 2, 8, 0, 7); g.arc(x + 14, y - 2, 8, 0, 7); g.stroke();
+  g.strokeStyle = '#1a1d22'; g.lineWidth = 1; g.beginPath(); g.arc(x - 14, y - 2, 9, Math.PI, Math.PI * 1.9); g.arc(x + 14, y - 2, 9, Math.PI * 1.1, Math.PI * 2); g.stroke();
+  g.strokeStyle = '#2b4a5e'; g.lineWidth = 2; g.beginPath(); g.moveTo(x - 14, y - 2); g.lineTo(x - 2, y - 20); g.lineTo(x + 12, y - 20); g.lineTo(x + 14, y - 2); g.moveTo(x - 2, y - 20); g.quadraticCurveTo(x + 4, y - 8, x + 14, y - 2); g.stroke();
+  g.fillStyle = '#6b4a2b'; g.fillRect(x + 8, y - 30, 12, 8); g.fillStyle = '#8a6a3b'; for (let i = 0; i < 3; i++) g.fillRect(x + 9 + i * 4, y - 29, 1, 6);
+  g.fillStyle = '#e8c9a0'; g.fillRect(x - 4, y - 38, 7, 6); g.fillStyle = '#e8e4d8'; g.fillRect(x - 5, y - 41, 9, 4);
+  g.fillStyle = '#b8282a'; g.fillRect(x - 6, y - 32, 11, 13); g.fillStyle = '#1a1a1e'; g.fillRect(x - 4, y - 19, 4, 9); g.fillRect(x + 2, y - 19, 4, 11);
+  g.fillStyle = '#eaf2f5'; g.fillRect(x + 20, y - 22, 3, 3);
+}
+function px_beam(g, x, y, t) { g.fillStyle = `rgba(220,230,235,${0.14 + Math.sin(t * 6) * 0.03})`; g.beginPath(); g.moveTo(x, y + 2); g.lineTo(192, y - 26); g.lineTo(192, y + 26); g.fill(); }
+function px_dog(g, x, y, t) { const w = Math.round(Math.sin(t * 5)); g.fillStyle = '#3a2f28'; g.fillRect(x, y - 6, 12, 6); g.fillRect(x + 10, y - 10, 5, 5); g.fillRect(x + 1, y, 2, 4); g.fillRect(x + 9, y, 2, 4); g.fillRect(x - 3, y - 8 + w, 3, 2); g.fillStyle = '#e8e4d8'; g.fillRect(x + 13, y - 9, 1, 1); }
+function px_book(g, x, y) { g.fillStyle = '#e4dcc6'; g.fillRect(x, y - 6, 14, 6); g.fillStyle = '#b8282a'; g.fillRect(x, y - 7, 14, 1); }
 
 let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
 function showIntro(then) {
@@ -896,6 +937,7 @@ function showIntro(then) {
 let onKey = null;
 addEventListener('keydown', e => { if (onKey && $('intro').style.display !== 'none') { onKey(e); e.preventDefault(); } });
 let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'); } catch (e) {}
+if (new URLSearchParams(location.search).has('intro')) introSeen = false;
 
 function openMap() {
   warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
