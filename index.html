@@ -280,7 +280,7 @@ function lamppost() {
   const arm = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.06, 0.06), PM.pole); arm.position.set(-0.4, 4.1, 0); g.add(arm);
   const b = new THREE.Mesh(PG.bulb, PM.bulb); b.position.set(-0.8, 4.0, 0); g.add(b);
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.5, color: 0xd8dde0 }));
-  glow.scale.set(3.5, 3.5, 1); glow.position.set(-0.8, 3.6, 0); g.add(glow);
+  glow.scale.set(2.2, 2.2, 1); glow.material.opacity = 0.32; glow.position.set(-0.8, 3.6, 0); g.add(glow);
   g.userData.faceRoad = true;
   return g;
 }
@@ -479,7 +479,7 @@ const G = {
   hay: new THREE.SphereGeometry(0.8, 8, 6),
   wheel: new THREE.CylinderGeometry(0.35, 0.35, 0.1, 10),
   puddle: new THREE.CircleGeometry(0.9, 14),
-  wisp: new THREE.SphereGeometry(0.16, 6, 6),
+  wisp: new THREE.SphereGeometry(0.09, 6, 6),
   ghostBody: new THREE.ConeGeometry(0.45, 1.9, 8, 1, true),
   ghostHead: new THREE.SphereGeometry(0.22, 8, 8),
 };
@@ -661,7 +661,7 @@ function planSentence(entry) {
   if (entry.look) { // the thing stands beside the road, the signs come right after it
     const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
     const mesh = pr.make(entry.value); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;
-    add(mesh, d0, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });
+    add(mesh, d0 + 12, null, 'lookprop', { bx: side * (ROAD_W / 2 + pr.off), entry });   // beside you when you reach the signs
     placeFork({ entry, st, idx: 0, o: st.forks[0].o, a: st.forks[0].a, r: 'woord', w: st.forks[0].w, read: false }, d0 + 14);
     S.planCursor = d0 + 14 + 10; return;
   }
@@ -1079,6 +1079,7 @@ function loop() {
 const q = new URLSearchParams(location.search);
 if (q.has('shot')) {
   start(q.has('level') ? LEVELS[+q.get('level') - 1] : null);
+  if (q.has('look')) { const looks = S.queue.filter(e => e.look); if (looks.length) S.queue = looks.concat(looks); }
   const secs = parseFloat(q.get('shot')) || 0;
   for (let i = 0; i < secs * 60; i++) { update(1 / 60); if (q.has('lane') && S.mode === 'ride') S.lane = +q.get('lane'); }
   if (q.has('gate')) { // ride on until the next fork is this close
