@@ -10,7 +10,7 @@ window.RULES.getal = { name: 'Numbers', note: 'MOC Getallen' };
 window.RULES.groet = { name: 'Greetings', note: 'H01 — Welkom' };
 window.RULES.zijn = { name: 'zijn (to be)', note: 'zijn' };
 
-const A1 = { lanes: 2, speed: 11, maxSpeed: 13, ramp: false, lampDecay: 0.35, forkSlow: 0.25, hint: 'glow', obstacles: 'none', filler: [26, 36], deliveries: 6, cefr: 'A1', maxWords: 6 };
+const A1 = { lanes: 2, speed: 11, maxSpeed: 13, ramp: false, lampDecay: 0.35, forkSlow: 0.25, hint: 'glow', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 6 };
 const FK = (o, a, r, w) => ({ o, a, r, w });
 
 window.LEVELS = [
@@ -58,7 +58,7 @@ window.LEVELS = [
       { read: true, nl: 'Wij zijn buren.', en: 'We are neighbours.' },
     ] },
 
-  { id: 5, act: 1, name: 'Nachtwinkel', ...A1, theme: 'nightshop', intro: 'The night shop is open. The lights are off. The prices are not.', introNl: 'De nachtwinkel is open. De lichten zijn uit. De prijzen niet.', obstacles: 'puddles', filler: [28, 38], deliveries: 8,
+  { id: 5, act: 1, name: 'Nachtwinkel', ...A1, theme: 'nightshop', intro: 'The night shop is open. The lights are off. The prices are not.', introNl: 'De nachtwinkel is open. De lichten zijn uit. De prijzen niet.', obstacles: 'puddles', filler: [28, 38], deliveries: 12,
     mission: { where: 'The corner shop. Open at 3 AM, lights off.', carry: 'A shopping list in a dead man\'s handwriting.', want: 'Milk, bread, eggs. The shelves whisper the prices. Pay and leave.' },
     items: [
       { w: 'the milk', nl: 'de melk' }, { w: 'the bread', nl: 'het brood' }, { w: 'the egg', nl: 'het ei' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'the apple', nl: 'de appel' },
@@ -85,3 +85,8 @@ window.LEVELS = [
   { id: 39, act: 8, name: 'Uitdrukkingen', soon: true }, { id: 40, act: 8, name: 'De laatste nacht', soon: true },
 ];
 window.ACTS = { 1: 'Thuisstraat', 2: 'De wijk', 3: 'Het dorp', 4: 'Thuis en familie', 5: 'Het station', 6: 'Kantoor en baan', 7: 'De lange nacht', 8: 'De stad' };
+
+// content files replace placeholders by id: window.defineLevels([{ id, ... }])
+window.defineLevels = function (list) {
+  for (const lv of list) { const i = window.LEVELS.findIndex(l => l.id === lv.id); if (i >= 0) window.LEVELS[i] = Object.assign({}, window.LEVELS[i], lv, { soon: false }); else window.LEVELS.push(lv); }
+};

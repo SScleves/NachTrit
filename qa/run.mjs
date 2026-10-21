@@ -53,7 +53,7 @@ async function playLevel(n) {
   await page.evaluate(() => { NR.lanesN = document.querySelectorAll('#lanes div[style*="display: none"]').length ? 2 : 3; });
   await page.waitForTimeout(4200); run.frames.push(await shot(`L${n}-ride-start`));
   const t0 = Date.now(); let lastShot = 0, shotIdx = 0, lastForkD = -1;
-  while (Date.now() - t0 < 150000) {
+  while (Date.now() - t0 < 260000) {
     const st = await page.evaluate(() => { autopilot(); NR.lanesN = [...document.querySelectorAll('#lanes div')].filter(d => d.style.display !== 'none').length || 3; const g = NR.activeFork; return { mode: NR.mode, dist: NR.dist, delivered: NR.delivered, total: NR.deliveriesTotal, good: NR.good, bad: NR.bad, lamp: NR.lamp, forkD: g ? g.d : -1, forkZ: g ? NR.dist - g.d : 99, kind: g ? (g.fork.read ? 'read' : g.fork.entry.look ? 'look' : g.fork.entry.listen ? 'listen' : 'word') : '' }; });
     if (st.mode === 'dead') break;
     if (st.forkD !== lastForkD && st.forkZ > -9) { lastForkD = st.forkD; run.frames.push(await shot(`L${n}-fork${++shotIdx}-${st.kind}`)); run.events.push({ t: Date.now() - t0, fork: st.kind, dist: Math.round(st.dist) }); }
