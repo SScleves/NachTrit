@@ -1393,8 +1393,8 @@ const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
 let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null;
 function nodePositions(n) {   // a serpentine: rows of 4, left to right then right to left
-  const cols = 4, left = 14, right = 86, top = 22, rowGap = 26; const pts = [];
-  for (let i = 0; i < n; i++) { const row = Math.floor(i / cols), k = i % cols; const x = row % 2 === 0 ? left + k * (right - left) / (cols - 1) : right - k * (right - left) / (cols - 1); pts.push([x, top + row * rowGap + (k % 2 ? 4 : -4)]); }
+  const cols = 4, left = 14, right = 86, top = 17, rowGap = 31; const pts = [];
+  for (let i = 0; i < n; i++) { const row = Math.floor(i / cols), k = i % cols; const x = row % 2 === 0 ? left + k * (right - left) / (cols - 1) : right - k * (right - left) / (cols - 1); pts.push([x, top + row * rowGap + (k % 2 ? 2 : -2)]); }
   return pts;
 }
 function drawWorld() {
@@ -1429,7 +1429,7 @@ function drawWorld() {
     g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(1.1)` }));
     if (!open) { g.appendChild(el('circle', { cx: x, cy: y, r: 6.5, fill: '#1e2634', opacity: 0.7, filter: 'url(#fog)' })); g.appendChild(el('path', { d: `M${x - 1.2},${y + 0.4} h2.4 v2 h-2.4 z M${x - 0.7},${y + 0.4} v-1 a0.7,0.7 0 0 1 1.4,0 v1`, fill: '#4a5160', stroke: '#9aa6b8', 'stroke-width': 0.2 })); }
     const num = el('text', { x: x - 5.6, y: y - 4.2, class: 'num' }); num.textContent = t.tier; g.appendChild(num);
-    const label = el('text', { x: x, y: y + 8.2, 'text-anchor': 'middle' }); label.textContent = t.name.length > 16 ? t.name.split(' ')[0] : t.name; g.appendChild(label);
+    const label = el('text', { x: x, y: y + 8.2, 'text-anchor': 'middle' }); label.textContent = t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name; g.appendChild(label);
     const badge = el('text', { x: x, y: y + 11.4, 'text-anchor': 'middle', class: 'badge', fill: open ? col : '#4a5160' }); badge.textContent = t.cefr + (open && stars ? ' · ★' + stars : ''); g.appendChild(badge);
     g.onclick = () => rideTo(i);
     svg.appendChild(g);
@@ -1438,7 +1438,7 @@ function drawWorld() {
   const bikeG = el('g', { id: 'mapbike' }); bikeG.innerHTML = `<path d="M-1.6,0.7 a1,1 0 1 0 0.01,0 M1.6,0.7 a1,1 0 1 0 0.01,0 M-1.6,0.7 L-0.3,-1.1 L1.6,0.7 M-0.3,-1.1 L0.4,-1.1 L1,0.3 M-0.3,-1.1 L-0.1,-2 M-0.1,-2 L0.5,-2" fill="none" stroke="#d9792a" stroke-width="0.45" stroke-linecap="round"/><circle cx="0" cy="-2.6" r="0.55" fill="#d9b48c"/>`;
   svg.appendChild(bikeG);
   // legend
-  const leg = el('g', {}); leg.innerHTML = `<text x="4" y="105" style="font:600 2.4px 'Segoe UI',system-ui,sans-serif;fill:#9fb0cc;letter-spacing:.08em">← → ride to a town · enter or tap: go in</text>`; svg.appendChild(leg);
+  const leg = el('g', {}); leg.innerHTML = `<text x="4" y="106" style="font:600 2.4px 'Segoe UI',system-ui,sans-serif;fill:#9fb0cc;letter-spacing:.08em">LEFT / RIGHT: ride to a town · ENTER or TAP: go in · green is easy, red is Amsterdam</text>`; svg.appendChild(leg);
   const openIdx = T.map((t, i) => townOpen(t) ? i : -1).filter(i => i >= 0); if (!openIdx.includes(mapAt)) mapAt = openIdx[openIdx.length - 1] || 0;
   placeBike(mapAt);
 }
