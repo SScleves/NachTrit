@@ -4,7 +4,33 @@ Replaces the linear 40-level list. The menu becomes a map of the Netherlands. Yo
 then a place in it. Every town has the same places. The town decides how hard the Dutch, the
 traffic and the dead are. The place decides the words.
 
-## Towns (tiers)
+## Towns (tiers), twelve of them
+
+| Tier | Town | CEFR | The culture to play with |
+|---|---|---|---|
+| 1 | Alblasserdam | A1 | home, the dogs, the dyke, the shipyards |
+| 2 | Kinderdijk and Dordrecht | A1 | the mills, the leaning church, the bill split to the cent |
+| 3 | Gouda | A1-A2 | cheese, the town hall alone on the square, candle night |
+| 4 | Zeeland, the Deltawerken | A2 | the barriers against the sea, 1953, Zierikzee, Middelburg |
+| 5 | Utrecht | A2 | the Dom, the wharves, bikes by the thousand, students |
+| 6 | Den Haag | A2 | the Binnenhof and its politicians, Scheveningen, the market |
+| 7 | Rotterdam | A2-B1 | the harbour, the bridges, niet lullen maar poetsen |
+| 8 | Urk | B1 | the former island, the fleet, the dress, the dialect, Sunday |
+| 9 | Texel | B1 | the ferry, the sheep, the lighthouse, the dunes, the beer |
+| 10 | Groningen | B1 | the Martinitoren, students, er gaat niets boven Groningen |
+| 11 | Maastricht | B1-B2 | the Vrijthof, carnaval, vlaai, the dialect, the treaty |
+| 12 | Amsterdam | B1-B2 | canals, trams, bells, tourists, the hardest night |
+
+The first six were the original plan and keep their content. Each town also gets an eighth place,
+"Eigen" (its own thing): the clothes in Urk, the politicians in Den Haag, the dams in Zeeland.
+And every town has a generated de/het bonus built from every noun learned so far.
+
+## Beyond the Netherlands
+
+The engine knows nothing about Dutch. A country is a map outline, a list of towns with tiers and
+culture, and content files against the same schema. Portugal, Japan, anywhere: same bike, same mist.
+
+## Towns (tiers), the original six
 
 | Tier | Town | CEFR | Why this town | Look |
 |---|---|---|---|---|
