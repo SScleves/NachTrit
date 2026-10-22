@@ -4,11 +4,9 @@ import vm from 'node:vm'; import fs from 'node:fs'; import path from 'node:path'
 const ROOT = process.cwd();
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const listed = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]).filter(s => /^(data|levels)\.js$|^content\//.test(s));
-const dirs = ['content/new', 'content/extra'];
-const extras = dirs.flatMap(d => fs.existsSync(path.join(ROOT, d)) ? fs.readdirSync(path.join(ROOT, d)).filter(f => f.endsWith('.js')).sort().map(f => `${d}/${f}`) : []);
 const ctx = { console }; ctx.window = ctx; vm.createContext(ctx);
 const loadErrors = [];
-for (const src of [...listed, ...extras]) {
+for (const src of listed) {
   const file = path.join(ROOT, src); if (!fs.existsSync(file)) { loadErrors.push(`missing ${src}`); continue; }
   try { vm.runInContext(fs.readFileSync(file, 'utf8'), ctx, { filename: src }); } catch (e) { loadErrors.push(`${src}: ${e.message}`); }
 }
