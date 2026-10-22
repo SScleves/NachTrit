@@ -199,9 +199,10 @@ const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 40
 camera.position.set(0, 22, 14);
 camera.lookAt(0, 0, -30);
 
-function postSize() { if (!composer) return; composer.setPixelRatio(DPR); composer.setSize(innerWidth, innerHeight); const w = Math.floor(innerWidth * DPR), h = Math.floor(innerHeight * DPR); inkPass.uniforms.res.value.set(w, h); gradePass.uniforms.res.value.set(w, h); }
+function postSize() { if (!composer) return; buildPost(); }
 function buildPost() {
   if (!POST) return;
+  if (composer) { try { composer.renderTarget1.dispose(); composer.renderTarget2.dispose(); if (bloomPass) bloomPass.dispose(); } catch (e) {} composer = null; }
   const w = Math.floor(innerWidth * DPR), h = Math.floor(innerHeight * DPR);
   const rt = new THREE.WebGLRenderTarget(w, h, { depthTexture: new THREE.DepthTexture(w, h), depthBuffer: true });
   composer = new EffectComposer(renderer, rt);
@@ -824,6 +825,7 @@ const S = {
 };
 let audioCtx = null;
 window.NR = S; // debug handle
+window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
 window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, calls: renderer.info.render.calls, dpr: DPR, post: !!composer });
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 buildScenery(THEMES.polder);
@@ -1598,7 +1600,8 @@ function update(dt) {
 function loop() {
   requestAnimationFrame(loop);
   const raw = clock.getDelta(); const dt = Math.min(0.05, raw);
-  if (S.mode === 'ride') { frameAcc += raw; if (++frameN >= 90) { const avg = frameAcc / frameN; frameAcc = 0; frameN = 0;
+  if (document.hidden || raw > 0.25) { frameAcc = 0; frameN = 0; }
+  else if (S.mode === 'ride') { frameAcc += raw; if (++frameN >= 90) { const avg = frameAcc / frameN; frameAcc = 0; frameN = 0;
     if (avg > 0.028 && DPR > 0.7) { DPR = Math.max(0.7, DPR - 0.25); renderer.setPixelRatio(DPR); postSize(); } } }
   if (S.mode !== 'start') update(dt);
   else { // idle drift on the title
