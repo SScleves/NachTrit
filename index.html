@@ -1392,9 +1392,12 @@ const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
 // the route board: towns in tier order along a winding road over a faint Netherlands
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
 let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null;
-function nodePositions(n) {   // a serpentine: rows of 4, left to right then right to left
-  const cols = 4, left = 14, right = 86, top = 17, rowGap = 31; const pts = [];
-  for (let i = 0; i < n; i++) { const row = Math.floor(i / cols), k = i % cols; const x = row % 2 === 0 ? left + k * (right - left) / (cols - 1) : right - k * (right - left) / (cols - 1); pts.push([x, top + row * rowGap + (k % 2 ? 2 : -2)]); }
+function nodePositions(n) {   // real geography, stretched to fill the board and pushed apart so nothing overlaps
+  const T = towns(); let pts = T.map(t => [t.pos[0] * 100, t.pos[1] * 100]);
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  pts = pts.map(([x, y]) => [12 + (x - x0) / Math.max(1, x1 - x0) * 76, 14 + (y - y0) / Math.max(1, y1 - y0) * 78]);
+  const minD = 17;
+  for (let it = 0; it < 200; it++) { let moved = false; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const dx = pts[j][0] - pts[i][0], dy = pts[j][1] - pts[i][1]; const d = Math.hypot(dx, dy) || 0.01; if (d < minD) { const push = (minD - d) / 2 + 0.2; const ux = dx / d, uy = dy / d; pts[i][0] -= ux * push; pts[i][1] -= uy * push; pts[j][0] += ux * push; pts[j][1] += uy * push; moved = true; } } for (const p of pts) { p[0] = Math.min(90, Math.max(10, p[0])); p[1] = Math.min(94, Math.max(12, p[1])); } if (!moved) break; }
   return pts;
 }
 function drawWorld() {
@@ -1410,7 +1413,7 @@ function drawWorld() {
   svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#0b0f14' }));
   svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: 'url(#sea)' }));
   // the country, faint, as a backdrop
-  const back = el('g', { opacity: 0.35, transform: 'translate(8 2) scale(0.85)' });
+  const back = el('g', { opacity: 0.4, transform: 'translate(6 0) scale(0.9)' });
   back.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1b2230', stroke: '#6f7f96', 'stroke-width': 0.5, 'stroke-linejoin': 'round' }));
   back.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#6f7f96', 'stroke-width': 0.3 }));
   back.appendChild(el('path', { d: path(NL_FLEVOLAND), fill: '#1b2230', stroke: '#6f7f96', 'stroke-width': 0.3 }));
@@ -1474,6 +1477,24 @@ addEventListener('keydown', e => {
   else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { let n = -1; for (let i = mapAt - 1; i >= 0; i--) if (townOpen(T[i])) { n = i; break; } if (n >= 0) rideTo(n); e.preventDefault(); }
   else if (e.key === 'Enter' || e.key === ' ') { openTown(T[mapAt]); e.preventDefault(); }
 });
+// a de/het bonus level per town, built from every noun with an article in that town and the towns before it
+function dehetBonus(t) {
+  const seen = new Map();
+  for (const lv of LEVELS) {
+    if (lv.soon || !lv.items) continue; const lt = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); if (!lt || lt.tier > t.tier) continue;
+    for (const it of lv.items) {
+      const nl = it.dehet ? `${it.art} ${it.nl}` : it.nl; const en = it.w || it.en; if (!nl || !en) continue;
+      const m = /^(de|het)\s+(\S.*)$/.exec(nl); if (!m || /^\d/.test(en)) continue;
+      if (!seen.has(m[2])) seen.set(m[2], { dehet: true, nl: m[2], art: m[1], en, w: it.w && it.wrong ? '' : (it.w || '') });
+    }
+  }
+  const items = [...seen.values()];
+  const tierKnobs = { 1: { lanes: 2, speed: 12, forkSlow: 0.45 }, 2: { lanes: 2, speed: 13, forkSlow: 0.4 }, 3: { lanes: 2, speed: 14, forkSlow: 0.35 } }[t.tier] || { lanes: 2, speed: 15, forkSlow: 0.3 };
+  return { id: 1000 + t.tier, act: t.tier, name: 'De of het', theme: 'street', town: t.id, place: 'bonus', ...tierKnobs, maxSpeed: tierKnobs.speed + 3, ramp: true, lampDecay: 0.4 + t.tier * 0.05, hint: null, obstacles: 'puddles', filler: [14, 20], deliveries: Math.min(24, Math.max(12, Math.floor(items.length / 2))), cefr: t.cefr, maxWords: 2,
+    intro: `${items.length} nouns from ${t.name} and everything before it. De left, het right. There is still no rule.`, introNl: `${items.length} woorden uit ${t.name} en alles daarvoor. De links, het rechts. Er is nog steeds geen regel.`,
+    mission: { where: `Every door in ${t.name}.`, carry: 'A roll of labels. Half say de, half say het.', want: 'The dead hold up a thing. Steer left for de, right for het. Fast, no hints.' },
+    items };
+}
 function openTown(t) {
   const open = townOpen(t);
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
