@@ -158,6 +158,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { TexturePass } from 'three/addons/postprocessing/TexturePass.js';
 const POST = !/post=0/.test(location.search);   // ?post=0 turns the whole look pipeline off
 
 // ---------- constants ----------
@@ -185,7 +186,7 @@ let frameAcc = 0, frameN = 0;
 document.body.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
-let composer = null, inkPass = null, bloomPass = null, gradePass = null;
+let composer = null, inkPass = null, bloomPass = null, gradePass = null, sceneRT = null;
 renderer.domElement.addEventListener('webglcontextlost', (e) => {
   e.preventDefault();
   try { localStorage.setItem('nachtrit.lost', String((+localStorage.getItem('nachtrit.lost') || 0) + 1)); } catch (err) {}
@@ -202,13 +203,14 @@ camera.lookAt(0, 0, -30);
 function postSize() { if (!composer) return; buildPost(); }
 function buildPost() {
   if (!POST) return;
-  if (composer) { try { composer.renderTarget1.dispose(); composer.renderTarget2.dispose(); if (bloomPass) bloomPass.dispose(); } catch (e) {} composer = null; }
+  if (composer) { try { composer.renderTarget1.dispose(); composer.renderTarget2.dispose(); if (bloomPass) bloomPass.dispose(); if (sceneRT) sceneRT.dispose(); } catch (e) {} composer = null; }
   const w = Math.floor(innerWidth * DPR), h = Math.floor(innerHeight * DPR);
-  const rt = new THREE.WebGLRenderTarget(w, h, { depthTexture: new THREE.DepthTexture(w, h), depthBuffer: true });
-  composer = new EffectComposer(renderer, rt);
-  composer.addPass(new RenderPass(scene, camera));
+  // the scene renders into its own target; the ink pass reads that depth, never a buffer it is writing to
+  sceneRT = new THREE.WebGLRenderTarget(w, h, { depthTexture: new THREE.DepthTexture(w, h), depthBuffer: true });
+  composer = new EffectComposer(renderer);
+  composer.addPass(new TexturePass(sceneRT.texture));
   inkPass = new ShaderPass({
-    uniforms: { tDiffuse: { value: null }, tDepth: { value: rt.depthTexture }, res: { value: new THREE.Vector2(w, h) }, near: { value: camera.near }, far: { value: camera.far }, strength: { value: 0.9 } },
+    uniforms: { tDiffuse: { value: null }, tDepth: { value: sceneRT.depthTexture }, res: { value: new THREE.Vector2(w, h) }, near: { value: camera.near }, far: { value: camera.far }, strength: { value: 0.9 } },
     vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
     fragmentShader: `uniform sampler2D tDiffuse, tDepth; uniform vec2 res; uniform float near, far, strength; varying vec2 vUv;
       float lin(float d){ float z = d*2.0-1.0; return (2.0*near*far)/(far+near-z*(far-near)); }
@@ -241,7 +243,7 @@ function buildPost() {
 }
 buildPost();
 if (POST) document.querySelectorAll('.css-look').forEach(e => e.style.display = 'none');
-function render() { if (composer) { gradePass.uniforms.time.value = (performance.now() % 100000) / 1000; composer.render(); } else renderer.render(scene, camera); }
+function render() { if (composer) { gradePass.uniforms.time.value = (performance.now() % 100000) / 1000; renderer.setRenderTarget(sceneRT); renderer.render(scene, camera); renderer.setRenderTarget(null); composer.render(); } else renderer.render(scene, camera); }
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight); postSize();
@@ -826,6 +828,8 @@ const S = {
 let audioCtx = null;
 window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
+window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
+window.NRbright = () => { render(); const c = renderer.domElement, t = document.createElement('canvas'); t.width = 64; t.height = 36; const g = t.getContext('2d'); g.drawImage(c, 0, 0, 64, 36); const d = g.getImageData(0, 0, 64, 36).data; let sum = 0; for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2]; return Math.round(sum / (d.length / 4) / 3); };
 window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, calls: renderer.info.render.calls, dpr: DPR, post: !!composer });
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 buildScenery(THEMES.polder);
