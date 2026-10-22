@@ -6,8 +6,8 @@
     { en: "I'm scared.", parts: ['Ik', FK(['ben', 'heb'], 0, 'zijn', 'bang goes with zijn: ik ben bang. Tengo miedo does not carry over.'), 'bang.'] },
     { en: 'The girl is eight.', parts: ['Het meisje', FK(['is', 'heeft'], 0, 'zijn', 'Age goes with zijn, never hebben: zij is acht jaar.'), 'acht jaar.'] },
     { en: 'The neighbours are friendly.', parts: ['De buren', FK(['zijn', 'is'], 0, 'zijn', 'buren is plural, so zijn.'), 'vriendelijk.'] },
-    { en: 'Everyone is welcome.', parts: ['Iedereen', FK(['is', 'zijn'], 0, 'zijn', 'iedereen counts as one person: iedereen is.'), 'welkom.'] },
-    { en: 'The women are tall.', parts: ['De vrouwen', FK(['zijn', 'is'], 0, 'zijn', 'Plural, so zijn. They are still taller than you.'), 'lang.'] },
+    { en: 'Everyone is welcome.', parts: ['Iedereen', FK(['is', 'zijn'], 0, 'zijn', 'iedereen is singular, like everyone in English: iedereen is.'), 'welkom.'] },
+    { en: 'The women are tall.', parts: ['De vrouwen', FK(['zijn', 'is'], 0, 'zijn', 'Plural, so zijn. For people, lang means tall, and Dutch women are among the tallest in the world.'), 'lang.'] },
     { en: "Honey, you're sweet.", parts: ['Schat, je', FK(['bent', 'is'], 0, 'zijn', 'je and jij both take bent. is is for hij and zij.'), 'lief.'] },
     { en: 'Santi and Paola are married.', parts: ['Santi en Paola', FK(['zijn', 'is'], 0, 'zijn', 'Santi en Paola are two people, so zijn.'), 'getrouwd.'] },
     { en: 'This is Paola.', parts: ['Dit', FK(['is', 'zijn'], 0, 'zijn', 'One person, so dit is.'), 'Paola.'] },
@@ -17,7 +17,7 @@
     { en: 'The child is tired.', parts: [FK(['Het', 'De'], 0, 'dehet', 'kind is a het-word, one of the few people that are: het kind.'), 'kind is moe.'] },
     { en: "I'm the neighbour.", parts: ['Ik ben', FK(['de', 'het'], 0, 'dehet', 'People are de-words: de buurman, de buurvrouw.'), 'buurman.'] },
     { en: 'The children are outside.', parts: [FK(['De', 'Het'], 0, 'dehet', 'Every plural is de, even het kind: de kinderen.'), 'kinderen zijn buiten.'] },
-    { en: 'The borrel is cosy.', parts: [FK(['De', 'Het'], 0, 'dehet', 'borrel is a de-word: de borrel.'), 'borrel is gezellig.'] },
+    { en: 'The borrel is nice.', parts: [FK(['De', 'Het'], 0, 'dehet', 'borrel is a de-word: de borrel.'), 'borrel is gezellig.'] },
     { en: 'The party is fun.', parts: [FK(['Het', 'De'], 0, 'dehet', 'feest is a het-word: het feest.'), 'feest is leuk.'] },
 
     // greetings and the birthday circle. Sources: words/welkom (in), words/gefeliciteerd, Borrel met vrienden.
@@ -28,7 +28,7 @@
     // situations/meeting-people (Aangenaam). goedenavond and alsjeblieft come back from level 2.
     { w: 'the neighbour (woman)', nl: 'de buurvrouw' }, { w: 'the child', nl: 'het kind', wrong: 'de kind' }, { w: 'the girl', nl: 'het meisje', wrong: 'de meisje' },
     { w: 'the people', nl: 'de mensen' }, { w: 'the name', nl: 'de naam', wrong: 'het naam' }, { w: 'the friend (man)', nl: 'de vriend' },
-    { w: 'the drinks after work', nl: 'de borrel' }, { w: 'pleased to meet you', nl: 'aangenaam' }, { w: 'congratulations', nl: 'gefeliciteerd' },
+    { w: 'the Friday drinks', nl: 'de borrel' }, { w: 'pleased to meet you', nl: 'aangenaam' }, { w: 'congratulations', nl: 'gefeliciteerd' },
     { w: 'good evening', nl: 'goedenavond' }, { w: 'please', nl: 'alsjeblieft' },
 
     // small talk, feelings and opinions. Sources: meeting-people (Alles goed?), neighbours (Lekker weertje, hè?), words/jarig, Wat jammer.

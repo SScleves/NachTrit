@@ -31,9 +31,10 @@
     { read: true, nl: 'Voor mij hetzelfde, graag.', en: 'Same for me, please.' },
     { read: true, nl: 'Hier opeten of meenemen?', en: 'Eat in or take away?' },
     { read: true, nl: 'Pinnen of contant?', en: 'Card or cash?' },
-    { read: true, nl: 'Samen of apart?', en: 'Together or separately?' },
+    { read: true, nl: 'Samen of apart?', en: 'Together or separately?',
+      o: ['Together or separately?', 'Hot or cold?', 'Soup or salad?'], a: 0, r: 'woord', w: 'samen is together, apart is separately: the waiter asks how you want to pay.' },
     { read: true, nl: 'De soep is op.', en: 'The soup is all gone.',
-      o: ['The soup is all gone.', 'The soup is on the table.', 'The soup is ready.'], a: 0, r: 'woord', w: 'op after zijn means used up: de soep is op, there is none left.' },
+      o: ['The soup is all gone.', 'The soup is on the table.', 'The soup is ready.'], a: 0, r: 'woord', w: 'Here op means used up: de soep is op, there is none left. Ready is klaar.' },
     { read: true, nl: 'Een koffie verkeerd, graag.', en: 'A milky coffee, please.',
       o: ['A milky coffee, please.', 'The wrong coffee, please.', 'A black coffee, please.'], a: 0, r: 'woord', w: 'verkeerd means wrong. Koffie verkeerd has more milk than coffee, the wrong way round.' },
 
@@ -43,10 +44,10 @@
     { look: true, prop: 'winkel', nl: 'de winkel', en: 'the shop' }, { look: true, prop: 'molen', nl: 'de molen', en: 'the windmill' },
     { look: true, prop: 'nummer', value: 12, nl: 'twaalf', en: '12' },
 
-    { en: 'The plate is empty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'bord is a het-word: het bord.'), 'bord is leeg.'] },
-    { en: 'The fries are cold.', parts: ['De patat', FK(['is', 'zijn'], 0, 'zijn', 'patat is singular in Dutch, so is. English counts the fries, Dutch does not.'), 'koud.'] },
-    { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben'], 0, 'hebben', 'Dutch has hunger, like Spanish: ik heb honger, tengo hambre.'), 'honger.'] },
-    { en: 'We have a reservation.', parts: ['Wij', FK(['hebben', 'heeft'], 0, 'hebben', 'wij takes hebben. heeft is only for hij, zij and het.'), 'een reservering.'] },
-    { en: "That's twelve euros altogether.", parts: ['Dat is samen', FK(['twaalf', 'twintig'], 0, 'getal', 'twaalf is 12. twintig is 20: -tig is the tens.'), 'euro.'] },
+    { en: 'The bread roll is warm.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every word ending in -je is a het-word: het broodje.'), 'broodje is warm.'] },
+    { en: 'The fries are cold.', parts: ['De patat', FK(['is', 'zijn'], 0, 'zijn', 'patat is one singular word, so it takes is, even though English says the fries are.'), 'koud.'] },
+    { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben'], 0, 'hebben', 'In Dutch you have hunger, like in Spanish: ik heb honger, tengo hambre.'), 'honger.'] },
+    { en: 'We have a reservation.', parts: ['We', FK(['hebben', 'heeft'], 0, 'hebben', 'we takes hebben. heeft is for hij, zij (she), het and u.'), 'een reservering.'] },
+    { en: "That's nine euros altogether.", parts: ['Dat is samen', FK(['negen', 'negentien'], 0, 'getal', 'negen is 9. negentien is 19: -tien adds ten.'), 'euro.'] },
   ] });
 })();

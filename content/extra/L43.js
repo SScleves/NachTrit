@@ -41,6 +41,6 @@
     { en: 'The platform is empty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'perron is a het-word: het perron.'), 'perron is leeg.'] },
     { en: 'The stations are closed.', parts: [FK(['De', 'Het'], 0, 'dehet', 'station is het, but every plural is de: de stations.'), 'stations zijn dicht.'] },
     { en: 'I have a return ticket.', parts: ['Ik', FK(['heb', 'heeft', 'hebt'], 0, 'hebben', 'ik heb. hebt is for jij, heeft for hij and zij.'), 'een retourtje.'] },
-    { en: "We're in a hurry.", parts: ['Wij', FK(['hebben', 'zijn'], 0, 'hebben', 'Dutch has haste, like Spanish tener prisa: wij hebben haast.'), 'haast.'] },
+    { en: "We're in a hurry.", parts: ['We', FK(['hebben', 'zijn'], 0, 'hebben', 'Dutch has haste, like Spanish tener prisa: we hebben haast. zijn does not fit with haast.'), 'haast.'] },
   ] });
 })();

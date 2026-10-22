@@ -2,8 +2,8 @@
   // Level 8 De of het, Kinderdijk en Dordrecht (tier 2, A1 phrases), place thuis: the ruined house at the end of the
   // street, room by room, the furniture, the kitchen, the family, the wife and the dogs. Lines of 5 words at most,
   // present tense SVO, niet and geen only in the reads, one fork per build, no possessives or modals.
-  // Sources: vault 02 - Grammar/de vs het and _site/grammar/de-of-het-articles (plurals are de, -je is het, ont- is het,
-  // when in doubt de), 01 - Vocabulary/huis (naar huis vs thuis), vrouw, hond, tuin (het terras), 04 - Phrases &
+  // Sources: vault 02 - Grammar/de vs het and _site/grammar/de-of-het-articles (plurals are de, -je is het, ont- two-syllable words are mostly het,
+  // when in doubt de; two syllables starting with be-/ge-/ver-/ont- are mostly het), 01 - Vocabulary/huis (naar huis vs thuis), vrouw, hond, tuin (het terras), 04 - Phrases &
   // Scenarios/Thuis met je vrouw (de vaatwasser, het eten, het ontbijt), _site/sentences (De bank staat in de woonkamer,
   // De kast staat tegen de muur, Wij hebben geen tafel en geen stoelen in de keuken, De statiegeldmachine doet het niet,
   // Mijn gezin is niet groot, een kopje koffie, Trekken ze altijd zo aan de riem), _site/words (het schilderij, het boek,
@@ -38,10 +38,10 @@
     { read: true, nl: 'Ik ga naar huis.', en: "I'm going home.",
       o: ["I'm going home.", "I'm at home.", "I'm going out."], a: 0, r: 'woord', w: 'naar huis is on your way home. Once you are there, you are thuis.' },
     { read: true, nl: 'Het eten is klaar.', en: 'Dinner is ready.',
-      o: ['Dinner is ready.', "We're done eating.", "I'm ready to eat."], a: 0, r: 'woord', w: 'klaar means ready, and here the food is. Done eating would be klaar met eten.' },
+      o: ['Dinner is ready.', "We're done eating.", "I'm ready to eat."], a: 0, r: 'woord', w: 'klaar means ready, and here it is the food that is ready. Done eating would be Wij zijn klaar met eten.' },
     { read: true, nl: 'Wij hebben geen tafel.', en: "We don't have a table." },
     { read: true, nl: 'Het licht doet het niet.', en: "The light isn't working.",
-      o: ["The light isn't working.", "It isn't light yet.", "Don't turn on the light."], a: 0, r: 'woord', w: 'doen also means to work, for anything with a switch: het doet het niet.' },
+      o: ["The light isn't working.", "It isn't light yet.", "Don't turn on the light."], a: 0, r: 'woord', w: 'doen also means to work, for any light, machine or gadget: het doet het niet.' },
     // listening
     { listen: true, nl: 'de keuken', en: 'the kitchen' }, { listen: true, nl: 'de schoonmoeder', en: 'the mother-in-law' },
     { listen: true, nl: 'het fornuis', en: 'the stove' },
@@ -52,7 +52,7 @@
     // building
     { en: 'The dog food is all gone.', parts: [FK(['Het', 'De'], 0, 'dehet', 'The last part decides: de hond, but het voer, so het hondenvoer.'), 'hondenvoer is op.'] },
     { en: 'The bathroom is upstairs.', parts: [FK(['De', 'Het'], 0, 'dehet', 'The last part decides: het bad, but de kamer, so de badkamer.'), 'badkamer is boven.'] },
-    { en: 'Paola makes breakfast.', parts: ['Paola maakt', FK(['het', 'de'], 0, 'dehet', 'ont- in front and two syllables is usually het: het ontbijt.'), 'ontbijt.'] },
-    { en: 'The heating is broken.', parts: [FK(['De', 'Het'], 0, 'dehet', 'Words ending in -ing are always de: de verwarming.'), 'verwarming is kapot.'] },
+    { en: 'Paola makes breakfast.', parts: ['Paola maakt', FK(['het', 'de'], 0, 'dehet', 'A two-syllable word starting with ont- is usually het: het ontbijt, like het gesprek.'), 'ontbijt.'] },
+    { en: 'The heating is broken.', parts: [FK(['De', 'Het'], 0, 'dehet', 'Nouns ending in the suffix -ing are de: de verwarming, de vergadering.'), 'verwarming is kapot.'] },
   ] });
 })();

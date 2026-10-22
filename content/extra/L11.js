@@ -28,10 +28,10 @@
     { en: 'This afternoon I have to fix an outage.', parts: ['Vanmiddag', FK(['moet ik', 'ik moet', 'moeten ik'], 0, 'v2', 'Vanmiddag takes slot 1, so the modal comes second, then ik.'), 'een storing',
       FK(['oplossen', 'los op', 'op te lossen'], 0, 'modal', 'After a modal the verb stays whole at the end: oplossen.'), '.'] },
     { en: "Our customers don't see the problem.", parts: ['Onze klanten', FK(['zien', 'ziet', 'zie'], 0, 'presens', 'Onze klanten is plural, so the infinitive: zien.'), 'het probleem',
-      FK(['niet', 'geen'], 0, 'neg', 'het probleem has het in front, so the noun stays and niet goes after it.'), '.'] },
-    { en: 'Can you fix my wifi?', parts: [FK(['Kun', 'Kunt', 'Kunnen'], 0, 'modal', 'Verb first, and kunt loses its t before jij: kun jij.'), 'jij mijn wifi',
+      FK(['niet', 'geen'], 0, 'neg', 'het probleem is a specific thing with het in front, so niet. geen only replaces een or no article.'), '.'] },
+    { en: 'Can you fix my wifi?', parts: [FK(['Kun', 'Kunnen'], 0, 'modal', 'Verb first with jij behind it: kun jij. Kunnen goes with wij, jullie and zij.'), 'jij mijn wifi',
       FK(['fixen', 'fix', 'te fixen'], 0, 'modal', 'After a modal the verb goes to the end as an infinitive: fixen.'), '?'] },
-    { en: "My colleague doesn't know her password.", parts: ['Mijn collega', FK(['weet', 'wet', 'weten'], 0, 'spel', 'weten closes up at the end, so the long e is written twice: weet. It already ends in t.'), 'haar wachtwoord',
+    { en: "My colleague doesn't know her password.", parts: ['Mijn collega', FK(['weet', 'wet', 'weten'], 0, 'spel', 'weten is irregular: ik, jij and hij all say weet, with no extra t. wet is a different word.'), 'haar wachtwoord',
       FK(['niet', 'geen'], 0, 'neg', 'haar already pins the noun down, so niet, after it. geen is only for een or no article.'), '.'] },
 
     // colleagues, the boss and working from home
@@ -59,5 +59,51 @@
     { listen: true, nl: 'hij zegt', en: 'he says' }, { listen: true, nl: 'jullie zien', en: 'you all see' }, { listen: true, nl: 'zij krijgt', en: 'she gets' },
 
     { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' }, { look: true, prop: 'huis', nl: 'het huis', en: 'the house' },
+
+    // ---- second lengthening: the working day from the first mail to the last call
+    // Sources: 04 - Phrases & Scenarios/De standup - tech talk (Ik heb geen blockers, Kun je je scherm delen?),
+    // Werk MOC (Even kijken., Het draait weer., Kunnen we dit in een mailtje doen?), 01 - Vocabulary/storing
+    // (het ligt eruit) and vergadering (de meeting), _site/situations/office (Druk vandaag?, Ik zit zo in een
+    // meeting), _site/words (de klant, het probleem, de vraag, het antwoord, de telefoon, bellen, helpen, lezen,
+    // Ik werk vier dagen per week., Morgen werk ik thuis., Ik ben moe na een lange werkdag.), 02 - Grammar (presens,
+    // open vs gesloten lettergreep, V2, modale werkwoorden, niet vs geen). Fence kept: no object pronouns (tier 4),
+    // no gaan + infinitive (tier 5), separable verbs only whole after a modal (inloggen).
+    { en: 'I have no blockers.', parts: ['Ik heb', FK(['geen', 'niet'], 0, 'neg', 'blockers has no article in front, so geen cancels the noun.'), 'blockers.'] },
+    { en: "I'm calling the customer.", parts: ['Ik', FK(['bel', 'bell', 'belt'], 0, 'spel', 'The stem of bellen is bel: a Dutch word never ends on a double consonant, and ik never adds a t.'), 'de klant.'] },
+    { en: 'Do you read your mail in the morning?', parts: [FK(['Lees', 'Leest', 'Lest'], 0, 'presens', 'Verb first and jij behind it, so the t drops: lees jij. The long e is written twice in the closed stem.'), "jij 's ochtends je mail?"] },
+    { en: 'Every morning I look at the dashboards.', parts: ['Elke ochtend', FK(['bekijk ik', 'ik bekijk', 'bekijkt ik'], 0, 'v2', 'Elke ochtend takes slot 1, so the verb comes second and ik follows it, without a t.'), 'de dashboards.'] },
+    { en: 'Can I help the customer?', parts: [FK(['Kan', 'Kun', 'Kunnen'], 0, 'modal', 'ik always takes kan. kun only goes with jij or je after it.'), 'ik de klant',
+      FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'kunnen sends the second verb to the end as a bare infinitive, without te.'), '?'] },
+    { en: 'The meeting takes an hour.', parts: ['De vergadering', FK(['duurt', 'duur', 'duren'], 0, 'presens', 'de vergadering is one thing, a zij, so stem plus t: duurt.'), 'een uur.'] },
+    { en: "My colleagues don't have time.", parts: ["Mijn collega's", FK(['hebben', 'heeft', 'hebt'], 0, 'presens', "Mijn collega's is plural, so the infinitive: hebben."),
+      FK(['geen', 'niet'], 0, 'neg', 'tijd has no article in front, so geen cancels it.'), 'tijd.'] },
+    { en: "Tomorrow I'm working at the office.", parts: ['Morgen', FK(['werk ik', 'ik werk', 'werkt ik'], 0, 'v2', 'Morgen takes slot 1, so the verb comes second, then ik. ik keeps the bare stem.'), 'op kantoor.'] },
+    { en: 'You have to log in first.', parts: ['Je moet eerst', FK(['inloggen', 'log in', 'in te loggen'], 0, 'modal', 'After moet the verb goes to the end whole, as one infinitive: inloggen.'), '.'] },
+    { en: "You don't have to come to the office.", parts: ['Je', FK(['hoeft', 'moet', 'mag'], 0, 'modal', "Don't have to is hoeven niet, and only hoeven takes te. moet niet means you shouldn't and mag niet means you're not allowed, and neither takes te."), 'niet naar kantoor te komen.'] },
+    { en: 'Is your laptop working again?', parts: [FK(['Doet', 'Doe', 'Doen'], 0, 'presens', 'The subject is one laptop, so stem plus t: doet. doe is for ik, doen for the plural.'),
+      FK(['je', 'jij'], 0, 'bezit', 'Your before a noun is je or jouw. jij is the one doing something, never in front of a noun.'), 'laptop het weer?'] },
+    { en: 'Paola works four days a week.', parts: ['Paola', FK(['werkt', 'werk', 'werken'], 0, 'presens', 'Paola is a zij, so stem plus t: werkt.'), 'vier dagen per week.'] },
+    { en: 'Who has a question?', parts: [FK(['Wie', 'Wat', 'Waar'], 0, 'vraag', 'wie asks for a person. wat asks for a thing and waar for a place.'), FK(['heeft', 'hebt', 'heb'], 0, 'presens', 'wie counts as one person, a hij: heeft.'), 'een vraag?'] },
+    { en: 'Our team has a lot of work today.', parts: [FK(['Ons', 'Onze'], 0, 'bezit', 'team is a het-word, so ons team. onze is for de-words and plurals.'), 'team heeft vandaag veel werk.'] },
+
+    // words of the working day, three with the wrong article as the second sign
+    { w: 'the customer', nl: 'de klant' }, { w: 'the problem', nl: 'het probleem', wrong: 'de probleem' },
+    { w: 'the question', nl: 'de vraag' }, { w: 'the answer', nl: 'het antwoord', wrong: 'de antwoord' },
+    { w: 'the phone', nl: 'de telefoon' }, { w: 'the workday', nl: 'de werkdag' }, { w: 'the desk', nl: 'het bureau', wrong: 'de bureau' },
+    { w: 'to call (on the phone)', nl: 'bellen' }, { w: 'to help', nl: 'helpen' }, { w: 'to read', nl: 'lezen' },
+
+    // reading: two meaning traps (zo, eruit liggen), then the office chunks
+    { read: true, nl: 'Ik zit zo in een meeting.', en: "I'm in a meeting in a minute.",
+      o: ["I'm in a meeting in a minute.", "I'm sitting in the meeting room.", 'The meeting is over soon.'], a: 0, r: 'woord', w: 'zo here means in a minute. In een meeting zitten is simply being in one.' },
+    { read: true, nl: 'Het ligt eruit.', en: "It's down.",
+      o: ["It's down.", "It's lying outside.", "It's out of stock."], a: 0, r: 'woord', w: 'Eruit liggen is IT talk for down: the system is not running.' },
+    { read: true, nl: 'Even kijken.', en: 'Let me have a look.' },
+    { read: true, nl: 'Kun je je scherm delen?', en: 'Can you share your screen?' },
+    { read: true, nl: 'Kunnen we dit in een mailtje doen?', en: 'Could this be an email?' },
+    { read: true, nl: 'Druk vandaag?', en: 'Busy today?' },
+
+    { listen: true, nl: 'zij leest', en: 'she reads' }, { listen: true, nl: 'ik bel', en: 'I call' }, { listen: true, nl: 'u helpt', en: 'you help (polite)' },
+
+    { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
   ] });
 })();

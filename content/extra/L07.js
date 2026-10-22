@@ -42,11 +42,11 @@
     { read: true, nl: 'Twee euro per stuk.', en: 'Two euros each.', o: ['Two euros each.', 'Two euros a kilo.', 'Two for one euro.'], a: 0, r: 'woord',
       w: 'Two euros each. per stuk is per piece. By weight the sign says per kilo.' },
     { read: true, nl: 'De rest is voor u.', en: 'Keep the change.', o: ['Keep the change.', 'You pay the rest.', 'The rest is for later.'], a: 0, r: 'woord',
-      w: 'Keep the change. You say it when you pay cash, and the rest becomes the tip.' },
+      w: 'Keep the change. You say it when you pay, and the rest becomes the tip.' },
 
     // ---- listens: a price by ear, and the oe, ei and uu sounds
     { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'de aardbeien', en: 'the strawberries' },
-    { listen: true, nl: 'de groente', en: 'the vegetables' }, { listen: true, nl: 'duur', en: 'expensive' },
+    { listen: true, nl: 'de groenten', en: 'the vegetables' }, { listen: true, nl: 'duur', en: 'expensive' },
 
     // ---- looks: two prices in the window, the harbour behind the market
     { look: true, prop: 'nummer', value: 45, nl: 'vijfenveertig', en: '45' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
@@ -57,6 +57,6 @@
     { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijt'], 0, 'pres', 'hij takes stem plus t, and the stem is snijd: snijdt. You hear one t, you write dt.'), 'het vlees.'] },
     { en: 'The waiter brings the food.', parts: ['De ober brengt', FK(['het', 'de'], 0, 'dehet', 'A verb used as a noun is a het-word: eten, het eten.'), 'eten.'] },
     { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'pres', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
-    { en: "I'll leave a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geev'], 0, 'pres', 'ik takes the bare stem, and a v at the end turns into f: geven, ik geef.'), 'een fooi.'] },
+    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geev'], 0, 'pres', 'ik takes the bare stem, and a v at the end turns into f: geven, ik geef.'), 'een fooi.'] },
   ] });
 })();

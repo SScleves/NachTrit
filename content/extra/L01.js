@@ -8,7 +8,8 @@
   // New rule: hebben, linked to the vault note 03 - Verbs/hebben, the twin of the zijn rule in levels.js.
   // Left out on purpose, because the level's distractor pool would make them ambiguous: het hondje (the hond look
   // could then show a right-looking wrong sign), a deur look (the deur prop is a narrow house and het huis is in
-  // this level), het dak (the look marker floats right above the roof of the huis prop), de avond (next to de nacht).
+  // this level), het dak (the look marker floats right above the roof of the huis prop), de avond (next to de nacht),
+  // a boom look (the tuin prop is five trees behind a fence, so de boom would be a right-looking wrong sign on it).
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
   const FK = (o, a, r, w) => ({ o, a, r, w });
   window.extendLevel(1, { deliveries: 20, items: [
@@ -19,7 +20,7 @@
     { w: 'the table', nl: 'de tafel' }, { w: 'the dishwasher', nl: 'de vaatwasser' },
     // the family
     { w: 'the husband', nl: 'de man' }, { w: 'the child', nl: 'het kind', wrong: 'de kind' }, { w: 'the parents', nl: 'de ouders' },
-    { w: 'the family', nl: 'het gezin' },
+    { w: 'the family (household)', nl: 'het gezin' },
     // the dogs
     { w: 'the dogs', nl: 'de honden', wrong: 'het honden' }, { w: 'the leash', nl: 'de riem' }, { w: 'the dog basket', nl: 'de mand' },
     { w: 'the poo bag', nl: 'het poepzakje', wrong: 'de poepzakje' },
@@ -29,14 +30,14 @@
     // reading
     { read: true, nl: 'Schat, ik ben thuis.', en: "Honey, I'm home." },
     { read: true, nl: 'Ik ben moe.', en: "I'm tired." },
-    { read: true, nl: 'De honden zijn de baas.', en: 'The dogs are the boss.' },
+    { read: true, nl: 'De honden zijn de baas.', en: 'The dogs are in charge.' },
     { read: true, nl: 'Ik heb het koud.', en: "I'm cold.", o: ["I'm cold.", 'I have a cold.', "I'm hot."], a: 0, r: 'hebben',
-      w: 'Like tengo frío: you have the cold, ik heb het koud. A cold you catch is verkouden.' },
+      w: 'Like tengo frío, you have it cold: ik heb het koud. Having a cold is verkouden zijn.' },
     // listening
-    { listen: true, nl: 'de schat', en: 'the darling' }, { listen: true, nl: 'welterusten', en: 'good night' },
+    { listen: true, nl: 'de schat', en: 'the treasure, also: honey' }, { listen: true, nl: 'welterusten', en: 'good night' },
     { listen: true, nl: 'de sleutel', en: 'the key' },
     // looking
-    { look: true, prop: 'water', nl: 'de sloot', en: 'the ditch' }, { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
+    { look: true, prop: 'water', nl: 'de sloot', en: 'the ditch' },
     // building
     { en: 'I have two dogs.', parts: ['Ik', FK(['heb', 'hebt', 'heeft'], 0, 'hebben', 'ik heb. hebben is irregular: ik heb, jij hebt, hij heeft.'), 'twee honden.'] },
     { en: 'The dogs are hungry.', parts: ['De honden', FK(['hebben', 'zijn'], 0, 'hebben', 'Hunger is something you have, like tener hambre: honger hebben.'), 'honger.'] },

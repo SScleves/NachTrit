@@ -40,7 +40,7 @@
     // reads: three plain lines from the counter, three meaning traps
     { read: true, nl: 'Hier opeten of meenemen?', en: 'Eat in or take away?' },
     { read: true, nl: 'Samen of apart?', en: 'Together or separately?' },
-    { read: true, nl: 'Tot op de cent.', en: 'Down to the cent.' },
+    { read: true, nl: 'Tot op de cent precies.', en: 'Down to the exact cent.' },
     { read: true, nl: 'Nog tien minuten.', en: 'Ten more minutes.',
       o: ['Ten more minutes.', 'Ten minutes ago.', 'Ten minutes late.'], a: 0, r: 'woord', w: 'Ten more minutes. nog is still or more. Ago is geleden, late is te laat.' },
     { read: true, nl: 'De pin doet het niet.', en: "The card machine isn't working.",
@@ -58,7 +58,7 @@
 
     // builds: one fork each
     { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben', 'heeft'], 0, 'hebben', 'Hunger is something you have in Dutch, like tengo hambre: ik heb honger.'), 'honger.'] },
-    { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'Dutch counts friet as one portion, so is. English says the fries are.'), 'koud.'] },
+    { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'De friet is one portion, so it takes is. Only de frieten would take zijn.'), 'koud.'] },
     { en: 'Two pizzas, please.', parts: ['Twee', FK(["pizza's", 'pizzas'], 0, 'spel', "pizza ends in a long a, and the 's keeps it long in the plural: pizza's."), ', alstublieft.'] },
     { en: 'The food is tasty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'eten here is a verb used as a noun, and those are always het: het eten.'), 'eten is lekker.'] },
     { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'pres', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },

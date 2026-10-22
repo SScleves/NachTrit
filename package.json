@@ -5,7 +5,9 @@
   "description": "Horror arcade runner for Dutch grammar",
   "scripts": {
     "serve": "python3 -m http.server 8765",
-    "qa": "node qa/run.mjs"
+    "qa": "node qa/run.mjs",
+    "build:content": "node qa/build-content.mjs",
+    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs"
   },
   "devDependencies": {
     "playwright": "^1.47.2"

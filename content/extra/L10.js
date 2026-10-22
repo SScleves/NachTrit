@@ -4,7 +4,7 @@
   // tickets and prices, the platform and the exit, early, on time, late and delayed, the days around the weekend.
   // Fence: 5 words a line at most, present tense SVO only, one fork per build, numbers to 100, alstublieft,
   // niet only inside a read. No questions, no V2 after a time word, no clock times, no separable verbs.
-  // Sources: vault _site/dialogues/een-treinkaartje-kopen (Een retour, alstublieft. het perron, spoor vijf, vertrekt),
+  // Sources: vault _site/dialogues/een-treinkaartje-kopen (Een retour, alstublieft. het perron, vertrekt),
   // _site/sentences (De trein heeft weer vertraging. Balen, mijn trein is net weg. Ik neem elke ochtend de bus.
   // bij de bushalte), Webiste dutch travel scenes (Het ligt tegenover de kerk. Dat is dan tien euro vijftig.
   // Het is hier vlakbij, twee minuten lopen.), _site/situations/directions (rechtdoor, de uitgang, links),
@@ -12,8 +12,8 @@
   // 02 - Grammar (presens, de vs het: het weekend, niet vs geen), 03 - Verbs/hebben, content/towns.js (de waterbus).
   // Replays from level 9: zondag and alstublieft.
   // Left out on purpose, because the level's distractor pool would make them right answers too:
-  //   het spoor as a word (natives say spoor vijf for platform 5, so it would also answer the platform; it lives
-  //   in the listen 'spoor vijf' only), de halte next to de bushalte, het enkeltje and het retourtje next to
+  //   het spoor as a word or a listen (natives say spoor vijf for platform 5, and every listen is a distractor
+  //   for the word items, so 'spoor vijf' would also answer the platform), de halte next to de bushalte, het enkeltje and het retourtje next to
   //   het kaartje, de waterbus as a word next to de pont (it is a ferry as well, so it lives in a build),
   //   vannacht next to vanavond (both are tonight), laat next to te laat, a nummer look (a number plate on a pole
   //   reads as a bus stop sign next to de bushalte), a brug look (its wooden deck could pass for het perron),
@@ -56,7 +56,7 @@
     { read: true, nl: 'Een retour, alstublieft.', en: 'A return ticket, please.' },
 
     // ---- listens: the station speaker, and the ui, ch and uu sounds
-    { listen: true, nl: 'spoor vijf', en: 'platform 5' }, { listen: true, nl: 'de uitgang', en: 'the exit' },
+    { listen: true, nl: 'vijftig', en: '50' }, { listen: true, nl: 'de uitgang', en: 'the exit' },
     { listen: true, nl: 'rechtdoor', en: 'straight on' }, { listen: true, nl: 'het uur', en: 'the hour' },
 
     // ---- looks: the bike you came on, the water the ferry crosses, the mills the water bus goes to

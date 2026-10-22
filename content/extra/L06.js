@@ -34,7 +34,7 @@
     { w: 'the pharmacy', nl: 'de apotheek', wrong: 'het apotheek' }, { w: 'the prescription', nl: 'het recept' },
     // ---- words: paying and prices
     { w: 'to buy', nl: 'kopen' }, { w: 'the debit card', nl: 'de pinpas' }, { w: 'in cash', nl: 'contant' },
-    { w: 'the change (money back)', nl: 'het wisselgeld', wrong: 'de wisselgeld' }, { w: 'the discount', nl: 'de korting' },
+    { w: 'the change (money back)', nl: 'het wisselgeld', wrong: 'de wisselgeld' }, { w: 'the discount (money off)', nl: 'de korting' },
     { w: '€ 4,20', nl: 'vier euro twintig' }, { w: '€ 0,85', nl: 'vijfentachtig cent' },
     // ---- words: sizes
     { w: 'the fitting room', nl: 'de paskamer' },
@@ -61,7 +61,7 @@
 
     // ---- builds: one fork each
     { en: 'You pay at the checkout.', parts: ['U', FK(['betaalt', 'betaal', 'betalen'], 0, 'pres', 'u takes stem plus t, just like jij: u betaalt.'), 'bij de kassa.'] },
-    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kosten', 'kostt'], 0, 'pres', 'pindakaas is one thing, a hij: stem plus t. kost already ends in t, so it stays kost.'), 'drie euro.'] },
+    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kosten', 'kostt'], 0, 'pres', 'De pindakaas is one thing, so it takes the hij form: stem plus t. The stem kost already ends in t, so it stays kost.'), 'drie euro.'] },
     { en: 'This jumper is too small.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'trui is a de-word, so deze trui. dit only goes with het-words: dit brood.'), 'trui is te klein.'] },
     { en: 'Can I have four rolls?', parts: ['Mag ik vier', FK(['broodjes', 'broodjen', "broodje's"], 0, 'meervoud', 'Every -je word takes -s in the plural: het broodje, de broodjes.'), '?'] },
     { en: 'It costs € 1,99.', parts: ['Het kost een euro', FK(['negenennegentig', 'negennegentig', 'negentignegen'], 0, 'getal', 'Units first, then en, then the tens: negen-en-negentig.'), '.'] },

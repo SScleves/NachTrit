@@ -28,7 +28,7 @@
     // de winkels
     { dehet: true, nl: 'supermarkt', art: 'de', en: 'the supermarket' },
     { dehet: true, nl: 'aanbieding', art: 'de', en: 'the special offer', w: '-ing at the end, so de: de aanbieding.' },
-    { dehet: true, nl: 'boodschappen', art: 'de', en: 'the groceries', w: 'Always plural, so always de: de boodschappen.' },
+    { dehet: true, nl: 'boodschappen', art: 'de', en: 'the groceries', w: 'Plural, so de: de boodschappen. One errand is de boodschap, also de.' },
     { dehet: true, nl: 'tasje', art: 'het', en: 'the plastic bag', w: 'de tas, but het tasje. The -je makes it het.' },
     { dehet: true, nl: 'geld', art: 'het', en: 'the money' },
     // het station
@@ -48,14 +48,14 @@
     // de sport
     { dehet: true, nl: 'sportschool', art: 'de', en: 'the gym', w: 'The last part decides: de school, so de sportschool.' },
     { dehet: true, nl: 'clubhuis', art: 'het', en: 'the clubhouse', w: 'The last part decides: het huis, so het clubhuis.' },
-    { dehet: true, nl: 'balletje', art: 'het', en: 'the little ball', w: 'de bal, but het balletje. Dutch golfers always use the -je.' },
+    { dehet: true, nl: 'balletje', art: 'het', en: 'the little ball', w: 'de bal, but het balletje. The -je makes it het.' },
     { dehet: true, nl: 'riem', art: 'de', en: 'the dog lead' },
     { dehet: true, nl: 'wandeling', art: 'de', en: 'the walk', w: '-ing at the end, so de: de wandeling.' },
     // de mensen
     { dehet: true, nl: 'man', art: 'de', en: 'the man', w: 'People are de: de man, de vrouw.' },
     { dehet: true, nl: 'buurvrouw', art: 'de', en: 'the neighbour (woman)', w: 'People are de: de buurman, de buurvrouw.' },
     { dehet: true, nl: 'buren', art: 'de', en: 'the neighbours', w: 'Plural, so de. One neighbour or many, always de.' },
-    { dehet: true, nl: 'kind', art: 'het', en: 'the child', w: 'People are de, but het kind is the one to remember.' },
+    { dehet: true, nl: 'kind', art: 'het', en: 'the child', w: 'People are usually de, but not this one: het kind.' },
     { dehet: true, nl: 'kinderen', art: 'de', en: 'the children', w: 'Every plural is de: het kind, de kinderen.' },
     { dehet: true, nl: 'meisje', art: 'het', en: 'the girl', w: 'A girl is a person, but the -je wins: het meisje.' },
     { dehet: true, nl: 'meisjes', art: 'de', en: 'the girls', w: 'Plural beats -je: het meisje, but de meisjes.' },

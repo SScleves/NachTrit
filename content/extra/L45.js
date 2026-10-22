@@ -20,7 +20,7 @@
     { w: 'the walk', nl: 'de wandeling' }, { w: "the dog's owner", nl: 'het baasje', wrong: 'de baasje' }, { w: 'the gate', nl: 'het hek', wrong: 'de hek' },
     { w: 'the bike path', nl: 'het fietspad', wrong: 'de fietspad' }, { w: 'the helmet', nl: 'de helm' },
     { w: 'the handlebars', nl: 'het stuur', wrong: 'de stuur' }, { w: 'to cycle', nl: 'fietsen' },
-    { w: 'the weather', nl: 'het weer' }, { w: 'the rain', nl: 'de regen' }, { w: 'the sun', nl: 'de zon' }, { w: 'the umbrella', nl: 'de paraplu' },
+    { w: 'the weather', nl: 'het weer', wrong: 'de weer' }, { w: 'the rain', nl: 'de regen' }, { w: 'the sun', nl: 'de zon' }, { w: 'the umbrella', nl: 'de paraplu' },
     { w: 'right', nl: 'rechts' }, { w: 'straight on', nl: 'rechtdoor' }, { w: 'there', nl: 'daar' },
 
     // reads: three meaning traps, three plain lines
@@ -29,7 +29,7 @@
     { read: true, nl: 'De hond is los.', en: 'The dog is off the lead.',
       o: ['The dog is off the lead.', 'The dog is lost.', 'The dog is asleep.'], a: 0, r: 'woord', w: 'los means loose, off the lead. A lost dog is kwijt.' },
     { read: true, nl: 'Het waait weer eens.', en: "It's windy again.",
-      o: ["It's windy again.", "It's raining again.", "It's windy for once."], a: 0, r: 'woord', w: 'waaien is what the wind does, and weer eens means yet again, with a sigh.' },
+      o: ["It's windy again.", "It's raining again.", "It's cold again."], a: 0, r: 'woord', w: 'waaien is what the wind does, and weer eens means yet again, with a sigh.' },
     { read: true, nl: 'Lekker weertje, hè?', en: 'Nice weather, eh?' },
     { read: true, nl: 'Honden aan de lijn.', en: 'Dogs on the lead.' },
     { read: true, nl: 'Even zoeken.', en: 'Let me look for it.' },

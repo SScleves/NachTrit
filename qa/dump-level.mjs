@@ -4,9 +4,8 @@ import vm from 'node:vm'; import fs from 'node:fs'; import path from 'node:path'
 const ROOT = process.cwd();
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const listed = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]).filter(s => /^(data|levels)\.js$|^content\//.test(s));
-const extras = ['content/new', 'content/extra'].flatMap(d => fs.existsSync(path.join(ROOT, d)) ? fs.readdirSync(path.join(ROOT, d)).filter(f => f.endsWith('.js')).sort().map(f => `${d}/${f}`) : []);
 const ctx = { console }; ctx.window = ctx; vm.createContext(ctx);
-for (const src of [...listed, ...extras]) { try { vm.runInContext(fs.readFileSync(path.join(ROOT, src), 'utf8'), ctx, { filename: src }); } catch (e) { console.error(`load error ${src}: ${e.message}`); } }
+for (const src of listed) { try { vm.runInContext(fs.readFileSync(path.join(ROOT, src), 'utf8'), ctx, { filename: src }); } catch (e) { console.error(`load error ${src}: ${e.message}`); } }
 const id = Number(process.argv[2]); const lv = (ctx.LEVELS || []).find(l => l.id === id);
 if (!lv) { console.error(`no level ${id}`); process.exit(1); }
 if (process.argv.includes('--brief')) {

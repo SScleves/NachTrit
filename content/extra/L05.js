@@ -36,9 +36,9 @@
 
     // ---- reads: two traps with their own options, three signs and lines from the till
     { read: true, nl: 'Het brood is op.', o: ['The bread is all gone.', 'The bread is on top.', 'The bread is open.'], a: 0, r: 'woord',
-      w: 'The bread is all gone. After zijn, op means used up, not on.' },
+      w: 'The bread is all gone. With zijn, op means used up, not on.' },
     { read: true, nl: 'De winkel is dicht.', o: ['The shop is closed.', 'The shop is nearby.', 'The shop is open.'], a: 0, r: 'woord',
-      w: 'The shop is closed. dicht is closed, nearby is dichtbij.' },
+      w: 'The shop is closed. dicht means closed, nearby is dichtbij.' },
     { read: true, nl: 'Pinnen of contant?', en: 'Card or cash?' },
     { read: true, nl: 'Twee halen, één betalen.', en: 'Take two, pay for one.' },
     { read: true, nl: 'Dat is alles.', en: "That's all." },
@@ -47,11 +47,11 @@
     { listen: true, nl: 'twaalf euro', en: '€ 12' }, { listen: true, nl: 'de ui', en: 'the onion' }, { listen: true, nl: 'uitverkocht', en: 'sold out' },
 
     // ---- looks: the bike left unlocked outside, a price tag on a pole
-    { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' }, { look: true, prop: 'nummer', value: 13, nl: 'dertien', en: '13' },
+    { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' }, { look: true, prop: 'nummer', value: 11, nl: 'elf', en: '11' },
 
     // ---- builds: one fork each
     { en: 'The trousers are too small.', parts: ['De broek', FK(['is', 'zijn'], 0, 'zijn', 'Dutch counts one broek, so is. English says the trousers are.'), 'te klein.'] },
     { en: "That's €19.", parts: ['Dat is negentien', FK(['euro', "euro's"], 0, 'getal', 'In a price euro stays singular: negentien euro.'), '.'] },
-    { en: 'I still have the receipt.', parts: ['Ik', FK(['heb', 'heeft', 'hebt'], 0, 'hebben', 'ik heb. hebben is irregular: ik heb, jij hebt, hij heeft.'), 'het bonnetje nog.'] },
+    { en: 'I still have the receipt.', parts: ['Ik', FK(['heb', 'heeft', 'hebt'], 0, 'hebben', 'With ik the verb is heb. hebben is irregular: jij hebt, hij heeft.'), 'het bonnetje nog.'] },
   ] });
 })();

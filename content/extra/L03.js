@@ -1,7 +1,7 @@
 (() => {
-  // Level 3 De brievenbus, longer: 36 new items for Alblasserdam, Thuis, tier 1 (A1 words, 5 words a sentence at most).
+  // Level 3 De brievenbus, longer: 37 new items for Alblasserdam, Thuis, tier 1 (A1 words, 5 words a sentence at most).
   // The post at the front door, the rooms of the house, the wife and the dogs, breakfast and bedtime.
-  // Sources: vault 04 - Phrases & Scenarios/Thuis met je vrouw (Schat, ik ben thuis. Je hebt gelijk. Welterusten),
+  // Sources: vault 04 - Phrases & Scenarios/Thuis met je vrouw (Schat, ik ben thuis. Je hebt gelijk. Het eten is lekker, schat. Welterusten),
   // 01 - Vocabulary/huis (thuis vs naar huis), vrouw (schat), hond (Ik heb twee honden), _site/words H01 (het adres),
   // _site/sentences (de bank in de woonkamer, het bed onder het raam in de slaapkamer, het ontbijt, de sleutel,
   // het pakketje, de douche), _site/grammar/meervoud-plurals (de brief, de brieven), 02 - Grammar/de vs het and presens.
@@ -11,6 +11,7 @@
   // het raam in this pool could name them too. For the same reason het huisnummer and het hondje are not word items:
   // they would name the nummer and hond props. het huisnummer lives in a build, where it never becomes a distractor.
   // Builds carry nl so the finished sentence can be shown and spoken.
+  window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
   const FK = (o, a, r, w) => ({ o, a, r, w });
   window.extendLevel(3, { deliveries: 20, items: [
     // de post
@@ -29,6 +30,8 @@
       w: 'thuis is where you are. Going home is naar huis.' },
     { read: true, nl: 'Je hebt gelijk.', o: ["You're right.", 'You have the same.'], a: 0, r: 'woord',
       w: 'gelijk hebben is to be right. Like tener razón, Dutch says it with hebben.' },
+    { read: true, nl: 'Het eten is lekker, schat.', o: ['The food is tasty, honey.', 'The food is ready, honey.'], a: 0, r: 'woord',
+      w: 'lekker is how food tastes. Ready is klaar.' },
 
     { listen: true, nl: 'de brievenbus', en: 'the letterbox' }, { listen: true, nl: 'de keuken', en: 'the kitchen' },
     { listen: true, nl: 'het ontbijt', en: 'the breakfast' }, { listen: true, nl: 'twaalf', en: '12' },
@@ -42,7 +45,7 @@
     { en: 'The letters are for Paola.', nl: 'De brieven zijn voor Paola.',
       parts: ['De brieven', FK(['zijn', 'is'], 0, 'zijn', 'de brieven is more than one letter, so zijn.'), 'voor Paola.'] },
     { en: 'We have two dogs.', nl: 'We hebben twee honden.',
-      parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we hebben. Every plural takes the infinitive.'), 'twee honden.'] },
+      parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'hebben', 'we hebben. With we, jullie and zij the verb is the same as the infinitive.'), 'twee honden.'] },
     { en: 'Good night, honey.', nl: 'Welterusten, schat.',
       parts: [FK(['Welterusten', 'Goedemorgen'], 0, 'groet', 'welterusten is for bedtime. goedemorgen is for the morning.'), ', schat.'] },
   ] });

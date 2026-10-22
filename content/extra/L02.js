@@ -38,7 +38,7 @@
     { look: true, prop: 'huis', nl: 'het huis', en: 'the house' }, { look: true, prop: 'tuin', nl: 'de tuin', en: 'the garden' },
 
     { read: true, nl: 'Hoi buurvrouw', en: 'Hi, neighbour.',
-      o: ['Hi, neighbour.', 'Bye, neighbour.', 'Hi, friend.'], a: 0, r: 'groet', w: 'hoi is hi and doei is bye. buurvrouw is the woman next door.' },
+      o: ['Hi, neighbour.', 'Bye, neighbour.', 'Hi, friend.'], a: 0, r: 'groet', w: 'hoi is hi and doei is bye. A buurvrouw is a neighbour who is a woman.' },
     { read: true, nl: 'Hoe gaat het?', en: 'How are you?' },
     { read: true, nl: 'Goed, en met jou?', en: 'Good, and you?',
       o: ['Good, and you?', 'Good, I met you.', 'Good evening.'], a: 0, r: 'groet', w: 'met means with, not the English met. en met jou? hands the question back.' },
@@ -49,11 +49,11 @@
     { read: true, nl: 'Ik heb het druk.', en: "I'm busy.",
       o: ["I'm busy.", "It's crowded.", "I'm cold."], a: 0, r: 'hebben', w: 'Ik heb het druk is I am busy. Het is druk is it is crowded.' },
     { read: true, nl: 'Paola is jarig.', en: "It's Paola's birthday.",
-      o: ["It's Paola's birthday.", 'Paola is one year old.', 'Paola is at a party.'], a: 0, r: 'woord', w: 'jarig means today is her birthday. It says nothing about her age.' },
+      o: ["It's Paola's birthday.", 'Paola is one year old.', 'Paola is at a party.'], a: 0, r: 'woord', w: 'jarig means it is her birthday. It says nothing about her age.' },
 
     { en: 'The neighbours are grumpy.', nl: 'De buren zijn chagrijnig.', parts: ['De buren', FK(['zijn', 'is'], 0, 'zijn', 'More than one neighbour, so zijn.'), 'chagrijnig.'] },
     { en: 'The neighbour has a cat.', nl: 'De buurvrouw heeft een kat.', parts: ['De buurvrouw', FK(['heeft', 'hebt', 'heb'], 0, 'hebben', 'One buurvrouw is a zij, and zij heeft.'), 'een kat.'] },
     { en: 'The girl is happy.', nl: 'Het meisje is blij.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every -je word is het, even a girl: het meisje.'), 'meisje is blij.'] },
-    { en: 'We have visitors.', nl: 'Wij hebben bezoek.', parts: ['Wij', FK(['hebben', 'heeft', 'hebt'], 0, 'hebben', 'wij hebben. Every plural takes hebben.'), 'bezoek.'] },
+    { en: 'We have visitors.', nl: 'Wij hebben bezoek.', parts: ['Wij', FK(['hebben', 'heeft', 'hebt'], 0, 'hebben', 'wij hebben, just like jullie hebben and zij hebben. heeft is only for one person.'), 'bezoek.'] },
   ] });
 })();
