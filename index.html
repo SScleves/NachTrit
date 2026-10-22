@@ -452,6 +452,46 @@ function house(opts = {}) {
   g.userData.faceRoad = true;
   return g;
 }
+// little spray-paint pictures for words we know how to draw
+const PICTO = {
+  hond: g => { g.fillRect(30, 70, 70, 34); g.fillRect(96, 54, 26, 26); g.fillRect(34, 104, 10, 22); g.fillRect(86, 104, 10, 22); g.fillRect(14, 60, 18, 8); g.fillRect(104, 42, 8, 14); },
+  kat: g => { g.fillRect(34, 72, 62, 34); g.fillRect(94, 50, 28, 28); g.fillRect(96, 38, 8, 12); g.fillRect(112, 38, 8, 12); g.fillRect(14, 50, 8, 36); g.fillRect(38, 106, 8, 20); g.fillRect(84, 106, 8, 20); },
+  fiets: g => { g.lineWidth = 7; g.beginPath(); g.arc(38, 96, 24, 0, 7); g.arc(102, 96, 24, 0, 7); g.stroke(); g.beginPath(); g.moveTo(38, 96); g.lineTo(60, 50); g.lineTo(96, 50); g.lineTo(102, 96); g.moveTo(60, 50); g.lineTo(78, 96); g.stroke(); },
+  huis: g => { g.beginPath(); g.moveTo(20, 70); g.lineTo(70, 24); g.lineTo(120, 70); g.closePath(); g.fill(); g.fillRect(32, 70, 76, 50); g.clearRect(60, 90, 20, 30); },
+  kerk: g => { g.fillRect(40, 60, 60, 60); g.fillRect(58, 14, 24, 50); g.beginPath(); g.moveTo(54, 16); g.lineTo(70, 0); g.lineTo(86, 16); g.fill(); g.fillRect(68, 2, 4, 14); g.fillRect(62, 6, 16, 4); },
+  molen: g => { g.beginPath(); g.moveTo(50, 124); g.lineTo(58, 60); g.lineTo(82, 60); g.lineTo(90, 124); g.fill(); g.lineWidth = 7; g.beginPath(); g.moveTo(70, 58); g.lineTo(30, 18); g.moveTo(70, 58); g.lineTo(110, 18); g.moveTo(70, 58); g.lineTo(30, 98); g.moveTo(70, 58); g.lineTo(110, 98); g.stroke(); },
+  boom: g => { g.fillRect(62, 80, 16, 44); g.beginPath(); g.arc(70, 56, 34, 0, 7); g.fill(); },
+  kaas: g => { g.beginPath(); g.moveTo(70, 70); g.arc(70, 70, 48, 0.3, 5.6); g.closePath(); g.fill(); g.clearRect(40, 50, 10, 10); g.clearRect(76, 86, 12, 12); },
+  brood: g => { g.beginPath(); g.ellipse(70, 72, 50, 28, 0, 0, 7); g.fill(); g.lineWidth = 5; g.beginPath(); g.moveTo(48, 60); g.lineTo(58, 72); g.moveTo(68, 58); g.lineTo(78, 70); g.moveTo(88, 60); g.lineTo(98, 72); g.stroke(); },
+  ei: g => { g.beginPath(); g.ellipse(70, 70, 34, 46, 0, 0, 7); g.fill(); },
+  bier: g => { g.fillRect(44, 50, 46, 70); g.fillRect(90, 64, 14, 30); g.clearRect(44, 50, 46, 14); g.fillRect(40, 38, 54, 10); },
+  koffie: g => { g.fillRect(36, 56, 60, 50); g.lineWidth = 7; g.beginPath(); g.arc(102, 78, 14, -1.5, 1.5); g.stroke(); g.fillRect(28, 106, 76, 8); g.lineWidth = 4; g.beginPath(); g.moveTo(54, 46); g.quadraticCurveTo(60, 34, 54, 24); g.moveTo(76, 46); g.quadraticCurveTo(82, 34, 76, 24); g.stroke(); },
+  thee: g => { g.fillRect(36, 56, 60, 50); g.lineWidth = 7; g.beginPath(); g.arc(102, 78, 14, -1.5, 1.5); g.stroke(); g.fillRect(28, 106, 76, 8); g.fillRect(56, 20, 8, 36); g.fillRect(48, 12, 24, 14); },
+  lamp: g => { g.beginPath(); g.arc(70, 54, 30, 0, 7); g.fill(); g.fillRect(58, 84, 24, 16); g.fillRect(52, 100, 36, 8); g.lineWidth = 5; g.beginPath(); g.moveTo(24, 54); g.lineTo(34, 54); g.moveTo(106, 54); g.lineTo(116, 54); g.moveTo(70, 8); g.lineTo(70, 18); g.stroke(); },
+  deur: g => { g.fillRect(40, 20, 60, 104); g.clearRect(84, 68, 8, 8); },
+  tuin: g => { for (let i = 0; i < 3; i++) { g.fillRect(36 + i * 28, 70, 6, 50); g.beginPath(); g.arc(39 + i * 28, 60, 12, 0, 7); g.fill(); } g.fillRect(20, 118, 100, 6); },
+  brug: g => { g.lineWidth = 8; g.beginPath(); g.arc(70, 100, 48, Math.PI, 0); g.stroke(); g.fillRect(14, 100, 112, 8); g.fillRect(30, 60, 6, 40); g.fillRect(104, 60, 6, 40); },
+  water: g => { g.lineWidth = 8; for (let y = 48; y <= 96; y += 24) { g.beginPath(); g.moveTo(16, y); for (let x = 16; x <= 124; x += 18) g.quadraticCurveTo(x + 9, y - 12, x + 18, y); g.stroke(); } },
+  boot: g => { g.beginPath(); g.moveTo(20, 84); g.lineTo(120, 84); g.lineTo(104, 112); g.lineTo(36, 112); g.closePath(); g.fill(); g.fillRect(66, 24, 6, 60); g.beginPath(); g.moveTo(72, 28); g.lineTo(108, 76); g.lineTo(72, 76); g.fill(); },
+  vrouw: g => { g.beginPath(); g.arc(70, 34, 16, 0, 7); g.fill(); g.beginPath(); g.moveTo(70, 52); g.lineTo(40, 110); g.lineTo(100, 110); g.fill(); g.fillRect(60, 110, 6, 16); g.fillRect(74, 110, 6, 16); },
+  man: g => { g.beginPath(); g.arc(70, 34, 16, 0, 7); g.fill(); g.fillRect(56, 52, 28, 50); g.fillRect(58, 102, 9, 24); g.fillRect(73, 102, 9, 24); g.fillRect(40, 56, 14, 8); g.fillRect(86, 56, 14, 8); },
+  zon: g => { g.beginPath(); g.arc(70, 70, 26, 0, 7); g.fill(); g.lineWidth = 6; for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; g.beginPath(); g.moveTo(70 + Math.cos(a) * 36, 70 + Math.sin(a) * 36); g.lineTo(70 + Math.cos(a) * 54, 70 + Math.sin(a) * 54); g.stroke(); } },
+  maan: g => { g.beginPath(); g.arc(70, 70, 40, 0, 7); g.fill(); g.globalCompositeOperation = 'destination-out'; g.beginPath(); g.arc(88, 60, 36, 0, 7); g.fill(); g.globalCompositeOperation = 'source-over'; },
+  hart: g => { g.beginPath(); g.moveTo(70, 118); g.bezierCurveTo(10, 70, 30, 14, 70, 48); g.bezierCurveTo(110, 14, 130, 70, 70, 118); g.fill(); },
+  bal: g => { g.beginPath(); g.arc(70, 70, 40, 0, 7); g.fill(); g.clearRect(56, 30, 6, 80); g.clearRect(30, 66, 80, 6); },
+  tasje: g => { g.fillRect(36, 56, 68, 64); g.lineWidth = 7; g.beginPath(); g.arc(70, 56, 20, Math.PI, 0); g.stroke(); },
+  melk: g => { g.fillRect(44, 44, 52, 80); g.beginPath(); g.moveTo(44, 44); g.lineTo(56, 20); g.lineTo(84, 20); g.lineTo(96, 44); g.fill(); },
+  appel: g => { g.beginPath(); g.arc(58, 76, 32, 0, 7); g.arc(82, 76, 32, 0, 7); g.fill(); g.fillRect(68, 30, 5, 22); },
+  wijn: g => { g.beginPath(); g.moveTo(40, 30); g.lineTo(100, 30); g.quadraticCurveTo(100, 84, 70, 86); g.quadraticCurveTo(40, 84, 40, 30); g.fill(); g.fillRect(67, 86, 6, 26); g.fillRect(48, 112, 44, 6); },
+  sleutel: g => { g.lineWidth = 8; g.beginPath(); g.arc(44, 60, 22, 0, 7); g.stroke(); g.fillRect(60, 56, 64, 9); g.fillRect(104, 65, 8, 16); g.fillRect(88, 65, 8, 12); },
+  klok: g => { g.lineWidth = 8; g.beginPath(); g.arc(70, 70, 44, 0, 7); g.stroke(); g.fillRect(67, 36, 6, 38); g.fillRect(70, 68, 26, 6); },
+  trein: g => { g.fillRect(16, 50, 108, 50); g.fillRect(24, 36, 40, 16); g.clearRect(32, 60, 20, 16); g.clearRect(70, 60, 20, 16); g.clearRect(98, 60, 16, 16); g.beginPath(); g.arc(40, 108, 10, 0, 7); g.arc(100, 108, 10, 0, 7); g.fill(); },
+  bus: g => { g.fillRect(16, 40, 108, 60); g.clearRect(26, 50, 24, 20); g.clearRect(58, 50, 24, 20); g.clearRect(90, 50, 24, 20); g.beginPath(); g.arc(40, 108, 10, 0, 7); g.arc(100, 108, 10, 0, 7); g.fill(); },
+  laptop: g => { g.fillRect(30, 30, 80, 54); g.clearRect(36, 36, 68, 42); g.fillRect(16, 86, 108, 10); },
+  golfbaan: g => { g.fillRect(66, 20, 5, 90); g.beginPath(); g.moveTo(71, 22); g.lineTo(110, 36); g.lineTo(71, 50); g.fill(); g.beginPath(); g.arc(50, 112, 8, 0, 7); g.fill(); g.fillRect(20, 118, 100, 6); },
+};
+PICTO.station = PICTO.trein;
+const PICTO_ALIAS = { honden: 'hond', hondje: 'hond', huizen: 'huis', biertje: 'bier', winkel: 'deur', nummer: 'deur', buurman: 'man', buurvrouw: 'vrouw', collega: 'man', docent: 'man', slager: 'man', ober: 'man', kaasmarkt: 'kaas', stroopwafel: 'koffie', zegels: 'tasje', pont: 'boot', dijk: 'water', gracht: 'water', ladder: 'deur', hek: 'deur', bank: 'deur', park: 'boom', riem: 'hond', bushalte: 'bus', kaartje: 'trein', scherm: 'laptop', dashboard: 'laptop', vergadering: 'klok', weekend: 'zon', ochtend: 'zon', nacht: 'maan', avond: 'maan', mist: 'water', straat: 'huis', dorp: 'kerk', plattegrond: 'huis', stoplicht: 'lamp' };
 function graffitiTexture(word) {
   const W = 512, H = 250; const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
   const bare = word.replace(/^(de|het|een)\s+/i, '').toLowerCase(); const key = PICTO[bare] ? bare : PICTO_ALIAS[bare];
