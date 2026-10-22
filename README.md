@@ -2,7 +2,7 @@
 
 Horror arcade runner for Dutch grammar. Open `index.html` in a browser, or serve the folder:
 
-    python3 -m http.server 8765
+    python3 serve.py
 
 then open http://localhost:8765 (8080 is qBittorrent on this machine) on your phone or laptop.
 
