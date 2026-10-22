@@ -154,6 +154,8 @@
 <script src="content/town-kinderdijk.js"></script>
 <script src="content/town-gouda.js"></script>
 <script src="content/towns.js"></script>
+<script src="content/towns-new.js"></script>
+<script src="content/extra.js"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
@@ -1352,7 +1354,7 @@ let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'
 if (new URLSearchParams(location.search).has('intro')) introSeen = false;
 
 // ---------- the world map ----------
-const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen']];
+const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen'], ['eigen', 'Alleen hier']];
 const TOWN_OF = id => id === 41 ? 'alblasserdam' : id <= 5 ? 'alblasserdam' : id <= 10 ? 'kinderdijk' : id <= 15 ? 'gouda' : id <= 20 ? 'utrecht' : id <= 30 ? 'rotterdam' : 'amsterdam';
 const PLACE_OF = { 41: 'thuis', 1: 'thuis', 2: 'mensen', 3: 'thuis', 4: 'mensen', 5: 'winkels', 6: 'winkels', 7: 'eten', 8: 'thuis', 9: 'eten', 10: 'station', 11: 'werk', 12: 'station', 13: 'mensen', 14: 'winkels', 15: 'sport' };
 const LL = (lon, lat) => [(lon - 3.3) / (7.2 - 3.3), 1 - (lat - 50.75) / (53.55 - 50.75)];

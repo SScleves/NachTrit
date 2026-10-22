@@ -115,3 +115,21 @@ window.defineLevels([
       { dehet: true, nl: 'Nederlands', art: 'het', en: 'the Dutch language', w: 'Languages are het.' }, { dehet: true, nl: 'nummer', art: 'het', en: 'the number' },
     ] },
 ]);
+
+// tier presets for towns 4 and up; content files spread them: { ...window.TIER_PRESET[4], ... }
+window.TIER_PRESET = {
+  4: { lanes: 3, speed: 13, maxSpeed: 16, ramp: false, lampDecay: 0.55, forkSlow: 0.35, hint: null, obstacles: 'light', filler: [26, 36], deliveries: 20, cefr: 'A2', maxWords: 8 },
+  5: { lanes: 3, speed: 14, maxSpeed: 17, ramp: true, lampDecay: 0.6, forkSlow: 0.35, hint: null, obstacles: 'light', filler: [26, 36], deliveries: 20, cefr: 'A2', maxWords: 10 },
+  6: { lanes: 3, speed: 14, maxSpeed: 18, ramp: true, lampDecay: 0.65, forkSlow: 0.3, hint: null, obstacles: 'normal', filler: [26, 36], deliveries: 20, cefr: 'A2', maxWords: 10 },
+};
+
+// content files can lengthen an existing level: new items are appended (duplicates skipped), knobs overwritten
+window.extendLevel = function (id, ext) {
+  const lv = window.LEVELS.find(l => l.id === id); if (!lv) return false;
+  lv.items = lv.items || [];
+  const key = i => (i.read ? 'r:' : i.look ? 'l:' : i.listen ? 's:' : i.dehet ? 'd:' : i.parts ? 'b:' : 'w:') + (i.nl || i.en);
+  const have = new Set(lv.items.map(key));
+  for (const it of ext.items || []) { const k = key(it); if (!have.has(k)) { lv.items.push(it); have.add(k); } }
+  for (const k of ['deliveries', 'filler', 'obstacles']) if (ext[k] != null) lv[k] = ext[k];
+  return true;
+};
