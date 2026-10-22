@@ -43,7 +43,10 @@
   .place .st { color:#ffd27a; font-size:11px; letter-spacing:.1em; }
   .place .lv { display:inline-block; margin:3px 4px 0 0; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; font-size:12px; }
   #nl .town { cursor:pointer; }
-  #nl .town text { font: 600 2.8px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.05em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.9px; }
+  #nl .town text { font: 600 3px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.04em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.9px; }
+  #nl .town text.num { font: 800 4.2px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; }
+  #nl .town text.badge { font: 700 2.4px "Segoe UI", system-ui, sans-serif; letter-spacing:.08em; }
+  #nl .town.locked text { fill:#5a6170; }
   #nl { border:1px solid rgba(255,255,255,.12); border-radius:6px; }
   #nl .town.locked text { fill:#5a6170; }
   #nl .town.locked circle { fill:#2a2f3a; stroke:#4a5160; }
@@ -103,7 +106,7 @@
     <div id="world" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
       <div style="text-align:center;padding:calc(10px + env(safe-area-inset-top)) 12px 0">
         <h1 style="font-size:clamp(26px,5vw,38px)">NEDERLAND</h1>
-        <div class="sub" style="margin:4px 0 0">Twelve towns, each harder than the last. Every town has the same places. Pick one.</div>
+        <div class="sub" style="margin:4px 0 0">Twelve towns, A1 to B2. Ride to a town, go in, pick a place.</div>
       </div>
       <div id="mapwrap" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px"><svg id="nl" viewBox="0 0 100 110" style="height:100%;max-height:78vh;aspect-ratio:100/110;pointer-events:auto"></svg></div>
       <div style="text-align:center;padding:0 0 14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
@@ -1198,7 +1201,7 @@ function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir
 addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') steer(-1);
   else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') steer(1);
-  else if ((e.key === ' ' || e.key === 'Enter') && S.mode === 'start' && $('start').style.display !== 'none') $('go').click();
+  else if ((e.key === ' ' || e.key === 'Enter') && S.mode === 'start' && $('start').style.display !== 'none' && $('map').style.display === 'none') $('go').click();
 });
 let touchX = null, touchT = 0;
 addEventListener('touchstart', e => { touchX = e.touches[0].clientX; touchT = performance.now(); }, { passive: true });
@@ -1386,68 +1389,91 @@ const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
   groningen: 'M-0.8,2.4 L-0.8,-1.6 L0.8,-1.6 L0.8,2.4 z M-0.5,-1.6 L-0.5,-2.6 L0.5,-2.6 L0.5,-1.6 M0,-2.6 L0,-3.4 M-1.6,2.4 h3.2 M-0.3,0 h0.6 v0.8 h-0.6 z',
   maastricht: 'M-2.6,1.6 h5.2 M-2.4,1.6 a1.2,1.2 0 0 1 2.4,0 M0,1.6 a1.2,1.2 0 0 1 2.4,0 M-1.2,0.4 L-1.2,-1.8 M0,-2.6 L-1.2,-1.8 M1.2,0.4 L1.2,-1.8 L0,-2.6',
 };
+// the route board: towns in tier order along a winding road over a faint Netherlands
+const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
+let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null;
+function nodePositions(n) {   // a serpentine: rows of 4, left to right then right to left
+  const cols = 4, left = 14, right = 86, top = 22, rowGap = 26; const pts = [];
+  for (let i = 0; i < n; i++) { const row = Math.floor(i / cols), k = i % cols; const x = row % 2 === 0 ? left + k * (right - left) / (cols - 1) : right - k * (right - left) / (cols - 1); pts.push([x, top + row * rowGap + (k % 2 ? 4 : -4)]); }
+  return pts;
+}
 function drawWorld() {
   const svg = $('nl'); svg.innerHTML = '';
   const NS = 'http://www.w3.org/2000/svg';
   const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
   const path = (pts, close = true) => pts.map((p, i) => (i ? 'L' : 'M') + mapXY(p).map(v => v.toFixed(2)).join(',')).join(' ') + (close ? ' Z' : '');
   const defs = el('defs', {}); defs.innerHTML = `
-    <pattern id="sea" width="2.4" height="2.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0,1.2 H2.4" stroke="#263040" stroke-width="0.25"/></pattern>
-    <filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0.55  0 0 0 0 0.58  0 0 0 0 0.65  0 0 0 0.07 0"/><feComposite in2="SourceGraphic" operator="over"/></filter>
-    <filter id="fog" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.4"/></filter>
-    <radialGradient id="glow"><stop offset="0" stop-color="#e8e4d8" stop-opacity="0.35"/><stop offset="1" stop-color="#e8e4d8" stop-opacity="0"/></radialGradient>`;
+    <pattern id="sea" width="2.4" height="2.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0,1.2 H2.4" stroke="#1c2430" stroke-width="0.25"/></pattern>
+    <filter id="fog" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter>
+    <radialGradient id="glow"><stop offset="0" stop-color="#e8e4d8" stop-opacity="0.3"/><stop offset="1" stop-color="#e8e4d8" stop-opacity="0"/></radialGradient>`;
   svg.appendChild(defs);
   svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#0b0f14' }));
   svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: 'url(#sea)' }));
-  svg.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1e2634', stroke: '#9aa6b8', 'stroke-width': 0.55, 'stroke-linejoin': 'round' }));
-  svg.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#9aa6b8', 'stroke-width': 0.35 }));
-  svg.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: 'url(#sea)' }));
-  svg.appendChild(el('path', { d: path(NL_FLEVOLAND), fill: '#1e2634', stroke: '#9aa6b8', 'stroke-width': 0.35 }));
-  for (const [lon, lat, w, h] of NL_ISLANDS) { const [x, y] = mapXY([lon, lat]); svg.appendChild(el('ellipse', { cx: x, cy: y, rx: w * 1.3, ry: h, fill: '#1e2634', stroke: '#9aa6b8', 'stroke-width': 0.3, transform: `rotate(-12 ${x} ${y})` })); }
-  for (const r of NL_RIVERS) svg.appendChild(el('path', { d: path(r, false), fill: 'none', stroke: '#6f7f96', 'stroke-width': 0.35, 'stroke-linecap': 'round' }));
-  svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#000', opacity: 0, filter: 'url(#paper)' }));
-  // cartouche and compass
-  const cart = el('g', {}); cart.innerHTML = `<rect x="4" y="88" width="38" height="18" fill="#0b0f14" stroke="#9aa6b8" stroke-width="0.35"/><text x="23" y="95" text-anchor="middle" style="font:700 4.2px 'Segoe UI',system-ui,sans-serif;fill:#e8e4d8;letter-spacing:.3em">NEDERLAND</text><text x="23" y="100.5" text-anchor="middle" style="font:italic 2.4px 'Segoe UI',system-ui,sans-serif;fill:#9fb0cc">na de mist · after the mist</text><g transform="translate(8,12)"><circle r="3.6" fill="none" stroke="#9aa6b8" stroke-width="0.3"/><path d="M0,-4.6 L1,0 L0,4.6 L-1,0 z" fill="#e8e4d8"/><path d="M-4.6,0 L0,1 L4.6,0 L0,-1 z" fill="#9aa6b8"/><text y="-5.6" text-anchor="middle" style="font:700 2.2px 'Segoe UI',system-ui,sans-serif;fill:#e8e4d8">N</text></g>`;
-  svg.appendChild(cart);
-  const T = towns();
-  const pts = T.map(t => mapXY([3.3 + t.pos[0] * 3.9, 53.55 - t.pos[1] * 2.8]));
-  // the route: a dotted bike trail
-  svg.appendChild(el('path', { d: pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.35, 'stroke-dasharray': '0.6 1.4', 'stroke-linecap': 'round', opacity: 0.7 }));
-  const LAY = { rotterdam: [-3.4, 0.8, 'end'], kinderdijk: [1.2, 5.2, 'start'], alblasserdam: [3.4, 0.2, 'start'], gouda: [1.4, -3.2, 'start'], utrecht: [3.4, 1, 'start'], amsterdam: [3.4, 1, 'start'],
-    zeeland: [3.4, 1, 'start'], denhaag: [-3.4, -1.4, 'end'], urk: [3.4, 1, 'start'], texel: [3.4, -1.2, 'start'], groningen: [-3.4, 1, 'end'], maastricht: [3.4, -1.2, 'start'] };
+  // the country, faint, as a backdrop
+  const back = el('g', { opacity: 0.35, transform: 'translate(8 2) scale(0.85)' });
+  back.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1b2230', stroke: '#6f7f96', 'stroke-width': 0.5, 'stroke-linejoin': 'round' }));
+  back.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#6f7f96', 'stroke-width': 0.3 }));
+  back.appendChild(el('path', { d: path(NL_FLEVOLAND), fill: '#1b2230', stroke: '#6f7f96', 'stroke-width': 0.3 }));
+  svg.appendChild(back);
+  const T = towns(); const pts = nodePositions(T.length); mapNodes = pts;
+  // the road: a smooth curve through the nodes
+  let d = `M${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)]; const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0]},${p2[1]}`; }
+  svg.appendChild(el('path', { d, fill: 'none', stroke: '#2a3340', 'stroke-width': 3.2, 'stroke-linecap': 'round' }));
+  mapPath = el('path', { d, fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.35, 'stroke-dasharray': '0.9 1.5', 'stroke-linecap': 'round', opacity: 0.8 }); svg.appendChild(mapPath);
   T.forEach((t, i) => {
-    const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t);
+    const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t); const col = CEFR_COL[t.cefr] || '#e8e4d8';
     const g = el('g', { class: 'town' + (open ? '' : ' locked') });
-    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 6, fill: 'url(#glow)' }));
-    g.appendChild(el('circle', { cx: x, cy: y, r: 3.1, fill: '#0b0f14', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.4 }));
-    g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(0.8)` }));
-    if (!open) g.appendChild(el('circle', { cx: x, cy: y, r: 5, fill: '#1e2634', opacity: 0.75, filter: 'url(#fog)' }));
-    const [dx, dy, anchor] = LAY[t.id] || [3.4, 1, 'start'];
-    const label = el('text', { x: x + dx, y: y + dy, 'text-anchor': anchor }); label.textContent = t.name + (open && stars ? ' ★' + stars : ''); g.appendChild(label);
-    g.onclick = () => openTown(t);
+    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 7.5, fill: 'url(#glow)' }));
+    g.appendChild(el('circle', { cx: x, cy: y, r: 4.6, fill: '#0b0f14', stroke: open ? col : '#4a5160', 'stroke-width': 0.6 }));
+    g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(1.1)` }));
+    if (!open) { g.appendChild(el('circle', { cx: x, cy: y, r: 6.5, fill: '#1e2634', opacity: 0.7, filter: 'url(#fog)' })); g.appendChild(el('path', { d: `M${x - 1.2},${y + 0.4} h2.4 v2 h-2.4 z M${x - 0.7},${y + 0.4} v-1 a0.7,0.7 0 0 1 1.4,0 v1`, fill: '#4a5160', stroke: '#9aa6b8', 'stroke-width': 0.2 })); }
+    const num = el('text', { x: x - 5.6, y: y - 4.2, class: 'num' }); num.textContent = t.tier; g.appendChild(num);
+    const label = el('text', { x: x, y: y + 8.2, 'text-anchor': 'middle' }); label.textContent = t.name.length > 16 ? t.name.split(' ')[0] : t.name; g.appendChild(label);
+    const badge = el('text', { x: x, y: y + 11.4, 'text-anchor': 'middle', class: 'badge', fill: open ? col : '#4a5160' }); badge.textContent = t.cefr + (open && stars ? ' · ★' + stars : ''); g.appendChild(badge);
+    g.onclick = () => rideTo(i);
     svg.appendChild(g);
   });
-  // the rider at the furthest open town: a small bike
-  const cur = T.filter(townOpen).pop(); if (cur) { const [x, y] = pts[T.indexOf(cur)]; const r = el('path', { d: 'M-1.4,0.6 a0.9,0.9 0 1 0 0.01,0 M1.4,0.6 a0.9,0.9 0 1 0 0.01,0 M-1.4,0.6 L-0.3,-1 L1.4,0.6 M-0.3,-1 L0.3,-1 L0.9,0.2 M-0.3,-1 L-0.1,-1.8', fill: 'none', stroke: '#b8282a', 'stroke-width': 0.4, transform: `translate(${x + 1.2} ${y - 5.6}) scale(0.9)` }); svg.appendChild(r); }
+  // the bike
+  const bikeG = el('g', { id: 'mapbike' }); bikeG.innerHTML = `<path d="M-1.6,0.7 a1,1 0 1 0 0.01,0 M1.6,0.7 a1,1 0 1 0 0.01,0 M-1.6,0.7 L-0.3,-1.1 L1.6,0.7 M-0.3,-1.1 L0.4,-1.1 L1,0.3 M-0.3,-1.1 L-0.1,-2 M-0.1,-2 L0.5,-2" fill="none" stroke="#d9792a" stroke-width="0.45" stroke-linecap="round"/><circle cx="0" cy="-2.6" r="0.55" fill="#d9b48c"/>`;
+  svg.appendChild(bikeG);
+  // legend
+  const leg = el('g', {}); leg.innerHTML = `<text x="4" y="105" style="font:600 2.4px 'Segoe UI',system-ui,sans-serif;fill:#9fb0cc;letter-spacing:.08em">← → ride to a town · enter or tap: go in</text>`; svg.appendChild(leg);
+  const openIdx = T.map((t, i) => townOpen(t) ? i : -1).filter(i => i >= 0); if (!openIdx.includes(mapAt)) mapAt = openIdx[openIdx.length - 1] || 0;
+  placeBike(mapAt);
 }
-// a de/het bonus level per town, built from every noun with an article in that town and the towns before it
-function dehetBonus(t) {
-  const seen = new Map();
-  for (const lv of LEVELS) {
-    if (lv.soon || !lv.items) continue; const lt = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); if (!lt || lt.tier > t.tier) continue;
-    for (const it of lv.items) {
-      const nl = it.dehet ? `${it.art} ${it.nl}` : it.nl; const en = it.w || it.en; if (!nl || !en) continue;
-      const m = /^(de|het)\s+(\S.*)$/.exec(nl); if (!m || /^\d/.test(en)) continue;
-      if (!seen.has(m[2])) seen.set(m[2], { dehet: true, nl: m[2], art: m[1], en, w: it.w && it.wrong ? '' : (it.w || '') });
-    }
-  }
-  const items = [...seen.values()];
-  const tierKnobs = { 1: { lanes: 2, speed: 12, forkSlow: 0.45 }, 2: { lanes: 2, speed: 13, forkSlow: 0.4 }, 3: { lanes: 2, speed: 14, forkSlow: 0.35 } }[t.tier] || { lanes: 2, speed: 15, forkSlow: 0.3 };
-  return { id: 1000 + t.tier, act: t.tier, name: 'De of het', theme: 'street', town: t.id, place: 'bonus', ...tierKnobs, maxSpeed: tierKnobs.speed + 3, ramp: true, lampDecay: 0.4 + t.tier * 0.05, hint: null, obstacles: 'puddles', filler: [14, 20], deliveries: Math.min(24, Math.max(12, Math.floor(items.length / 2))), cefr: t.cefr, maxWords: 2,
-    intro: `${items.length} nouns from ${t.name} and everything before it. De left, het right. There is still no rule.`, introNl: `${items.length} woorden uit ${t.name} en alles daarvoor. De links, het rechts. Er is nog steeds geen regel.`,
-    mission: { where: `Every door in ${t.name}.`, carry: 'A roll of labels. Half say de, half say het.', want: 'The dead hold up a thing. Steer left for de, right for het. Fast, no hints.' },
-    items };
+function placeBike(i, u) {   // u: fraction along the road from node i to i+1
+  const g = $('mapbike'); if (!g || !mapNodes.length) return;
+  let x, y;
+  if (u == null) { [x, y] = mapNodes[i]; }
+  else { const L = mapPath.getTotalLength(); const segs = mapNodes.length - 1; const a = segLen(i), b = segLen(i + 1); const p = mapPath.getPointAtLength(a + (b - a) * u); x = p.x; y = p.y; }
+  g.setAttribute('transform', `translate(${x} ${y - 5.2})`);
 }
+const _segCache = {};
+function segLen(i) {   // road length from the start to node i, found by sampling the path
+  if (_segCache[i] != null) return _segCache[i]; const L = mapPath.getTotalLength(); if (i <= 0) return 0; if (i >= mapNodes.length - 1) return L;
+  let best = 0, bd = 1e9; for (let k = 0; k <= 600; k++) { const p = mapPath.getPointAtLength(L * k / 600); const d = Math.hypot(p.x - mapNodes[i][0], p.y - mapNodes[i][1]); if (d < bd) { bd = d; best = L * k / 600; } }
+  _segCache[i] = best; return best;
+}
+function rideTo(target) {
+  const T = towns(); if (!townOpen(T[target])) { openTown(T[target]); return; }
+  if (mapAnim) return;
+  if (target === mapAt) { openTown(T[target]); return; }
+  const dir = target > mapAt ? 1 : -1; let i = mapAt, u = 0; const t0 = performance.now();
+  const step = () => {
+    u += 0.035; if (u >= 1) { i += dir; u = 0; if (i === target) { mapAt = i; mapAnim = null; placeBike(i); openTown(T[i]); return; } }
+    placeBike(dir > 0 ? i : i - 1, dir > 0 ? u : 1 - u); mapAnim = requestAnimationFrame(step);
+  };
+  $('town').style.transform = 'translate(-50%,105%)';
+  mapAnim = requestAnimationFrame(step);
+}
+addEventListener('keydown', e => {
+  if ($('map').style.display === 'none' || S.mode !== 'start') return;
+  const T = towns();
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { const n = T.findIndex((t, i) => i > mapAt && townOpen(t)); if (n >= 0) rideTo(n); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { let n = -1; for (let i = mapAt - 1; i >= 0; i--) if (townOpen(T[i])) { n = i; break; } if (n >= 0) rideTo(n); e.preventDefault(); }
+  else if (e.key === 'Enter' || e.key === ' ') { openTown(T[mapAt]); e.preventDefault(); }
+});
 function openTown(t) {
   const open = townOpen(t);
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
