@@ -655,26 +655,26 @@ scene.add(bike);
 let faceState = { name: '', until: 0, look: 0 };
 function drawFace(name) {
   const c = bike.userData.faceC, g = c.getContext('2d'); g.clearRect(0, 0, 128, 128);
-  g.fillStyle = '#1a1416'; g.lineCap = 'round'; g.strokeStyle = '#1a1416'; g.lineWidth = 6;
+  g.fillStyle = '#1a1416'; g.lineCap = 'round'; g.strokeStyle = '#1a1416'; g.lineWidth = 11;
   const eye = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
-  if (name === 'ouch') { // squint and a wobbly mouth
-    g.beginPath(); g.moveTo(34, 50); g.lineTo(56, 60); g.moveTo(94, 50); g.lineTo(72, 60); g.stroke();
-    g.beginPath(); g.moveTo(42, 92); g.quadraticCurveTo(64, 78, 86, 92); g.stroke();
-    g.fillStyle = '#b8282a'; g.beginPath(); g.arc(64, 104, 8, 0, 7); g.fill();
-  } else if (name === 'smug') { // one brow up, half smile
-    eye(44, 58, 6); eye(84, 58, 6);
-    g.beginPath(); g.moveTo(30, 44); g.lineTo(56, 40); g.moveTo(72, 46); g.lineTo(98, 48); g.stroke();
-    g.beginPath(); g.moveTo(48, 86); g.quadraticCurveTo(70, 100, 92, 84); g.stroke();
-  } else if (name === 'worry') { // big eyes, brows up in the middle
-    eye(44, 60, 9); eye(84, 60, 9); g.fillStyle = '#fff'; eye(47, 57, 3); eye(87, 57, 3); g.fillStyle = '#1a1416';
-    g.beginPath(); g.moveTo(28, 44); g.lineTo(56, 36); g.moveTo(100, 44); g.lineTo(72, 36); g.stroke();
-    g.beginPath(); g.arc(64, 94, 7, 0, 7); g.fill();
+  if (name === 'ouch') {
+    g.beginPath(); g.moveTo(22, 44); g.lineTo(54, 60); g.moveTo(106, 44); g.lineTo(74, 60); g.stroke();
+    g.beginPath(); g.moveTo(34, 100); g.quadraticCurveTo(64, 78, 94, 100); g.stroke();
+    g.fillStyle = '#b8282a'; g.beginPath(); g.arc(64, 112, 10, 0, 7); g.fill();
+  } else if (name === 'smug') {
+    eye(40, 58, 10); eye(88, 58, 10);
+    g.beginPath(); g.moveTo(20, 40); g.lineTo(56, 32); g.moveTo(72, 42); g.lineTo(108, 46); g.stroke();
+    g.beginPath(); g.moveTo(38, 90); g.quadraticCurveTo(70, 116, 100, 86); g.stroke();
+  } else if (name === 'worry') {
+    eye(40, 60, 15); eye(88, 60, 15); g.fillStyle = '#fff'; eye(45, 55, 5); eye(93, 55, 5); g.fillStyle = '#1a1416';
+    g.beginPath(); g.moveTo(16, 42); g.lineTo(56, 30); g.moveTo(112, 42); g.lineTo(72, 30); g.stroke();
+    g.beginPath(); g.arc(64, 100, 10, 0, 7); g.fill();
   } else if (name === 'scream') {
-    eye(44, 56, 10); eye(84, 56, 10); g.beginPath(); g.ellipse(64, 98, 12, 18, 0, 0, 7); g.fill();
-  } else { // deadpan: the default Dutch face
-    eye(44, 60, 6); eye(84, 60, 6);
-    g.beginPath(); g.moveTo(30, 46); g.lineTo(58, 46); g.moveTo(70, 46); g.lineTo(98, 46); g.stroke();
-    g.beginPath(); g.moveTo(46, 92); g.lineTo(82, 92); g.stroke();
+    eye(40, 54, 16); eye(88, 54, 16); g.beginPath(); g.ellipse(64, 100, 16, 22, 0, 0, 7); g.fill();
+  } else {
+    eye(40, 60, 10); eye(88, 60, 10);
+    g.beginPath(); g.moveTo(22, 42); g.lineTo(58, 42); g.moveTo(70, 42); g.lineTo(106, 42); g.stroke();
+    g.beginPath(); g.moveTo(40, 96); g.lineTo(88, 96); g.stroke();
   }
   bike.userData.faceTex.needsUpdate = true;
 }
@@ -852,6 +852,8 @@ let audioCtx = null;
 window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
 window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
+window.NRface = (n, secs) => setFace(n, secs || 3);
+window.NRstep = n => { for (let i = 0; i < (n || 60); i++) update(1 / 60); render(); };
 window.NRbright = () => { render(); const c = renderer.domElement, t = document.createElement('canvas'); t.width = 64; t.height = 36; const g = t.getContext('2d'); g.drawImage(c, 0, 0, 64, 36); const d = g.getImageData(0, 0, 64, 36).data; let sum = 0; for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2]; return Math.round(sum / (d.length / 4) / 3); };
 window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, calls: renderer.info.render.calls, dpr: DPR, post: !!composer });
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
@@ -1613,11 +1615,12 @@ function update(dt) {
   // chase camera: pull back with speed, dolly zoom at forks
   if (riding) {
     const sn = S.speedNorm, fz = S.forkZoom;
-    const ty = 3.2 + sn * 0.9 - fz * 1.0, tz = 7 + sn * 2.8 - fz * 2.6;
+    const lk = faceState.look ? 1 : 0;   // reaction shot: dolly in while he looks back
+    const ty = 3.2 + sn * 0.9 - fz * 1.0 - lk * 0.9, tz = 7 + sn * 2.8 - fz * 2.6 - lk * 2.6;
     const follow = camera.aspect < 1 ? 0.85 : 0.45;   // phones: keep the bike in frame
     camera.position.x = lerp(camera.position.x, S.x * follow, dt * 4);
-    camera.position.y = lerp(camera.position.y, ty, dt * 2.5);
-    camera.position.z = lerp(camera.position.z, tz, dt * 2.5);
+    camera.position.y = lerp(camera.position.y, ty, dt * (lk ? 5 : 2.5));
+    camera.position.z = lerp(camera.position.z, tz, dt * (lk ? 5 : 2.5));
     camera.fov = lerp(camera.fov, 60 + sn * 10 + fz * 22, dt * 3); camera.updateProjectionMatrix();
     camera.lookAt(S.x * (camera.aspect < 1 ? 0.7 : 0.3) + bend(-14) * 0.6, 1 + fz * 0.4, -8 - fz * 6);
   }
