@@ -43,9 +43,9 @@
   .place .st { color:#ffd27a; font-size:11px; letter-spacing:.1em; }
   .place .lv { display:inline-block; margin:3px 4px 0 0; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; font-size:12px; }
   #nl .town { cursor:pointer; }
-  #nl .town text { font: 600 3px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.04em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.9px; }
-  #nl .town text.num { font: 800 4.2px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; }
-  #nl .town text.badge { font: 700 2.4px "Segoe UI", system-ui, sans-serif; letter-spacing:.08em; }
+  #nl .town text { font: 600 2.6px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.04em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.9px; }
+  #nl .town text.num { font: 800 3.4px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; }
+  #nl .town text.badge { font: 700 2.1px "Segoe UI", system-ui, sans-serif; letter-spacing:.08em; }
   #nl .town.locked text { fill:#5a6170; }
   #nl { border:1px solid rgba(255,255,255,.12); border-radius:6px; }
   #nl .town.locked text { fill:#5a6170; }
@@ -1395,8 +1395,8 @@ let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null;
 function nodePositions(n) {   // real geography, stretched to fill the board and pushed apart so nothing overlaps
   const T = towns(); let pts = T.map(t => [t.pos[0] * 100, t.pos[1] * 100]);
   const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  pts = pts.map(([x, y]) => [12 + (x - x0) / Math.max(1, x1 - x0) * 76, 14 + (y - y0) / Math.max(1, y1 - y0) * 78]);
-  const minD = 17;
+  pts = pts.map(([x, y]) => [12 + (x - x0) / Math.max(1, x1 - x0) * 76, 14 + (y - y0) / Math.max(1, y1 - y0) * 80]);
+  const minD = 10;
   for (let it = 0; it < 200; it++) { let moved = false; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const dx = pts[j][0] - pts[i][0], dy = pts[j][1] - pts[i][1]; const d = Math.hypot(dx, dy) || 0.01; if (d < minD) { const push = (minD - d) / 2 + 0.2; const ux = dx / d, uy = dy / d; pts[i][0] -= ux * push; pts[i][1] -= uy * push; pts[j][0] += ux * push; pts[j][1] += uy * push; moved = true; } } for (const p of pts) { p[0] = Math.min(90, Math.max(10, p[0])); p[1] = Math.min(94, Math.max(12, p[1])); } if (!moved) break; }
   return pts;
 }
@@ -1422,18 +1422,18 @@ function drawWorld() {
   // the road: a smooth curve through the nodes
   let d = `M${pts[0][0]},${pts[0][1]}`;
   for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)]; const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0]},${p2[1]}`; }
-  svg.appendChild(el('path', { d, fill: 'none', stroke: '#2a3340', 'stroke-width': 3.2, 'stroke-linecap': 'round' }));
+  svg.appendChild(el('path', { d, fill: 'none', stroke: '#2a3340', 'stroke-width': 2.2, 'stroke-linecap': 'round' }));
   mapPath = el('path', { d, fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.35, 'stroke-dasharray': '0.9 1.5', 'stroke-linecap': 'round', opacity: 0.8 }); svg.appendChild(mapPath);
   T.forEach((t, i) => {
     const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t); const col = CEFR_COL[t.cefr] || '#e8e4d8';
     const g = el('g', { class: 'town' + (open ? '' : ' locked') });
-    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 7.5, fill: 'url(#glow)' }));
-    g.appendChild(el('circle', { cx: x, cy: y, r: 4.6, fill: '#0b0f14', stroke: open ? col : '#4a5160', 'stroke-width': 0.6 }));
-    g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(1.1)` }));
-    if (!open) { g.appendChild(el('circle', { cx: x, cy: y, r: 6.5, fill: '#1e2634', opacity: 0.7, filter: 'url(#fog)' })); g.appendChild(el('path', { d: `M${x - 1.2},${y + 0.4} h2.4 v2 h-2.4 z M${x - 0.7},${y + 0.4} v-1 a0.7,0.7 0 0 1 1.4,0 v1`, fill: '#4a5160', stroke: '#9aa6b8', 'stroke-width': 0.2 })); }
-    const num = el('text', { x: x - 5.6, y: y - 4.2, class: 'num' }); num.textContent = t.tier; g.appendChild(num);
-    const label = el('text', { x: x, y: y + 8.2, 'text-anchor': 'middle' }); label.textContent = t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name; g.appendChild(label);
-    const badge = el('text', { x: x, y: y + 11.4, 'text-anchor': 'middle', class: 'badge', fill: open ? col : '#4a5160' }); badge.textContent = t.cefr + (open && stars ? ' · ★' + stars : ''); g.appendChild(badge);
+    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 5.5, fill: 'url(#glow)' }));
+    g.appendChild(el('circle', { cx: x, cy: y, r: 3.3, fill: '#0b0f14', stroke: open ? col : '#4a5160', 'stroke-width': 0.5 }));
+    g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(0.8)` }));
+    if (!open) { g.appendChild(el('circle', { cx: x, cy: y, r: 4.8, fill: '#1e2634', opacity: 0.7, filter: 'url(#fog)' })); g.appendChild(el('path', { d: `M${x - 1},${y + 0.3} h2 v1.7 h-2 z M${x - 0.6},${y + 0.3} v-0.8 a0.6,0.6 0 0 1 1.2,0 v0.8`, fill: '#4a5160', stroke: '#9aa6b8', 'stroke-width': 0.2 })); }
+    const num = el('text', { x: x - 4.6, y: y - 3.4, class: 'num' }); num.textContent = t.tier; g.appendChild(num);
+    const label = el('text', { x: x, y: y + 6.4, 'text-anchor': 'middle' }); label.textContent = t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name; g.appendChild(label);
+    const badge = el('text', { x: x, y: y + 9.0, 'text-anchor': 'middle', class: 'badge', fill: open ? col : '#4a5160' }); badge.textContent = t.cefr + (open && stars ? ' · ★' + stars : ''); g.appendChild(badge);
     g.onclick = () => rideTo(i);
     svg.appendChild(g);
   });
@@ -1450,7 +1450,7 @@ function placeBike(i, u) {   // u: fraction along the road from node i to i+1
   let x, y;
   if (u == null) { [x, y] = mapNodes[i]; }
   else { const L = mapPath.getTotalLength(); const segs = mapNodes.length - 1; const a = segLen(i), b = segLen(i + 1); const p = mapPath.getPointAtLength(a + (b - a) * u); x = p.x; y = p.y; }
-  g.setAttribute('transform', `translate(${x} ${y - 5.2})`);
+  g.setAttribute('transform', `translate(${x} ${y - 4}) scale(0.8)`);
 }
 const _segCache = {};
 function segLen(i) {   // road length from the start to node i, found by sampling the path
