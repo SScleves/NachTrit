@@ -89,3 +89,19 @@ Composition A, now inhabited.
   as costume (bucket hat, bonnet, clogs, striped socks, cheese), a white duck, a cat in a window.
 - The props: drawbridges, arched bridges with railings, windmills, gabled houses, canal boats,
   cheese carts, tulip boxes, bollards, fingerposts, bikes everywhere.
+
+## E. "DORP, learn Dutch on the run" (gameplay concept sheet, E-dorp-gameplay-sheet.png)
+
+The same moody world, presented as a runner. What matters for the art:
+
+- Dutch words float above the wet road as warm, glowing golden lettering ("huis", "fiets",
+  "kaas") with a small glowing line icon (house, bicycle, cheese wedge, windmill), and their
+  reflections shimmer on the asphalt below. Light is the language: words are lamps.
+- Warm lamp cones on wet cobbles, red tulips in planters, bikes against railings, an arched canal
+  bridge, a windmill and church spire in the haze, a huge zombie looming at the frame edge.
+- The hero runs in a red jacket seen from behind or in profile; zombies are dark silhouettes with
+  glowing eyes; trams and cars appear as hazards with two headlights.
+- Environments named on the sheet: town streets, canals and bridges, markets (stalls with
+  awnings), countryside (mills, fences, grass).
+- UI on the sheet: a word-learned card with the word large in gold, its icon, the English meaning
+  and a speaker icon.
