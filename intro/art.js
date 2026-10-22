@@ -138,6 +138,7 @@
     lutCache.set(key, t); return t;
   }
   function levels(mode, c, strength, Q) {
+    strength = Math.round(strength * 20) / 20;   // a small, cached set of light levels
     const key = mode + ':' + col(c) + ':' + strength + ':' + Q; let L = lvlCache.get(key); if (L) return L;
     L = []; for (let q = 0; q <= Q; q++) L.push(lut(mode, c, strength * q / Q));
     lvlCache.set(key, L); return L;
@@ -879,14 +880,14 @@
       const rows = facing === 'front' ? MAN_FRONT : MAN_BACK;
       const bob = Math.sin(t * 2.2 + seed) > 0.55 ? 1 : 0;
       if (pose === 'sit') {
-        const fl = o.floor == null ? 12 : o.floor, top = -36;
+        const fl = o.floor == null ? 12 : o.floor, top = -26;
         P.map(-6, top + 11, rows.slice(11, 24), MAN_LEG);
         P.map(-6, top + bob, rows.slice(0, 11), MAN_LEG);
-        // lap toward us, knees, shins down to the floor
-        P.r(-6, -12, 2, 2, C.skin3); P.r(4, -12, 2, 2, C.skin3);
-        P.r(-4, -13, 8, 4, C.night5); P.r(-4, -10, 8, 1, C.night4); P.r(-1, -13, 2, 3, C.night4);
-        P.r(-4, -9, 3, fl + 9 - 2, C.night4); P.r(1, -9, 3, fl + 9 - 2, C.night4);
-        P.r(-4, -9, 1, fl + 7, C.night3); P.r(3, -9, 1, fl + 7, C.night3);
+        // lap toward us, hands on the knees, shins down to the floor
+        P.r(-5, -3, 10, 3, C.night5); P.r(-5, -1, 10, 1, C.night4); P.r(-1, -3, 1, 3, C.night4);
+        P.r(-6, -4, 2, 2, C.skin3); P.r(4, -4, 2, 2, C.skin3);
+        P.r(-4, 0, 3, fl - 2, C.night4); P.r(1, 0, 3, fl - 2, C.night4);
+        P.r(-4, 0, 1, fl - 2, C.night3); P.r(3, 0, 1, fl - 2, C.night3);
         P.r(-5, fl - 2, 4, 2, C.slate1); P.r(1, fl - 2, 4, 2, C.slate1); P.r(-5, fl - 1, 4, 1, C.paper2); P.r(1, fl - 1, 4, 1, C.paper2);
         if (facing === 'front') faceFront(P, top + bob, face, t, seed, blink);
       } else {
@@ -1084,5 +1085,609 @@
       NR.glow(g, lx, ly, 6, { color: 'paper6', strength: 0.6 });
       NR.cone(g, lx, ly, flip ? Math.PI - 0.06 : 0.06, 0.2, len, { color: 'paper5', strength: 0.42, width: 3, fade: 1.2 });
     }
+  };
+})();
+
+/* ======================================================================================
+ * MORE CAST: the dead, the tall woman, the friend from before.
+ * ====================================================================================== */
+(function () {
+  'use strict';
+  const NR = window.NRART, C = NR.C, col = NR.col, hash = NR.hash, step = NR.step;
+  const pen = NR.pen, rnd = Math.round;
+  const flipOf = f => f === 'left';
+  const blinking = (t, seed, every) => { const per = every || 3.7, ph = (t + hash(seed | 0, 91) * per) % per; return ph < 0.13; };
+  function joint(ax, ay, bx, by, len, bend) {
+    const dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy) || 1, half = len / 2;
+    const k = d >= len ? 0 : Math.sqrt(half * half - (d / 2) * (d / 2));
+    return [ax + dx / 2 + (-dy / d) * k * bend, ay + dy / 2 + (dx / d) * k * bend];
+  }
+
+  // ---------------------------------------------------------------- the dead
+  const COATS_W = ['brick2', 'night4', 'teal2', 'wood2', 'green2', 'slate3'];
+  const SHIRTS = ['zombie3', 'mist1', 'brick3', 'blue1', 'green3', 'night4', 'wood2', 'teal2', 'zombie4'];
+  /** zombie(g, x, y, o): one of the changed. Tall, thin, hunched, small head pushed forward,
+   *  arms that hang past the knees, glowing yellow eyes. Side view, facing right by default.
+   *  (x, y): x the hip line, y the ground. ~50 px tall at the default height.
+   *  o: { variant: 'plain' | 'hat' (orange bucket hat) | 'bonnet' (woman in traditional dress)
+   *         | 'cheese' (a cheese wheel for a hat) | 'phone' (checking the Tikkie, face lit cyan)
+   *         | 'woman' (long coat, hair in a bun),
+   *       t, seed, facing: 'right' | 'left', pose: 'stand' (sway) | 'walk' (shamble),
+   *       height: 50, hunch: 0..1 (0 upright, 1 almost crawling), carry: 'cheese' (a stack on the back),
+   *       clogs, socks (red-white striped), hair: 'bun' | 'long' | null, shirt, pants (colours),
+   *       tone: one colour for the whole body (far silhouettes; the eyes still glow),
+   *       eyes: true, glow: 0.35 (eye glow strength), rim, shadow }
+   *  Returns { head: [x, y], hand: [x, y] } in screen pixels, for bubbles and props. */
+  NR.zombie = (g, x, y, o) => {
+    o = o || {}; const t = o.t || 0, seed = o.seed == null ? 5 : o.seed, v = o.variant || 'plain';
+    const flip = flipOf(o.facing), P = pen(g, x, y, flip);
+    const woman = v === 'bonnet' || v === 'woman';
+    const H = o.height || (v === 'bonnet' ? 46 : 50);
+    const hunch = o.hunch == null ? (woman ? 0.2 : 0.4) : o.hunch;
+    const tone = o.tone != null ? col(o.tone) : -1;
+    const T = c => tone >= 0 ? tone : col(c), D = (c, k) => tone >= 0 ? tone : step(c, k || -1);
+    const sk1 = T('zombie5'), sk0 = T('zombie4'), sk2 = T('zombie6');
+    const shirt = T(o.shirt || (v === 'bonnet' ? 'slate2' : v === 'woman' ? COATS_W[Math.floor(hash(seed, 13) * COATS_W.length)] : SHIRTS[Math.floor(hash(seed, 11) * SHIRTS.length)]));
+    const shirtD = D(shirt), pants = T(o.pants || (v === 'bonnet' ? 'night2' : hash(seed, 12) < 0.5 ? 'slate2' : 'night3')), pantsD = D(pants);
+    const clogs = o.clogs == null ? (v === 'hat' || v === 'bonnet' || v === 'cheese') : o.clogs;
+    const socks = o.socks == null ? v === 'hat' : o.socks;
+    const hair = o.hair !== undefined ? o.hair : v === 'woman' ? 'bun' : null;
+    const walk = o.pose === 'walk', ph = t * 2.6 + seed;
+    const sway = Math.sin(t * 1.3 + seed * 1.7);
+    const legL = rnd(H * 0.42), torsoL = rnd(H * 0.34), hipY = -legL + (walk && Math.abs(Math.sin(ph)) > 0.8 ? 1 : 0);
+    const a = 0.08 + hunch * 0.7 + sway * 0.04;
+    const sh = [rnd(Math.sin(a) * torsoL), hipY - rnd(Math.cos(a) * torsoL)];
+    const hw = Math.max(3, rnd(H / 10)), hh = hw + 1;
+    const hx0 = sh[0] + 1 + rnd(hunch * 2.5), hy0 = sh[1] - hh + 2 + rnd(hunch * 3) + (Math.sin(t * 1.3 + seed * 1.7 - 0.6) > 0.7 ? 1 : 0);
+    const tw = Math.max(3, rnd(H / 9));
+    if (o.shadow !== false && tone < 0) NR.shadow(g, x + (flip ? -2 : 2), y, rnd(H / 5), 2, 0.5);
+    NR.begin(g);
+    // far leg and far arm first, a step darker
+    const fA = walk ? Math.sin(ph) : 0, footF = [rnd(-2 + 4 * fA), -1], footN = [rnd(2 - 4 * fA), -1];
+    if (walk) { if (Math.cos(ph) > 0.3) footN[1] -= 1; else if (Math.cos(ph) < -0.3) footF[1] -= 1; }
+    const armL = rnd(H * 0.5), swingA = rnd(sway * 1.5 + (walk ? -2 * fA : 0));
+    const handF = [sh[0] + rnd(hunch * 3) - swingA, sh[1] + armL - 2];
+    const leg = (hip, foot, c, cd) => {
+      const k = joint(hip[0], hip[1], foot[0], foot[1], legL + 1, 1);
+      P.l(hip[0], hip[1], k[0], k[1], c, 2); P.l(k[0], k[1], foot[0], foot[1], cd, 2);
+      if (socks && tone < 0) for (let r = 2; r <= 5; r++) { const fx = rnd(foot[0] + (k[0] - foot[0]) * (r - 1) / (legL / 2)); P.r(fx - 1, -r, 2, 1, r & 1 ? C.red4 : C.paper4); }
+      if (clogs) { const cc = tone >= 0 ? tone : C.cheese3; P.r(foot[0] - 2, -2, 5, 2, cc); P.p(foot[0] + 3, -2, tone >= 0 ? tone : C.cheese4); P.r(foot[0] - 2, -2, 4, 1, tone >= 0 ? tone : C.cheese4); P.p(foot[0] - 2, -1, tone >= 0 ? tone : C.cheese2); }
+      else { P.r(foot[0] - 1, -1, 4, 1, T('slate0')); P.r(foot[0] - 1, -2, 3, 1, T('slate1')); }
+    };
+    const arm = (s0, hand, c, sk, bendDir) => {
+      const k = joint(s0[0], s0[1], hand[0], hand[1], armL, bendDir);
+      P.l(s0[0], s0[1], k[0], k[1], c, 2); P.l(k[0], k[1], hand[0], hand[1], sk, 1);
+      P.r(hand[0], hand[1], 2, 2, sk); P.p(hand[0] + 1, hand[1] + 2, sk); P.p(hand[0], hand[1] + 3, D(sk));
+    };
+    if (v !== 'bonnet') leg([-1, hipY], footF, pantsD, D(pantsD));
+    else leg([-1, hipY], footF, pantsD, pantsD);
+    arm([sh[0] - 1, sh[1] + 2], handF, D(shirtD), sk0, 1);
+    // skirt or coat under the torso
+    if (v === 'bonnet') {
+      const hy = hipY - 3, wid = rnd(H / 10);
+      P.poly([-wid + sh[0] * 0.2, hy, wid + 2 + sh[0] * 0.2, hy, wid + 4, -2, -wid - 3, -2], pants);
+      P.poly([1 + sh[0] * 0.2, hy + 2, wid + 1, hy + 2, wid + 2, -4, 2, -4], T('paper2'));         // apron
+      P.r(-wid - 3, -3, 2 * wid + 7, 1, pantsD);
+    } else if (v === 'woman') {
+      const hy = hipY - 2, hem = hipY + rnd(legL * 0.5);
+      P.poly([-3, hy, tw, hy, tw + 1, hem, -4, hem], shirt); P.r(-4, hem - 1, tw + 5, 1, shirtD);
+      P.l(tw - 2, hy + 1, tw - 1, hem - 1, shirtD);
+    }
+    // torso: hip to shoulder with a hump in the upper back
+    const ca = Math.cos(a), sa = Math.sin(a), mid = [sh[0] * 0.62, hipY + (sh[1] - hipY) * 0.62];
+    const back = [mid[0] - ca * (tw * 0.5 + 1 + hunch * 2), mid[1] - sa * (tw * 0.5 + 1 + hunch * 2) + 0.5];
+    P.poly([-2, hipY + 2, tw - 1, hipY + 2, sh[0] + 3, sh[1] + 3, sh[0] + 1, sh[1] - 1, sh[0] - 2, sh[1] - 1, back[0], back[1], -3, hipY - 1], shirt);
+    P.poly([-2, hipY + 2, 0, hipY + 2, back[0] + 2, back[1] + 1, back[0], back[1], -3, hipY - 1], shirtD);
+    if (v !== 'bonnet' && v !== 'woman' && tone < 0) for (let i = -2; i < tw - 1; i++) {   // the ragged hem
+      const hv = hash(i + seed * 5, 3); if (hv < 0.45) P.p(i, hipY + 2, shirt); if (hv < 0.15) P.p(i, hipY + 3, shirtD);
+    }
+    if (v === 'bonnet') { P.r(sh[0] - 3, sh[1] + 1, 4, 3, T('paper3')); }  // the shawl collar
+    if (v !== 'bonnet') leg([1, hipY], footN, pants, pantsD);
+    else { P.r(footN[0] - 1, -3, 2, 1, sk0); leg([1, -4], footN, pants, pants); }
+    // neck and head
+    P.l(sh[0], sh[1], hx0 + 1, hy0 + hh - 2, sk0, 2);
+    P.r(hx0, hy0, hw, hh, sk1); P.r(hx0 + 1, hy0 - 1, hw - 2, 1, sk1);
+    P.r(hx0, hy0, 1, hh, sk0); P.r(hx0 + 1, hy0 + hh, hw - 2, 1, sk0);           // back of the skull, the slack jaw
+    P.p(hx0 + hw - 1, hy0 + hh - 1, D(sk0)); P.p(hx0 + hw - 2, hy0 + hh, D(sk0)); // open mouth
+    P.r(hx0 + hw - 3, hy0 + 1, 2, 2, D(sk0));                                    // the socket
+    if (tone < 0) P.p(hx0 + hw - 1, hy0 + 2, sk2);                               // the nose catching light
+    // hair and hats
+    if (v === 'hat') {
+      const hc = T('orange1'), hcl = T('orange2');
+      P.r(hx0 - 2, hy0, hw + 4, 1, hc); P.r(hx0 - 1, hy0 - 3, hw + 1, 3, hcl); P.r(hx0, hy0 - 4, hw - 1, 1, hcl); P.p(hx0 - 2, hy0 + 1, hc);
+    } else if (v === 'bonnet') {
+      const b = T('paper5'), b2 = T('paper3');
+      P.r(hx0 - 1, hy0 - 1, hw, hh - 1, b); P.r(hx0 - 1, hy0 + hh - 2, hw - 1, 1, b2);
+      P.p(hx0 - 2, hy0 - 2, b); P.p(hx0 - 3, hy0 - 3, b); P.p(hx0 - 2, hy0 - 3, b2); P.p(hx0 + hw - 2, hy0 - 2, b); P.p(hx0 + hw - 1, hy0 - 3, b);
+      P.r(hx0 + hw - 2, hy0 + 1, 1, hh - 2, b2);
+    } else if (v === 'cheese') {
+      const cx = hx0 + (hw >> 1);
+      P.r(cx - hw - 1, hy0 - 3, 2 * hw + 3, 3, T('cheese3')); P.r(cx - hw, hy0 - 4, 2 * hw + 1, 1, T('cheese5'));
+      P.r(cx - hw - 1, hy0 - 1, 2 * hw + 3, 1, T('cheese2')); P.r(cx + 1, hy0 - 4, 3, 2, T('cheese6')); P.p(cx + 1, hy0 - 2, T('cheese4'));
+    } else if (hair === 'bun') {
+      const hc = T(o.hairColor || (hash(seed, 21) < 0.5 ? 'wood2' : 'slate1'));
+      P.r(hx0 - 1, hy0 - 1, hw - 1, 3, hc); P.r(hx0 - 1, hy0 + 2, 2, hh - 3, hc); P.disc(hx0 - 2, hy0 - 1, 1, hc); P.p(hx0 - 2, hy0 - 2, tone >= 0 ? tone : step(hc, 1));
+    } else if (hair === 'long') {
+      const hc = T(o.hairColor || 'wood2'); P.r(hx0 - 1, hy0 - 1, hw - 1, 2, hc); P.r(hx0 - 2, hy0 + 1, 2, hh + 4, hc);
+    } else if (tone < 0) { for (let i = 0; i < hw - 1; i++) if (hash(i, seed + 4) < 0.55) P.p(hx0 + i, hy0 - 1, C.slate1); }
+    // carry a stack of cheese on the back
+    if (o.carry === 'cheese') {
+      const bx = back[0] - 6, by = back[1] - 2;
+      for (let k = 0; k < 3; k++) { P.r(bx, by - k * 3, 7, 2, T('cheese3')); P.r(bx, by - k * 3, 7, 1, T('cheese4')); }
+      P.l(bx + 6, by + 3, sh[0], sh[1] + 2, T('wood2'));
+    }
+    // the near arm: hanging, or holding up the phone
+    let handN;
+    if (v === 'phone' || o.phone) {
+      handN = [hx0 + hw + 2, hy0 + hh + 1];
+      const el = [sh[0] + 2, sh[1] + rnd(H * 0.16)];
+      P.l(sh[0] + 1, sh[1] + 1, el[0], el[1], shirt, 2); P.l(el[0], el[1], handN[0], handN[1] + 1, sk1, 2);
+      P.r(handN[0], handN[1] - 3, 2, 4, T('slate0')); P.p(handN[0], handN[1] - 2, tone >= 0 ? tone : C.phone4); P.p(handN[0], handN[1] - 1, tone >= 0 ? tone : C.phone3);
+      P.r(handN[0] - 1, handN[1], 2, 2, sk1);
+    } else {
+      handN = [sh[0] + 2 + rnd(hunch * 3) + swingA, sh[1] + armL - 2];
+      arm([sh[0] + 1, sh[1] + 1], handN, shirt, sk1, 1);
+    }
+    NR.end(g, o.rim);
+    // eyes glow on top of everything, after the rim light
+    const ex = hx0 + hw - 1, ey = hy0 + 2;
+    const sxN = P.X(ex), sxF = P.X(ex - 2), sy = P.y + ey;
+    if (o.eyes !== false && !blinking(t, seed + 17, 4.1)) {
+      if (o.glow !== 0) NR.glow(g, (sxN + sxF) / 2 + 0.5, sy + 0.5, H >= 36 ? 5 : 3, { color: 'eye3', strength: o.glow == null ? 0.35 : o.glow, power: 1.4, q: 4 });
+      NR.px(g, sxN - g.ox, sy - g.oy, 'eye4'); NR.px(g, sxF - g.ox, sy - g.oy, 'eye2');
+    }
+    if ((v === 'phone' || o.phone) && tone < 0) NR.glow(g, P.X(handN[0]) - g.ox, P.y + handN[1] - 2 - g.oy, 6, { color: 'phone4', strength: 0.32, power: 1.4, q: 4 });
+    return { head: [P.X(hx0 + (hw >> 1)) - g.ox, P.y + hy0 - 2 - g.oy], hand: [P.X(handN[0]) - g.ox, P.y + handN[1] - g.oy] };
+  };
+
+  /** tallWoman(g, x, y, o): a changed woman, a head taller than anyone, upright, long coat, hair
+   *  in a bun, phone in hand (the Tikkie never sleeps). Same options as zombie; height 60. */
+  NR.tallWoman = (g, x, y, o) => NR.zombie(g, x, y, Object.assign({ variant: 'woman', height: 60, hunch: 0.12, phone: true, seed: 8 }, o || {}));
+
+  // ---------------------------------------------------------------- the friend (before the mist)
+  const FRIEND_TOP = [
+    '....YYYYYY....',
+    '...YYYYYYYY...',
+    '..YYYYYYYYyY..',
+    '..YYyyyyyyYY..',
+    '..YSSSSSSSSy..',
+    '..ySBBSSBBSy..',
+    '..sSESSSSESs..',
+    '..sSSSSdSSSs..',
+    '...SSSSSSSS...',
+    '...SSmppmSS...',
+    '....SSmmSS....',
+    '.....ssss.....',
+    '...uUUccUUu...',
+    '.uUUUUccUUUUu.',
+  ];
+  const FRIEND_LEG = { Y: C.cheese4, y: C.cheese3, S: C.skin5, s: C.skin4, d: C.skin3, B: C.cheese3, E: C.slate0, m: C.skin2, p: C.paper5,
+    u: C.blue2, U: C.blue3, c: C.paper4, a: C.blue2, h: C.skin4, J: C.blue1, j: C.night4, K: C.paper4, k: C.paper2 };
+  /** friend(g, x, y, o): a Dutch friend from before the mist: a head taller than the man, blond,
+   *  blue sweater, white sneakers, smiling because English is fine. Front view, 46 px.
+   *  o: { t, seed, face: 'smile' | 'talk' | 'blink', arm: 'down' | 'wave' | 'drink', rim, shadow } */
+  NR.friend = (g, x, y, o) => {
+    o = o || {}; const t = o.t || 0, seed = o.seed || 4, P = pen(g, x, y, false);
+    const bob = Math.sin(t * 2 + seed) > 0.6 ? 1 : 0, top = -46 + bob;
+    if (o.shadow !== false) NR.shadow(g, x, y, 10, 2);
+    NR.begin(g);
+    P.map(-7, top, FRIEND_TOP, FRIEND_LEG);
+    if (o.face === 'talk' && Math.sin(t * 12 + seed) > 0) { P.r(-2, top + 9, 4, 1, C.skin1); P.r(-1, top + 10, 2, 1, C.red3); }
+    if (blinking(t, seed) || o.face === 'blink') { P.p(-4, top + 6, C.skin4); P.p(3, top + 6, C.skin4); }
+    // sweater, arms, hands
+    P.r(-6, top + 14, 12, 14, C.blue3); P.r(-5, top + 26, 10, 2, C.blue2); P.r(-1, top + 14, 2, 4, C.blue2);
+    P.r(-7, top + 14, 2, 12, C.blue2); P.r(5, top + 14, 2, 12, C.blue2); P.r(-7, top + 26, 2, 2, C.skin4);
+    if (o.arm === 'wave') { const w = Math.sin(t * 8) > 0 ? 0 : 1; P.r(5, top + 14, 2, 12, C.blue3); P.l(6, top + 14, 9 + w, top + 6, C.blue2, 2); P.r(9 + w, top + 3, 2, 3, C.skin5); }
+    else if (o.arm === 'drink') { P.r(5, top + 14, 2, 5, C.blue2); P.l(6, top + 19, 3, top + 19, C.blue2, 2); P.r(2, top + 15, 3, 5, C.cheese4); P.r(2, top + 15, 3, 1, C.paper5); P.r(1, top + 18, 2, 2, C.skin4); }
+    else P.r(5, top + 26, 2, 2, C.skin4);
+    // jeans and sneakers
+    P.r(-5, top + 28, 10, 3, C.blue1); P.r(-5, top + 31, 4, 13, C.blue1); P.r(1, top + 31, 4, 13, C.blue1);
+    P.r(-2, top + 31, 1, 13, C.night4); P.r(1, top + 31, 1, 13, C.night4); P.r(-1, top + 28, 2, 2, C.night4);
+    P.r(-6, top + 44 - bob, 5, 2, C.paper4); P.r(1, top + 44 - bob, 5, 2, C.paper4); P.r(-6, top + 45 - bob, 5, 1, C.paper2); P.r(1, top + 45 - bob, 5, 1, C.paper2);
+    NR.end(g, o.rim);
+    return { head: [x, y + top - 2] };
+  };
+})();
+
+/* ======================================================================================
+ * BUILDINGS AND PROPS: mills, canal houses, bridges, lamps, boats, the book, bubbles.
+ * Buildings take a base colour (o.tone / o.brick) so far ones can start dark and get fogged
+ * with NRART.haze afterwards; everything is a sprite and gets the rim light.
+ * ====================================================================================== */
+(function () {
+  'use strict';
+  const NR = window.NRART, C = NR.C, col = NR.col, hash = NR.hash, step = NR.step;
+  const pen = NR.pen, rnd = Math.round;
+  const flipOf = f => f === 'left';
+
+  /** Recolour the outermost pixels of colour `base` in each row of a box (a cornice or coping
+   *  along a gable edge). Screen coordinates. */
+  function edgeRows(g, x0, y0, x1, y1, base, c) {
+    for (let yy = Math.max(0, y0); yy <= Math.min(g.h - 1, y1); yy++) {
+      let a = -1, b = -1; const o = yy * g.w;
+      for (let xx = Math.max(0, x0); xx <= Math.min(g.w - 1, x1); xx++) if (g.buf[o + xx] === base) { if (a < 0) a = xx; b = xx; }
+      if (a >= 0) { g.buf[o + a] = c; g.buf[o + b] = c; }
+    }
+  }
+
+  // ---------------------------------------------------------------- windmill
+  /** windmill(g, x, y, scale, angle, o): a stellingmolen, seen from the front. (x, y): the
+   *  centre of the base on the ground. scale 1 is ~50 px of tower, 32 px sails.
+   *  angle: sail rotation in radians. Real Dutch mills turn anticlockwise seen from the front,
+   *  so animate angle = -t * speed; a positive speed (clockwise on screen) is the wrong way.
+   *  o: { tone: 'night3' (the tower), sail: colour of the sail lattice, cloth: 0..1 (sail cloth
+   *       coverage), stage: true (the gallery), lit: 0..1 (window lights), t, seed, rim } */
+  NR.windmill = (g, x, y, scale, angle, o) => {
+    o = o || {}; const s = scale || 1, t = o.t || 0, seed = o.seed || 1;
+    const base = col(o.tone || 'night3'), dk = step(base, -1), dk2 = step(base, -2), lt = step(base, 1);
+    const bh = rnd(50 * s), b0 = Math.max(3, rnd(11 * s)), b1 = Math.max(2, rnd(5.5 * s)), top = y - bh;
+    NR.begin(g);
+    // tower: tapered octagon in three facets, the side facing the key light lighter
+    NR.poly(g, [x - b0, y, x + b0 + 1, y, x + b1 + 1, top, x - b1, top], base);
+    NR.poly(g, [x - b0, y, x - rnd(b0 * 0.4), y, x - rnd(b1 * 0.4), top, x - b1, top], dk);
+    const keyRight = g.keyX > x;
+    if (keyRight) NR.poly(g, [x + rnd(b0 * 0.45), y, x + b0 + 1, y, x + b1 + 1, top, x + rnd(b1 * 0.45), top], lt);
+    if (s >= 0.7) for (let yy = top + 2; yy < y; yy += 3) for (let xx = x - b0; xx <= x + b0; xx += 2) if (hash(xx, yy + seed) < 0.3) NR.px(g, xx, yy, dk2); // thatch
+    // the gallery (stelling) at a third of the height, with struts
+    if (o.stage !== false && s >= 0.35) {
+      const sy = y - rnd(bh * 0.33), hwS = rnd(b0 + 9 * s);
+      NR.rect(g, x - hwS, sy, 2 * hwS + 1, Math.max(1, rnd(1.5 * s)), dk2);
+      if (s >= 0.6) { NR.hline(g, x - hwS, sy - rnd(4 * s), 2 * hwS + 1, dk); for (let xx = x - hwS; xx <= x + hwS; xx += Math.max(2, rnd(4 * s))) NR.vline(g, xx, sy - rnd(4 * s), rnd(4 * s), dk); }
+      NR.line(g, x - hwS, sy + 1, x - b0 + 1, y - 1, dk2); NR.line(g, x + hwS, sy + 1, x + b0 - 1, y - 1, dk2);
+      NR.line(g, x - rnd(hwS * 0.6), sy + 1, x - rnd(b0 * 0.7), y - 1, dk2); NR.line(g, x + rnd(hwS * 0.6), sy + 1, x + rnd(b0 * 0.7), y - 1, dk2);
+    }
+    // door and windows
+    if (s >= 0.4) {
+      NR.rect(g, x - rnd(2 * s), y - rnd(7 * s), Math.max(2, rnd(4 * s)), rnd(7 * s), dk2);
+      const lit = o.lit == null ? 0.5 : o.lit;
+      [[0, 0.55], [-0.3, 0.75], [0.25, 0.42]].forEach(([fx, fy], k) => {
+        const wx = x + rnd(fx * b0), wy = y - rnd(bh * fy), on = hash(k, seed + 31) < lit;
+        const fl = on && hash(Math.floor(t * 3) + k, seed) < 0.08;
+        NR.rect(g, wx, wy, Math.max(1, rnd(2 * s)), Math.max(1, rnd(3 * s)), on ? (fl ? 'amber4' : 'amber6') : dk2);
+        if (on) NR.glow(g, wx + 1, wy + 1, rnd(6 * s) + 2, { color: 'amber5', strength: 0.25, q: 3 });
+      });
+    }
+    // cap
+    const cw = b1 + Math.max(1, rnd(2.5 * s)), ch = Math.max(2, rnd(6 * s));
+    NR.poly(g, [x - cw, top + 1, x + cw + 1, top + 1, x + b1 + 1, top - ch + 1, x - b1 + 1, top - ch, x - b1, top - ch + 1], dk);
+    NR.hline(g, x - cw, top, 2 * cw + 1, dk2);
+    NR.end(g, o.rim);
+    // sails: four stocks with lattice frames
+    NR.begin(g);
+    const hx = x + 0.5, hy = top - ch * 0.5, L = 34 * s, sw = Math.max(2, 6 * s), sc = col(o.sail || step(base, -1)), sl = step(sc, 1);
+    const cloth = o.cloth || 0;
+    for (let k = 0; k < 4; k++) {
+      const an = angle + k * Math.PI / 2, ca = Math.cos(an), sa = Math.sin(an), px = -sa, py = ca;
+      const a0 = 0.2 * L;
+      const q = [hx + ca * a0, hy + sa * a0, hx + ca * L, hy + sa * L, hx + ca * L + px * sw, hy + sa * L + py * sw, hx + ca * a0 + px * sw, hy + sa * a0 + py * sw];
+      if (cloth > 0) { NR.poly(g, q, sl); }
+      NR.line(g, hx - ca * 2 * s, hy - sa * 2 * s, hx + ca * L, hy + sa * L, sc, s >= 1.4 ? 2 : 1);
+      NR.line(g, q[2], q[3], q[4], q[5], sc); NR.line(g, q[4], q[5], q[6], q[7], sc); NR.line(g, q[6], q[7], q[0], q[1], sc);
+      if (s >= 0.45) { const n = Math.max(2, rnd((L - a0) / Math.max(2.5, 3.5 * s))); for (let i = 1; i < n; i++) { const f = a0 + (L - a0) * i / n; NR.line(g, hx + ca * f, hy + sa * f, hx + ca * f + px * sw, hy + sa * f + py * sw, sc); } }
+    }
+    NR.disc(g, hx - 0.5, hy, Math.max(1, rnd(1.6 * s)), dk2);
+    NR.end(g, o.rim);
+  };
+
+  // ---------------------------------------------------------------- canal house
+  const BRICKS = ['brick2', 'brick3', 'brick4', 'slate3', 'brick3', 'brick5', 'night4'];
+  /** canalHouse(g, x, y, w, h, o): a narrow Dutch house seen from the front. (x, y): the left
+   *  end of the ground line; w wide (12..44), h tall to the top of the gable.
+   *  o: { gable: 'step' | 'bell' | 'neck' | 'spout' | 'roof', brick: base colour (brick ramp,
+   *       slate for painted), lit: 0..1 chance a window is lit, t, seed, flicker: 0.15,
+   *       door: true, trim: 'paper2' (white frames and cornices), detail: true (cats, tulips),
+   *       hoist: true (the hoisting beam), rim } */
+  NR.canalHouse = (g, x, y, w, h, o) => {
+    o = o || {}; const t = o.t || 0, seed = o.seed == null ? (x * 7 + w * 3 + h) : o.seed, gable = o.gable || 'step';
+    const base = col(o.brick || BRICKS[Math.floor(hash(seed, 1) * BRICKS.length)]), dk = step(base, -1), dk2 = step(base, -2);
+    const trim = col(o.trim || 'paper2');
+    x = rnd(x); y = rnd(y); w = rnd(w); h = rnd(h);
+    const gh = gable === 'roof' ? rnd(Math.min(h * 0.4, w * 0.6)) : rnd(Math.min(h * 0.4, w * 1.0));
+    const by = y - h + gh, cx = x + w / 2;
+    NR.begin(g);
+    NR.rect(g, x, by, w, y - by, base);
+    if (gable === 'step') {
+      const n = w >= 22 ? 3 : 2, sw = Math.max(2, Math.floor(w / (2 * (n + 1)))), sh = gh / (n + 1);
+      for (let i = 0; i <= n; i++) {
+        const x0 = x + i * sw, x1 = i === n ? Math.max(x0 + 3, x + w - i * sw) : x + w - i * sw, y0 = rnd(by - (i + 1) * sh);
+        NR.rect(g, x0, y0, x1 - x0, rnd(by - i * sh) - y0 + 1, base);
+        NR.hline(g, x0, y0, x1 - x0, trim);
+      }
+    } else if (gable === 'bell' || gable === 'neck' || gable === 'spout') {
+      const N = 10, L = [], R = [];
+      const nw = gable === 'neck' ? 0.24 : gable === 'spout' ? 0.2 : 0.3;
+      for (let i = 0; i <= N; i++) {
+        const u = i / N; let f;
+        if (gable === 'bell') f = u < 0.5 ? 0.5 - 0.5 * Math.cos(u * Math.PI) : 0.5 + 0.5 * Math.sin((u - 0.5) * Math.PI);
+        else if (gable === 'neck') f = u < 0.35 ? u / 0.35 : 1;
+        else f = u;
+        const xl = x + (w / 2 - w * nw) * Math.min(1, f) * (gable === 'bell' ? 1 : 1), yy = by - gh * u;
+        L.push(xl, yy); R.unshift(x + w - (xl - x), yy);
+      }
+      NR.poly(g, L.concat(R), base);
+      if (gable === 'bell') NR.disc(g, cx - 0.5, by - gh, rnd(w * nw * 0.8), base);
+      if (gable === 'neck') NR.poly(g, [cx - w * nw - 1, by - gh + 1, cx + w * nw + 1, by - gh + 1, cx, by - gh - Math.max(3, w * 0.18)], base);
+      edgeRows(g, x + g.ox, by - gh - rnd(w * 0.3) + g.oy, x + w - 1 + g.ox, by + g.oy, base, trim);
+      if (gable === 'neck') NR.hline(g, rnd(cx - w * nw - 1), by - gh + 1, rnd(2 * w * nw + 2), trim);
+    } else if (gable === 'roof') {
+      const rc = col(o.roof || 'slate2');
+      NR.poly(g, [x - 2, by + 1, x + w + 2, by + 1, x + w - rnd(w * 0.18), by - gh, x + rnd(w * 0.18), by - gh], rc);
+      NR.tiles(g, x - 2, by - gh, w + 4, gh + 1, { base: rc, only: rc });
+      NR.hline(g, x + rnd(w * 0.18), by - gh, w - 2 * rnd(w * 0.18), step(rc, 1));
+      NR.rect(g, x + rnd(w * 0.7), by - gh - 5, 3, 6, dk); NR.hline(g, x + rnd(w * 0.7) - 1, by - gh - 5, 5, dk2);
+      if (w >= 18) NR.window(g, rnd(cx) - 3, by - rnd(gh * 0.75), 6, rnd(gh * 0.5), { lit: hash(seed, 9) < (o.lit == null ? 0.4 : o.lit) ? 0.8 : 0, t, seed: seed + 5, frame: trim, flicker: 0.2 });
+      NR.hline(g, x - 2, by + 1, w + 4, dk2);
+    }
+    // brick texture on the facade (only the base colour, so trims and windows stay clean)
+    NR.brick(g, x, by - gh - 8, w, y - by + gh + 8, { base, only: base, seed, bw: w >= 20 ? 4 : 3 });
+    // cornice under the gable, a darker plinth, the hoisting beam
+    if (gable !== 'roof') NR.hline(g, x, by, w, trim);
+    NR.rect(g, x, y - 3, w, 3, dk2);
+    if (o.hoist !== false && gable !== 'roof' && w >= 14) { const hy = by - gh + 2; NR.rect(g, rnd(cx) - 1, hy, 2, 2, 'wood1'); NR.px(g, rnd(cx) + 1, hy, 'wood2'); NR.px(g, rnd(cx) + 1, hy + 1, 'slate0'); }
+    // a small window in the gable
+    if (gable !== 'roof' && gh >= 9 && w >= 12) NR.window(g, rnd(cx) - 2, by - rnd(gh * 0.55) - 1, 4, 5, { lit: hash(seed, 7) < (o.lit == null ? 0.4 : o.lit) * 0.7 ? 0.7 : 0, t, seed: seed + 3, frame: trim, flicker: 0.25, sill: false });
+    // window grid
+    const ww = w >= 16 ? 4 : 3, wh = w >= 16 ? 6 : 5, gx = w >= 30 ? 3 : 2, gy = w >= 16 ? 4 : 3;
+    const cols = Math.max(1, Math.floor((w - 4 + gx) / (ww + gx))), gwid = cols * ww + (cols - 1) * gx, wx0 = x + Math.floor((w - gwid) / 2);
+    const floorH = y - 3 - 11 - by, rows = Math.max(0, Math.floor((floorH - 2 + gy) / (wh + gy)));
+    if (rows) NR.windows(g, wx0, by + 3, { cols, rows, w: ww, h: wh, gx, gy, lit: o.lit == null ? 0.4 : o.lit, seed, t, flicker: o.flicker, frame: trim, details: o.detail !== false });
+    // ground floor: a door with a fanlight and a stoop, a wide window beside it
+    if (o.door !== false) {
+      const left = hash(seed, 3) < 0.5, dw = w >= 16 ? 4 : 3, dx = left ? x + 2 : x + w - 2 - dw, dy = y - 12;
+      const litDoor = hash(seed, 4) < (o.lit == null ? 0.4 : o.lit);
+      NR.rect(g, dx - 1, dy - 3, dw + 2, 13, trim); NR.rect(g, dx, dy - 2, dw, 2, litDoor ? 'amber5' : 'night2');
+      NR.rect(g, dx, dy + 1, dw, 9, hash(seed, 5) < 0.5 ? 'green2' : 'night1'); NR.px(g, dx + dw - 2, dy + 5, 'cheese4');
+      NR.rect(g, dx - 1, y - 2, dw + 2, 1, 'slate3'); NR.rect(g, dx - 2, y - 1, dw + 4, 1, 'slate2');
+      const sx = left ? dx + dw + 3 : x + 2, swd = Math.max(0, (left ? x + w - 2 : dx - 3) - sx);
+      if (swd >= 4) NR.window(g, sx, dy - 2, swd, 8, { lit: hash(seed, 6) < (o.lit == null ? 0.4 : o.lit) ? 0.85 : 0, t, seed: seed + 9, frame: trim, flicker: 0.1, detail: o.detail !== false && hash(seed, 8) < 0.5 ? (hash(seed, 2) < 0.5 ? 'tulip' : 'cat') : null });
+    }
+    NR.end(g, o.rim);
+  };
+
+  // ---------------------------------------------------------------- street furniture
+  /** lamp(g, x, y, o): a street lamp and its light. (x, y): the foot of the post.
+   *  o: { style: 'lantern' (ornate, warm) | 'modern' (tall, flat head, arm to the right), h: 34,
+   *       on: true, t, seed, flicker: 0 (chance per moment of a dip), light: true (glow, cone, pool),
+   *       cone: 0.3 (strength), reach: ground distance the cone falls, facing, rim } */
+  NR.lamp = (g, x, y, o) => {
+    o = o || {}; const t = o.t || 0, seed = o.seed || 0, h = o.h || 34, st = o.style || 'lantern', flip = flipOf(o.facing);
+    let on = o.on === false ? 0 : 1;
+    if (on && o.flicker && hash(Math.floor(t * 9), seed + 2) < o.flicker) on = 0.35;
+    const P = pen(g, x, y, flip);
+    NR.begin(g);
+    P.r(0, -h, 2, h, C.slate1); P.r(-1, -4, 4, 4, C.slate1); P.r(-1, -5, 4, 1, C.slate2);
+    let lx, ly;
+    if (st === 'lantern') {
+      P.r(-1, -h + 1, 4, 1, C.slate2);
+      P.r(-2, -h - 6, 6, 6, on ? (on < 1 ? C.amber4 : C.amber7) : C.slate2); P.r(-2, -h - 6, 6, 1, C.slate1); P.r(0, -h - 5, 2, 5, C.slate1);
+      if (on) { P.r(-1, -h - 5, 1, 4, on < 1 ? C.amber5 : C.amber8); P.r(2, -h - 5, 1, 4, on < 1 ? C.amber5 : C.amber8); }
+      P.poly([-3, -h - 6, 5, -h - 6, 3, -h - 8, -1, -h - 8], C.slate1); P.r(0, -h - 10, 2, 2, C.slate1);
+      lx = P.X(0) + (flip ? 0 : 1) - g.ox; ly = y - h - 3;
+    } else {
+      P.r(0, -h - 1, 9, 2, C.slate1); P.r(6, -h - 1, 6, 2, C.slate2); P.r(6, -h + 1, 6, 1, on ? C.paper6 : C.slate0);
+      lx = P.X(9) - g.ox; ly = y - h + 2;
+    }
+    NR.end(g, o.rim);
+    if (on && o.light !== false) {
+      const k = on;
+      NR.glow(g, lx, ly, st === 'lantern' ? 14 : 10, { color: st === 'lantern' ? 'amber6' : 'paper6', strength: 0.55 * k, power: 1.6 });
+      NR.cone(g, lx, ly + 2, Math.PI / 2, st === 'lantern' ? 0.42 : 0.36, (o.reach || h) + 1, { color: st === 'lantern' ? 'amber5' : 'paper5', strength: (o.cone == null ? 0.3 : o.cone) * k, width: 4, fade: 0.6, edge: 0.6 });
+      NR.glow(g, lx, y, (o.reach || h) * 0.62, { ry: 3, color: st === 'lantern' ? 'amber5' : 'paper5', strength: 0.35 * k, power: 1 });
+    }
+    return [lx, ly];
+  };
+  /** bollard(g, x, y, o): a black Amsterdammertje. o: { h: 9, tone } */
+  NR.bollard = (g, x, y, o) => {
+    o = o || {}; const h = o.h || 9, c = col(o.tone || 'slate1');
+    NR.begin(g); NR.rect(g, x, y - h, 2, h, c); NR.px(g, x, y - h - 1, c); NR.px(g, x + 1, y - h - 1, c); NR.hline(g, x - 1, y - h + 2, 4, step(c, -1)); NR.hline(g, x - 1, y - 1, 4, c); NR.end(g, o.rim);
+  };
+  /** tulips(g, x, y, w, o): a wooden planter of tulips. o: { colors: ['red4', 'red5', 'cheese4'], t, seed } */
+  NR.tulips = (g, x, y, w, o) => {
+    o = o || {}; const t = o.t || 0, seed = o.seed || 3, cs = (o.colors || ['red4', 'red5', 'red3', 'cheese4']).map(col);
+    NR.begin(g);
+    for (let i = 1; i < w - 1; i += 2) {
+      const hgt = 4 + Math.floor(hash(i, seed) * 3), sw = Math.sin(t * 1.4 + i * 0.7) > 0.75 ? 1 : 0, c = cs[Math.floor(hash(i, seed + 1) * cs.length)];
+      NR.vline(g, x + i, y - 4 - hgt, hgt, 'green4'); if (hash(i, seed + 2) < 0.5) NR.px(g, x + i - 1, y - 6, 'green3');
+      NR.rect(g, x + i + sw - 1, y - 6 - hgt, 2, 2, c); NR.px(g, x + i + sw - 1, y - 7 - hgt, c); NR.px(g, x + i + sw, y - 7 - hgt, step(c, 1));
+    }
+    NR.rect(g, x, y - 4, w, 4, 'wood2'); NR.hline(g, x, y - 4, w, 'wood3'); NR.hline(g, x, y - 1, w, 'wood1');
+    NR.end(g, o.rim);
+  };
+  /** fence(g, x, y, w, h, o): a picket fence. o: { tone: 'night2', gap: 3 } */
+  NR.fence = (g, x, y, w, h, o) => {
+    o = o || {}; const c = col(o.tone || 'night2'), gp = o.gap || 3;
+    NR.begin(g); for (let i = 0; i < w; i += gp) { NR.vline(g, x + i, y - h, h, c); NR.px(g, x + i, y - h - 1, step(c, 1)); }
+    NR.hline(g, x, y - h + 2, w, c); NR.hline(g, x, y - 3, w, c); NR.end(g, o.rim);
+  };
+  /** reeds(g, x, y, w, h, o): reeds and tall grass that sway. o: { t, seed, tone: 'green2', dense: 0.6, heads: true } */
+  NR.reeds = (g, x, y, w, h, o) => {
+    o = o || {}; const t = o.t || 0, seed = o.seed || 1, c = col(o.tone || 'green2'), cl = step(c, 1), cd = step(c, -1), d = o.dense == null ? 0.6 : o.dense;
+    NR.begin(g);
+    for (let i = 0; i < w; i++) {
+      if (hash(i, seed) > d) continue;
+      const hh = h * (0.45 + 0.55 * hash(i, seed + 1)), sw = Math.sin(t * 1.1 + i * 0.35 + seed) * hh * 0.12 + (hash(i, seed + 2) - 0.5) * hh * 0.3;
+      NR.line(g, x + i, y - 1, x + i + sw, y - hh, hash(i, seed + 3) < 0.3 ? cl : hash(i, seed + 3) < 0.6 ? cd : c);
+      if (o.heads !== false && hash(i, seed + 4) < 0.12) NR.rect(g, x + i + sw - 0.5, y - hh - 1, 1, 3, 'wood1');
+    }
+    NR.end(g, o.rim == null ? 0 : o.rim);
+  };
+  /** tree(g, x, y, s, o): a tree in silhouette. o: { tone: 'night2', bare: false, seed, t } */
+  NR.tree = (g, x, y, s, o) => {
+    o = o || {}; const c = col(o.tone || 'night2'), seed = o.seed || 2, t = o.t || 0; s = s || 1;
+    const th = rnd(22 * s), cr = Math.max(3, rnd(10 * s));
+    NR.begin(g);
+    NR.rect(g, x - Math.max(0, rnd(s) - 1), y - th, Math.max(1, rnd(2 * s)), th, c);
+    NR.line(g, x, y - rnd(th * 0.6), x - rnd(6 * s), y - th - rnd(4 * s), c); NR.line(g, x, y - rnd(th * 0.7), x + rnd(7 * s), y - th - rnd(2 * s), c);
+    if (!o.bare) for (let k = 0; k < 7; k++) {
+      const sw = Math.sin(t * 0.8 + k) * 0.6 * s;
+      NR.disc(g, x + (hash(k, seed) - 0.5) * cr * 2.2 + sw, y - th - cr * 0.4 + (hash(k, seed + 1) - 0.6) * cr * 1.6, Math.max(2, rnd(cr * (0.5 + 0.4 * hash(k, seed + 2)))), c);
+    }
+    NR.end(g, o.rim);
+  };
+  /** church(g, x, y, s, o): a church tower with a spire, for skylines. o: { tone: 'night3', lit: true, clock: true } */
+  NR.church = (g, x, y, s, o) => {
+    o = o || {}; const c = col(o.tone || 'night3'); s = s || 1;
+    const w = Math.max(3, rnd(9 * s)), bh = rnd(34 * s), sp = rnd(24 * s), x0 = rnd(x - w / 2);
+    NR.begin(g);
+    NR.rect(g, x0, y - bh, w, bh, c); NR.rect(g, x0 - 1, y - bh, w + 2, Math.max(1, rnd(2 * s)), step(c, -1));
+    NR.poly(g, [x0, y - bh, x0 + w, y - bh, x0 + w / 2, y - bh - sp], c); NR.vline(g, x0 + (w >> 1), y - bh - sp - 3, 3, c);
+    if (o.clock !== false && s >= 0.6) NR.ring(g, x0 + (w >> 1), y - rnd(bh * 0.78), Math.max(1, rnd(1.5 * s)), step(c, 1));
+    if (o.lit !== false && s >= 0.5) NR.rect(g, x0 + (w >> 1), y - rnd(bh * 0.5), 1, Math.max(2, rnd(4 * s)), 'amber5');
+    NR.end(g, o.rim);
+  };
+  /** drawbridge(g, x, y, w, o): a white wooden ophaalbrug, side view. (x, y): left end of the
+   *  deck, y the road level; w the span. The portal and balance beam stand at 60%.
+   *  o: { tone: 'paper2', rim } */
+  NR.drawbridge = (g, x, y, w, o) => {
+    o = o || {}; const c = col(o.tone || 'paper2'), d = step(c, -1), d2 = step(c, -2);
+    const px = x + rnd(w * 0.6), ph = Math.max(14, rnd(w * 0.42));
+    NR.begin(g);
+    NR.rect(g, x, y, w, 2, c); NR.hline(g, x, y + 2, w, d2);
+    NR.hline(g, x, y - 5, w, d); for (let i = x; i <= x + w; i += 4) NR.vline(g, i, y - 5, 5, d);
+    for (const k of [0.25, 0.6, 0.95]) NR.rect(g, x + rnd(w * k) - 1, y + 2, 2, 8, 'wood1');
+    NR.rect(g, px, y - ph, 2, ph, c); NR.rect(g, px + 3, y - ph + 1, 1, ph - 1, d);
+    const bx0 = x + 2, bx1 = px + rnd(w * 0.3);
+    NR.rect(g, bx0, y - ph - 2, bx1 - bx0, 2, c); NR.hline(g, bx0, y - ph, bx1 - bx0, d2);
+    for (let i = bx0 + 3; i < px - 2; i += 4) NR.line(g, i, y - ph - 2, i + 2, y - ph, d);
+    NR.rect(g, bx1 - 6, y - ph - 1, 6, 6, d); NR.rect(g, bx1 - 5, y - ph, 4, 4, d2);
+    for (let yy = y - ph + 1; yy < y - 5; yy += 2) NR.px(g, bx0, yy, 'steel2');
+    NR.end(g, o.rim);
+  };
+  /** archBridge(g, x, y, w, h, o): a brick arched canal bridge with an iron railing. (x, y): left
+   *  end at the waterline; w long, h from water to deck. Draw water with NRART.water after it.
+   *  o: { brick: 'brick3', rail: 'slate1', lamps: false, t } */
+  NR.archBridge = (g, x, y, w, h, o) => {
+    o = o || {}; const b = col(o.brick || 'brick3'), rail = col(o.rail || 'slate1'), stone = col(o.stone || 'mist1');
+    const cx = x + w / 2, rx = w * 0.32, ry = h * 0.82;
+    NR.begin(g);
+    for (let i = 0; i < w; i++) {
+      const xx = x + i, dx = (xx + 0.5 - cx) / rx, hump = rnd(Math.max(0, 1 - Math.pow((xx + 0.5 - cx) / (w / 2), 2)) * 3);
+      const top = y - h - hump;
+      const ab = Math.abs(dx) < 1 ? rnd(y - ry * Math.sqrt(1 - dx * dx)) : y;
+      NR.vline(g, xx, top, ab - top, b);
+      if (Math.abs(dx) < 1.08) NR.px(g, xx, ab - 1, stone);
+      NR.px(g, xx, top, stone);
+      if (i % 3 === 0) NR.vline(g, xx, top - 5, 5, rail);
+      NR.px(g, xx, top - 5, rail);
+      if (i % 3 === 1 && i < w - 1) NR.px(g, xx, top - 3, rail);
+    }
+    NR.brick(g, x, y - h - 4, w, h + 4, { base: b, only: b, seed: 3 });
+    NR.end(g, o.rim);
+  };
+  /** boat(g, x, y, o): a canal boat on the water. (x, y): the middle of the waterline.
+   *  o: { len: 40, kind: 'sloep' | 'barge', tone: 'wood2', lit: true, mast: false, t } */
+  NR.boat = (g, x, y, o) => {
+    o = o || {}; const L = o.len || 40, c = col(o.tone || (o.kind === 'barge' ? 'night3' : 'wood2')), t = o.t || 0;
+    const bob = Math.sin(t * 1.4 + x) > 0.5 ? 1 : 0, yy = y + bob, x0 = rnd(x - L / 2);
+    NR.begin(g);
+    NR.poly(g, [x0, yy - 5, x0 + L, yy - 6, x0 + L - 3, yy + 1, x0 + 3, yy + 1], c);
+    NR.hline(g, x0, yy - 5, L, step(c, 1)); NR.hline(g, x0 + 3, yy, L - 6, step(c, -1));
+    if (o.kind === 'barge') {
+      const cw = rnd(L * 0.45), cx0 = x0 + rnd(L * 0.38);
+      NR.rect(g, cx0, yy - 12, cw, 7, step(c, 1)); NR.hline(g, cx0 - 1, yy - 13, cw + 2, step(c, -1));
+      for (let i = 0; i < 3; i++) NR.window(g, cx0 + 2 + i * Math.floor((cw - 2) / 3), yy - 11, 3, 4, { lit: o.lit !== false && i !== 1 ? 0.9 : 0, t, seed: x + i, frame: step(c, 2), sill: false, glow: 0.3 });
+      if (o.mast) { NR.vline(g, x0 + rnd(L * 0.2), yy - 30, 25, step(c, -1)); NR.line(g, x0 + rnd(L * 0.2), yy - 30, x0 + L - 4, yy - 6, step(c, -1)); }
+    } else {
+      NR.rect(g, x0 + rnd(L * 0.3), yy - 7, rnd(L * 0.25), 2, 'wood1');
+      if (o.mast) NR.vline(g, x0 + rnd(L * 0.7), yy - 22, 17, 'wood1');
+    }
+    NR.end(g, o.rim);
+  };
+  /** cheeseCart(g, x, y, o): a wooden cart stacked with cheese wheels that glow warm.
+   *  (x, y): the middle of the ground line. o: { rows: 3, glow: 0.3 } */
+  NR.cheeseCart = (g, x, y, o) => {
+    o = o || {}; const rows = o.rows || 3, x0 = rnd(x - 14);
+    NR.begin(g);
+    NR.ring(g, x0 + 5, y - 4, 3, 'wood1'); NR.ring(g, x0 + 23, y - 4, 3, 'wood1'); NR.px(g, x0 + 5, y - 4, 'wood3'); NR.px(g, x0 + 23, y - 4, 'wood3');
+    NR.rect(g, x0, y - 9, 29, 3, 'wood3'); NR.hline(g, x0, y - 9, 29, 'wood4'); NR.line(g, x0 + 28, y - 8, x0 + 36, y - 4, 'wood2');
+    for (let r = 0; r < rows; r++) {
+      const n = 4 - r, off = r * 3;
+      for (let i = 0; i < n; i++) {
+        const cx = x0 + 2 + off + i * 7, cy = y - 12 - r * 4;
+        NR.rect(g, cx, cy, 6, 3, 'cheese3'); NR.hline(g, cx, cy, 6, 'cheese5'); NR.px(g, cx + 5, cy + 2, 'cheese2'); NR.px(g, cx, cy + 2, 'cheese2');
+      }
+    }
+    NR.end(g, o.rim);
+    if (o.glow !== 0) NR.glow(g, x, y - 14, 18, { color: 'cheese5', strength: o.glow == null ? 0.25 : o.glow, power: 1.4, q: 4 });
+  };
+  /** fingerpost(g, x, y, o): a wooden fingerpost. o: { signs: [['Dorp', 'right'], ['Molen', 'left']], tone: 'wood3' } */
+  NR.fingerpost = (g, x, y, o) => {
+    o = o || {}; const c = col(o.tone || 'wood3'), signs = o.signs || [['Dorp', 'right'], ['Molen', 'left']];
+    NR.begin(g); NR.rect(g, x, y - 30, 2, 30, step(c, -1));
+    signs.forEach(([txt, dir], k) => {
+      const tw = Math.ceil(NR.textWidth(txt, 5, true)) + 5, sy = y - 28 + k * 8, right = dir !== 'left', bx = right ? x + 1 : x + 1 - tw;
+      NR.rect(g, bx, sy, tw, 6, c); NR.hline(g, bx, sy, tw, step(c, 1));
+      if (right) { NR.px(g, bx + tw, sy + 1, c); NR.vline(g, bx + tw, sy + 1, 4, c); NR.vline(g, bx + tw + 1, sy + 2, 2, c); }
+      else { NR.vline(g, bx - 1, sy + 1, 4, c); NR.vline(g, bx - 2, sy + 2, 2, c); }
+      NR.text(bx + tw / 2 + 0.5, sy + 5, txt, 'paper5', 5, true, { align: 'center' });
+    });
+    NR.end(g, o.rim);
+  };
+  /** duck(g, x, y, o): a white duck on the water, with glowing eyes (it knows something). o: { t, facing, eyes: true } */
+  NR.duck = (g, x, y, o) => {
+    o = o || {}; const t = o.t || 0, P = pen(g, x, y + (Math.sin(t * 2 + x) > 0.4 ? 1 : 0), flipOf(o.facing));
+    NR.begin(g); P.r(-4, -3, 8, 3, C.paper4); P.r(-3, -4, 6, 1, C.paper4); P.r(-5, -4, 2, 1, C.paper3); P.r(2, -7, 3, 4, C.paper5); P.r(5, -6, 2, 1, C.cheese4); P.r(-3, -1, 7, 1, C.paper2);
+    NR.end(g, o.rim);
+    if (o.eyes !== false) { NR.px(g, P.X(4) - g.ox, P.y - 6 - g.oy, 'eye4'); NR.glow(g, P.X(4) - g.ox, P.y - 6 - g.oy, 3, { color: 'eye3', strength: 0.3, q: 3 }); }
+  };
+  /** clogs(g, x, y, o): a pair of yellow wooden clogs on the ground. */
+  NR.clogs = (g, x, y, o) => {
+    o = o || {}; NR.begin(g);
+    for (const dx of [0, 7]) { NR.rect(g, x + dx, y - 3, 6, 3, 'cheese3'); NR.hline(g, x + dx, y - 3, 6, 'cheese4'); NR.rect(g, x + dx, y - 3, 2, 1, 'wood1'); NR.px(g, x + dx + 6, y - 2, 'cheese3'); NR.hline(g, x + dx, y - 1, 6, 'cheese2'); }
+    NR.end(g, o.rim);
+  };
+
+  // ---------------------------------------------------------------- the book and speech
+  /** book(g, x, y, o): the grammar book he never opened. (x, y): middle of the bottom edge.
+   *  Closed it lies flat, red cover, gold title band, dust drifting off it; open it is two
+   *  pages of w x h with text lines.
+   *  o: { open: false, w: 16, h: 4 (closed: thickness), t, dust: true, cover: 'red3', lines: true } */
+  NR.book = (g, x, y, o) => {
+    o = o || {}; const t = o.t || 0;
+    if (o.open) {
+      const w = o.w || 120, h = o.h || 80, x0 = rnd(x - w / 2), y0 = y - h;
+      NR.begin(g);
+      NR.rect(g, x0 - 2, y0 + 2, w + 4, h, col(o.cover || 'red2'));
+      NR.rect(g, x0, y0, w, h, 'paper4');
+      for (let yy = 0; yy < 3; yy++) { NR.hline(g, x0 + 3, y0 - 1 + yy, rnd(w / 2) - 6, 'paper4'); NR.hline(g, rnd(x) + 3, y0 - 1 + yy, rnd(w / 2) - 6, 'paper4'); }
+      NR.ditherRect(g, rnd(x) - 3, y0, 6, h, 'paper3', 'paper2', 0.5); NR.vline(g, rnd(x), y0 - 1, h + 1, 'paper1');
+      NR.hline(g, x0, y - 1, w, 'paper2'); NR.hline(g, x0 + 1, y, w - 2, 'paper1');
+      if (o.lines !== false) for (let yy = y0 + 10; yy < y - 6; yy += 4) { if (hash(yy, 3) < 0.15) continue; NR.hline(g, x0 + 6, yy, rnd((w / 2 - 12) * (0.6 + 0.4 * hash(yy, 1))), 'paper2'); NR.hline(g, rnd(x) + 6, yy, rnd((w / 2 - 12) * (0.6 + 0.4 * hash(yy, 2))), 'paper2'); }
+      NR.end(g, o.rim);
+      return;
+    }
+    const w = o.w || 16, th = o.h || 4, x0 = rnd(x - w / 2), cv = col(o.cover || 'red3');
+    NR.begin(g);
+    NR.rect(g, x0, y - th, w, th, 'paper4'); for (let yy = y - th + 1; yy < y; yy += 1) NR.hline(g, x0 + 1, yy, w - 1, (yy & 1) ? 'paper3' : 'paper4');
+    NR.rect(g, x0 - 1, y - th - 2, w + 1, 2, cv); NR.hline(g, x0, y - th - 2, w - 1, step(cv, 1)); NR.rect(g, x0 - 1, y - th, 1, th, step(cv, -1)); NR.hline(g, x0 - 1, y - 1, w + 1, step(cv, -1));
+    NR.hline(g, x0 + 2, y - th - 2, rnd(w * 0.35), 'cheese4');
+    NR.end(g, o.rim);
+    if (o.dust !== false) for (let i = 0; i < 6; i++) {
+      const ph = (t * 0.25 + hash(i, 4)) % 1, dx = (hash(i, 5) - 0.5) * w + Math.sin(t + i) * 2, dy = -th - 3 - ph * 14;
+      if (ph < 0.9) NR.px(g, x + dx, y + dy, ph < 0.5 ? 'mist5' : 'mist3');
+    }
+  };
+  /** bubble(g, x, y, w, h, o): a speech bubble with a pixel tail. (x, y) top-left. Text goes in
+   *  through NRART.text: pass o.text and it is centred. o: { tail: [tx, ty] (the speaker's mouth),
+   *  text, size: 7, bold: true, color: 'night1', fill: 'paper6', edge: 'paper3' } */
+  NR.bubble = (g, x, y, w, h, o) => {
+    o = o || {}; x = rnd(x); y = rnd(y); w = rnd(w); h = rnd(h);
+    const f = col(o.fill || 'paper6'), e = col(o.edge || 'paper3');
+    if (o.tail) {
+      const [tx, ty] = o.tail.map(rnd), bx = Math.max(x + 3, Math.min(x + w - 4, tx)), below = ty > y + h;
+      const by = below ? y + h - 1 : y;
+      NR.poly(g, [bx - 2, by + (below ? 0 : 1), bx + 2, by + (below ? 0 : 1), tx + 0.5, ty + 0.5], f);
+    }
+    NR.rect(g, x + 1, y, w - 2, h, f); NR.rect(g, x, y + 1, w, h - 2, f);
+    NR.hline(g, x + 1, y + h - 1, w - 2, e); NR.px(g, x + w - 1, y + h - 2, e);
+    if (o.text != null) { const sz = o.size || 7; NR.text(x + w / 2, y + h / 2 + sz * 0.36, o.text, o.color || 'night1', sz, o.bold !== false, { align: 'center' }); }
+  };
+  /** say(g, x, y, str, o): a bubble sized to its text, its tail pointing at (x, y) (a mouth or a
+   *  head top), placed above it. o: { size: 7, dx: 0 (shift the bubble sideways), dy: 6, ... bubble options } */
+  NR.say = (g, x, y, str, o) => {
+    o = o || {}; const sz = o.size || 7, w = Math.ceil(NR.textWidth(str, sz, o.bold !== false)) + 8, h = Math.round(sz * 1.5) + 2;
+    const bx = Math.max(2, Math.min(NR.W - w - 2, x - w / 2 + (o.dx || 0))), by = y - (o.dy == null ? 6 : o.dy) - h;
+    NR.bubble(g, bx, by, w, h, Object.assign({}, o, { text: str, tail: [x, y - 1] }));
+    return [bx, by, w, h];
   };
 })();

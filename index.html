@@ -94,8 +94,8 @@
   <div class="overlay" id="intro" style="display:none;background:#000">
     <div class="box" style="max-width:860px">
       <div style="position:relative;width:min(92vw,860px);aspect-ratio:16/9;margin:0 auto;border:1px solid #1a1d24">
-        <canvas id="pix" width="192" height="108" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
-        <canvas id="pixhi" width="1152" height="648" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <canvas id="pix" width="320" height="180" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
+        <canvas id="pixhi" width="1280" height="720" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
       </div>
       <div id="pixtext" style="min-height:2.6em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:14px auto 2px;max-width:720px;color:#d8d4c8"></div>
       <div id="pixnl" style="min-height:2.4em;font-size:clamp(13px,2vw,17px);line-height:1.4;margin:0 auto 6px;max-width:720px;color:#9fb0cc;font-style:italic"></div>
@@ -156,6 +156,23 @@
 <script src="content/towns.js"></script>
 <script src="content/towns-new.js"></script>
 <script src="content/extra.js"></script>
+<script src="intro/art.js"></script>
+<script src="intro/panel-1.js"></script>
+<script src="intro/panel-2.js"></script>
+<script src="intro/panel-3.js"></script>
+<script src="intro/panel-4.js"></script>
+<script src="intro/panel-5.js"></script>
+<script src="intro/panel-6.js"></script>
+<script src="intro/panel-7.js"></script>
+<script src="intro/panel-8.js"></script>
+<script src="intro/panel-9.js"></script>
+<script src="intro/panel-10.js"></script>
+<script src="intro/panel-11.js"></script>
+<script src="intro/scene-street.js"></script>
+<script src="intro/scene-dyke.js"></script>
+<script src="intro/scene-square.js"></script>
+<script src="intro/scene-nightshop.js"></script>
+<script src="intro/scene-shops.js"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
@@ -1407,21 +1424,28 @@ const SCENES = {
 };
 function showLevelIntro(lv, then) {
   if (!lv.intro) return then();
-  const panel = { text: lv.intro, nl: lv.introNl || '', draw: SCENES[lv.theme] || SCENES.street };
+  const NA = window.NRART, sc = NA && (NA.scenes[lv.theme] || NA.scenes.street);
+  const panel = sc ? { text: lv.intro, nl: lv.introNl || '', draw: sc, nr: true } : { text: lv.intro, nl: lv.introNl || '', draw: SCENES[lv.theme] || SCENES.street };
   showIntro(then, [panel]);
 }
 
 let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
 function showIntro(then, panels) {
-  const PANELS_ = panels || PANELS;
+  const NA = window.NRART, nrOk = NA && NA.panels.length >= 11 && NA.panels.slice(0, 11).every(Boolean);
+  const PANELS_ = panels || (nrOk ? NA.panels.slice(0, 11).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
   introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
   const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
   const txt = $('pixtext'), nlEl = $('pixnl'); PANELS_.forEach(p => { p._nlShown = false; });
   let last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
-    const p = PANELS_[introI]; pxLabels = []; p.draw(g, introT);
-    hg.clearRect(0, 0, 1152, 648); for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * 6}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * 6, l.y * 6); }
+    const p = PANELS_[introI], hc = $('pixhi');
+    hg.clearRect(0, 0, hc.width, hc.height);
+    if (p.nr) { NA.labels.length = 0; NA.paint(g, p.draw, introT); NA.drawLabels(hg, NA.labels, hc.width / cv.width); }
+    else {   // legacy 192x108 drawings, scaled up to the canvas
+      pxLabels = []; g.setTransform(cv.width / 192, 0, 0, cv.height / 108, 0, 0); p.draw(g, introT); g.setTransform(1, 0, 0, 1, 0, 0);
+      const k = hc.width / 192; for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * k}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * k, l.y * k); }
+    }
     introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
     if (introTyped >= p.text.length && !p._nlShown) { p._nlShown = true; nlEl.textContent = p.nl || ''; if (p.nl && p.nl !== '...') speak(p.nl); } else if (introTyped < p.text.length) { nlEl.textContent = ''; }
     introRaf = requestAnimationFrame(frame);
