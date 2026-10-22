@@ -9,8 +9,7 @@
 // New rules: bezit (possessives), linked to the vault note 'MOC Lidwoorden & voornaamwoorden' (the vault has no
 // grammar note of its own for possessives). presens is reused from district3.js and redeclared here only if missing.
 // New props: none. Only hond, tuin, huis, winkel, water and kerk are used.
-// Loading: index.html does not load this file yet. It needs <script src="content/town-gouda.js"></script>
-// after content/district3.js. Ids 49 and 50 are new, so defineLevels appends them.
+// Loading: index.html loads this file after content/district3.js. Ids 49 and 50 are new, so defineLevels appends them.
 
 window.RULES.bezit = { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
 window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
