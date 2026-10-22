@@ -103,7 +103,7 @@
     <div id="world" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
       <div style="text-align:center;padding:calc(10px + env(safe-area-inset-top)) 12px 0">
         <h1 style="font-size:clamp(26px,5vw,38px)">NEDERLAND</h1>
-        <div class="sub" style="margin:4px 0 0">Six towns, each harder than the last. Every town has the same seven places. Pick one.</div>
+        <div class="sub" style="margin:4px 0 0">Twelve towns, each harder than the last. Every town has the same places. Pick one.</div>
       </div>
       <div id="mapwrap" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px"><svg id="nl" viewBox="0 0 100 110" style="height:100%;max-height:78vh;aspect-ratio:100/110;pointer-events:auto"></svg></div>
       <div style="text-align:center;padding:0 0 14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
@@ -1260,7 +1260,7 @@ function drawWorld() {
   const pts = T.map(t => mapXY([3.3 + t.pos[0] * 3.9, 53.55 - t.pos[1] * 2.8]));
   // the route: a dotted bike trail
   svg.appendChild(el('path', { d: pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.35, 'stroke-dasharray': '0.6 1.4', 'stroke-linecap': 'round', opacity: 0.7 }));
-  const LAY = { rotterdam: [-3.4, 0.8, 'end'], kinderdijk: [1.2, 5.2, 'start'], alblasserdam: [3.4, 0.2, 'start'], gouda: [-3.2, -2.6, 'end'], utrecht: [3.4, 1, 'start'], amsterdam: [3.4, 1, 'start'],
+  const LAY = { rotterdam: [-3.4, 0.8, 'end'], kinderdijk: [1.2, 5.2, 'start'], alblasserdam: [3.4, 0.2, 'start'], gouda: [1.4, -3.2, 'start'], utrecht: [3.4, 1, 'start'], amsterdam: [3.4, 1, 'start'],
     zeeland: [3.4, 1, 'start'], denhaag: [-3.4, -1.4, 'end'], urk: [3.4, 1, 'start'], texel: [3.4, -1.2, 'start'], groningen: [-3.4, 1, 'end'], maastricht: [3.4, -1.2, 'start'] };
   T.forEach((t, i) => {
     const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t);
