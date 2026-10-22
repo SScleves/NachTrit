@@ -92,7 +92,7 @@
     // ---------------------------------------------------------------- 45
     { id: 45, act: 1, town: 'alblasserdam', place: 'sport', name: 'De sport', theme: 'dyke', ...ALB,
       intro: 'Golf on Saturday, the dogs on Sunday. Nobody asked the dogs.',
-      introNl: 'Zaterdag golf, zondag de honden. Niemand heeft het de honden gevraagd.',
+      introNl: 'Zaterdag golf, zondag de honden. Niemand heeft het aan de honden gevraagd.',
       mission: { where: 'The dyke path to the golf course, then back through the park.', carry: 'Two dogs on one lead, a bag of golf balls, no helmet.', want: 'The dead on the fairway want the words for the ball, the lead and the walk. Mooie slag earns extra.' },
       items: [
         { w: 'the golf course', nl: 'de golfbaan' }, { w: 'the ball', nl: 'de bal', wrong: 'het bal' }, { w: 'the little ball', nl: 'het balletje', wrong: 'de balletje' },

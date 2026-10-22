@@ -1007,15 +1007,15 @@ function itemToEntry(item, pool) {
     return { en: item.en, nl: `${item.art} ${item.nl}`, dehet: true, parts: [{ o: ['de', 'het'], a: item.art === 'de' ? 0 : 1, r: 'dehet', w: item.w || `${item.art} ${item.nl}`, fixed: true }, item.nl] };
   }
   if (item.look) {
-    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, 2)];
+    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, LANE_X.length - 1)];
     return { look: true, side: item.side || (Math.random() < 0.5 ? 'links' : 'rechts'), prop: item.prop, value: item.value, en: item.en, nl: item.nl,
       parts: [{ o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` }] };
   }
   if (item.w || item.listen) {
-    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, 2)];
+    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, LANE_X.length - 1)];
     return { en: item.w || item.en, nl: item.nl, listen: !!item.listen, parts: [{ o, a: 0, r: item.listen ? 'woord' : (/^\d+$/.test(item.w || '') ? 'getal' : 'woord'), w: `${item.nl} = ${item.w || item.en}` }] };
   }
-  return item; // build entry
+  return item.nl ? item : Object.assign({}, item, { nl: item.parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').replace(/\s+([,.?])/g, '$1') }); // build entry
 }
 function levelQueue(lv) {
   const items = lv.items.slice().sort(() => Math.random() - 0.5);
@@ -1487,7 +1487,7 @@ function dehetBonus(t) {
   for (const lv of LEVELS) {
     if (lv.soon || !lv.items) continue; const lt = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); if (!lt || lt.tier > t.tier) continue;
     for (const it of lv.items) {
-      const nl = it.dehet ? `${it.art} ${it.nl}` : it.nl; const en = it.w || it.en; if (!nl || !en) continue;
+      const nl = it.dehet ? `${it.art} ${it.nl}` : it.nl; const en = it.dehet ? it.en : (it.w || it.en); if (!nl || !en) continue;
       const m = /^(de|het)\s+(\S.*)$/.exec(nl); if (!m || /^\d/.test(en)) continue;
       if (!seen.has(m[2])) seen.set(m[2], { dehet: true, nl: m[2], art: m[1], en, w: it.w && it.wrong ? '' : (it.w || '') });
     }
@@ -1532,7 +1532,7 @@ function openMission(lv) {
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); const pl = PLACES.find(p => p[0] === (lv.place || PLACE_OF[lv.id]));
   $('m_act').textContent = `${t ? t.name : ''} · ${pl ? pl[1] : ''} · tier ${t ? t.tier : lv.act}`; $('m_name').textContent = lv.name;
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
-  const words = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.w || i.en}`).filter((v, i, a) => a.indexOf(v) === i);
+  const words = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.read ? (i.en || (i.o && i.o[i.a])) : (i.w || i.en)}`).filter((v, i, a) => a.indexOf(v) === i).slice(0, 24);
   $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
   $('mission').style.display = 'flex';
 }
@@ -1569,13 +1569,14 @@ function showSummary(won) {
   let stars = 0;
   if (L && won) {
     const ratio = S.delivered / S.deliveriesTotal;
-    stars = ratio >= 1 && S.lampMin >= 50 ? 3 : ratio >= 0.83 ? 2 : ratio >= 0.66 ? 1 : 0;
+    const three = S.deliveriesTotal >= 16 ? 0.95 : 1;   // long levels allow one miss for three stars
+    stars = ratio >= three && S.lampMin >= 40 ? 3 : ratio >= 0.83 ? 2 : ratio >= 0.66 ? 1 : 0;
     if (stars > (progress[L.id] || 0)) { progress[L.id] = stars; saveProgress(); }
   }
   $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
   $('stars').textContent = L && won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
   $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.mistakes.length} mistake${S.mistakes.length === 1 ? '' : 's'} to practise.`)
-    : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : 'Delivered. Three stars need every one right with a healthy lamp.') : 'You need 4 of 6 right to open the next place.';
+    : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (S.deliveriesTotal >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
   $('again').textContent = L && won && stars ? 'Next place' : 'Again';
   $('log').value = S.mistakes.map(m => `- ${today()} — ${m.said} → ${m.should} → [[${m.note}]]`).join('\n') || '(no mistakes)';
   $('summary').style.display = 'flex';
@@ -1585,7 +1586,7 @@ $('go').onclick = () => { initAudio(); if (!introSeen) { introSeen = true; $('st
 $('replay').onclick = () => { $('start').style.display = 'none'; showIntro(openMap); }; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
 $('m_go').onclick = () => { const lv = pendingLevel; $('mission').style.display = 'none'; showLevelIntro(lv, () => start(lv)); }; $('m_back').onclick = openMap;
 $('again').onclick = () => {
-  if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon && L.id < 1000) return openMission(next); return openMap(); }
+  if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon && L.id < 1000 && unlocked(next)) return openMission(next); return openMap(); }
   start(L);
 };
 $('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy mistakes', 1500); };
