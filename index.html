@@ -770,7 +770,7 @@ drawFace('deadpan');
 let rackGhost = null;
 function mountPassenger(variant) {
   if (rackGhost) bike.remove(rackGhost);
-  rackGhost = ghostFigure(true, variant); rackGhost.scale.setScalar(0.42); rackGhost.position.set(0.05, 0.5, 0.8); rackGhost.rotation.y = Math.PI / 2; rackGhost.traverse(m => { if (m.material && m.material.transparent) m.material.opacity = 0.4; }); bike.add(rackGhost);
+  rackGhost = ghostFigure(true, variant); rackGhost.scale.setScalar(0.33); rackGhost.position.set(0.08, 0.46, 0.82); rackGhost.rotation.y = Math.PI / 2; rackGhost.traverse(m => { if (m.material && m.material.transparent) m.material.opacity = 0.4; }); bike.add(rackGhost);
 }
 function dropPassenger() {
   if (!rackGhost) return; const v = rackGhost.userData.variant; bike.remove(rackGhost); rackGhost = null;
