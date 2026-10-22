@@ -12,3 +12,18 @@
 - **Beyond the Netherlands**: same engine, a new outline, towns and content files.
 - **Canal-house generator pass two**: shutters, cellar windows, bells, bike racks on the stoop.
 - **Audio**: procedural wind, canal lapping, a church bell per town, the zombie's phone buzz.
+
+## From Santi's "DORP" gameplay sheet (22 Oct 2026), queued for after fares lands
+
+- Words as light: Dutch words float above the road as glowing gold lettering with a small line
+  icon, reflected in the wet asphalt. Use the existing pictogram library (PICTO in index.html).
+  The icon goes on the prompt card and the word-learned moment, never on the signs, so the player
+  still has to read the Dutch to choose.
+- A word-learned moment: the word large in gold, its icon, the English meaning, spoken aloud.
+- A vocabulary book: every word delivered right is collected across runs; a long-term reward.
+- Power-ups: tulip = slow motion for one fork, clogs = shield against one zombie hit (no Tikkie),
+  coffee = magnet for wisps, Dutch flag = double euros for a short time.
+- Jump and slide: fences and fallen bikes to jump, barriers to slide under (up and down keys,
+  swipe up and down).
+- Hazards in the big towns: trams and cars with two headlights, canal edges.
+- No exclamation marks, even where the sheet has them.
