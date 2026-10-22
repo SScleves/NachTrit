@@ -199,7 +199,7 @@ renderer.domElement.addEventListener('webglcontextlost', (e) => {
   setTimeout(() => { const u = new URL(location.href); u.searchParams.set('post', '0'); location.href = u.toString(); }, 1200);
 });
 scene.background = new THREE.Color(BG);
-scene.fog = new THREE.FogExp2(BG, 0.03);
+scene.fog = new THREE.FogExp2(BG, 0.025);
 
 const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 400);
 camera.position.set(0, 22, 14);
@@ -286,29 +286,79 @@ const M = {
 };
 
 // ---------- world ----------
-// road with scrolling lane dashes
-const roadTex = (() => {
-  const c = document.createElement('canvas'); c.width = 256; c.height = 256;
+// road: wet asphalt with reflective paint. One colour map and one paint mask per lane count, swapped in start().
+const ROAD_TEX_W = 512, ROAD_TEX_H = 512;   // the texture spans the road width (8 units) and 6 units of length
+function roadCanvas(lanes, paintOnly) {
+  const c = document.createElement('canvas'); c.width = ROAD_TEX_W; c.height = ROAD_TEX_H;
   const g = c.getContext('2d');
-  g.fillStyle = '#2a2d36'; g.fillRect(0, 0, 256, 256);
-  g.fillStyle = '#5a5d66';
-  [256 / 3 * 1 - 2, 256 / 3 * 2 - 2].forEach(x => { for (let y = 0; y < 256; y += 64) g.fillRect(x, y, 4, 36); });
-  g.fillStyle = '#6a6354'; g.fillRect(0, 0, 6, 256); g.fillRect(250, 0, 6, 256);
-  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1, 40); t.colorSpace = THREE.SRGBColorSpace;
+  const W = ROAD_TEX_W, H = ROAD_TEX_H, px = W / ROAD_W;   // pixels per unit across
+  if (paintOnly) { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); }
+  else {
+    g.fillStyle = '#353a44'; g.fillRect(0, 0, W, H);
+    // aggregate: fine light and dark grit, a few larger stones, faint wheel-worn bands in each lane
+    let seed = 7 + lanes; const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 9000; i++) { const v = r(); g.fillStyle = v < 0.5 ? `rgba(16,18,24,${0.25 + r() * 0.3})` : `rgba(150,156,168,${0.10 + r() * 0.18})`; g.fillRect(r() * W, r() * H, 1 + (r() < 0.15), 1 + (r() < 0.15)); }
+    for (let i = 0; i < 400; i++) { g.fillStyle = `rgba(120,126,138,${0.12 + r() * 0.15})`; g.beginPath(); g.arc(r() * W, r() * H, 1 + r() * 1.6, 0, 7); g.fill(); }
+    const laneX = lanes === 2 ? LANES2 : LANES3;
+    for (const lx of laneX) for (const off of [-0.45, 0.45]) { const x = (lx + off + ROAD_W / 2) * px; g.fillStyle = 'rgba(70,78,92,0.10)'; g.fillRect(x - 10, 0, 20, H); }
+  }
+  const paint = paintOnly ? '#ffffff' : '#cdd1ca';
+  g.fillStyle = paint;
+  const lineW = Math.round(0.13 * px);
+  // solid edge lines just inside each kerb
+  for (const ex of [-3.72, 3.72]) g.fillRect(Math.round((ex + ROAD_W / 2) * px - lineW / 2), 0, lineW, H);
+  // dashed lane lines: one dash per 6 units, 2.6 long
+  const dashX = lanes === 2 ? [0] : [-1.1, 1.1];
+  const dashL = Math.round(H * 2.6 / 6);
+  for (const dx of dashX) g.fillRect(Math.round((dx + ROAD_W / 2) * px - lineW / 2), Math.round((H - dashL) / 2), lineW, dashL);
+  if (!paintOnly) {   // worn paint: a few speckles knocked out of the lines
+    g.fillStyle = 'rgba(53,58,68,0.55)';
+    let seed = 99; const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 260; i++) { const ex = [-3.72, 3.72, ...dashX][Math.floor(r() * (2 + dashX.length))]; g.fillRect((ex + ROAD_W / 2) * px - lineW / 2 + r() * lineW, r() * H, 1.5, 1.5); }
+  }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
   return t;
-})();
+}
+const ROAD_LOOK = { 2: { map: roadCanvas(2, false), paint: roadCanvas(2, true) }, 3: { map: roadCanvas(3, false), paint: roadCanvas(3, true) } };
+const roadTex = ROAD_LOOK[3].map;
 const mistTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
   const r = g.createRadialGradient(64, 64, 4, 64, 64, 64); r.addColorStop(0, 'rgba(210,220,255,.45)'); r.addColorStop(1, 'rgba(210,220,255,0)');
   g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
 })();
+// pale kerb stones, pavement tiles and a grass verge, all scrolling with the road
+function stripTex(w, h, draw, aniso) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace;
+  if (aniso) t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); return t;
+}
+const kerbTex = stripTex(32, 256, (g, w, h) => {
+  g.fillStyle = '#b4b2aa'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 500; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(90,90,86,.25)' : 'rgba(230,228,220,.25)'; g.fillRect(Math.random() * w, Math.random() * h, 1, 1); }
+  g.fillStyle = '#6e6c66'; for (let y = 0; y < h; y += 64) g.fillRect(0, y, w, 3);   // a joint every metre
+  g.fillStyle = 'rgba(240,238,230,.5)'; g.fillRect(0, 0, 3, h);                        // the worn road-side edge catches light
+}, true);
+const tileTex = stripTex(256, 256, (g, w, h) => {
+  g.fillStyle = '#4e5058'; g.fillRect(0, 0, w, h);
+  const n = 6, s = w / n;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const v = 70 + Math.floor(Math.random() * 18); g.fillStyle = `rgb(${v},${v + 2},${v + 8})`; g.fillRect(x * s + 2, y * s + 2, s - 4, s - 4); }
+  for (let i = 0; i < 1500; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(30,32,38,.25)' : 'rgba(170,172,180,.15)'; g.fillRect(Math.random() * w, Math.random() * h, 1, 1); }
+}, true);
+const grassTex = stripTex(64, 256, (g, w, h) => {
+  g.fillStyle = '#1f2c20'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 1400; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? 'rgba(12,20,12,.5)' : 'rgba(70,92,62,.35)'; g.fillRect(Math.random() * w, Math.random() * h, 1, 2 + Math.random() * 3); }
+}, false);
+const KERB_W = 0.5;
+const VERGE = { tiles: { w: 3.2, y: 0.05, mat: Mat({ map: tileTex }) }, grass: { w: 0.8, y: 0.0, mat: Mat({ map: grassTex }) } };
+let verge = VERGE.tiles;
 // the road is one ribbon whose vertices follow the bend every frame
 const RIB_ROWS = 120, RIB_STEP = 2.5;
 function makeRibbon(width, material) {
   const geo = new THREE.BufferGeometry();
   const pos = new Float32Array(RIB_ROWS * 2 * 3), uv = new Float32Array(RIB_ROWS * 2 * 2), nrm = new Float32Array(RIB_ROWS * 2 * 3);
   const idx = [];
-  for (let i = 0; i < RIB_ROWS; i++) { nrm.set([0, 1, 0, 0, 1, 0], i * 6); uv.set([0, i, 1, i], i * 4); if (i) idx.push((i - 1) * 2, i * 2, (i - 1) * 2 + 1, (i - 1) * 2 + 1, i * 2, i * 2 + 1); }
+  for (let i = 0; i < RIB_ROWS; i++) { nrm.set([0, 1, 0, 0, 1, 0], i * 6); uv.set([0, i, 1, i], i * 4); if (i) idx.push((i - 1) * 2, (i - 1) * 2 + 1, i * 2, (i - 1) * 2 + 1, i * 2 + 1, i * 2); }   // counter-clockwise from above, so the ribbon faces up and is not culled
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); geo.setAttribute('normal', new THREE.BufferAttribute(nrm, 3)); geo.setIndex(idx);
   const m = new THREE.Mesh(geo, material); m.frustumCulled = false; m.userData.width = width; scene.add(m); return m;
 }
@@ -321,9 +371,18 @@ function updateRibbon(m, xc, y, scroll, vScale) {
   }
   m.geometry.attributes.position.needsUpdate = true; m.geometry.attributes.uv.needsUpdate = true;
 }
-roadTex.repeat.set(1, 1);
-const roadRib = makeRibbon(ROAD_W, new THREE.MeshPhongMaterial({ map: roadTex, specular: 0x6a7a90, shininess: 90 }));
-const kerbL = makeRibbon(0.5, M.ground), kerbR = makeRibbon(0.5, M.ground);
+// wet asphalt; the paint mask glows faintly so the lines read beyond the bike lamp
+const roadRib = makeRibbon(ROAD_W, new THREE.MeshPhongMaterial({ map: roadTex, emissive: 0xdfe4e0, emissiveMap: ROAD_LOOK[3].paint, emissiveIntensity: 0.22, specular: 0x7a8aa0, shininess: 90 }));
+const kerbMat = Mat({ map: kerbTex });
+const kerbL = makeRibbon(KERB_W, kerbMat), kerbR = makeRibbon(KERB_W, kerbMat);
+// beyond the kerb: pavement tiles in town, a grass verge on the dyke and in the polder
+const vergeL = makeRibbon(VERGE.tiles.w, VERGE.tiles.mat), vergeR = makeRibbon(VERGE.tiles.w, VERGE.tiles.mat);
+function setRoadLook(lanes, th) {
+  const look = ROAD_LOOK[lanes === 2 ? 2 : 3];
+  roadRib.material.map = look.map; roadRib.material.emissiveMap = look.paint;   // same shader, only the textures change
+  verge = (th === THEMES.polder || th === THEMES.dyke) ? VERGE.grass : VERGE.tiles;
+  for (const v of [vergeL, vergeR]) { v.material = verge.mat; v.userData.width = verge.w; }
+}
 // the bend: x offset of anything at relative distance z ahead of the bike
 function bend(z) { return z < 0 ? S.curv * z * z : 0; }
 
@@ -359,7 +418,33 @@ const PG = {
   pole: new THREE.CylinderGeometry(0.06, 0.08, 4.2, 6),
   bulb: new THREE.SphereGeometry(0.16, 6, 6),
   reed: new THREE.CylinderGeometry(0.02, 0.04, 1.4, 4),
+  pool: new THREE.PlaneGeometry(6.5, 6.5).rotateX(-Math.PI / 2),
+  streak: new THREE.PlaneGeometry(1.4, 9).rotateX(-Math.PI / 2),
 };
+// a soft pool of lamplight: radial falloff
+const poolTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  const r = g.createRadialGradient(64, 64, 2, 64, 64, 64);
+  r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.25, 'rgba(255,255,255,.6)'); r.addColorStop(0.6, 'rgba(255,255,255,.18)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+})();
+// reflection streaks on wet asphalt: a bright core and two faint side streaks, broken by ripples, fading at both ends
+const streakTex = (() => {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, 64, 256);
+  for (const [x, w, a] of [[32, 7, 1], [20, 3, 0.35], [45, 2, 0.3]]) {
+    for (let y = 0; y < 256; y += 2) {
+      const t = y / 255, fade = Math.pow(Math.sin(t * Math.PI), 1.6), rip = 0.55 + 0.45 * Math.sin(y * 0.55 + x) * Math.sin(y * 0.13);
+      const ww = w * (0.7 + 0.5 * Math.sin(y * 0.21 + x));
+      const k = a * fade * Math.max(0, rip); if (k <= 0.01) continue;
+      const gr = g.createLinearGradient(x - ww, 0, x + ww, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, `rgba(255,255,255,${k})`); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = gr; g.fillRect(x - ww, y, ww * 2, 2);
+    }
+  }
+  return new THREE.CanvasTexture(c);
+})();
+const LAMP_POOL_MAT = new THREE.MeshBasicMaterial({ map: poolTex, color: 0x9a9684, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+const LAMP_STREAK_MAT = new THREE.MeshBasicMaterial({ map: streakTex, color: 0xb4b09c, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
 function windmill() {
   const g = new THREE.Group();
   const body = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 2.0, 7, 8), M.mill); body.position.y = 3.5; g.add(body);
@@ -397,6 +482,9 @@ function lamppost() {
   const b = new THREE.Mesh(PG.bulb, PM.bulb); b.position.set(-0.8, 4.0, 0); g.add(b);
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.5, color: 0xd8dde0 }));
   glow.scale.set(1.5, 1.5, 1); glow.material.opacity = 0.18; glow.position.set(-0.8, 3.6, 0); g.add(glow);
+  // lamplight on the ground and its long reflection on the wet road: additive decals, no real light
+  const pool = new THREE.Mesh(PG.pool, LAMP_POOL_MAT); pool.position.set(-1.3, 0.11, 0); pool.renderOrder = 2; g.add(pool);
+  const streak = new THREE.Mesh(PG.streak, LAMP_STREAK_MAT); streak.position.set(-1.25, 0.12, 0); streak.renderOrder = 3; g.add(streak);
   g.userData.faceRoad = true;
   return g;
 }
@@ -733,7 +821,7 @@ function buildScenery(th) {
 const wieven = [];
 for (let i = 0; i < 10; i++) {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: rnd(0.4, 0.9) }));
-  s.scale.set(rnd(5, 9), rnd(2, 4), 1); s.position.set(rnd(-14, 14), rnd(0.3, 2), -i * 18 - 10); s.userData.drift = rnd(0.2, 0.6);
+  s.scale.set(rnd(5, 9), rnd(2, 4), 1); s.position.set(rnd(-14, 14), Math.max(rnd(0.3, 2), s.scale.y * 0.42), -i * 18 - 10); s.userData.drift = rnd(0.2, 0.6);   // the lower edge stays above the road so the mist does not clip flat
   scene.add(s); wieven.push(s);
 }
 
@@ -1545,6 +1633,7 @@ function start(lv) {
   townId = (L ? (L.town || TOWN_OF(L.id)) : 'alblasserdam'); const qt = new URLSearchParams(location.search).get('town'); if (qt) townId = qt;
   townStyle = TOWN_STYLE[townId] || TOWN_STYLE.alblasserdam;
   buildScenery(THEMES[(L && L.theme) || 'polder'] || THEMES.polder);
+  setRoadLook(LANE_X.length, theme);
   reset(); S.mode = 'intro'; S.introT = 0;
 }
 function reset() {
@@ -1688,7 +1777,7 @@ function update(dt) {
   lampLight.intensity = 0.8 + Lf * 4.0;
   bike.userData.lampMesh.material.color.setHSL(0.55, 0.15, 0.3 + Lf * 0.65);
   beam.material.opacity = 0.02 + Lf * 0.04;
-  scene.fog.density = 0.042 - Lf * 0.02 + S.forkZoom * 0.003;
+  scene.fog.density = 0.035 - Lf * 0.017 + S.forkZoom * 0.003;   // a little thinner so the road reads further ahead
   const lw = Math.round(S.lamp); if (lw !== S.lampLast) { S.lampLast = lw; $('lampfill').style.width = lw + '%'; }
   const danger = 1 - Lf;
   const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = composer ? 0 : vo; }
@@ -1703,7 +1792,8 @@ function update(dt) {
   // road + canal ribbons
   const scroll = S.dist % RIB_STEP;
   updateRibbon(roadRib, 0, 0, scroll, 6);
-  updateRibbon(kerbL, -ROAD_W / 2 - 0.25, 0.08, scroll, 6); updateRibbon(kerbR, ROAD_W / 2 + 0.25, 0.08, scroll, 6);
+  updateRibbon(kerbL, -ROAD_W / 2 - 0.25, 0.08, scroll, 4); updateRibbon(kerbR, ROAD_W / 2 + 0.25, 0.08, scroll, 4);
+  const vx = ROAD_W / 2 + KERB_W + verge.w / 2; updateRibbon(vergeL, -vx, verge.y, scroll, 3.2); updateRibbon(vergeR, vx, verge.y, scroll, 3.2);
   waterRib.visible = !!theme.canal;
   if (theme.canal) updateRibbon(waterRib, theme.canal * (ROAD_W / 2 + 1.2 + 13), -0.6, scroll, 6);
   // scenery

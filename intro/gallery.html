@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intro Gallery</title>
+<style>
+  :root { --bg:#08090d; --ink:#d8d4c8; --dim:#8a8f9c; --nl:#9fb0cc; --line:#1d2029; }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font-family:"Segoe UI", system-ui, -apple-system, sans-serif; }
+  main { padding:16px; }
+  header { display:flex; flex-wrap:wrap; gap:6px 14px; align-items:baseline; margin:0 0 14px; font-size:13px; color:var(--dim); }
+  header b { color:var(--ink); font-size:15px; letter-spacing:.08em; }
+  header a { color:var(--dim); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(var(--fw), 1fr)); gap:22px 18px; }
+  figure { margin:0; width:var(--fw); max-width:100%; }
+  .frame { position:relative; width:100%; aspect-ratio:16/9; background:#000; border:1px solid var(--line); }
+  .frame canvas { position:absolute; inset:0; width:100%; height:100%; }
+  .frame canvas.pix { image-rendering:pixelated; image-rendering:crisp-edges; }
+  figcaption { padding:8px 2px 0; font-size:14px; line-height:1.4; }
+  figcaption .name { color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+  figcaption .name a { color:inherit; }
+  figcaption .en { margin-top:2px; }
+  figcaption .nl { color:var(--nl); font-style:italic; }
+  figcaption .err { color:#ff8b84; white-space:pre-wrap; font:12px ui-monospace, monospace; }
+  #bench { font:13px/1.5 ui-monospace, monospace; white-space:pre; margin:0 0 16px; }
+</style>
+</head>
+<body>
+<main>
+  <header><b>NACHTRIT INTRO</b><span id="what"></span>
+    <a href="?all=1">all, animated</a><a href="?all=1&amp;t=2">all at t=2</a><a href="?only=cast">the cast</a><a href="?only=props">the props</a><a href="?all=1&amp;bench=1">bench</a></header>
+  <pre id="bench" hidden></pre>
+  <div class="grid" id="grid"></div>
+</main>
+<script src="art.js"></script>
+<script src="panel-1.js"></script>
+<script src="panel-2.js"></script>
+<script src="panel-3.js"></script>
+<script src="panel-4.js"></script>
+<script src="panel-5.js"></script>
+<script src="panel-6.js"></script>
+<script src="panel-7.js"></script>
+<script src="panel-8.js"></script>
+<script src="scene-street.js"></script>
+<script src="scene-dyke.js"></script>
+<script src="scene-square.js"></script>
+<script src="scene-nightshop.js"></script>
+<script src="scene-shops.js"></script>
+<script src="cast.js"></script>
+<script>
+// Gallery for the intro art. ?only=panel-3&t=2.5 one piece; ?all=1&t=2 the contact sheet; no t
+// animates; ?bench=1 times 200 draws per piece; ?scale=4 changes the zoom (default 3).
+(function () {
+  const q = new URLSearchParams(location.search), A = window.NRART;
+  const state = window.NRGALLERY = { done: false, benchDone: false, benchText: '', errors: [] };
+  const PIECES = ['panel-1', 'panel-2', 'panel-3', 'panel-4', 'panel-5', 'panel-6', 'panel-7', 'panel-8',
+    'scene-street', 'scene-dyke', 'scene-square', 'scene-nightshop', 'scene-shops'];
+  const scale = Math.max(1, Math.min(8, +q.get('scale') || 3));
+  const tFixed = q.has('t') ? parseFloat(q.get('t')) || 0 : null;
+  const names = q.get('only') ? q.get('only').split(',') : PIECES;
+  document.documentElement.style.setProperty('--fw', (A ? A.W : 320) * scale + 'px');
+  document.getElementById('what').textContent = (q.get('only') || 'all thirteen') + (tFixed == null ? ', animated' : `, t = ${tFixed}`) + `, ${scale}x`;
+
+  function piece(name) {
+    if (!A) return null;
+    let m = /^panel-(\d+)$/.exec(name);
+    if (m) { const p = A.panels[+m[1] - 1]; return p ? { name, draw: p.draw, text: p.text, nl: p.nl } : null; }
+    m = /^scene-([a-z]+)$/.exec(name);
+    if (m) { const d = A.scenes[m[1]]; return d ? { name, draw: d, theme: m[1] } : null; }
+    if (name === 'cast' && A.cast) return { name, draw: A.cast, text: 'The cast: every shared character, pose and variant, lit from the upper right.' };
+    if (name === 'props' && A.props) return { name, draw: A.props, text: 'The props: buildings, mills, bridges, lamps and street furniture.' };
+    return null;
+  }
+
+  // the level intros that use each scene, read from the game's own data files (read only)
+  function loadLevelData() {
+    return fetch('../index.html').then(r => r.text()).then(html => {
+      const srcs = [...html.matchAll(/<script src="((?:data|levels|content\/[^"]+)\.js)"><\/script>/g)].map(m => '../' + m[1]);
+      return srcs.reduce((p, src) => p.then(() => new Promise(res => { const s = document.createElement('script'); s.src = src; s.onload = s.onerror = res; document.head.appendChild(s); })), Promise.resolve());
+    }).catch(() => {});
+  }
+  function sceneCaption(theme) {
+    const L = (window.LEVELS || []).filter(l => l.intro && (l.theme === theme || (theme === 'dyke' && l.theme === 'polder')));
+    const known = new Set(Object.keys(A.scenes));
+    const borrowed = theme === 'street' ? [...new Set((window.LEVELS || []).filter(l => l.intro && !known.has(l.theme)).map(l => l.theme))] : [];
+    return { text: L[0] ? L[0].intro : `Level intro scene "${theme}".`, nl: L[0] ? L[0].introNl : '',
+      note: `${L.length} level intro${L.length === 1 ? '' : 's'} use this scene` + (borrowed.length ? `; themes without a scene borrow it: ${borrowed.join(', ')}` : '') };
+  }
+
+  const figs = [];
+  function build() {
+    const grid = document.getElementById('grid');
+    for (const name of names) {
+      const p = piece(name), fig = document.createElement('figure'); fig.dataset.name = name;
+      const frame = document.createElement('div'); frame.className = 'frame';
+      const pix = document.createElement('canvas'); pix.className = 'pix'; pix.width = A ? A.W : 320; pix.height = A ? A.H : 180;
+      const hi = document.createElement('canvas'); hi.className = 'hi'; hi.width = pix.width * scale; hi.height = pix.height * scale;
+      frame.append(pix, hi);
+      const cap = document.createElement('figcaption');
+      let text = p && p.text, nl = p && p.nl, note = '';
+      if (p && p.theme) { const c = sceneCaption(p.theme); text = c.text; nl = c.nl; note = c.note; }
+      cap.innerHTML = `<div class="name"><a href="?only=${name}">${name}</a>${note ? ' · ' + note : ''}</div>` +
+        (p ? `<div class="en"></div><div class="nl"></div>` : `<div class="err">missing: nothing registered for ${name}</div>`) + `<div class="err"></div>`;
+      if (p) { cap.querySelector('.en').textContent = text || ''; cap.querySelector('.nl').textContent = nl || ''; }
+      fig.append(frame, cap); grid.appendChild(fig);
+      figs.push({ name, p, pix, hi, ctx: pix.getContext('2d'), hctx: hi.getContext('2d'), errEl: cap.querySelectorAll('.err')[p ? 0 : 1], failed: false });
+    }
+  }
+  function render(f, t) {
+    if (!f.p || f.failed) return;
+    A.labels.length = 0;
+    try { A.paint(f.ctx, f.p.draw, t); }
+    catch (e) { f.failed = true; f.errEl.textContent = String(e && e.stack || e); state.errors.push(f.name + ': ' + e); console.error(f.name, e); return; }
+    f.hctx.clearRect(0, 0, f.hi.width, f.hi.height); A.drawLabels(f.hctx, A.labels, f.hi.width / f.pix.width);
+  }
+  function bench() {
+    const out = document.getElementById('bench'); out.hidden = false;
+    const rows = [], cv = document.createElement('canvas'); cv.width = A.W; cv.height = A.H; const ctx = cv.getContext('2d');
+    for (const f of figs) {
+      if (!f.p) { rows.push(`${f.name.padEnd(18)} missing`); continue; }
+      try {
+        for (let i = 0; i < 10; i++) { A.labels.length = 0; A.paint(ctx, f.p.draw, i / 60); }
+        const t0 = performance.now();
+        for (let i = 0; i < 200; i++) { A.labels.length = 0; A.paint(ctx, f.p.draw, i / 60); }
+        const ms = (performance.now() - t0) / 200;
+        rows.push(`${f.name.padEnd(18)} ${ms.toFixed(3).padStart(7)} ms/frame${ms > 3 ? '   OVER the 3 ms budget' : ''}`);
+      } catch (e) { rows.push(`${f.name.padEnd(18)} error: ${e}`); }
+    }
+    state.benchText = 'draw + blit, 200 frames each, t = 0..3.3 s\n' + rows.join('\n');
+    out.textContent = state.benchText; state.benchDone = true;
+  }
+
+  loadLevelData().then(() => {
+    if (!A) { document.getElementById('grid').textContent = 'intro/art.js did not load.'; state.done = true; return; }
+    build();
+    if (q.has('bench')) bench();
+    if (tFixed != null) { for (const f of figs) render(f, tFixed); state.done = true; return; }
+    const t0 = performance.now();
+    const loop = now => { const t = (now - t0) / 1000; for (const f of figs) render(f, t); state.done = true; requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  });
+})();
+</script>
+</body>
+</html>
