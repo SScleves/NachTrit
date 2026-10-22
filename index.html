@@ -612,6 +612,39 @@ const PROPS = {
   nummer: { make: (v) => numberPlate(v), off: 0.4, scale: 1.7 },
 };
 
+// ---------- landmarks and props only one town has ----------
+function tower(w, h, mat, spireH) { const g = new THREE.Group(); const t = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); t.position.y = h / 2; g.add(t); if (spireH) { const sp = new THREE.Mesh(new THREE.ConeGeometry(w * 0.72, spireH, 4), PM.roof); sp.rotation.y = Math.PI / 4; sp.position.y = h + spireH / 2; g.add(sp); } for (let i = 0; i < 2; i++) { const win = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.2, w * 0.5), PM.window); win.position.set(0, h * 0.75 - i * w * 0.7, w / 2 + 0.01); g.add(win); } return g; }
+function flagNL() { const g = new THREE.Group(); const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 4, 5), PM.pole); pole.position.y = 2; g.add(pole); [[0xb8282a, 3.7], [0xe8e4d8, 3.4], [0x2b4a9e, 3.1]].forEach(([c, y]) => { const b = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.3), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); b.position.set(0.72, y, 0); g.add(b); }); return g; }
+function sheep() { const g = new THREE.Group(); const wool = Mat({ color: 0xd8d4c8 }); const b = new THREE.Mesh(new THREE.SphereGeometry(0.45, 8, 6), wool); b.position.y = 0.6; b.scale.set(1.3, 1, 1); g.add(b); const h = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.26, 0.3), Mat({ color: 0x1a1a1e })); h.position.set(0.6, 0.62, 0); g.add(h); for (const sx of [-0.3, 0.3]) for (const sz of [-0.18, 0.18]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), Mat({ color: 0x1a1a1e })); l.position.set(sx, 0.18, sz); g.add(l); } g.rotation.y = rnd(0, 6); return g; }
+function lighthouse(col) { const g = new THREE.Group(); for (let i = 0; i < 4; i++) { const band = new THREE.Mesh(new THREE.CylinderGeometry(1.2 - i * 0.12, 1.32 - i * 0.12, 3, 12), Mat({ color: i % 2 ? 0xe8e4d8 : col })); band.position.y = 1.5 + i * 3; g.add(band); } const top = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 1.4, 12), new THREE.MeshBasicMaterial({ color: 0xfff1c0 })); top.position.y = 13.7; g.add(top); const cap = new THREE.Mesh(new THREE.ConeGeometry(1.1, 1.2, 12), PM.roof); cap.position.y = 15; g.add(cap); return g; }
+function crane() { const g = new THREE.Group(); const legs = Mat({ color: 0x3d4652 }); for (const sx of [-1.5, 1.5]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.3, 16, 0.3), legs); l.position.set(sx, 8, 0); g.add(l); } const beam = new THREE.Mesh(new THREE.BoxGeometry(14, 0.4, 0.4), legs); beam.position.set(2, 16, 0); g.add(beam); const cab = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.2, 1.2), legs); cab.position.set(0, 14.5, 0); g.add(cab); const hook = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 8, 4), PM.pole); hook.position.set(7, 12, 0); g.add(hook); return g; }
+const LANDMARK = {
+  alblasserdam: () => { const g = new THREE.Group(); const t = tower(3.5, 14, brickMat(0x5a3630), 7); g.add(t); return g; },
+  kinderdijk: () => { const g = new THREE.Group(); for (let i = 0; i < 3; i++) { const m = windmill(); m.position.set(i * 9, 0, -i * 6); m.scale.setScalar(1.2); g.add(m); } return g; },
+  gouda: () => { const g = new THREE.Group(); const hall = new THREE.Mesh(new THREE.BoxGeometry(7, 11, 12), Mat({ color: 0x8a8a80 })); hall.position.y = 5.5; g.add(hall); for (let i = 0; i < 4; i++) { const pin = new THREE.Mesh(new THREE.ConeGeometry(0.5, 3, 4), PM.roof); pin.position.set(-3 + i * 2, 12.5, -6); g.add(pin); } const roof = new THREE.Mesh(new THREE.ConeGeometry(5.2, 4, 4), PM.roof); roof.rotation.y = Math.PI / 4; roof.scale.z = 1.9; roof.position.y = 13; g.add(roof); const sm = tower(1.6, 18, Mat({ color: 0x8a8a80 }), 3); sm.position.set(0, 0, -6.5); g.add(sm); return g; },
+  zeeland: () => { const g = new THREE.Group(); for (let i = 0; i < 7; i++) { const p = new THREE.Mesh(new THREE.BoxGeometry(1.4, 9, 2.4), Mat({ color: 0x8a8a80 })); p.position.set(0, 4.5, -i * 7); g.add(p); const gate = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.4, 5), Mat({ color: 0x3d4652 })); gate.position.set(0, 2.5, -i * 7 - 3.5); g.add(gate); } const deck = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.6, 48), Mat({ color: 0x6e7580 })); deck.position.set(0, 9.3, -21); g.add(deck); return g; },
+  utrecht: () => { const g = new THREE.Group(); const base = tower(4, 22, brickMat(0x7a6a5a), 0); g.add(base); const mid = new THREE.Mesh(new THREE.BoxGeometry(3.4, 8, 3.4), brickMat(0x7a6a5a)); mid.position.y = 26; g.add(mid); const lantern = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 7, 8), Mat({ color: 0x9a8a7a })); lantern.position.y = 33.5; g.add(lantern); const cap = new THREE.Mesh(new THREE.ConeGeometry(1.8, 3, 8), PM.roof); cap.position.y = 38.5; g.add(cap); return g; },
+  denhaag: () => { const g = new THREE.Group(); const hall = new THREE.Mesh(new THREE.BoxGeometry(6, 8, 14), brickMat(0x6b4a40)); hall.position.y = 4; g.add(hall); const roof = new THREE.Mesh(new THREE.ConeGeometry(4.4, 5, 4), PM.roof); roof.rotation.y = Math.PI / 4; roof.scale.z = 2.4; roof.position.y = 10.5; g.add(roof); for (const sz of [-6, 6]) { const t = tower(1.2, 12, brickMat(0x6b4a40), 5); t.position.set(-3, 0, sz); g.add(t); } const f = flagNL(); f.position.set(-3, 10, 0); g.add(f); return g; },
+  rotterdam: () => { const g = new THREE.Group(); const pylon = new THREE.Mesh(new THREE.BoxGeometry(1.6, 34, 2.2), Mat({ color: 0x9fb8d0 })); pylon.position.y = 17; pylon.rotation.z = -0.18; g.add(pylon); for (let i = 0; i < 8; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 20 + i * 2, 3), Mat({ color: 0x9fb8d0 })); c.position.set(6 + i * 1.5, 16 - i * 0.8, 0); c.rotation.z = 0.9 + i * 0.03; g.add(c); } const deck = new THREE.Mesh(new THREE.BoxGeometry(40, 0.8, 4), Mat({ color: 0x6e7580 })); deck.position.set(12, 7, 0); g.add(deck); const cr = crane(); cr.position.set(-18, 0, -10); g.add(cr); return g; },
+  urk: () => lighthouse(0xb8282a),
+  texel: () => lighthouse(0xb8282a),
+  groningen: () => { const g = new THREE.Group(); const t = tower(4, 20, brickMat(0x8a7a66), 0); g.add(t); const t2 = new THREE.Mesh(new THREE.BoxGeometry(3.2, 10, 3.2), brickMat(0x8a7a66)); t2.position.y = 25; g.add(t2); const t3 = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 6, 8), brickMat(0x8a7a66)); t3.position.y = 33; g.add(t3); const cap = new THREE.Mesh(new THREE.ConeGeometry(1.5, 3, 8), PM.roof); cap.position.y = 37.5; g.add(cap); return g; },
+  maastricht: () => { const g = new THREE.Group(); const t = tower(3, 22, Mat({ color: 0xb8282a }), 9); g.add(t); for (let i = 0; i < 4; i++) { const arch = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.6, 6, 12, Math.PI), Mat({ color: 0x9a927f })); arch.position.set(-12 + i * 5.2, 1.2, -4); g.add(arch); } const deck = new THREE.Mesh(new THREE.BoxGeometry(22, 0.6, 3), Mat({ color: 0x9a927f })); deck.position.set(-4, 4.2, -4); g.add(deck); return g; },
+  amsterdam: () => { const g = new THREE.Group(); const t = tower(3.2, 22, brickMat(0x3b2f2b), 0); g.add(t); const lantern = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 6, 8), Mat({ color: 0xd8d4c8 })); lantern.position.y = 25; g.add(lantern); const crown = new THREE.Mesh(new THREE.SphereGeometry(1.5, 8, 6), Mat({ color: 0x2b4a9e })); crown.position.y = 29.5; g.add(crown); return g; },
+};
+const TOWN_EXTRA = {   // roadside props only this town has
+  kinderdijk: [{ make: boat, n: 2, gap: 90, side: 'both', xr: [9, 13] }],
+  zeeland: [{ make: reeds, n: 10, gap: 12, side: 'both', xr: [5, 6], y: -0.5 }],
+  denhaag: [{ make: flagNL, n: 3, gap: 60, side: 'both', xr: [4.8, 5.2], r: 0.3 }],
+  rotterdam: [{ make: crane, n: 2, gap: 140, side: 'both', xr: [14, 20], r: 3 }],
+  urk: [{ make: boat, n: 4, gap: 50, side: 'both', xr: [9, 14] }],
+  texel: [{ make: sheep, n: 8, gap: 16, side: 'both', xr: [5.5, 9], r: 0.6 }],
+  groningen: [{ make: bikeProp, n: 6, gap: 22, side: 'both', xr: [4.7, 5.0], r: 0.4 }],
+  utrecht: [{ make: bikeProp, n: 10, gap: 14, side: 'both', xr: [4.7, 5.0], r: 0.4 }],
+  amsterdam: [{ make: bikeProp, n: 12, gap: 12, side: 'both', xr: [4.7, 5.0], r: 0.4 }, { make: boat, n: 3, gap: 70, side: 'both', xr: [9, 13] }],
+};
+let townId = 'alblasserdam';
+
 // ---------- themes: what lines the road per place ----------
 const THEMES = {
   polder: { ground: 0x141f16, groundY: -0.9, canal: 1, curv: 0.0035, spawn: [
@@ -676,7 +709,8 @@ function allWords() {   // every noun with an article from every loaded level, d
 function buildScenery(th) {
   clearScenery(); theme = th;
   ground.material.color.set(th.ground); ground.position.y = th.groundY;
-  for (const sp of th.spawn) {
+  const spawn = th.spawn.concat(TOWN_EXTRA[townId] || [], LANDMARK[townId] ? [{ make: LANDMARK[townId], n: 1, gap: 240, side: townId === 'zeeland' ? 'left' : 'both', xr: [16, 24], r: 12, y: th.groundY + 0.3 }] : []);
+  for (const sp of spawn) {
     for (let i = 0; i < sp.n; i++) {
       let mesh;
       if (sp.make === 'graffiti') { const pool = allWords(); const w = pool.length ? pick(pool) : 'gezellig'; mesh = graffitiWall(w); }
@@ -1457,7 +1491,8 @@ function start(lv) {
   BASE = L ? L.speed : BASE_SPEED; MAXS = L ? L.maxSpeed : MAX_SPEED;
   for (const id of ['start', 'summary', 'mission', 'map']) $(id).style.display = 'none';
   S.wordPool = L ? L.items.map(i => i.nl).filter(Boolean) : [];
-  townStyle = TOWN_STYLE[L ? (L.town || TOWN_OF(L.id)) : 'alblasserdam'] || TOWN_STYLE.alblasserdam;
+  townId = (L ? (L.town || TOWN_OF(L.id)) : 'alblasserdam'); const qt = new URLSearchParams(location.search).get('town'); if (qt) townId = qt;
+  townStyle = TOWN_STYLE[townId] || TOWN_STYLE.alblasserdam;
   buildScenery(THEMES[(L && L.theme) || 'polder'] || THEMES.polder);
   reset(); S.mode = 'intro'; S.introT = 0;
 }
