@@ -174,6 +174,40 @@ Opus review, in this order.
   ticks, zombie phone buzz panned by lane, the tram bell. All generated, no files.
 - **Music**: a generative drone that tightens as the lamp dims; off by default on phones.
 
+## 7b. The world and the map, to the standard of the reference repos (Santi's standing brief)
+
+Santi's words: enrich the world as much as possible so it looks as good as the Kyoto and
+Trench Run repos; the map and the level screens should look super clean in the style of the
+concept art; Amsterdam must have the red light district; the town research (landmarks, local
+words) must be visible in the towns, not only in a data file; and there must be detail behind
+the houses, never a house and then black.
+
+- **Behind the houses, three layers** (`src/world.js`, Opus): a second row of houses behind the
+  street row, lower and fainter; a flat silhouette card of the town's skyline (spires, mills,
+  cranes, towers per town, drawn from the landmark list) far back; and a gradient sky band with
+  a moon and cloud sprites, so the horizon is never flat black. Fog layers between them.
+- **Town identity that is visible** (`src/world.js`, one Sonnet job per town, Opus review):
+  each town's landmark list and look line in `content/towns.js` become scenery: Alblasserdam's
+  shipyard cranes and the Grote Kerk, Kinderdijk's two rows of mills and the leaning church,
+  Gouda's lonely town hall and the Waag, Zeeland's barrier piers and the sea, Utrecht's Dom and
+  the wharf cellars, Den Haag's Binnenhof and the pier, Rotterdam's Erasmusbrug, cube houses and
+  Euromast, Urk's lighthouse, fleet and dress, Texel's ferry, sheep and lighthouse, Groningen's
+  Martinitoren, Maastricht's Servaasbrug and the Vrijthof, Nijmegen's Waalbrug and the
+  Stevenskerk, Amsterdam's Westertoren, canal ring, trams, bikes and the red light district
+  (De Wallen: narrow alleys, red neon over doorways, red-lit windows with silhouettes behind the
+  glass, the Oude Kerk, bollards, crowds of tourist zombies; dry and funny, never explicit).
+  Local words on the walls: each town's `words` list feeds that town's graffiti and shop signs.
+- **Density and materials** (branch `world`, in flight): a second row of props, brick and tile
+  textures, cobbles, chained bikes, bins, crates, hedges, boats, ducks, cats in windows.
+- **The map in the concept style** (`src/map.js`, Opus for the design, Sonnet for the drawing):
+  dark paper and ink, the coastline drawn with a hand-drawn line, water hatched, each town a
+  small painted vignette in the pixel toolkit (a mill, the Dom, the bridge, the lighthouse)
+  rather than a circle with a glyph, the route as a dotted bike trail with tyre marks, fog over
+  locked towns, the saved towns lit with amber windows. Town cards with the town's painting
+  behind the text.
+- **Level screens**: the mission card and the summary redrawn in the same style, with the
+  town's scene behind, the fares and the score as a kassabon.
+
 ## 8. Ending, phone, release
 
 - **Saving a town**: when every place has a star, the town card shows dawn, its windows light
@@ -204,11 +238,11 @@ Opus review, in this order.
 
 ## 10. Order of work
 
-1. Finish and merge fares; the intro polish round; the 3D world pass (all in flight).
+1. Finish and merge fares; the intro polish round; the 3D world pass (all in flight), then the three-layer background of section 7b.
 2. The code split with JSDoc types (one Opus job, then the harness on four levels).
 3. Writing mode: engine (Opus), tests (Sonnet), content for the 49 levels (Sonnet), harness.
 4. Jump and slide, the word-learned moment, power-ups (Sonnet jobs, Opus reviews).
-5. The seven towns (Sonnet writers and auditors, Opus spot-checks).
+5. The seven towns (Sonnet writers and auditors, Opus spot-checks), and the visible town identity pass of section 7b with them.
 6. Save module, vocabulary book, practice and trophy rides.
 7. Voice batch (when the key exists), ambience.
 8. Hazards, upgrades, the follower.
