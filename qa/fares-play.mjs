@@ -3,8 +3,12 @@
 // the wallet invariant at the summary, the saved best score and that no shader compiled.
 // usage: NR_URL=http://localhost:8767/index.html node qa/fares-play.mjs
 import { chromium } from 'playwright';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const URL = process.env.NR_URL || 'http://localhost:8765/index.html';
+const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+const out = path.join('qa', 'out', 'fares-' + stamp); fs.mkdirSync(out, { recursive: true });
 const errors = [];
 let pass = 0, fail = 0;
 const check = (name, cond, info) => { if (cond) { pass++; console.log('ok  ', name); } else { fail++; console.log('FAIL', name, info === undefined ? '' : JSON.stringify(info)); } };
@@ -43,7 +47,7 @@ const DRIVE = `(() => {
 })();`;
 
 const browser = await chromium.launch({ headless: true, args: ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-const page = await browser.newPage({ viewport: { width: 960, height: 600 } });
+const page = await browser.newPage({ viewport: { width: 640, height: 400 } });
 page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 page.on('pageerror', e => errors.push('page: ' + String(e)));
 await page.addInitScript(() => { try { localStorage.setItem('nachtrit.intro', '1'); const all = {}; for (let i = 1; i <= 40; i++) all[i] = 3; localStorage.setItem('nachtrit.progress', JSON.stringify(all)); localStorage.removeItem('nachtrit.scores'); } catch (e) {} });
@@ -68,7 +72,13 @@ async function rideLevel1() {
 await rideLevel1();
 await page.evaluate(DRIVE);
 const programs0 = await page.evaluate(() => NRinfo().programs);
-for (let i = 0; i < 2000 && await page.evaluate(() => window.__drive(40, 4)) !== 'dead'; i++);
+for (let i = 0; i < 600; i++) {
+  const st = await page.evaluate(() => ({ mode: window.__drive(30, 10), dist: Math.round(NR.dist), delivered: NR.delivered, total: NR.deliveriesTotal }));
+  if (i % 10 === 0) console.log('  ride', JSON.stringify(st));
+  if (i === 12) await page.screenshot({ path: path.join(out, 'L1-ride.png') });
+  if (st.mode === 'dead') break;
+}
+await page.screenshot({ path: path.join(out, 'L1-summary.png') });
 const r = await page.evaluate(() => {
   const w = window.__wrong;
   return {
@@ -142,9 +152,10 @@ for (let i = 0; i < 600 && !zr; i++) {
     NRstep(1);
     return { before, after: NRfare(), hit: o.hit, fx: document.getElementById('walletfx').textContent, fxClass: document.getElementById('walletfx').className, shake: document.getElementById('walletpill').classList.contains('shake'), toast: document.getElementById('toast').textContent };
   });
-  if (!zr) await page.evaluate(() => { for (let k = 0; k < 10; k++) { autopilot(); NRstep(4); } });
+  if (!zr) await page.evaluate(() => { for (let k = 0; k < 6; k++) { autopilot(); NRstep(10); } });
 }
 console.log('zombie:', JSON.stringify(zr));
+await page.screenshot({ path: path.join(out, 'L1-tikkie.png') });
 check('a zombie was forced into the bike', zr && zr.hit, zr);
 if (zr) {
   check('cents become 0', zr.after.cents === 0, zr.after.cents);
@@ -158,5 +169,6 @@ check('no error text on the page', !err, err);
 check('no console or page errors', errors.length === 0, errors);
 
 await browser.close();
+console.log('frames in', out);
 console.log(`fares-play: ${pass} passed, ${fail} failed | errors: ${errors.length}`);
 process.exit(fail ? 1 : 0);
