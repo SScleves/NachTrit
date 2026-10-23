@@ -19,7 +19,7 @@ that got lost. The only one who can bring Dutch back is the one man who never le
 
 Never settled. Each town has its own theory; one rumour per town card, level intro or loading line.
 
-## Intro panels (new order)
+## Intro panels (new order, fourteen)
 
 1. The night the mist came in, the windmills turned the wrong way.
    De nacht dat de mist opkwam, draaiden de molens de verkeerde kant op.
@@ -27,29 +27,31 @@ Never settled. Each town has its own theory; one rumour per town card, level int
    were still taller than him.
    De volgende ochtend was iedereen veranderd. Twee dingen niet: ze deelden de rekening nog
    steeds, en de vrouwen waren nog steeds langer dan hij.
-3. NEW. Nobody agrees on what caused it. Bad cheese, some say. Others blame a worldwide poll that
-   called Flemish the nicer Dutch. Or the millionth tourist who said it sounds like a drunk German.
-   Probably all of it.
-   Niemand is het eens over de oorzaak. Slechte kaas, zeggen sommigen. Anderen geven de schuld aan
-   een wereldwijde peiling waarin Vlaams het mooiste Nederlands werd genoemd. Of aan de miljoenste
-   toerist die zei dat het klinkt als een dronken Duitser. Waarschijnlijk allemaal.
-4. NEW. The language had been ignored for years. Every time someone tried, the Dutch switched to
+3. NEW. Nobody agrees on what caused it. Some say it was the cheese.
+   Niemand is het eens over de oorzaak. Sommigen zeggen: de kaas.
+4. NEW. Others blame the worldwide poll in which Flemish was voted the nicer Dutch.
+   Anderen geven de schuld aan de wereldwijde peiling waarin Vlaams het mooiste Nederlands werd genoemd.
+5. NEW. Or the millionth tourist who said it sounds like a drunk German.
+   Of aan de miljoenste toerist die zei dat het klinkt als een dronken Duitser.
+6. NEW. Or the Tikkie of one cent that is still open. Probably all of it.
+   Of aan het Tikkie van één cent dat nog steeds openstaat. Waarschijnlijk allemaal.
+7. NEW. The language had been ignored for years. Every time someone tried, the Dutch switched to
    English. One night it left.
    De taal werd al jaren genegeerd. Elke keer als iemand een poging deed, schakelden de
    Nederlanders over op Engels. Op een nacht is hij vertrokken.
-5. Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.
+8. Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.
    Twee jaar hier en nooit geoefend. Iedereen sprak Engels. Iedereen deed er zo aardig over.
-6. Now the only ones who still understand him are two dogs and a grammar book he never opened.
+9. Now the only ones who still understand him are two dogs and a grammar book he never opened.
    Nu begrijpen alleen twee honden hem nog, en een grammaticaboek dat hij nooit heeft
    opengeslagen.
-7. Page one: de or het. There is no rule. There is never a rule.
+10. Page one: de or het. There is no rule. There is never a rule.
    Pagina één: de of het. Er is geen regel. Er is nooit een regel.
-8. NEW. Every word said right brings a piece of it back. Someone has to say them.
+11. NEW. Every word said right brings a piece of it back. Someone has to say them.
    Elk woord dat goed gezegd wordt, brengt een stukje terug. Iemand moet ze zeggen.
-9. ...
-10. No helmet. A helmet would make him look enthusiastic.
+12. ...
+13. No helmet. A helmet would make him look enthusiastic.
     Geen helm. Met een helm zou hij enthousiast overkomen.
-11. Fak. Oké. One man, one omafiets, three hundred and sixty words. Nachtrit.
+14. Fak. Oké. One man, one omafiets, three hundred and sixty words. Nachtrit.
     Fak. Oké. Eén man, één omafiets, driehonderdzestig woorden. Nachtrit.
 
 ## Rumours, one per town
