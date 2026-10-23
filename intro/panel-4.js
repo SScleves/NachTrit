@@ -35,10 +35,10 @@
     // arm up to the ear, phone
     const px = hx + dir * (hd + 1);
     A.line(g, x + dir * w, y - h * 0.68, px, hy + 1, o.coat);
-    A.rect(g, px - (dir < 0 ? 0 : 1), hy - 1, 1, 3, 'slate0'); A.px(g, px + dir * 0, hy, 'phone6');
+    A.rect(g, px - (dir < 0 ? 0 : 1), hy - 1, 1, 3, 'slate0'); A.px(g, px + dir * 0, hy, 'phone4');
     const pulse = 0.8 + 0.2 * Math.sin(t0 * TAU / 2.5 + o.k);
-    A.glow(g, hx + dir * hd * 0.6, hy + 1, Math.max(4, h / 3.2), { color: 'phone5', strength: 0.8 * pulse, power: 1.2, q: 4 });
-    A.px(g, hx + dir * hd * 0.6, hy, 'phone5');
+    A.glow(g, hx + dir * hd * 0.6, hy + 1, Math.max(4, h / 3.2), { color: 'phone4', strength: 0.8 * pulse, power: 1.2, q: 4 });
+    A.px(g, hx + dir * hd * 0.6, hy, 'phone4');
   };
   let t0 = 0;
   const WORDS = [
@@ -115,7 +115,7 @@
         const keep = H.seed === 3 + 6 * 13 || H.seed === 7 + 5 * 13;
         if (!keep) { if (q < 11 / T) lit = lg > H.uh ? Math.max(0, 0.85 - (lg - H.uh) * 14) : 0.85; else lit = q < 0.86 ? 0 : 0.85 * sm(0.86, 0.97, q); }
         if (hash8(i, Math.floor(t * 6)) < 0.04) lit *= 0.6;
-        A.canalHouse(g, H.x, H.y, H.w, H.h, { gable: H.gb, lit, t, seed: H.seed, brick: H.y > 124 ? undefined : 'slate' });
+        A.canalHouse(g, H.x, H.y, H.w, H.h, { gable: H.gb, lit, t, seed: H.seed, brick: H.y > 124 ? undefined : 'slate2' });
       });
       A.haze(g, -20, 0, 360, 190, { top: 0, bottom: 0.14, color: 'mist2' });
       // wet road over the houses' feet
@@ -134,9 +134,9 @@
       A.omafiets(g, 147, 188, { rider: false, t: 0, speed: 0 });
       A.fingerpost(g, 250, 188, { signs: [['Nederlands', 'left'], ['Engels', 'right']] });
       // the phone-talkers, backs turned on the leaving words
-      talker(g, 126, 176, 27, { face: 'left', coat: 'teal3', legs: 'night2', hair: 'wood2', rim: 'teal5', k: 0 });
+      talker(g, 126, 176, 27, { face: 'left', coat: 'teal3', legs: 'night2', hair: 'wood2', rim: 'phone3', k: 0 });
       talker(g, 277, 170, 21, { face: 'right', coat: 'red3', legs: 'night1', hair: 'night0', rim: 'red5', k: 2 });
-      talker(g, 183, 124, 10, { face: 'left', coat: 'slate3', legs: 'night1', hair: 'paper2', rim: 'slate5', k: 4 });
+      talker(g, 183, 124, 10, { face: 'left', coat: 'slate3', legs: 'night1', hair: 'paper2', rim: 'slate4', k: 4 });
       // ---- wet fog over everything, then the words go into it
       A.mist(g, t, 100, 30, { amount: 0.4, speed: 5, seed: 4 });
       // words: near ones live on the overlay, far ones in the pixel buffer so the mist takes them
