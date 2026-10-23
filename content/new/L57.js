@@ -14,10 +14,10 @@
 // New props: none (water, deur, kerk). Rules: obj, eris and vergr are shared with the other tier 4 files and set here
 // only if missing; adj, v2, modal, neg, dehet, woord, cult come from data.js and levels.js, presens from district3.js.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
-  window.RULES.vergr = window.RULES.vergr || { name: 'Comparatives and superlatives', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[4];
   const FK = (o, a, r, w) => ({ o, a, r, w });
 
@@ -59,7 +59,7 @@
         o: ["Congratulations on your wife's birthday.", 'Say hi to your wife.', 'Your wife is very nice.'], a: 0, r: 'cult',
         w: 'At a Dutch birthday you congratulate the whole room, so the husband hears Gefeliciteerd met je vrouw.' },
       { read: true, nl: 'Mijn buurvrouw is langer dan ik.', en: 'My neighbour is taller than me.',
-        o: ['My neighbour is taller than me.', 'My neighbour is older than me.', 'My neighbour stays longer than me.'], a: 0, r: 'vergr',
+        o: ['My neighbour is taller than me.', 'My neighbour is older than me.', 'My neighbour stays longer than me.'], a: 0, r: 'vergelijk',
         w: 'lang is tall for people, langer dan is taller than. Older would be ouder.' },
       { read: true, nl: 'Er zijn geen bitterballen meer.', en: 'There are no bitterballen left.',
         o: ['There are no bitterballen left.', 'There are more bitterballen.', 'The bitterballen are not hot.'], a: 0, r: 'neg',
@@ -91,12 +91,12 @@
       { en: 'Is there one more bitterbal?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One bitterbal, so is er. A question puts the verb first.'), 'nog een bitterbal?'] },
       // ---- builds: comparing
       { en: 'The women here are even taller.', parts: ['De vrouwen hier zijn nog',
-        FK(['langer', 'langst', 'meer lang'], 0, 'vergr', 'Taller is lang plus -er: langer. Dutch never says meer lang.'), '.'] },
+        FK(['langer', 'langst', 'meer lang'], 0, 'vergelijk', 'Taller is lang plus -er: langer. Dutch never says meer lang.'), '.'] },
       { en: 'The wind is stronger than me.', parts: ['De wind is',
-        FK(['sterker', 'sterkst', 'meer sterk'], 0, 'vergr', 'Comparing two: sterk plus -er, then dan.'), 'dan ik.'] },
+        FK(['sterker', 'sterkst', 'meer sterk'], 0, 'vergelijk', 'Comparing two: sterk plus -er, then dan.'), 'dan ik.'] },
       { en: 'Here the mussels are the tastiest.', parts: ['Hier', FK(['zijn de mosselen', 'de mosselen zijn'], 0, 'v2', 'Hier takes slot 1, so the verb comes second.'),
-        FK(['het lekkerst', 'de lekkerst', 'het lekkerder'], 0, 'vergr', 'The most after a verb: het plus -st. lekker, lekkerder, lekkerst.'), '.'] },
-      { en: 'I prefer beer to wine.', parts: ['Ik drink', FK(['liever', 'graager', 'meer graag'], 0, 'vergr', 'graag has its own ladder: graag, liever, liefst.'), 'bier dan wijn.'] },
+        FK(['het lekkerst', 'de lekkerst', 'het lekkerder'], 0, 'vergelijk', 'The most after a verb: het plus -st. lekker, lekkerder, lekkerst.'), '.'] },
+      { en: 'I prefer beer to wine.', parts: ['Ik drink', FK(['liever', 'graager', 'meer graag'], 0, 'vergelijk', 'graag has its own ladder: graag, liever, liefst.'), 'bier dan wijn.'] },
       // ---- builds: adjective -e
       { en: 'The new neighbours are nice.', parts: ['De', FK(['nieuwe', 'nieuw'], 0, 'adj', 'After de the adjective takes an -e: de nieuwe buren.'), 'buren',
         FK(['zijn', 'is'], 0, 'presens', 'buren is plural, so zijn.'), 'aardig.'] },

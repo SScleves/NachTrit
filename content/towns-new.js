@@ -16,9 +16,9 @@
 // neg, mag and woord come from data.js, presens and bezit from district3.js and town-gouda.js.
 // Props: hond, tuin, lamp. No deur look: the deur prop reads as a narrow house and het oude huis is in the pool.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.vergl = window.RULES.vergl || { name: 'Comparison: -er dan, het -st', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
 
@@ -54,7 +54,7 @@
         o: ['The dogs are not allowed on the couch.', "The dogs don't have to be on the couch.", 'The dogs like the couch.'], a: 0, r: 'mag',
         w: 'mag niet means not allowed. Not having to is hoeft niet.' },
       { read: true, nl: 'Zierikzee is kleiner dan Middelburg.', en: 'Zierikzee is smaller than Middelburg.',
-        o: ['Zierikzee is smaller than Middelburg.', 'Zierikzee is bigger than Middelburg.', 'Zierikzee is the smallest town.'], a: 0, r: 'vergl',
+        o: ['Zierikzee is smaller than Middelburg.', 'Zierikzee is bigger than Middelburg.', 'Zierikzee is the smallest town.'], a: 0, r: 'vergelijk',
         w: 'klein, kleiner, kleinst. -er with dan compares two things, and Zierikzee is the smaller one.' },
       { read: true, nl: 'Je hebt gelijk.', en: "You're right.",
         o: ["You're right.", 'You have the same.', 'You look alike.'], a: 0, r: 'woord',
@@ -73,7 +73,7 @@
         FK(['me', 'ik', 'mijn'], 0, 'obj', 'She calls, I get called: the object form, me. ik only does things, mijn needs a noun after it.'), 'elke zondag.'] },
       { en: 'I love her more than golf.', parts: ['Ik hou meer van',
         FK(['haar', 'zij'], 0, 'obj', 'After van you need the object form: haar. zij is she, the one doing it.'),
-        FK(['dan', 'dat'], 0, 'vergl', 'meer, groter, beter: a comparison is always followed by dan.'), 'van golf.'] },
+        FK(['dan', 'dat'], 0, 'vergelijk', 'meer, groter, beter: a comparison is always followed by dan.'), 'van golf.'] },
       { en: 'Do you see him in the garden?', parts: ['Zie je',
         FK(['hem', 'hij', 'zijn'], 0, 'obj', 'You see him, so the object form: hem. hij does the seeing, zijn needs a noun.'), 'in de tuin?'] },
       { en: 'Every evening I brush them.', parts: ['Elke avond',
@@ -99,12 +99,12 @@
 
       // building: comparing
       { en: 'My wife is taller than me.', parts: ['Mijn vrouw is',
-        FK(['groter', 'grootst', 'groot'], 0, 'vergl', 'Two people side by side: -er plus dan. grootst is for the top of the ladder.'), 'dan ik.'] },
+        FK(['groter', 'grootst', 'groot'], 0, 'vergelijk', 'Two people side by side: -er plus dan. grootst is for the top of the ladder.'), 'dan ik.'] },
       { en: 'Our house is the coldest in the street.', parts: [
         FK(['Ons', 'Onze'], 0, 'bezit', 'huis is a het-word, so ons huis. onze is for de-words and plurals.'), 'huis is',
-        FK(['het koudst', 'het kouder'], 0, 'vergl', 'The top of the ladder is het plus -st: het koudst.'), 'van de straat.'] },
+        FK(['het koudst', 'het kouder'], 0, 'vergelijk', 'The top of the ladder is het plus -st: het koudst.'), 'van de straat.'] },
       { en: 'It is windier than yesterday.', parts: ['Het waait',
-        FK(['harder', 'hardst', 'hard'], 0, 'vergl', 'Comparing with yesterday: -er plus dan, harder dan.'), 'dan gisteren.'] },
+        FK(['harder', 'hardst', 'hard'], 0, 'vergelijk', 'Comparing with yesterday: -er plus dan, harder dan.'), 'dan gisteren.'] },
 
       // building: adjective -e
       { en: 'We have a small house behind the dyke.', parts: ['We hebben een',
@@ -131,9 +131,9 @@
 // 'vinden' (the vault has no comparatives note; vinden carries "beter dan"). Each is declared only if missing.
 // New props: none. Only winkel, nummer and deur are used.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'hem-haar' };
   window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er' };
-  window.RULES.vergr = window.RULES.vergr || { name: 'Comparatives and superlatives', note: 'vinden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -159,12 +159,12 @@
         FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'Modal first, the infinitive at the end: helpen.'), '?'] },
       { en: 'There are mussels at the fishmonger.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'mosselen is plural, so er zijn. er is is for one thing.'), 'mosselen bij de visboer.'] },
       { en: 'Is there a pharmacy here?', parts: [FK(['Is er', 'Zijn er', 'Er zijn'], 0, 'eris', 'A question starts with the verb, and one pharmacy means is: Is er.'), 'hier een apotheek?'] },
-      { en: "The bread is cheaper than at the baker's.", parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergr', 'Cheaper is the word plus -er: goedkoper. Dutch never says meer goedkoop.'), 'dan bij de bakker.'] },
+      { en: "The bread is cheaper than at the baker's.", parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk', 'Cheaper is the word plus -er: goedkoper. Dutch never says meer goedkoop.'), 'dan bij de bakker.'] },
       { en: 'This shop is the cheapest.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'winkel is a de-word, so deze winkel.'), 'winkel is',
-        FK(['het goedkoopst', 'het goedkoper', 'het goedkoop'], 0, 'vergr', 'After is the superlative takes het: het goedkoopst.'), '.'] },
+        FK(['het goedkoopst', 'het goedkoper', 'het goedkoop'], 0, 'vergelijk', 'After is the superlative takes het: het goedkoopst.'), '.'] },
       { en: 'Zeeland mussels are the tastiest.', parts: ['Zeeuwse mosselen', FK(['zijn', 'is'], 0, 'presens', 'mosselen is plural: zijn.'),
-        FK(['het lekkerst', 'het lekkerder', 'het lekker'], 0, 'vergr', 'The most is -st, with het in front after zijn: het lekkerst.'), '.'] },
-      { en: 'The women are still taller than me.', parts: ['De vrouwen zijn nog steeds', FK(['langer', 'langst', 'meer lang'], 0, 'vergr', 'Comparing two things: the word plus -er, then dan. Tall for people is lang.'), 'dan ik.'] },
+        FK(['het lekkerst', 'het lekkerder', 'het lekker'], 0, 'vergelijk', 'The most is -st, with het in front after zijn: het lekkerst.'), '.'] },
+      { en: 'The women are still taller than me.', parts: ['De vrouwen zijn nog steeds', FK(['langer', 'langst', 'meer lang'], 0, 'vergelijk', 'Comparing two things: the word plus -er, then dan. Tall for people is lang.'), 'dan ik.'] },
       { en: "I'd like a white bread.", parts: ['Ik wil graag een', FK(['wit', 'witte'], 0, 'adj', 'brood is a het-word, and after een a het-word drops the -e: een wit brood.'), 'brood.'] },
       { en: 'Can I have the fresh minced meat?', parts: ['Mag ik', FK(['het', 'de'], 0, 'dehet', 'gehakt is a het-word: het gehakt.'),
         FK(['verse', 'vers'], 0, 'adj', 'After het or de the adjective always takes -e: het verse gehakt.'), 'gehakt?'] },
@@ -185,7 +185,7 @@
       // ---- read
       { read: true, nl: 'Er zijn geen broodjes meer.', o: ['There are no rolls left.', 'There are more rolls.', 'The rolls are not ready yet.'], a: 0, r: 'eris',
         w: 'geen ... meer means none left. meer on its own would be more.' },
-      { read: true, nl: 'Deze trui is te klein.', o: ['This sweater is too small.', 'This sweater is smaller.', 'This sweater is the smallest.'], a: 0, r: 'vergr',
+      { read: true, nl: 'Deze trui is te klein.', o: ['This sweater is too small.', 'This sweater is smaller.', 'This sweater is the smallest.'], a: 0, r: 'vergelijk',
         w: 'te klein is too small. Smaller would be kleiner, the smallest het kleinst.' },
       { read: true, nl: 'Mag ik hem even passen?', o: ['Can I try it on?', 'Can I pass him?', 'Can I pay for it?'], a: 0, r: 'obj',
         w: 'passen is to try on, and hem is the sweater, a de-word.' },
@@ -224,9 +224,9 @@
   // New rules: obj (object pronouns), er (er is / er zijn), vergl (comparison). Set only if missing.
   // New props: none (water, kerk, nummer).
   // Word forks take their wrong signs from each other, so no two nouns here mean the same thing.
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem-haar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.vergl = window.RULES.vergl || { name: 'Comparison: -er dan, het -st', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -282,11 +282,11 @@
         FK(['gezellig', 'gezellige'], 0, 'adj', 'café is a het-word after een: the one place with no -e.'), 'café bij de haven.'] },
 
       // builds: comparison
-      { en: 'Mussels are cheaper than oysters.', parts: ['Mosselen zijn', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergl', 'Comparing two things: the adjective plus -er, then dan.'), 'dan oesters.'] },
-      { en: 'A beer is more expensive than a coffee.', parts: ['Een biertje is', FK(['duurder', 'duurer', 'duurst'], 0, 'vergl', 'duur ends in -r, so a d slips in: duurder.'), 'dan een koffie.'] },
-      { en: "I'd rather drink tea than coffee.", parts: ['Ik drink', FK(['liever', 'graagder', 'meer graag'], 0, 'vergl', 'graag has its own ladder: graag, liever, liefst.'), 'thee dan koffie.'] },
-      { en: 'The waitress is taller than me.', parts: ['De serveerster is', FK(['langer', 'lang', 'langst'], 0, 'vergl', 'Tall for people is lang. Taller than: langer dan.'), 'dan ik.'] },
-      { en: 'The mussels from Yerseke are the tastiest.', parts: ['De mosselen uit Yerseke zijn', FK(['het lekkerst', 'het lekkerder'], 0, 'vergl', 'The best of all: het plus -st. -er is only for two things.'), '.'] },
+      { en: 'Mussels are cheaper than oysters.', parts: ['Mosselen zijn', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing two things: the adjective plus -er, then dan.'), 'dan oesters.'] },
+      { en: 'A beer is more expensive than a coffee.', parts: ['Een biertje is', FK(['duurder', 'duurer', 'duurst'], 0, 'vergelijk', 'duur ends in -r, so a d slips in: duurder.'), 'dan een koffie.'] },
+      { en: "I'd rather drink tea than coffee.", parts: ['Ik drink', FK(['liever', 'graagder', 'meer graag'], 0, 'vergelijk', 'graag has its own ladder: graag, liever, liefst.'), 'thee dan koffie.'] },
+      { en: 'The waitress is taller than me.', parts: ['De serveerster is', FK(['langer', 'lang', 'langst'], 0, 'vergelijk', 'Tall for people is lang. Taller than: langer dan.'), 'dan ik.'] },
+      { en: 'The mussels from Yerseke are the tastiest.', parts: ['De mosselen uit Yerseke zijn', FK(['het lekkerst', 'het lekkerder'], 0, 'vergelijk', 'The best of all: het plus -st. -er is only for two things.'), '.'] },
 
       // builds: adjective -e, with a time word up front
       { en: "I'd like a cold beer.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. No t for ik.'), 'graag een',
@@ -503,9 +503,9 @@
 // New rules: obj, er, vergl (same ids and notes as the other tier-4 levels, declared only if missing).
 // New props: none. Only water, brug, hond and nummer are used.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem-haar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.vergl = window.RULES.vergl || { name: 'Comparison: -er dan, het -st', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -521,17 +521,17 @@
     items: [
       // ---- builds: comparing, superlatives, object pronouns, er is / er zijn, adjective -e
       { en: 'The women are still taller than me.', parts: ['De vrouwen', FK(['zijn', 'is'], 0, 'presens', 'vrouwen is plural, so zijn.'), 'nog steeds',
-        FK(['langer', 'lang', 'langst'], 0, 'vergl', 'Comparing two: add -er, then dan. People are lang, not groot.'), 'dan ik.'] },
+        FK(['langer', 'lang', 'langst'], 0, 'vergelijk', 'Comparing two: add -er, then dan. People are lang, not groot.'), 'dan ik.'] },
       { en: 'On the dyke the wind is strongest.', parts: ['Op de dijk', FK(['is de wind', 'de wind is'], 0, 'v2', 'Op de dijk takes slot 1, so the verb comes next.'),
-        FK(['het sterkst', 'het sterker', 'het sterk'], 0, 'vergl', 'The most of all after zijn: het plus -st, het sterkst.'), '.'] },
+        FK(['het sterkst', 'het sterker', 'het sterk'], 0, 'vergelijk', 'The most of all after zijn: het plus -st, het sterkst.'), '.'] },
       { en: "Today it's colder than yesterday.", parts: ['Vandaag', FK(['is het', 'het is'], 0, 'v2', 'Vandaag in slot 1, then the verb, then het.'),
-        FK(['kouder', 'koud', 'koudst'], 0, 'vergl', 'Two days compared: koud plus -er, then dan. kouder dan gisteren.'), 'dan gisteren.'] },
-      { en: "I cycle faster than the dead, without a helmet.", parts: ['Ik fiets', FK(['harder', 'hard', 'hardst'], 0, 'vergl', 'On a bike, faster is harder. Comparing two: -er dan.'), 'dan de doden, zonder helm.'] },
-      { en: "I'd rather play golf than tennis.", parts: ['Ik speel', FK(['liever', 'graag', 'liefst'], 0, 'vergl', 'graag, liever, liefst is one ladder. With dan you need the middle step: liever.'), 'golf dan tennis.'] },
-      { en: 'This is the most beautiful golf course in Zeeland.', parts: ['Dit is de', FK(['mooiste', 'mooist', 'mooier'], 0, 'vergl', 'Before a noun the superlative takes the -e: de mooiste golfbaan.'), 'golfbaan van Zeeland.'] },
+        FK(['kouder', 'koud', 'koudst'], 0, 'vergelijk', 'Two days compared: koud plus -er, then dan. kouder dan gisteren.'), 'dan gisteren.'] },
+      { en: "I cycle faster than the dead, without a helmet.", parts: ['Ik fiets', FK(['harder', 'hard', 'hardst'], 0, 'vergelijk', 'On a bike, faster is harder. Comparing two: -er dan.'), 'dan de doden, zonder helm.'] },
+      { en: "I'd rather play golf than tennis.", parts: ['Ik speel', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk', 'graag, liever, liefst is one ladder. With dan you need the middle step: liever.'), 'golf dan tennis.'] },
+      { en: 'This is the most beautiful golf course in Zeeland.', parts: ['Dit is de', FK(['mooiste', 'mooist', 'mooier'], 0, 'vergelijk', 'Before a noun the superlative takes the -e: de mooiste golfbaan.'), 'golfbaan van Zeeland.'] },
       { en: "I can't see him anywhere in the mist.", parts: ['Ik zie', FK(['hem', 'hij'], 0, 'obj', 'ik is the one seeing. The one being seen is hem, not hij.'), 'nergens in de mist.'] },
       { en: 'The dogs like her best.', parts: ['De honden vinden', FK(['haar', 'zij'], 0, 'obj', 'zij does things. When the dogs like her, she is haar.'),
-        FK(['het leukst', 'het leuker', 'het leuk'], 0, 'vergl', 'Best of all after vinden: het leukst.'), '.'] },
+        FK(['het leukst', 'het leuker', 'het leuk'], 0, 'vergelijk', 'Best of all after vinden: het leukst.'), '.'] },
       { en: 'Paola is waiting for us at the beach.', parts: ['Paola wacht op het strand op', FK(['ons', 'wij', 'onze'], 0, 'obj', 'After op, we becomes ons. onze only goes before a noun.'), '.'] },
       { en: 'Can you help me with my golf bag?', parts: ['Kun je', FK(['me', 'ik', 'mijn'], 0, 'obj', 'je does the helping. The one being helped is the object, so me, not ik.'), 'even helpen met mijn golftas?'] },
       { en: 'After the walk I give them water.', parts: ['Na de wandeling', FK(['geef ik', 'ik geef', 'geeft ik'], 0, 'v2', 'Na de wandeling takes slot 1, so the verb comes before ik.'),
@@ -554,7 +554,7 @@
 
       // ---- reads
       { read: true, nl: 'Het waait harder dan gisteren.', en: "It's windier than yesterday.",
-        o: ["It's windier than yesterday.", "It's less windy than yesterday.", "It's as windy as yesterday."], a: 0, r: 'vergl',
+        o: ["It's windier than yesterday.", "It's less windy than yesterday.", "It's as windy as yesterday."], a: 0, r: 'vergelijk',
         w: 'harder dan compares today with yesterday. As windy as would be net zo hard als.' },
       { read: true, nl: 'Je hoeft geen helm te dragen.', en: "You don't have to wear a helmet.",
         o: ["You don't have to wear a helmet.", "You're not allowed to wear a helmet.", 'You have to wear a helmet.'], a: 0, r: 'mag',
@@ -596,10 +596,10 @@
 // New props: none (water, deur, kerk). Rules: obj, eris and vergr are shared with the other tier 4 files and set here
 // only if missing; adj, v2, modal, neg, dehet, woord, cult come from data.js and levels.js, presens from district3.js.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
-  window.RULES.vergr = window.RULES.vergr || { name: 'Comparatives and superlatives', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[4];
   const FK = (o, a, r, w) => ({ o, a, r, w });
 
@@ -641,7 +641,7 @@
         o: ["Congratulations on your wife's birthday.", 'Say hi to your wife.', 'Your wife is very nice.'], a: 0, r: 'cult',
         w: 'At a Dutch birthday you congratulate the whole room, so the husband hears Gefeliciteerd met je vrouw.' },
       { read: true, nl: 'Mijn buurvrouw is langer dan ik.', en: 'My neighbour is taller than me.',
-        o: ['My neighbour is taller than me.', 'My neighbour is older than me.', 'My neighbour stays longer than me.'], a: 0, r: 'vergr',
+        o: ['My neighbour is taller than me.', 'My neighbour is older than me.', 'My neighbour stays longer than me.'], a: 0, r: 'vergelijk',
         w: 'lang is tall for people, langer dan is taller than. Older would be ouder.' },
       { read: true, nl: 'Er zijn geen bitterballen meer.', en: 'There are no bitterballen left.',
         o: ['There are no bitterballen left.', 'There are more bitterballen.', 'The bitterballen are not hot.'], a: 0, r: 'neg',
@@ -673,12 +673,12 @@
       { en: 'Is there one more bitterbal?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One bitterbal, so is er. A question puts the verb first.'), 'nog een bitterbal?'] },
       // ---- builds: comparing
       { en: 'The women here are even taller.', parts: ['De vrouwen hier zijn nog',
-        FK(['langer', 'langst', 'meer lang'], 0, 'vergr', 'Taller is lang plus -er: langer. Dutch never says meer lang.'), '.'] },
+        FK(['langer', 'langst', 'meer lang'], 0, 'vergelijk', 'Taller is lang plus -er: langer. Dutch never says meer lang.'), '.'] },
       { en: 'The wind is stronger than me.', parts: ['De wind is',
-        FK(['sterker', 'sterkst', 'meer sterk'], 0, 'vergr', 'Comparing two: sterk plus -er, then dan.'), 'dan ik.'] },
+        FK(['sterker', 'sterkst', 'meer sterk'], 0, 'vergelijk', 'Comparing two: sterk plus -er, then dan.'), 'dan ik.'] },
       { en: 'Here the mussels are the tastiest.', parts: ['Hier', FK(['zijn de mosselen', 'de mosselen zijn'], 0, 'v2', 'Hier takes slot 1, so the verb comes second.'),
-        FK(['het lekkerst', 'de lekkerst', 'het lekkerder'], 0, 'vergr', 'The most after a verb: het plus -st. lekker, lekkerder, lekkerst.'), '.'] },
-      { en: 'I prefer beer to wine.', parts: ['Ik drink', FK(['liever', 'graager', 'meer graag'], 0, 'vergr', 'graag has its own ladder: graag, liever, liefst.'), 'bier dan wijn.'] },
+        FK(['het lekkerst', 'de lekkerst', 'het lekkerder'], 0, 'vergelijk', 'The most after a verb: het plus -st. lekker, lekkerder, lekkerst.'), '.'] },
+      { en: 'I prefer beer to wine.', parts: ['Ik drink', FK(['liever', 'graager', 'meer graag'], 0, 'vergelijk', 'graag has its own ladder: graag, liever, liefst.'), 'bier dan wijn.'] },
       // ---- builds: adjective -e
       { en: 'The new neighbours are nice.', parts: ['De', FK(['nieuwe', 'nieuw'], 0, 'adj', 'After de the adjective takes an -e: de nieuwe buren.'), 'buren',
         FK(['zijn', 'is'], 0, 'presens', 'buren is plural, so zijn.'), 'aardig.'] },
@@ -2505,5 +2505,1055 @@
       // ---- de of het
       { dehet: true, nl: 'kabinet', art: 'het', en: 'the cabinet', w: 'het kabinet. All the ministers together are het kabinet, but one minister is de minister.' },
       { dehet: true, nl: 'ministerie', art: 'het', en: 'the ministry', w: 'Most -ie words are de, like de politie. het ministerie is the exception.' },
+    ] }]);
+})();
+
+// ---- content/new/L75.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 75 Thuis. A cube house on its corner next to the Markthal, harbour
+// cranes in the kitchen window, the Maas down the road. Rooms, furniture, the daily routine, the dogs, the wife,
+// told as what happened: the past of the day, the self-words, polite requests, who is bigger than whom.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (werkte, kookte, verveelden,
+// bestelden, herinnerde) and of the common irregulars (ging, kwam, zag, kocht, sprak, liep, deed, had), reflexive
+// verbs (zich voelen, zich vergissen, zich herinneren, zich vervelen), zou plus infinitive for polite requests
+// (uitlaten, aanzetten, kunnen krijgen, liever), comparatives and superlatives (groter dan, langer dan, het beste,
+// het liefst). Review: V2 after a time word, adjective -e, possessives ons/onze, object pronouns, perfectum with
+// hebben and a separable participle, niet against geen.
+// Still inside the fence: 12 words max, no sub-clauses with the verb at the end (no omdat, dat, als, toen).
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum, 't kofschip, reflexieve werkwoorden, V2 word order,
+// zachtmakers; 03 - Verbs/zullen (zou), uitlaten; 04 - Phrases & Scenarios/Thuis met je vrouw (Hoe was jouw dag?,
+// Ik heb een lange dag gehad, Sorry, ik heb me vergist, Je hebt gelijk, Zal ik thee zetten?); _site/words (de afwas,
+// de rommel, de verwarming, het kopje koffie, graag liever liefst, goed beter best, hij voelt zich niet zo lekker,
+// hij verveelt zich, ik zou graag een kopje koffie willen, wil je de verwarming aanzetten, de zus, de schat);
+// content/towns.js for Rotterdam (de kubuswoning, de hijskraan, de wolkenkrabber, de Maas, de Markthal,
+// een bakkie pleur, Niet lullen maar poetsen, the Erasmusbrug).
+// New rules: zou (the vault note zullen); vergelijk, bezit and obj are guarded below.
+// Replay: het balkon, de stofzuiger and de hondenmand from the earlier thuis levels (L67 and before).
+// New props: none. Only hond, huis and brug are used.
+(() => {
+  window.RULES.zou = window.RULES.zou || { name: 'zou: polite requests', note: 'zullen' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 75, act: 7, name: 'Thuis', town: 'rotterdam', place: 'thuis', theme: 'street', ...P,
+    intro: 'In Rotterdam the dead do not talk, they polish. The cube house stands on its corner, so the dogs slide and nobody gets worked up.',
+    introNl: 'In Rotterdam praten de doden niet, ze poetsen. De kubuswoning staat op zijn punt, dus de honden glijden en niemand maakt zich druk.',
+    mission: {
+      where: 'A yellow cube house on its corner next to the Markthal, the harbour cranes in the kitchen window and the Maas at the end of the road. From the bedroom down the stairs to the front door, then along the water and back, because the dogs need a walk. The dogs always need a walk.',
+      carry: 'Two leads, the keys to a door that is not square, a mug of bakkie pleur gone cold, and the grammar book, still never opened. No helmet. The metro does not wait for anyone, with a helmet or without.',
+      want: 'Since the mist everyone who spoke Dutch has changed, and the dead of Rotterdam still do not chat. They stand in your rooms and ask how the day went, and you answer in the past: werkte, kookte, ging, kwam. They want the words me and zich in the right place, and they only accept a favour that starts with zou. The women are still taller than you. They still split the bill for the polish to the cent.' },
+    items: [
+      // ---- builds: the imperfectum, regular by 't kofschip and irregular by heart
+      { en: 'Yesterday I worked at home all day.', parts: ['Gisteren', FK(['werkte ik', 'ik werkte', 'werkde ik'], 0, 'kof',
+        'Gisteren takes slot 1, so the verb comes second. werk ends in k, a ketchup letter: werkte with a t.'), 'de hele dag thuis.'] },
+      { en: 'Paola cooked and I did the dishes.', parts: ['Paola', FK(['kookte', 'kookde', 'kookten'], 0, 'kof',
+        'kook ends in k, a ketchup letter: kookte with a t. One person, so no -n.'), 'en ik', FK(['deed', 'doede', 'deden'], 0, 'imp',
+        'doen is irregular: deed. With ik there is no ending.'), 'de afwas.'] },
+      { en: 'Paola came home and saw the mess.', parts: ['Paola', FK(['kwam', 'komde', 'kwamen'], 0, 'imp',
+        'komen is irregular: kwam. One person, so no ending.'), 'thuis en', FK(['zag', 'ziede', 'zagen'], 0, 'imp',
+        'zien is irregular: zag. One person, so no -en.'), 'de rommel.'] },
+      { en: 'The dogs followed Paola around all day.', parts: ['De honden', FK(['liepen', 'liep', 'loopten'], 0, 'imp',
+        'lopen is irregular: liep, and the plural takes -en: liepen.'), 'de hele dag achter Paola aan.'] },
+      { en: 'Paola bought a new lamp for the living room.', parts: ['Paola', FK(['kocht', 'koopte', 'kochten'], 0, 'imp',
+        'kopen is irregular: kocht. The regular pattern koopte is wrong.'), 'een', FK(['nieuwe', 'nieuw'], 0, 'adj',
+        'lamp is a de-word, so the adjective takes -e: een nieuwe lamp.'), 'lamp voor de woonkamer.'] },
+      { en: 'Paola spoke softly to the dogs and sternly to me.', parts: ['Paola', FK(['sprak', 'sprekte', 'spraken'], 0, 'imp',
+        'spreken is irregular: sprak. One person, so no ending.'), 'zacht tegen de honden en streng tegen', FK(['mij', 'ik'], 0, 'obj',
+        'After tegen comes the object form: tegen mij, not tegen ik.'), '.'] },
+      { en: 'We had no time, so we ordered pizza.', parts: ['We', FK(['hadden', 'had', 'haden'], 0, 'imp',
+        'hebben is irregular: had, and wij takes -den: hadden.'), 'geen tijd, daarom', FK(['bestelden we', 'we bestelden'], 0, 'v2',
+        'daarom takes slot 1, so the verb comes second, then we. bestel ends in l, so -den.'), 'pizza.'] },
+
+      // ---- builds: reflexive verbs, the self-word right after the verb
+      { en: 'Paola does not feel so well tonight.', parts: ['Paola voelt', FK(['zich', 'me', 'haar'], 0, 'refl',
+        'Paola is zij, so the self-word is zich, right after the verb: voelt zich.'), 'vanavond niet zo lekker.'] },
+      { en: 'Sorry, I was wrong. You are right.', parts: ['Sorry, ik heb', FK(['me', 'zich', 'ons'], 0, 'refl',
+        'ik takes me, right after the verb: heb me vergist.'), 'vergist. Je hebt gelijk.'] },
+      { en: 'I did not remember the neighbour’s name.', parts: ['Ik', FK(['herinnerde me', 'herinnerte me', 'me herinnerde'], 0, 'kof',
+        'herinner ends in r, no ketchup letter: herinnerde with a d. The me comes right after the verb.'), 'de naam van de buurman', FK(['niet', 'geen'], 0, 'neg',
+        'geen goes in front of a noun with een. Here de naam is already named, so niet at the end.'), '.'] },
+      { en: 'The dogs were bored in the living room.', parts: ['De honden', FK(['verveelden zich', 'verveelde zich', 'zich verveelden'], 0, 'refl',
+        'Two dogs, so verveelden, and zich comes right after the verb.'), 'in de woonkamer.'] },
+
+      // ---- builds: zou plus the infinitive at the end, polite requests
+      { en: 'Would you walk the dogs for a moment?', parts: ['Zou je de honden even', FK(['uitlaten', 'uitgelaten', 'uit te laten'], 0, 'zou',
+        'zou takes the bare infinitive at the end: uitlaten, written as one word.'), '?'] },
+      { en: 'Would you turn on the heating?', parts: ['Zou je de verwarming even', FK(['aanzetten', 'aangezet', 'aan te zetten'], 0, 'zou',
+        'zou takes the bare infinitive at the end: aanzetten. The ge belongs to the perfectum, not here.'), '?'] },
+      { en: 'Could I get a coffee, Rotterdam style?', parts: ['Zou ik een bakkie pleur', FK(['kunnen krijgen', 'kan krijgen', 'kunnen gekregen'], 0, 'zou',
+        'Behind zou both verbs stand at the end as infinitives: kunnen krijgen.'), '?'] },
+      { en: 'I would rather stay home than go to the borrel.', parts: ['Ik zou', FK(['liever', 'liefer', 'graag'], 0, 'vergelijk',
+        'graag, liever, liefst. graag is the plain form; for rather, with dan after it, you need liever.'), 'thuisblijven', FK(['dan', 'dat'], 0, 'vergelijk',
+        'Comparing two things takes dan.'), 'naar de borrel gaan.'] },
+
+      // ---- builds: comparing, bigger than, the most, the best
+      { en: 'Our living room is bigger than the old one.', parts: [FK(['Onze', 'Ons'], 0, 'bezit',
+        'woonkamer is a de-word: onze.'), 'woonkamer is', FK(['groter', 'grotere', 'groot'], 0, 'vergelijk',
+        'groot plus -er makes groter, and dan follows.'), 'dan de oude.'] },
+      { en: 'Paola is still taller than I am, and she knows it.', parts: ['Paola is nog steeds', FK(['langer', 'lang', 'langst'], 0, 'vergelijk',
+        'lang plus -er makes langer, and dan follows. langst needs a het or de in front of it.'), 'dan ik, en ze weet het.'] },
+      { en: 'Our bed is the best bed in Rotterdam.', parts: [FK(['Ons', 'Onze'], 0, 'bezit',
+        'bed is a het-word: ons bed.'), 'bed is het', FK(['beste', 'best', 'goedste'], 0, 'vergelijk',
+        'goed is irregular: goed, beter, best. In front of a noun the best takes -e: het beste bed.'), 'bed van Rotterdam.'] },
+      { en: 'The dogs like to lie on the couch most of all.', parts: ['De honden liggen het', FK(['liefst', 'liever'], 0, 'vergelijk',
+        'graag, liever, liefst. Most of all is het liefst; liever does not take het.'), 'op de bank.'] },
+
+      // ---- build: review of the perfectum with a separable participle
+      { en: 'Paola has already tidied up the mess.', parts: ['Paola', FK(['heeft', 'is'], 0, 'aux',
+        'Tidying up is an activity, not a journey: hebben.'), 'de rommel al', FK(['opgeruimd', 'geopruimd', 'opruimd'], 0, 'sep',
+        'The ge goes in the middle: op + geruimd, written as one word at the end.'), '.'] },
+
+      // ---- words: rooms, furniture, the routine, the dogs, Rotterdam
+      { w: 'the kitchen', nl: 'de keuken' }, { w: 'the bedroom', nl: 'de slaapkamer' }, { w: 'the bathroom', nl: 'de badkamer' },
+      { w: 'the couch', nl: 'de bank' }, { w: 'the fridge', nl: 'de koelkast' }, { w: 'the window', nl: 'het raam', wrong: 'de raam' },
+      { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' },
+      { w: 'the lift', nl: 'de lift' }, { w: 'the stairs', nl: 'de trap' }, { w: 'the alarm clock', nl: 'de wekker' },
+      { w: 'the breakfast', nl: 'het ontbijt', wrong: 'de ontbijt' }, { w: 'the dinner', nl: 'het avondeten' },
+      { w: 'the key', nl: 'de sleutel' }, { w: 'the balcony', nl: 'het balkon', wrong: 'de balkon' },
+      { w: 'the dog basket', nl: 'de hondenmand' }, { w: 'the vacuum cleaner', nl: 'de stofzuiger' },
+      { w: 'the skyscraper', nl: 'de wolkenkrabber' },
+
+      // ---- reads: three traps with their own options, three lines from the house and from the city
+      { read: true, nl: 'Paola kocht gisteren een nieuwe bank.', o: ['Paola bought a new couch yesterday.', 'Paola is buying a new couch tomorrow.', 'Paola has to buy a new couch.'], a: 0, r: 'imp',
+        w: 'kocht is the past of kopen, and gisteren says it is done.' },
+      { read: true, nl: 'Zou je even de afwas kunnen doen?', o: ['Could you do the dishes for a moment?', 'Did you do the dishes?', 'You have to do the dishes now.'], a: 0, r: 'zou',
+        w: 'zou plus kunnen and an infinitive is a polite request, and even keeps it light. It is not a question about the past.' },
+      { read: true, nl: 'Ik voel me hier thuis.', o: ['I feel at home here.', 'I feel unwell at home.', 'I am going home from here.'], a: 0, r: 'refl',
+        w: 'zich voelen plus thuis is to feel at home. thuis says how you feel, not where you are going.' },
+      { read: true, nl: 'Hoe was jouw dag?', en: 'How was your day?' },
+      { read: true, nl: 'Het huis was kouder dan buiten.', en: 'The house was colder than outside.' },
+      { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
+
+      // ---- listens: two Rotterdam words and one irregular past by ear
+      { listen: true, nl: 'de kubuswoning', en: 'the cube house' }, { listen: true, nl: 'de hijskraan', en: 'the crane' },
+      { listen: true, nl: 'ging', en: 'went' },
+
+      // ---- looks: the dog, the house, the bridge down the road
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'huis', nl: 'het huis', en: 'the house' },
+      { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
+
+      // ---- de of het
+      { dehet: true, nl: 'tapijt', art: 'het', en: 'the carpet' },
+      { dehet: true, nl: 'gezin', art: 'het', en: 'the family', w: 'het gezin. The plural is de gezinnen, because every plural takes de.' },
+    ] }]);
+})();
+
+// ---- content/new/L76.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 76 De winkels. The Markthal under its painted fruit, the cube houses
+// beside it, the Koopgoot and the Lijnbaan, the Erasmusbrug glowing over the Maas. Supermarket, baker, pharmacy,
+// market stalls, prices, sizes, paying, returns and complaints.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (bakte, betaalde, legde,
+// verveelden), the common irregulars (kocht, was, had, ging, kwam, zag, bracht, moest), a separable verb in the
+// imperfectum (bracht ... terug, legde ... terug), reflexive verbs (me vergist, voelde me, verveelden zich),
+// zou plus infinitive for polite requests (Zou u dit kunnen inpakken, Ik zou graag ... willen) and comparatives
+// and superlatives (goedkoper dan, beter, de duurste), with the irregular goed, beter.
+// Review of earlier tiers: perfectum with hebben (gepast), modal plus infinitive, V2 after a place or a time,
+// geen against niet, want keeping V2, softeners (wel even), the adjective -e (volle tassen, te klein).
+// Still inside the fence: 12 words max, no sub-clauses with the verb at the end.
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum, reflexieve werkwoorden, 't kofschip, zachtmakers,
+// modale werkwoorden, perfectum; _site/situations/supermarket (Kan ik pinnen?, Is dit in de aanbieding?,
+// Wilt u een tasje erbij?, Spaart u zegels?), 04 - Phrases & Scenarios/Thuis met je vrouw; _site/words (de apotheek,
+// ruilen: Ik wil deze graag ruilen, hij is toch te klein; Ik zou graag een kopje koffie willen; hebt / heeft;
+// Hij voelt zich niet zo lekker; goed, beter, best; de boodschappen doen); content/towns.js for Rotterdam
+// (de Markthal, de kubuswoningen, de Erasmusbrug, de Maas, Niet lullen maar poetsen).
+// New rules: zou and vergr, both guarded below (imp, refl, kof, aux, perf, sep, modal, soft, neg, adj, v2 and woord
+// are in data.js).
+// New props: none. Only deur, brug and water are used (not winkel: de bakkerij, de apotheek, de supermarkt and
+// de marktkraam are in the word pool and would be right answers for a shop front).
+(() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 76, act: 7, name: 'De winkels', town: 'rotterdam', place: 'winkels', theme: 'shops', ...P,
+    intro: 'In Rotterdam the shops open on time, the dead queue without a word, and at the checkout they still split the bill.',
+    introNl: 'In Rotterdam gaan de winkels op tijd open, staan de doden zwijgend in de rij en splitten ze aan de kassa nog steeds de rekening.',
+    mission: {
+      where: 'From the Markthal under its painted fruit, past the cube houses, down the Koopgoot and along the Lijnbaan, to a chemist that shut at six. The Erasmusbrug glows over the Maas behind you and nobody looks at it. They are shopping.',
+      carry: 'Two leads, a bag you refused at the till, a receipt you will never find again, and the grammar book, still unopened. No helmet. The trams do not queue for anyone.',
+      want: 'Since the mist the dead run every shop in the city: they price, they sell, they complain, and they want their money back. Niet lullen maar poetsen, so you answer fast. The women behind the counters are still taller than you, and the dogs outside the door still need a walk.' },
+    items: [
+      // ---- builds: the imperfectum, regular by 't kofschip
+      { en: 'The baker baked bread all night.', parts: ['De bakker', FK(['bakte', 'bakde', 'bakkede'], 0, 'imp',
+        'bak ends in k, a ketchup letter, so the past takes -te: bakte.'), 'de hele nacht brood.'] },
+      { en: 'The customer paid by card.', parts: ['De klant', FK(['betaalde', 'betaalte', 'betaald'], 0, 'imp',
+        'betaal ends in l, no ketchup letter, so the past takes -de: betaalde.'), 'met de pinpas.'] },
+      { en: 'I saw the price and put the cheese back.', parts: ['Ik', FK(['zag', 'zagt', 'gezien'], 0, 'imp',
+        'zien is irregular: zag. Learn it whole.'), 'de prijs en', FK(['legde', 'legte', 'gelegd'], 0, 'kof',
+        'leg ends in g, which is not a ketchup letter, so -de: legde. The terug goes to the end.'), 'de kaas terug.'] },
+      { en: 'The dogs were bored in front of the shop.', parts: ['De honden', FK(['verveelden zich', 'verveelde zich', 'zich verveelden'], 0, 'refl',
+        'Two dogs, plural: verveelden, then zich right after the verb. verveelde is for one dog.'), 'voor de winkel.'] },
+
+      // ---- builds: the irregular imperfectum
+      { en: 'Yesterday I bought two loaves at the baker.', parts: ['Gisteren', FK(['kocht ik', 'kopte ik', 'ik kocht'], 0, 'imp',
+        'kopen is irregular: kocht, not kopte. After Gisteren the verb stays in slot 2.'), 'twee broden bij de bakker.'] },
+      { en: 'The pharmacy was closed because it was Sunday.', parts: ['De apotheek', FK(['was', 'waren'], 0, 'imp',
+        'One pharmacy, singular: was. waren is for more than one.'), 'dicht,', FK(['want het was zondag', 'want was het zondag', 'want het zondag was'], 0, 'v2',
+        'want only joins the two halves. The verb stays second: het was zondag.'), '.'] },
+      { en: 'The baker had no change yesterday.', parts: ['De bakker', FK(['had', 'hadden'], 0, 'imp',
+        'One baker, singular: had. hadden is for more than one.'), 'gisteren', FK(['geen', 'niet'], 0, 'neg',
+        'wisselgeld is a thing, so geen: geen wisselgeld.'), 'wisselgeld.'] },
+      { en: 'I went to the Markthal and came home with full bags.', parts: ['Ik', FK(['ging', 'gaan', 'gegaan'], 0, 'imp',
+        'gaan is irregular: ging. gegaan only works with ben, as in ik ben gegaan.'), 'naar de Markthal en', FK(['kwam', 'kwamen', 'komde'], 0, 'imp',
+        'komen is irregular: kwam for ik. kwamen is for we.'), 'met volle tassen thuis.'] },
+      { en: 'I took the coat back yesterday.', parts: ['Ik', FK(['bracht', 'brengde', 'brachtte'], 0, 'imp',
+        'brengen is irregular: bracht, with no -te after it.'), 'de jas gisteren', FK(['terug', 'teruggebracht', 'terugbrengen'], 0, 'sep',
+        'In the imperfectum the particle jumps to the end: bracht de jas terug.'), '.'] },
+      { en: 'At the pharmacy I had to wait a long time for my medicine.', parts: ['In de apotheek', FK(['moest ik', 'ik moest', 'moeste ik'], 0, 'v2',
+        'In de apotheek takes slot 1, so moest comes before ik. moest is the past of moeten.'), 'lang', FK(['wachten', 'te wachten', 'gewacht'], 0, 'modal',
+        'A modal sends the other verb to the end as a plain infinitive, with no te.'), 'op mijn medicijnen.'] },
+
+      // ---- builds: comparatives and superlatives
+      { en: 'The bread is cheaper at the supermarket than at the baker.', parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk',
+        'Add -er for the comparative: goedkoop becomes goedkoper.'), 'in de supermarkt', FK(['dan', 'dat', 'van'], 0, 'vergelijk',
+        'After a comparative the other thing follows dan: goedkoper dan.'), 'bij de bakker.'] },
+      { en: 'This cheese is much better than the one from the supermarket.', parts: ['Deze kaas is veel', FK(['beter', 'gooder', 'goeder'], 0, 'vergelijk',
+        'goed is irregular: goed, beter, best.'), 'dan die uit de supermarkt.'] },
+      { en: 'This is the most expensive coat in the whole shop.', parts: ['Dit is de', FK(['duurste', 'duurst', 'duurder'], 0, 'vergelijk',
+        'Before a noun the superlative is -st plus -e: de duurste jas.'), 'jas van de hele winkel.'] },
+
+      // ---- builds: zou plus infinitive, polite requests
+      { en: 'At the market I would like a kilo of apples.', parts: ['Op de markt', FK(['zou ik', 'ik zou'], 0, 'v2',
+        'Op de markt takes slot 1, so zou comes before ik.'), 'graag een kilo appels', FK(['willen', 'wil', 'te willen'], 0, 'zou',
+        'zou sends the other verb to the end as a plain infinitive: zou ... willen.'), '.'] },
+      { en: 'Could you wrap this for me?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
+        'One person, u, takes zou. zouden is for more than one.'), 'dit voor mij', FK(['kunnen inpakken', 'kan inpakken', 'kunnen ingepakt'], 0, 'modal',
+        'After zou both verbs are plain infinitives, kunnen first and inpakken last. kan is for ik or hij.'), '?'] },
+      { en: 'I would like to exchange this one, it is too small after all.', parts: ['Ik zou deze graag', FK(['willen ruilen', 'wil ruilen', 'te willen ruilen'], 0, 'zou',
+        'zou plus the infinitive at the end: zou ... willen ruilen.'), ', hij is toch', FK(['te klein', 'te kleine', 'te kleiner'], 0, 'adj',
+        'te means too and takes the plain adjective: te klein.'), '.'] },
+
+      // ---- builds: reflexive verbs
+      { en: 'Sorry, I made a mistake with the price.', parts: ['Sorry, ik heb', FK(['me', 'zich', 'je'], 0, 'refl',
+        'ik goes with me, right after the verb: ik heb me vergist.'), 'in de prijs vergist.'] },
+      { en: 'I did not feel well, so I went to the pharmacy.', parts: ['Ik', FK(['voelde me', 'me voelde', 'voelde zich'], 0, 'refl',
+        'The self-word comes right after the verb, and ik takes me: voelde me.'), 'niet lekker, dus ik', FK(['ging', 'gingen', 'gegaan'], 0, 'imp',
+        'gaan is irregular: ging for ik. gingen is for we.'), 'naar de apotheek.'] },
+
+      // ---- builds: review of the perfectum and the softeners
+      { en: 'Paola tried on three dresses in the fitting room.', parts: ['Paola', FK(['heeft', 'is'], 0, 'aux',
+        'Trying on is an action, not a trip: hebben.'), 'in de paskamer drie jurken', FK(['gepast', 'gepasd', 'gepassen'], 0, 'kof',
+        'pas ends in s, a ketchup letter, so gepast with a t.'), '.'] },
+      { en: "I'll grab a basket for you.", parts: ['Ik pak', FK(['wel even', 'even wel'], 0, 'soft',
+        'wel even is the soft pair, like Ik pak wel even een biertje voor je.'), 'een mandje voor je.'] },
+
+      // ---- words: the shop, the stall, the till, the price (a few wrongs)
+      { w: 'the bakery', nl: 'de bakkerij' }, { w: 'the bread roll', nl: 'het broodje', wrong: 'de broodje' },
+      { w: 'the receipt', nl: 'de kassabon' }, { w: 'the basket', nl: 'het mandje', wrong: 'de mandje' },
+      { w: 'the shopping trolley', nl: 'het winkelwagentje' }, { w: 'the price', nl: 'de prijs' },
+      { w: 'the discount', nl: 'de korting' }, { w: 'the special offer', nl: 'de aanbieding' },
+      { w: 'the pharmacy', nl: 'de apotheek' }, { w: 'the market stall', nl: 'de marktkraam' },
+      { w: 'the size', nl: 'de maat' }, { w: 'the fitting room', nl: 'de paskamer' },
+      { w: 'the complaint', nl: 'de klacht' }, { w: 'the change', nl: 'het wisselgeld', wrong: 'de wisselgeld' },
+      { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' },
+      // replay from the earlier shop levels
+      { w: 'the supermarket', nl: 'de supermarkt' }, { w: 'the butcher', nl: 'de slager' },
+      { w: 'the small bag', nl: 'het tasje', wrong: 'de tasje' },
+
+      // ---- reads: three traps with their own options, three straight from the counter
+      { read: true, nl: 'Hebt u deze ook in een grotere maat?', o: ['Do you have this in a bigger size too?', 'Do you have this in a smaller size too?', 'Do you have this in another colour too?'], a: 0, r: 'vergelijk',
+        w: 'grotere is groot plus -er plus -e: bigger. Smaller would be kleinere.' },
+      { read: true, nl: 'Dit is de goedkoopste, maar ook de slechtste.', o: ['This is the cheapest, but also the worst.', 'This is cheaper, but also worse.', 'This is the cheapest, but also the best.'], a: 0, r: 'vergelijk',
+        w: 'de goedkoopste is the superlative: the cheapest. The plain comparative would be goedkoper.' },
+      { read: true, nl: 'Ik herinner me de prijs niet meer.', o: ['I no longer remember the price.', 'I am not paying the price.', 'I did not see the price.'], a: 0, r: 'refl',
+        w: 'zich herinneren is to remember: ik herinner me. niet meer means no longer.' },
+      { read: true, nl: 'Ik kocht dit vorige week, maar het werkt niet.', en: 'I bought this last week, but it does not work.' },
+      { read: true, nl: 'Betaalt u contant of met de pinpas?', en: 'Are you paying cash or by card?' },
+      { read: true, nl: 'Hebt u de bon nog?', en: 'Do you still have the receipt?' },
+
+      // ---- listens: a landmark, a comparative, a price
+      { listen: true, nl: 'de markthal', en: 'the market hall' }, { listen: true, nl: 'goedkoper', en: 'cheaper' },
+      { listen: true, nl: 'zeventien euro vijftig', en: '€ 17,50' },
+
+      // ---- looks: the shop door, the bridge, the water
+      { look: true, prop: 'deur', nl: 'de deur', en: 'the door' }, { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
+      { look: true, prop: 'water', nl: 'het water', en: 'the water' },
+
+      // ---- de of het
+      { dehet: true, nl: 'recept', art: 'het', en: 'the prescription', w: 'het recept. The plural is de recepten, because every plural is de.' },
+      { dehet: true, nl: 'verpakking', art: 'de', en: 'the packaging', w: 'Words ending in -ing are de: de verpakking.' },
+    ] }]);
+})();
+
+// ---- content/new/L77.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 77 Eten en drinken. Under the giant fruit of the Markthal at Blaak,
+// the yellow cube houses next door, a café on the quay where the water taxi stops, the Erasmusbrug over the Maas,
+// the kapsalon and the bakkie pleur. Ordering, the plates, the bill, splitting it, and everything told back in the past.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (werkte, haalde, opende, verveelde)
+// and of the common irregulars (was/waren, had/hadden, ging/gingen, kwam, sprak, liep, kocht, at/aten), reflexives
+// in the past (zich vergissen, zich vervelen), zou plus infinitive for polite requests (Zou ik ... mogen zien,
+// Wat zou u ons aanraden), comparatives and superlatives (duurder dan, de lekkerste, liever, beter, het beste).
+// Review: V2 after a time word, the perfectum with zijn (gegaan), modal plus bare infinitive (kunnen splitsen),
+// separable verbs (ophalen), geen against niet, de against het.
+// Still inside the fence: 12 words max, no sub-clause with the verb at the end (no omdat, dat, als clauses), no relative
+// clauses, no passive.
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum, reflexieve werkwoorden, 't kofschip, V2 word order,
+// scheidbare werkwoorden, de vs het; 03 - Verbs/zullen (zou, zouden: the politeness engine); _site/situations/restaurant
+// (Mag ik de kaart zien, Wat kunt u aanraden, Is alles naar wens, Kunnen we apart betalen), pub (Doe mij maar een biertje),
+// takeaway (Ik haal het over twintig minuten op); 04 - Phrases & Scenarios/Borrel met vrienden (Zullen we het even splitten);
+// _site/words (het café, het restaurant, de taart, de vis, inschenken); content/towns.js for Rotterdam (de markthal,
+// de kubuswoningen, de watertaxi, een bakkie pleur, Niet lullen maar poetsen, the Erasmusbrug, the Euromast).
+// New rules: zou (note: zullen). vergr is guarded below in case levels 52, 57 and 76 are not loaded.
+// New props: none. Only water, brug and deur are used, and none of them is in the word pool of this level.
+(() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 77, act: 7, name: 'Eten en drinken', town: 'rotterdam', place: 'eten', theme: 'square', ...P,
+    intro: 'The Markthal has a hundred stalls and the dead still order a kapsalon. The mist changed everything except the order.',
+    introNl: 'De Markthal heeft honderd kramen en de doden bestellen toch weer een kapsalon. De mist heeft alles veranderd, behalve de bestelling.',
+    mission: {
+      where: 'Under the giant painted fruit of the Markthal at Blaak, past the yellow cube houses and along the quay to a café where the water taxi stops. The Erasmusbrug glows blue over the Maas and the Euromast stands alone in the dark.',
+      carry: 'A tray with a bakkie pleur and a kapsalon going cold, two dogs who can smell the market from the bridge, and the grammar book, never opened. No helmet. The trams do not slow down for a kapsalon.',
+      want: 'Since the mist the dead are regulars, and they want your order told back in the past tense: was, had, ging, kwam, aten, and zou for everything polite. Nobody here talks, niet lullen maar poetsen (stop talking, start working), so answer fast. The women at the table are still taller than you, the dogs still need a walk, and the bill is still split to the cent.' },
+    items: [
+      // ---- builds: the imperfectum, regular and irregular
+      { en: 'Last night we ate a kapsalon in the Markthal.', parts: ['Gisteravond', FK(['aten we', 'eten we', 'we aten'], 0, 'imp',
+        'Gisteravond is past and fills slot 1, so the verb comes second and in the past: aten we. eten we is the present tense.'), 'een kapsalon in de Markthal.'] },
+      { en: 'The chef worked in the kitchen all night.', parts: ['De kok', FK(['werkte', 'werkde', 'werkten'], 0, 'kof',
+        'werk ends in k, a soft ketchup letter: werkte with a t. werkten is for more than one chef.'), 'de hele nacht in de keuken.'] },
+      { en: 'The Markthal opened in 2014. Then the tourists came.', parts: ['In 2014', FK(['opende', 'opente', 'opend'], 0, 'imp',
+        'open ends in n, no ketchup letter: opende with a d.'), 'de Markthal. Daarna kwamen de toeristen.'] },
+      { en: 'The terrace was full and we went inside.', parts: ['Het terras', FK(['was', 'waren'], 0, 'imp',
+        'One terrace, so was. waren is for more than one.'), 'vol en we', FK(['gingen', 'ging'], 0, 'imp',
+        'gaan is irregular: ging for one, gingen for more. We is more than one.'), 'naar binnen.'] },
+      { en: 'We had no reservation, but the waiter still had a table.', parts: ['We', FK(['hadden', 'had'], 0, 'imp',
+        'hebben is irregular: had for one, hadden for more. We is more than one.'), FK(['geen', 'niet'], 0, 'neg',
+        'reservering has no article, so geen takes its place: geen reservering. niet does not go in front of a bare noun.'), 'reservering, maar de ober had nog een tafel.'] },
+      { en: 'The waitress came with the menu and spoke only Dutch.', parts: ['De serveerster', FK(['kwam', 'komde', 'kwamen'], 0, 'imp',
+        'komen is irregular: kwam for one person. komde does not exist.'), 'met de kaart en', FK(['sprak', 'spreekte', 'sprekte'], 0, 'imp',
+        'spreken is irregular: sprak, the e turns into an a.'), 'alleen Nederlands.'] },
+      { en: 'I walked to the market and bought a herring.', parts: ['Ik', FK(['liep', 'loopte', 'liepte'], 0, 'imp',
+        'lopen is irregular: liep. It takes no -te or -de.'), 'naar de markt en', FK(['kocht', 'kochte', 'koopte'], 0, 'imp',
+        'kopen is irregular: kocht, the stem changes. kochte and koopte do not exist.'), 'een haring.'] },
+
+      // ---- builds: reflexives in the past
+      { en: 'Sorry, I made a mistake. This is not my bill.', parts: ['Sorry, ik vergiste', FK(['me', 'zich'], 0, 'refl',
+        'The self word matches the subject: ik goes with me. zich is for hij, zij, het and the plural they.'), '. Dit is niet mijn rekening.'] },
+      { en: 'The dogs were bored under the table.', parts: ['De honden', FK(['verveelden', 'verveelde'], 0, 'imp',
+        'verveel ends in l, no ketchup letter: verveelden, and two dogs take -den.'), FK(['zich', 'zij'], 0, 'refl',
+        'A reflexive verb needs its self word: zich for the dogs. zij is a subject word and cannot stand after the verb.'), 'onder de tafel.'] },
+
+      // ---- builds: zou plus infinitive
+      { en: 'May I see the menu, please?', parts: [FK(['Zou', 'Zouden', 'Zoud'], 0, 'zou',
+        'Zou is the polite form of zullen for one person: Zou ik. Zouden is for more than one.'), 'ik de menukaart mogen', FK(['zien', 'te zien'], 0, 'modal',
+        'mogen sends a bare infinitive to the end: zien, with no te.'), ', alstublieft?'] },
+      { en: 'What would you recommend to us?', parts: ['Wat', FK(['zou', 'zouden'], 0, 'zou',
+        'u is one person and takes the singular: zou u. zouden is for more than one.'), 'u ons', FK(['aanraden', 'aan raden', 'raden aan'], 0, 'sep',
+        'aanraden stays in one piece when it is the infinitive at the end.'), '?'] },
+
+      // ---- builds: comparatives and superlatives
+      { en: 'The food in the Markthal is more expensive than at the snack bar.', parts: ['Het eten in de Markthal is', FK(['duurder', 'duurdere', 'meer duur'], 0, 'vergelijk',
+        'duur ends in r, so the -er becomes -der: duurder. duurdere is the form in front of a noun.'), 'dan bij de snackbar.'] },
+      { en: 'This is the tastiest croquette in all of Rotterdam.', parts: ['Dit is', FK(['de', 'het'], 0, 'dehet',
+        'kroket is a de-word, so de.'), FK(['lekkerste', 'lekkerst', 'lekkerder'], 0, 'vergelijk',
+        'The superlative before a noun is -ste: de lekkerste. lekkerder means tastier than something.'), 'kroket van heel Rotterdam.'] },
+      { en: 'Paola would rather drink a bakkie pleur than tea.', parts: ['Paola drinkt', FK(['liever', 'graager', 'beter'], 0, 'vergelijk',
+        'The comparative of graag is liever. graager does not exist, and beter would mean better.'), 'een bakkie pleur dan thee.'] },
+      { en: 'The soup was better yesterday than today.', parts: ['De soep', FK(['was', 'is'], 0, 'imp',
+        'gisteren is past, so the verb is past too: was.'), 'gisteren', FK(['beter', 'goeder', 'gooder'], 0, 'vergelijk',
+        'goed has its own comparative: goed, beter, best. goeder does not exist.'), 'dan vandaag.'] },
+
+      // ---- builds: review of the earlier tiers
+      { en: 'After dinner we went home by water taxi.', parts: ['Na het eten', FK(['zijn we', 'we zijn'], 0, 'v2',
+        'Na het eten fills slot 1, so the verb comes second, then we.'), 'met de watertaxi naar huis', FK(['gegaan', 'gegaat', 'gegaand'], 0, 'perf',
+        'gaan has its own participle: gegaan, and it takes zijn.'), '.'] },
+      { en: 'Can we split the bill?', parts: ['Kunnen we de rekening', FK(['splitsen', 'gesplitst', 'te splitsen'], 0, 'modal',
+        'kunnen sends a bare infinitive to the end: splitsen. No ge, no te.'), '?'] },
+      { en: 'I picked up the kapsalon at seven o\'clock.', parts: ['Ik', FK(['haalde', 'haalte'], 0, 'imp',
+        'haal ends in l, no ketchup letter: haalde with a d.'), 'de kapsalon om zeven uur', FK(['op', 'opgehaald'], 0, 'sep',
+        'ophalen splits: haalde stays in slot 2 and op goes to the end.'), '.'] },
+
+      // ---- words: the table, the menu, the bill, Rotterdam on a plate
+      { w: 'the kapsalon', nl: 'de kapsalon' }, { w: 'the market hall', nl: 'de markthal' }, { w: 'the water taxi', nl: 'de watertaxi' },
+      { w: 'a cup of coffee (Rotterdam slang)', nl: 'een bakkie pleur' },
+      { w: 'the café', nl: 'het café', wrong: 'de café' }, { w: 'the sandwich', nl: 'het broodje', wrong: 'de broodje' },
+      { w: 'the soup', nl: 'de soep' }, { w: 'the salt', nl: 'het zout', wrong: 'de zout' }, { w: 'the plate', nl: 'het bord', wrong: 'de bord' },
+      { w: 'the fork', nl: 'de vork' }, { w: 'the reservation', nl: 'de reservering' },
+      { w: 'the portion of fries', nl: 'het patatje', wrong: 'de patatje' }, { w: 'the meat', nl: 'het vlees' },
+      { w: 'the herring', nl: 'de haring' }, { w: 'the bill', nl: 'de rekening' }, { w: 'the dessert', nl: 'het toetje' },
+      { w: 'the tip', nl: 'de fooi' }, { w: 'the dinner', nl: 'het avondeten' },
+      { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the price', nl: 'de prijs' }, { w: 'tasty', nl: 'lekker' }, { w: 'to split', nl: 'splitsen' },
+
+      // ---- reads: three traps with their own options, three straight from the table
+      { read: true, nl: 'Het eten was koud, maar de bediening was vriendelijk.', o: ['The food was cold, but the service was friendly.', 'The food is cold, but the service was friendly.', 'The food was cold because the service was friendly.'], a: 0, r: 'imp',
+        w: 'was is the past, and maar means but. Both halves are already over.' },
+      { read: true, nl: 'Ik zou graag een tafel voor twee reserveren.', o: ['I would like to reserve a table for two.', 'I reserved a table for two.', 'I have to reserve a table for two.'], a: 0, r: 'zou',
+        w: 'zou plus the infinitive at the end is the polite want. A finished booking would be heb gereserveerd.' },
+      { read: true, nl: 'Dit is de beste kapsalon van Rotterdam.', o: ['This is the best kapsalon in Rotterdam.', 'This is better than the kapsalon in Rotterdam.', 'This is the biggest kapsalon in Rotterdam.'], a: 0, r: 'vergelijk',
+        w: 'de beste is the superlative: the best of them all. Better than would be beter dan.' },
+      { read: true, nl: 'Doe mij maar een bakkie pleur.', en: "I'll just have a coffee." },
+      { read: true, nl: 'Zullen we de rekening even splitten?', en: 'Shall we just split the bill?' },
+      { read: true, nl: 'Is alles naar wens?', en: 'Is everything to your liking?' },
+
+      // ---- listens: a past tense and a price by ear, one landmark
+      { listen: true, nl: 'bestelde', en: 'ordered' }, { listen: true, nl: 'de kubuswoningen', en: 'the cube houses' },
+      { listen: true, nl: 'twaalf euro vijftig', en: '€ 12,50' },
+
+      // ---- looks: the Maas, the Erasmusbrug, the door of the café
+      { look: true, prop: 'water', nl: 'het water', en: 'the water' }, { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
+      { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
+
+      // ---- de of het
+      { dehet: true, nl: 'ontbijt', art: 'het', en: 'the breakfast' },
+      { dehet: true, nl: 'kopje', art: 'het', en: 'the little cup', w: 'het kopje. Every -je word is het, even for de kop.' },
+    ] }]);
+})();
+
+// ---- content/new/L78.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 78, Het station. Rotterdam Centraal under its pointed steel roof,
+// the metro, the Waterbus home to Alblasserdam, the water taxi at the Erasmusbrug, the Markthal, Blaak and the
+// cube houses, Hoek van Holland at the end of the line. Getting around, tickets, delays, directions and the time,
+// told back in the past.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (wachtte, woonden, voelde) and of
+// the common irregulars (was, had, ging, kwam, deed, zag, kocht, sprak, liep, begon, zat, verstond), reflexive
+// verbs (zich voelen, zich vergissen), zou plus infinitive for polite requests, comparatives and superlatives
+// (dichter, langer, de snelste, liever dan). Review: the perfectum with hebben, V2 after a time word and after maar,
+// niet/geen, hoeven, separable verbs (aankomen, afslaan, overstappen), telling the time, the imperative.
+// Still inside the fence: 12 words max, no sub-clauses with the verb at the end, no relative clauses, no passive.
+// Sources: dutch-lessons vault, 02 - Grammar (imperfectum, reflexieve werkwoorden, modale werkwoorden, 't kofschip,
+// V2 word order, scheidbare werkwoorden, zijn of hebben), _site/grammar/trappen-van-vergelijking-comparison (liever,
+// dan, -er and -st), _site/situations/directions (rechtdoor, links, rechts, de weg wijzen, oversteken),
+// _site/words (de bus, de trein, het centraal station, de bushalte, overstappen, de uitgang),
+// MOC Tijd, dagen & maanden; content/towns.js for Rotterdam (de metro, de watertaxi, de hijskraan, de Markthal,
+// de Erasmusbrug, Niet lullen maar poetsen, een bakkie pleur).
+// New rules: none (klok, vergr and gebod are guarded below). New props: none (brug, fiets, deur).
+(() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 78, act: 7, name: 'Het station', town: 'rotterdam', place: 'station', theme: 'square', ...P,
+    intro: 'At Rotterdam Centraal the mist took the departure board and nobody noticed, because the trains were late anyway.',
+    introNl: 'Op Rotterdam Centraal nam de mist het vertrekbord mee en niemand merkte het, want de treinen hadden toch al vertraging.',
+    mission: {
+      where: 'Rotterdam Centraal under its pointed steel roof, the metro down to the Maas, the water taxi under the Erasmusbrug, and the Waterbus home to Alblasserdam, because the dogs need a walk. The dogs always need a walk.',
+      carry: 'An OV chip card with one euro on it, a coffee from the Markthal, and the grammar book, still never opened. No helmet. A metro does not ask.',
+      want: 'Since the mist the dead on every platform speak in the past tense: where were you, what did you see, why did nobody say anything. They want was, had, ging and kwam right, and a polite zou when you ask them to move. In Rotterdam the dead do not talk much, they work. The ticket woman is still taller than you, and the two tourists beside you still split a fare to the cent.' },
+    items: [
+      // ---- builds: the imperfectum, regular by 't kofschip
+      { en: 'Yesterday I waited an hour on the platform.', parts: ['Gisteren', FK(['wachtte', 'wachtde'], 0, 'kof',
+        'The stem wacht already ends in t, a soft ketchup letter, so the past takes -te: wachtte.'), 'ik een uur op het perron.'] },
+      { en: 'We used to live closer to the station.', parts: ['Vroeger', FK(['woonden we', 'we woonden'], 0, 'v2',
+        'Vroeger takes slot 1, so the verb comes second, then we.'), FK(['dichter', 'meer dicht'], 0, 'vergelijk',
+        'Short adjectives take -er: dichter. Dutch does not say meer dicht.'), 'bij het station.'] },
+      { en: 'I felt unwell in the full metro.', parts: ['Ik', FK(['voelde', 'voelte'], 0, 'kof',
+        'The stem voel ends in l, which is not soft ketchup, so the past takes -de: voelde.'), FK(['me', 'zich'], 0, 'refl',
+        'The self-word matches the subject: ik voel me. zich is for hij, zij and ze.'), 'niet lekker in de volle metro.'] },
+
+      // ---- builds: the irregular imperfectum
+      { en: 'At eight the train finally arrived.', parts: ['Om acht uur', FK(['kwam de trein', 'de trein kwam'], 0, 'v2',
+        'Om acht uur takes slot 1, so the verb comes second: kwam, then de trein.'), 'eindelijk', FK(['aan', 'aangekomen'], 0, 'sep',
+        'In the simple past the prefix stays behind as a loose word at the end: kwam ... aan.'), '.'] },
+      { en: 'I did not see the sign, so I went to the ticket counter.', parts: ['Ik', FK(['zag', 'zagen'], 0, 'imp',
+        'zien is irregular: zag for ik, and zagen only for we, jullie and zij.'), 'het bord niet, dus ik', FK(['ging', 'gaat'], 0, 'imp',
+        'gaan is irregular: ging. gaat is the present, and never goes with ik.'), 'naar het loket.'] },
+      { en: 'What were you doing so long at the station?', parts: ['Wat', FK(['deed', 'doet'], 0, 'imp',
+        'doen is irregular: deed. doet is the present and goes with hij, not with je.'), 'je zo', FK(['lang', 'langer'], 0, 'vergelijk',
+        'After zo the plain form stays plain: zo lang. -er is only for comparing with dan.'), 'op het station?'] },
+      { en: 'The conductor spoke fast and I understood nothing.', parts: ['De conducteur', FK(['sprak', 'spreekte'], 0, 'imp',
+        'spreken is irregular: the past is sprak, with an a.'), 'heel snel en ik verstond', FK(['niets', 'geen'], 0, 'neg',
+        'geen needs a noun after it. Nothing on its own is niets.'), '.'] },
+      { en: 'Paola bought a ticket and we walked to the platform.', parts: ['Paola', FK(['kocht', 'kopte'], 0, 'imp',
+        'kopen is irregular: kocht, the same pattern as gekocht.'), 'een kaartje en we', FK(['liepen', 'lopten'], 0, 'imp',
+        'lopen is irregular: liep for one, liepen for more than one.'), 'naar het perron.'] },
+      { en: 'The stand-up began at nine, but I was still on the metro.', parts: ['De standup', FK(['begon', 'begonde'], 0, 'imp',
+        'beginnen is irregular: the past is begon.'), 'om negen, maar', FK(['ik zat', 'zat ik'], 0, 'v2',
+        'maar does not count as a slot, so the subject stays first: maar ik zat.'), 'nog in de metro.'] },
+
+      // ---- builds: comparatives, superlatives, liever
+      { en: 'The metro is the fastest route to the Markthal.', parts: ['De metro is de', FK(['snelste', 'snelst', 'sneller'], 0, 'vergelijk',
+        'Before a noun the superlative takes -e: de snelste route. Alone you would say het snelst.'), 'route naar de Markthal.'] },
+      { en: 'I prefer to take the train rather than the bus.', parts: ['Ik ga', FK(['liever', 'graag', 'meer graag'], 0, 'vergelijk',
+        'graag, liever, liefst is one ladder. Comparing two things with dan takes liever, and Dutch has no meer graag.'), 'met de trein dan met de bus.'] },
+
+      // ---- builds: zou plus infinitive
+      { en: 'Could you watch my suitcase for a moment?', parts: ['Zou je even op mijn koffer', FK(['kunnen letten', 'kan letten'], 0, 'modal',
+        'After zou both verbs stand at the end as infinitives: kunnen letten. kan is the present tense.'), '?'] },
+      { en: 'Could you show me the way to the Markthal?', parts: ['Zou je me de weg naar de Markthal kunnen', FK(['wijzen', 'te wijzen', 'gewezen'], 0, 'modal',
+        'After kunnen the other verb stays a bare infinitive, no te and no ge.'), '?'] },
+
+      // ---- builds: review, perfectum, reflexive, time, hoeven, imperative
+      { en: 'I lost my OV chip card at the station.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
+        'Losing something is not going anywhere, so hebben: ik heb.'), 'mijn ov-chipkaart op het station', FK(['verloren', 'geverloren'], 0, 'perf',
+        'Verbs that start with ver- never take ge: verloren.'), '.'] },
+      { en: 'Sorry, I got the time wrong.', parts: ['Sorry, ik heb', FK(['me', 'zich'], 0, 'refl',
+        'The self-word matches the subject: ik heb me vergist.'), 'in de tijd', FK(['vergist', 'gevergist'], 0, 'perf',
+        'zich vergissen starts with ver-, so no ge: vergist.'), '.'] },
+      { en: 'My metro leaves at 11:40.', parts: ['Mijn metro vertrekt om', FK(['tien over half twaalf', 'tien voor half twaalf'], 0, 'klok',
+        'Past the half hour you count from half: ten past half twelve is 11:40. Ten before half twelve is 11:20.'), '.'] },
+      { en: 'This is a direct train, you do not have to change.', parts: ['Dit is een directe trein, u', FK(['hoeft', 'moet'], 0, 'mag',
+        'hoeft niet te means there is no need. moet takes a bare infinitive, with no te.'), 'niet', FK(['over te stappen', 'te overstappen', 'overstappen te'], 0, 'sep',
+        'With te the little word goes between the parts: over te stappen.'), '.'] },
+      { en: 'Turn right at the traffic light.', parts: ['Sla bij het stoplicht rechts', FK(['af', 'afslaan', 'af te'], 0, 'gebod',
+        'A command is the bare stem in slot 1 and the prefix goes to the end: sla ... af.'), '.'] },
+
+      // ---- words: the station, the transport, the roads
+      { w: 'the platform', nl: 'het perron', wrong: 'de perron' }, { w: 'the delay', nl: 'de vertraging' },
+      { w: 'the ticket counter', nl: 'het loket' }, { w: 'the conductor', nl: 'de conducteur' },
+      { w: 'the underground', nl: 'de metro' }, { w: 'the Waterbus', nl: 'de Waterbus' },
+      { w: 'the water taxi', nl: 'de watertaxi' }, { w: 'the bus stop', nl: 'de bushalte' },
+      { w: 'the timetable', nl: 'de dienstregeling' }, { w: 'the traveller', nl: 'de reiziger' },
+      { w: 'the departure', nl: 'het vertrek', wrong: 'de vertrek' }, { w: 'the arrival', nl: 'de aankomst' },
+      { w: 'the season pass', nl: 'het abonnement', wrong: 'de abonnement' }, { w: 'the rush hour', nl: 'de spits' },
+      { w: 'the disruption', nl: 'de storing' }, { w: 'the diversion', nl: 'de omleiding' },
+      { w: 'the traffic light', nl: 'het stoplicht', wrong: 'de stoplicht' }, { w: 'the roundabout', nl: 'de rotonde' },
+      { w: 'the escalator', nl: 'de roltrap' }, { w: 'the quarter of an hour', nl: 'het kwartier', wrong: 'de kwartier' },
+
+      // ---- reads: three traps with their own options, three plain lines from the station and from the city
+      { read: true, nl: 'Mijn trein had een uur vertraging.', o: ['My train was an hour late.', 'My train will be an hour late.', 'My train leaves in an hour.'], a: 0, r: 'imp',
+        w: 'had is the past of hebben, so it already happened. A train that is late right now says heeft, and one that will be late says krijgt.' },
+      { read: true, nl: 'Zou je even kunnen opschuiven?', o: ['Could you move over a bit?', 'Did you move over?', 'You have to move over.'], a: 0, r: 'modal',
+        w: 'zou plus kunnen is the polite way to ask. It is a question, not a past and not an order.' },
+      { read: true, nl: 'De metro is sneller dan de tram, maar de bus is goedkoper.', o: ['The metro is faster than the tram, but the bus is cheaper.', 'The metro is faster than the bus, but the tram is cheaper.', 'The metro is cheaper than the tram, but the bus is faster.'], a: 0, r: 'vergelijk',
+        w: 'sneller dan is faster than, and goedkoper is cheaper. Read which vehicle sits on each side of dan.' },
+      { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
+      { read: true, nl: 'Zullen we een bakkie pleur doen?', en: 'Shall we have a coffee?' },
+      { read: true, nl: 'Loop rechtdoor en dan links.', en: 'Walk straight on and then turn left.' },
+
+      // ---- listens: the time, a platform, a harbour word
+      { listen: true, nl: 'kwart voor elf', en: '10:45' }, { listen: true, nl: 'spoor veertien', en: 'track 14' },
+      { listen: true, nl: 'de hijskraan', en: 'the crane' },
+
+      // ---- looks: the bridge, the bike, the tram door
+      { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' }, { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
+
+      // ---- de or het
+      { dehet: true, nl: 'metrostation', art: 'het', en: 'the metro station', w: 'het metrostation. A compound takes the article of its last part, and station is a het-word.' },
+      { dehet: true, nl: 'treinreis', art: 'de', en: 'the train journey', w: 'de treinreis. reis is a de-word, and the compound follows it.' },
+    ] }]);
+})();
+
+// ---- content/new/L79.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 79 Het werk. A glass tower on the Nieuwe Maas with the light-blue
+// Erasmusbrug in the window, harbour cranes lifting nothing, the Markthal for lunch, the metro and the watertaxi
+// for the commute. Office, home office, standup, meetings, incidents, colleagues, the laptop, told in the past.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (werkte, duurde, belde, lachte,
+// wachtten, verveelden), the common irregulars (was, ging, zag, sprak, liep, viel), reflexive verbs (zich voelen,
+// zich vergissen, zich vervelen), zou plus infinitive for polite requests (zou je me kunnen helpen, ik zou liever
+// thuis werken), comparatives and superlatives (beter, liever, minder, de snelste, de langste).
+// Review of earlier tiers: perfectum with a separable participle (uitgerold), V2 after a time phrase, geen against
+// niet, aan het plus infinitive, de or het.
+// Still inside the fence: 12 words max, no omdat/dat/als/toen clauses, no relative clauses, no passive.
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum, reflexieve werkwoorden, 't kofschip, V2 word order,
+// scheidbare werkwoorden, aan het + infinitief; 03 - Verbs/zich voelen; 04 - Phrases & Scenarios/De standup - tech
+// talk (alerts, blockers, even kijken, Na de fix was alles weer groen), Koffiepraatje op kantoor (Het apparaat doet
+// het weer niet, Druk, druk, druk), Uitleggen wat je doet - Dynatrace; _site/words (graag-liever-liefst,
+// goed-beter-best, weinig-minder-minst, zich-vergissen, zich-herinneren, kunt-u-dit-even-nakijken, werk-je-thuis-of-op-kantoor);
+// MOC Werk; content/towns.js for Rotterdam (de Erasmusbrug, de Markthal, de wolkenkrabber, de hijskraan, de metro,
+// de watertaxi, een bakkie pleur, Niet lullen maar poetsen, the dead who work instead of talk).
+// New rules: zou (polite requests). vergelijk is guarded below, the rest are in data.js.
+// New props: none. Only brug, deur and fiets are used (not lamp or huis: neither is a right answer from the word pool).
+(() => {
+  window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'modale werkwoorden' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 79, act: 7, name: 'Het werk', town: 'rotterdam', place: 'werk', theme: 'square', ...P,
+    intro: 'Rotterdam never stopped working, not even after the end of the world. The standup is still at nine.',
+    introNl: 'Rotterdam is nooit gestopt met werken, zelfs niet na het einde van de wereld. De standup is nog steeds om negen uur.',
+    mission: {
+      where: 'A glass tower on the Nieuwe Maas, the light-blue Erasmusbrug in the window and harbour cranes lifting nothing. The lift is out, the coffee machine is broken again, and on Fridays the office is the kitchen table.',
+      carry: 'A laptop at three percent, a lanyard, the dogs\' leads in the bag because the dogs always need a walk, and a lunch receipt split to the cent. The grammar book was never opened. No helmet, not even on the bridge.',
+      want: 'The mist came and everyone who spoke Dutch changed. The colleagues still hold their standup, only in the past tense now, and the project lead is taller than you, like everyone else. Niet lullen maar poetsen: say it right and they let you reach your desk.' },
+    items: [
+      // ---- builds: the imperfectum, regular by 't kofschip
+      { en: 'Last year I worked at a bank in Rotterdam.', parts: ['Vorig jaar', FK(['werkte', 'werkde', 'werkt'], 0, 'kof',
+        'werk ends in k, a ketchup letter, so the past takes -te: werkte. werkt is the present.'), 'ik bij een bank in Rotterdam.'] },
+      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurte', 'duurt'], 0, 'kof',
+        'duur ends in r, not a ketchup letter, so the past takes -de: duurde. Gisteren asks for the past.'), 'de vergadering twee uur.'] },
+      { en: 'Last night there was an outage at the office.', parts: ['Gisteravond', FK(['was', 'waren', 'heeft'], 0, 'imp',
+        'zijn is irregular in the past: was for one thing, waren for several. One outage, so was.'), 'er een storing op kantoor.'] },
+      { en: 'Last night I went home late. The dogs were already waiting.', parts: ['Gisteravond', FK(['ging ik', 'ik ging'], 0, 'v2',
+        'Gisteravond takes slot 1, so the verb comes second, then ik.'), 'laat naar huis. De honden', FK(['wachtten', 'wachtte', 'wachtde'], 0, 'kof',
+        'De honden is plural, so -n. wacht ends in t, a ketchup letter, so -te: wachtten.'), 'al.'] },
+      { en: 'I saw the error on my screen and called Mark.', parts: ['Ik', FK(['zag', 'zien', 'zagen'], 0, 'imp',
+        'zien is irregular: ik zag, wij zagen. No -de on the end.'), 'de fout op mijn scherm en', FK(['belde', 'belte'], 0, 'kof',
+        'bel ends in l, not a ketchup letter, so -de: belde.'), 'Mark.'] },
+      { en: 'During the standup I spoke Dutch and nobody laughed.', parts: ['Tijdens de standup', FK(['sprak ik', 'ik sprak'], 0, 'v2',
+        'Tijdens de standup takes slot 1, so the verb comes second, then ik.'), 'Nederlands en niemand', FK(['lachte', 'lachde'], 0, 'kof',
+        'lach ends in ch, a ketchup letter, so -te: lachte.'), '.'] },
+      { en: 'After the standup I walked over the Erasmus Bridge to the Markthal.', parts: ['Na de standup', FK(['liep ik', 'ik liep'], 0, 'v2',
+        'Na de standup takes slot 1, so the verb comes second, then ik. lopen is irregular: liep.'), 'over de Erasmusbrug naar', FK(['de', 'het'], 0, 'dehet',
+        'It is a hal, a de-word, so de Markthal.'), 'Markthal.'] },
+      { en: 'I was building a dashboard and the wifi went down.', parts: ['Ik was een dashboard', FK(['aan het', 'aan de'], 0, 'aanhet',
+        'Busy doing something is aan het plus the infinitive, always het.'), 'bouwen en de wifi', FK(['viel', 'valde', 'vielt'], 0, 'imp',
+        'vallen is irregular: viel. uit goes to the end because uitvallen is separable.'), 'uit.'] },
+
+      // ---- builds: reflexive verbs
+      { en: 'I feel better today than yesterday.', parts: ['Ik voel', FK(['me', 'zich', 'ons'], 0, 'refl',
+        'voelen is reflexive and the self word matches the subject: ik voel me. zich is for hij, zij, het.'), 'vandaag', FK(['beter', 'gooder'], 0, 'vergelijk',
+        'goed is irregular: goed, beter, best. Never gooder.'), 'dan gisteren.'] },
+      { en: 'Sorry, I made a mistake with the password.', parts: ['Sorry, ik heb', FK(['me', 'zich'], 0, 'refl',
+        'ik goes with me: ik heb me vergist.'), FK(['vergist', 'gevergist'], 0, 'perf',
+        'ver- verbs never take ge: vergist.'), 'in het wachtwoord.'] },
+      { en: 'Last Monday I worked at home and the dogs were bored.', parts: ['Afgelopen maandag werkte ik thuis en de honden', FK(['verveelden', 'verveelde'], 0, 'imp',
+        'verveel ends in l, not a ketchup letter, so the past takes -de, and De honden is plural, so -n: verveelden.'), FK(['zich', 'zij'], 0, 'refl',
+        'The dogs are they, so the self word is zich: de honden vervelen zich. zij is a subject word and cannot stand there.'), '.'] },
+
+      // ---- builds: zou plus infinitive, polite requests and wishes
+      { en: 'Could you help me with this alert?', parts: ['Zou je me even', FK(['kunnen', 'kan', 'kon'], 0, 'zou',
+        'zou is the polite opener and the next verb stays an infinitive: zou je kunnen.'), 'helpen', FK(['met', 'aan', 'voor'], 0, 'woord',
+        'helpen goes with met: helpen met iets.'), 'deze melding?'] },
+      { en: 'I would rather work at home today.', parts: ['Ik zou vandaag', FK(['liever', 'graager', 'meer graag'], 0, 'vergelijk',
+        'graag, liever, liefst: the comparative of graag is liever.'), 'thuis', FK(['werken', 'werk', 'gewerkt'], 0, 'zou',
+        'After zou the main verb goes to the end as an infinitive: werken.'), '.'] },
+
+      // ---- builds: comparatives and superlatives
+      { en: 'This laptop is the fastest in the whole office.', parts: ['Deze laptop is de', FK(['snelste', 'snelst', 'sneller'], 0, 'vergelijk',
+        'After de the superlative takes -ste: de snelste. sneller compares two things, and snelst never follows de.'), 'van het hele kantoor.'] },
+      { en: 'Yesterday was the longest meeting of the year.', parts: ['Gisteren', FK(['was', 'waren'], 0, 'imp',
+        'The subject is het, one thing, so was.'), 'het de', FK(['langste', 'langer', 'langst'], 0, 'vergelijk',
+        'After de the superlative gets -ste: de langste vergadering.'), 'vergadering van het jaar.'] },
+      { en: 'On Friday there are fewer people at the office.', parts: ['Op vrijdag', FK(['zijn er', 'er zijn'], 0, 'v2',
+        'Op vrijdag takes slot 1, so the verb comes second, then er.'), FK(['minder', 'meer weinig', 'minst'], 0, 'vergelijk',
+        'weinig, minder, minst: fewer is minder.'), 'mensen op kantoor.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'Yesterday I fixed the bug and rolled out the fix.', parts: ['Gisteren', FK(['heb ik', 'ik heb'], 0, 'v2',
+        'Gisteren takes slot 1, so heb comes second, then ik.'), 'de bug opgelost en de fix', FK(['uitgerold', 'geuitrold', 'uitgerolt'], 0, 'sep',
+        'The ge goes in the middle: uit + gerold, one word at the end. rol ends in l, so -d.'), '.'] },
+      { en: "I don't have time for an extra meeting today.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
+        'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd voor een extra vergadering.'] },
+
+      // ---- words: the office, the laptop, the team, the commute
+      { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' }, { w: 'the screen', nl: 'het scherm', wrong: 'de scherm' },
+      { w: 'the keyboard', nl: 'het toetsenbord' }, { w: 'the charger', nl: 'de oplader' },
+      { w: 'the password', nl: 'het wachtwoord', wrong: 'de wachtwoord' }, { w: 'the meeting', nl: 'de vergadering' },
+      { w: 'the dashboard', nl: 'het dashboard', wrong: 'de dashboard' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
+      { w: 'the colleagues', nl: "de collega's" }, { w: 'the desk', nl: 'het bureau' }, { w: 'the boss', nl: 'de baas' },
+      { w: 'the customer', nl: 'de klant' }, { w: 'the alert', nl: 'de melding' }, { w: 'the outage', nl: 'de storing' },
+      { w: 'the coffee machine', nl: 'het koffieapparaat' }, { w: 'the lunch break', nl: 'de lunchpauze' },
+      { w: 'the work-from-home day', nl: 'de thuiswerkdag' }, { w: 'the metro', nl: 'de metro' },
+      { w: 'the water taxi', nl: 'de watertaxi' },
+
+      // ---- reads: two traps with their own options, four plain lines from the office and the city
+      { read: true, nl: 'De server was om negen uur weer terug.', o: ["The server was back at nine o'clock.", "The server will be back at nine o'clock.", "The server went down at nine o'clock."], a: 0, r: 'imp',
+        w: 'was is the past and weer terug means back again. Will be back would be zal terug zijn.' },
+      { read: true, nl: 'Zou je me even kunnen bellen?', o: ['Could you give me a call?', 'Did you call me?', 'Shall I call you?'], a: 0, r: 'zou',
+        w: 'zou je kunnen is the polite request. Shall I would be zal ik.' },
+      { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
+      { read: true, nl: 'Mark werkt harder dan ik, maar ik werk slimmer.', o: ['Mark works harder than I do, but I work smarter.', 'Mark works as hard as I do, but more slowly.', 'I work harder than Mark, but he works smarter.'], a: 0, r: 'vergelijk',
+        w: 'harder dan ik: Mark works harder than I do. slimmer is smarter, and that is ik.' },
+      { read: true, nl: 'Zin in een bakkie pleur?', en: 'Fancy a coffee? (Rotterdam slang)' },
+      { read: true, nl: 'Ik werk vandaag thuis, dus de honden zijn blij.', en: 'I work from home today, so the dogs are happy.' },
+
+      // ---- listens: two Rotterdam skyline words, one past form, one office word
+      { listen: true, nl: 'de wolkenkrabber', en: 'the skyscraper' }, { listen: true, nl: 'de hijskraan', en: 'the crane' },
+      { listen: true, nl: 'ik werkte', en: 'I worked' }, { listen: true, nl: 'de deadline', en: 'the deadline' },
+
+      // ---- looks: the bridge, the office door, the bike
+      { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
+      { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+
+      // ---- de of het
+      { dehet: true, nl: 'bedrijf', art: 'het', en: 'the company', w: 'het bedrijf. The plural is de bedrijven, because every plural is de.' },
+      { dehet: true, nl: 'afspraak', art: 'de', en: 'the appointment' },
+    ] }]);
+})();
+
+// ---- content/new/L80.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 80 De sport. Running and cycling along the Maas, the Erasmusbrug,
+// the park by the Euromast, De Kuip, the gym, the golf course outside the city, the wind off the harbour.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (golfte, fietste against voelde,
+// vergisten), the common irregulars (was, zag, kocht, deed, liet, liepen), reflexive verbs in the past
+// (voelde me, vergisten ons, vervelen zich), zou plus infinitive for polite requests (Zou je ... kunnen vasthouden,
+// Ik zou graag ... willen reserveren), comparatives and superlatives (sneller, het verst).
+// Review of earlier tiers: perfectum with zijn (gegaan), separable verbs in the imperfectum (liet ... uit), the adjective -e,
+// geen against niet, V2 after a fronted time phrase.
+// Still inside the fence: 12 words max, no sub-clauses with the verb at the end (want keeps V2), no passive, no relative clauses.
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum (golfte, wandelde, liet ... uit), reflexieve werkwoorden
+// (voelen, vergissen, vervelen), 't kofschip, zachtmakers; 03 - Verbs/uitlaten (the imperfectum table: Ik liet de honden uit),
+// wandelen, zullen; 04 - Phrases & Scenarios/Op de golfbaan (Ik zou graag een starttijd willen reserveren,
+// Jij ligt het verst, Het waait weer eens, Een buitje deert ons niet); _site/situations/small-talk (Wat een weer, hè?);
+// _site/words (de sportschool, de sport, het golfen); content/towns.js for Rotterdam (De Erasmusbrug, De Euromast,
+// de Maas, de watertaxi, de metro, een bakkie pleur, Niet lullen maar poetsen).
+// New rules: zou and vergl are guarded below (vergl may already exist from another level). imp, refl, kof, perf, sep, adj, neg, aux, modal
+// and woord are in data.js and levels.js.
+// New props: none. Only fiets, boom and hond are used. The word pool has no plain de fiets, de boom or de hond (only
+// het fietspad, het fietsslot, het rondje), so no look prop is also a right answer for a word item. brug is left out on
+// purpose: de Erasmusbrug is a word item, and a bridge prop would make it a second right answer.
+// Replay from L78 and L79: de metro, de watertaxi, de vergadering. No de Kuip listen, because it would be a right answer
+// for the word item het stadion.
+(() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zullen' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 80, act: 7, name: 'De sport', town: 'rotterdam', place: 'sport', theme: 'square', ...P,
+    intro: 'In Rotterdam you do not talk about sport, you do it. Since the mist the dead do it too, and nobody can tell who is winning.',
+    introNl: 'In Rotterdam praat je niet over sport, je doet het. Sinds de mist doen de doden mee, en niemand kan zien wie er wint.',
+    mission: {
+      where: 'Along the Maas from the Erasmusbrug to the park under the Euromast, past the glass towers, with De Kuip waiting on the south side and a cycle path nobody warned you about. The wind comes straight off the harbour and is never behind you.',
+      carry: 'A golf bag, two dog leads, a bidon and a new bike lock. The dogs still need a walk. The grammar book is still at the bottom of the bag, unopened. No helmet. The wind has opinions about that.',
+      want: 'The dead run, cycle and referee beside you, and all they want to know is what happened yesterday: was, zag, kocht, liep. Rotterdam says niet lullen maar poetsen, so answer fast and keep moving. At the clubhouse they still split the bill, and the women on the treadmills are still taller than you.' },
+    items: [
+      // ---- builds: the imperfectum, regular by 't kofschip
+      { en: 'I used to play golf every Saturday.', parts: ['Vroeger', FK(['golfte ik', 'ik golfte', 'golfde ik'], 0, 'imp',
+        'golf ends in f, a ketchup letter, so -te: golfte. Vroeger takes slot 1, so the verb comes before ik.'), 'elke zaterdag.'] },
+      { en: 'I cycled along the Maas every day.', parts: ['Ik', FK(['fietste', 'fietsde', 'fietsten'], 0, 'imp',
+        'fiets ends in s, a ketchup letter, so -te: fietste. -ten is for we, jullie and zij.'), 'elke dag langs de Maas.'] },
+      { en: 'After the run I felt great.', parts: ['Na het hardlopen', FK(['voelde ik', 'ik voelde', 'voelte ik'], 0, 'imp',
+        'voel ends in l, not a ketchup letter, so -de: voelde. Na het hardlopen takes slot 1, so the verb comes before ik.'), FK(['me', 'zich', 'je'], 0, 'refl',
+        'The self-word matches the subject: ik goes with me, and it sits right after ik.'), 'geweldig.'] },
+      { en: 'We were late because we got the time wrong.', parts: ['We kwamen te laat, want we', FK(['vergisten', 'vergisden', 'vergist'], 0, 'imp',
+        'vergis ends in s, a ketchup letter, so -ten for we: vergisten.'), FK(['ons', 'zich', 'me'], 0, 'refl',
+        'we goes with ons, and it sits right after the verb.'), 'in de tijd.'] },
+      { en: 'The dogs get bored in the rain.', parts: ['De honden', FK(['vervelen zich', 'zich vervelen', 'verveelt zich'], 0, 'refl',
+        'For he, she and they the self-word is zich, and it follows the verb. Two dogs keep the plural verb: vervelen.'), 'in de regen.'] },
+
+      // ---- builds: the common irregulars
+      { en: 'On Sunday we walked along the Maas to the Erasmus Bridge.', parts: ['Zondag', FK(['liepen we', 'we liepen', 'liep we'], 0, 'imp',
+        'lopen is irregular: liep, liepen for we. Zondag takes slot 1, so the verb comes before we.'), 'langs de Maas naar de Erasmusbrug.'] },
+      { en: 'After the match I was dead tired.', parts: ['Na de wedstrijd', FK(['was ik', 'ik was', 'waren ik'], 0, 'imp',
+        'zijn becomes was with ik. Na de wedstrijd takes slot 1, so was comes before ik.'), 'doodmoe.'] },
+      { en: 'I saw the Euromast above the trees.', parts: ['Ik', FK(['zag', 'zagen', 'zien'], 0, 'imp',
+        'zien is irregular: zag for ik, zagen for we. zien is only the infinitive.'), 'de Euromast boven de bomen.'] },
+      { en: 'Yesterday I bought a new golf bag.', parts: ['Ik', FK(['kocht', 'kochte', 'kochten'], 0, 'imp',
+        'kopen is irregular: kocht, with no extra -e and no plural.'), 'gisteren een', FK(['nieuwe', 'nieuw'], 0, 'adj',
+        'golftas is a de-word, so the adjective takes -e: een nieuwe golftas.'), 'golftas.'] },
+      { en: 'What did you do after training?', parts: ['Wat', FK(['deed je', 'je deed', 'doede je'], 0, 'imp',
+        'doen is irregular: deed. A question word takes slot 1, so the verb comes before je.'), 'na de training?'] },
+      { en: 'I walked the dogs along the Maas at seven.', parts: ['Ik', FK(['liet', 'laatte', 'liette'], 0, 'imp',
+        'laten is irregular: liet.'), 'om zeven uur de honden langs de Maas', FK(['uit', 'uitliet', 'uitgelaten'], 0, 'sep',
+        'In the imperfectum the prefix stays behind at the very end: liet ... uit.'), '.'] },
+
+      // ---- builds: polite requests with zou
+      { en: 'Could you hold my bag for a moment?', parts: [FK(['Zou', 'Zouden', 'Zoud'], 0, 'zou',
+        'zou plus infinitive is the polite request. With je it is zou, never zouden.'), 'je mijn tas even', FK(['kunnen vasthouden', 'te kunnen vasthouden', 'kan vasthouden'], 0, 'modal',
+        'After zou the infinitive pair goes to the end, with the modal first and no te: kunnen vasthouden.'), '?'] },
+      { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['zou', 'zal', 'zouden'], 0, 'zou',
+        'Ik zou graag is the polite way to ask for something.'), 'graag een starttijd', FK(['willen reserveren', 'te willen reserveren', 'wil reserveren'], 0, 'modal',
+        'zou needs an infinitive, and the pair sits at the end with the modal first and no te: willen reserveren.'), 'voor zaterdag.'] },
+
+      // ---- builds: comparatives and superlatives
+      { en: 'Today I cycle faster than yesterday.', parts: ['Vandaag fiets ik', FK(['sneller', 'snellere', 'meer snel'], 0, 'vergelijk',
+        'A short adjective takes -er: snel becomes sneller. -e is only for an adjective before a noun.'), 'dan gisteren.'] },
+      { en: 'You are the furthest from the flag, so you go first.', parts: ['Jij ligt', FK(['het verst', 'het verder', 'de verst'], 0, 'vergelijk',
+        'The superlative of ver is verst, and after liggen it takes het: het verst. verder is the comparative.'), 'van de vlag, dus jij mag eerst.'] },
+
+      // ---- builds: review
+      { en: 'On Saturday we went to De Kuip.', parts: ['Zaterdag', FK(['zijn we', 'we zijn', 'hebben we'], 0, 'aux',
+        'Going somewhere takes zijn. Zaterdag takes slot 1, so the verb comes before we.'), 'naar De Kuip', FK(['gegaan', 'gegaat', 'gegaand'], 0, 'perf',
+        'gaan is irregular: gegaan.'), '.'] },
+      { en: 'Today I have no time for the gym.', parts: ['Vandaag heb ik', FK(['geen', 'niet'], 0, 'neg',
+        'A noun with no article after it takes geen: geen tijd, not niet tijd.'), 'tijd voor de sportschool.'] },
+
+      // ---- words: Rotterdam, the gym, the match, the road
+      { w: 'the Euromast', nl: 'de Euromast' },
+      { w: 'the Erasmus Bridge', nl: 'de Erasmusbrug' },
+      { w: 'the stadium', nl: 'het stadion', wrong: 'de stadion' },
+      { w: 'the treadmill', nl: 'de loopband' },
+      { w: 'the changing room', nl: 'de kleedkamer' },
+      { w: 'the weight (at the gym)', nl: 'het gewicht', wrong: 'de gewicht' },
+      { w: 'the towel', nl: 'de handdoek' },
+      { w: 'the water bottle on the bike', nl: 'de bidon' },
+      { w: 'the helmet (which you do not wear)', nl: 'de helm' },
+      { w: 'the cycle path', nl: 'het fietspad', wrong: 'de fietspad' },
+      { w: 'the bike lock', nl: 'het fietsslot' },
+      { w: 'the headwind', nl: 'de tegenwind' },
+      { w: 'the goal (scored)', nl: 'het doelpunt', wrong: 'de doelpunt' },
+      { w: 'the referee', nl: 'de scheidsrechter' },
+      { w: 'the pitch', nl: 'het veld' },
+      { w: 'the walk round the block with the dogs', nl: 'het rondje', wrong: 'de rondje' },
+      { w: 'the marathon', nl: 'de marathon' },
+      { w: 'the water taxi', nl: 'de watertaxi' },
+      { w: 'the underground', nl: 'de metro' },
+      { w: 'the meeting', nl: 'de vergadering' },
+
+      // ---- reads: three traps with their own options, three lines from the road and the course
+      { read: true, nl: 'We liepen langs de Maas.', o: ['We walked along the Maas.', 'We are walking along the Maas.', 'We will walk along the Maas.'], a: 0, r: 'imp',
+        w: 'liepen is the past of lopen, so it is over. Walking now would be we lopen, and later we gaan lopen.' },
+      { read: true, nl: 'Zou u mijn fiets even in de gaten kunnen houden?', o: ['Could you keep an eye on my bike for a moment?', 'Did you keep an eye on my bike?', 'I will keep an eye on your bike.'], a: 0, r: 'zou',
+        w: 'zou plus kunnen is a polite request. A question about the past would use heeft u ... gehouden.' },
+      { read: true, nl: 'De tegenwind was erger dan gisteren.', o: ['The headwind was worse than yesterday.', 'The headwind is the worst of the week.', 'The headwind will be worse than yesterday.'], a: 0, r: 'vergelijk',
+        w: 'erger dan is the comparative, so it is worse than something. The worst would be het ergst.' },
+      { read: true, nl: 'Het waait weer eens.', en: 'It is windy again.' },
+      { read: true, nl: 'Een buitje deert ons niet.', en: 'A little shower does not bother us.' },
+      { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
+
+      // ---- listens: the gym by ear, two verb forms
+      { listen: true, nl: 'de sportschool', en: 'the gym' },
+      { listen: true, nl: 'ze kwam', en: 'she came' },
+      { listen: true, nl: 'sneller', en: 'faster' },
+
+      // ---- looks: the bike, the trees by the Euromast, the dog
+      { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' },
+
+      // ---- de or het
+      { dehet: true, nl: 'golfen', art: 'het', en: 'the golfing', w: 'A verb used as a noun is always het: het golfen, het eten.' },
+      { dehet: true, nl: 'sporttas', art: 'de', en: 'the gym bag', w: 'A compound takes the article of its last part: de tas, so de sporttas.' },
+    ] }]);
+})();
+
+// ---- content/new/L81.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 81 De mensen. Meeting people, neighbours, small talk, the borrel,
+// feelings and arguments, told in the past and asked politely. Grounded in Rotterdam: the Markthal and the
+// kubuswoningen at Blaak, De Zwaan (the Erasmusbrug), the Witte Huis by the Oude Haven, the Euromast, the harbour,
+// the water taxi, a bakkie pleur and Niet lullen maar poetsen.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip on the infinitive stem (kletste,
+// zwaaide, voelde, verveelde, herinnerde, luisterde against maakte, werkte; -te and -de, singular against plural -den),
+// the common irregulars (was/waren, had/hadden, ging/gingen, kwam/kwamen, zag, bleef/bleven, won), reflexive verbs with
+// the self-word right after the verb (voelde me, voelden zich, herinnerde me, verveelden zich, Mag ik me even voorstellen,
+// Voel je je al beter), zou plus an infinitive for polite requests (Zou je ... kunnen zetten, Ik zou graag ... willen),
+// comparatives and superlatives (langer dan, hoger, beter, de gezelligste, the oo that loses an o in hoger).
+// Review of earlier tiers: perfectum (heeft opgegeten, heb me vergist), V2 after a time word or volgens mij, geen against
+// niet, separable verbs, modals, de against het.
+// Still inside the fence: 12 words max, no omdat/dat/als/toen clauses with the verb at the end (toen appears only as an
+// adverb in slot 1 and dus only as a plain linking word), no relative clauses, no passive.
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum, reflexieve werkwoorden, 't kofschip, elkaar, V2 word order,
+// open vs gesloten lettergreep, zachtmakers, and _site/grammar/trappen-van-vergelijking-comparison;
+// 03 - Verbs/zich voelen and zullen (Zou je me kunnen helpen, Ik zou graag een kopje koffie willen);
+// 04 - Phrases & Scenarios/Borrel met vrienden (Hoe is het, Het was weer gezellig, Ik moet zo naar huis),
+// De nieuwe buren ontmoeten (Mag ik me even voorstellen, Kan ik even iets lenen, een ladder), Koffiepraatje op kantoor;
+// _site/situations/neighbours, friends (Ik moet ervandoor);
+// _site/words (de ruzie, de mening, de buurvrouw, de collega, de grap, het plezier, zwaaien, zich vergissen,
+// zich herinneren, het verdriet);
+// content/towns.js for Rotterdam (de haven, de wolkenkrabber, de watertaxi, een bakkie pleur, Niet lullen maar poetsen,
+// De Erasmusbrug als De Zwaan, De Markthal, De kubuswoningen, De Euromast, Het Witte Huis, the harbour joke).
+// New rules: zou (note zullen) and vergelijk (note trappen-van-vergelijking-comparison), both guarded below.
+// New props: none. Only hond, brug and deur are used (the word pool has no voordeur, no hondje and no
+// Erasmusbrug, so no right-looking wrong sign appears beside those props).
+(() => {
+  window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 81, act: 7, name: 'De mensen', town: 'rotterdam', place: 'mensen', theme: 'square', ...P,
+    intro: 'The mist came and everyone who spoke Dutch changed, but nobody in Rotterdam noticed because they were working. They still split the bill.',
+    introNl: 'De mist kwam en iedereen die Nederlands sprak veranderde, maar in Rotterdam merkte niemand het, want ze waren aan het werk. De rekening delen ze nog steeds.',
+    mission: {
+      where: 'Under the Markthal and past the cube houses at Blaak, tipped on one corner like a man who skipped the last round, to a borrel on the quay at the Oude Haven, under the Witte Huis. De Zwaan, as the Erasmusbrug is called here, stands a short ride away on the river and says nothing.',
+      carry: 'Two dogs on a lead, a bottle for the host, a bakkie pleur gone cold, and the grammar book, still unopened. No helmet. The tram has right of way and knows it.',
+      want: 'The dead want to talk about the past: what you did, who you met, how you felt. Tell it in the imperfectum, use me, je or zich for the feelings, and say zou for every request. The women are still taller than you and the dogs still need a walk. In Rotterdam they say niet lullen maar poetsen, so keep it short.' },
+    items: [
+      // ---- builds: the story in the imperfectum, regular by 't kofschip and the irregulars
+      { en: 'Then the mist came and everyone changed.', parts: ['Toen', FK(['kwam', 'kwamen', 'komde'], 0, 'imp',
+        'komen is irregular: kwam for one thing, kwamen for more. De mist is one thing: kwam.'), 'de mist en iedereen', FK(['veranderde', 'veranderte', 'veranderden'], 0, 'kof',
+        'verander ends in r, which is not a soft ketchup letter, so -de. Iedereen is one person: veranderde.'), '.'] },
+      { en: 'In the port we did not chat, we worked.', parts: ['In de haven', FK(['kletsten', 'kletsde', 'kletste'], 0, 'kof',
+        'klets ends in s, a soft ketchup letter, so -te. We is plural, so -ten: kletsten.'), 'we niet, we', FK(['werkten', 'werkde', 'werkte'], 0, 'kof',
+        'werk ends in k, a soft ketchup letter, so -te, and we is plural: werkten.'), '.'] },
+      { en: 'The neighbours came to our borrel and stayed until midnight.', parts: ['De buren', FK(['kwamen', 'kwam', 'komden'], 0, 'imp',
+        'komen is irregular: kwamen for more than one. De buren is plural.'), 'op onze borrel en', FK(['bleven', 'bleef', 'blijfden'], 0, 'imp',
+        'blijven is irregular: bleef for one, bleven for more. De buren is plural: bleven.'), 'tot middernacht.'] },
+      { en: 'I saw her in the Markthal and I waved.', parts: ['Ik', FK(['zag', 'zagde', 'zien'], 0, 'imp',
+        'zien is irregular: zag. Nothing is added, no -de and no -te.'), 'haar in de Markthal en ik', FK(['zwaaide', 'zwaaite', 'zwaaiden'], 0, 'kof',
+        'zwaai ends in i, which is not a soft ketchup letter, so -de. Ik is one person: zwaaide.'), '.'] },
+      { en: 'The women were taller than me, and they still are.', parts: ['De vrouwen', FK(['waren', 'was'], 0, 'imp',
+        'De vrouwen is plural: waren. was is for one person.'), FK(['langer', 'meer lang', 'langere'], 0, 'vergelijk',
+        'lang is a short adjective, so -er and then dan: langer dan ik. Dutch does not say meer lang.'), 'dan ik, en dat zijn ze nog steeds.'] },
+      { en: 'Yesterday I did not feel like an argument, but the neighbour did.', parts: ['Gisteren', FK(['had', 'hadden', 'hadt'], 0, 'imp',
+        'hebben is irregular: had for ik. hadden is for more than one.'), 'ik', FK(['geen', 'niet'], 0, 'neg',
+        'zin is a noun with no article here, so geen: geen zin.'), 'zin in ruzie, maar de buurman wel.'] },
+      { en: 'We argued about the dishes, and Paola won.', parts: ['Wij', FK(['maakten', 'maakte', 'maakde'], 0, 'kof',
+        'maak ends in k, a soft ketchup letter, so -te. Wij is plural: maakten.'), 'ruzie over de afwas, en Paola', FK(['won', 'wonde', 'winde'], 0, 'imp',
+        'winnen is irregular: won. Learn it as a word of its own.'), '.'] },
+
+      // ---- builds: reflexive verbs, the self-word right after the verb
+      { en: 'In Rotterdam I felt at home right away.', parts: ['In Rotterdam', FK(['voelde', 'voelden', 'voelte'], 0, 'kof',
+        'voel ends in l, which is not a soft ketchup letter, so -de. Ik is one person: voelde.'), 'ik', FK(['me', 'zich', 'ons'], 0, 'refl',
+        'ik takes me, right after the verb and ik. zich is for hij, zij and het.'), 'meteen thuis.'] },
+      { en: 'Paola did not feel well, so we went home early.', parts: ['Paola voelde', FK(['zich', 'me', 'ons'], 0, 'refl',
+        'Paola is zij, so the self-word is zich.'), 'niet lekker, dus we', FK(['gingen', 'ging', 'gegaan'], 0, 'imp',
+        'gaan is irregular: ging for one, gingen for more. We is plural: gingen.'), 'vroeg naar huis.'] },
+      { en: 'The dogs were bored, so I took them out.', parts: ['De honden', FK(['verveelden', 'verveelde', 'verveeld'], 0, 'kof',
+        'verveel ends in l, so -de, and two dogs take -den: verveelden.'), FK(['zich', 'zij'], 0, 'refl',
+        'De honden is zij, plural, so the self-word is zich. zij is a subject word and cannot stand after the verb.'), ', dus ik liet ze uit.'] },
+      { en: 'At the borrel I no longer remembered her name.', parts: ['Op de borrel', FK(['herinnerde', 'herinnerte', 'herinnerden'], 0, 'kof',
+        'herinner ends in r, so -de. Ik is one person: herinnerde.'), 'ik', FK(['me', 'zich', 'ons'], 0, 'refl',
+        'ik takes me. The self-word follows the verb and ik.'), 'haar naam niet meer.'] },
+      { en: 'May I introduce myself? I live next door.', parts: ['Mag ik', FK(['me', 'zich'], 0, 'refl',
+        'ik takes me, and the self-word sits right after ik.'), 'even', FK(['voorstellen', 'stellen voor', 'voorstelen'], 0, 'sep',
+        'After a modal the separable verb stays in one word at the end: voorstellen.'), '? Ik woon hiernaast.'] },
+      { en: 'Are you feeling better yet?', parts: ['Voel je', FK(['je', 'jou', 'zich'], 0, 'refl',
+        'je is both the subject and the self-word: voel je je. It looks like a typo and it is not.'), 'al', FK(['beter', 'gooder', 'meer goed'], 0, 'vergelijk',
+        'goed is irregular: goed, beter, best.'), '?'] },
+
+      // ---- builds: zou plus the infinitive, the polite request
+      { en: 'Could you turn the music down a bit?', parts: [FK(['Zou', 'Zouden'], 0, 'zou',
+        'je takes zou. Zouden is for wij, jullie and zij.'), 'je de muziek wat zachter', FK(['kunnen zetten', 'kan zetten', 'gekund zetten'], 0, 'zou',
+        'zou asks for an infinitive at the end: kunnen zetten.'), '?'] },
+      { en: 'Could you two help us for a moment with the ladder?', parts: ['Zouden jullie ons even', FK(['kunnen helpen', 'kan helpen', 'kunnen geholpen'], 0, 'zou',
+        'zouden asks for an infinitive at the end: kunnen helpen.'), 'met de ladder?'] },
+      { en: 'I would like a coffee, the Rotterdam way.', parts: ['Ik', FK(['zou', 'zouden'], 0, 'zou',
+        'ik is one person: zou. Zouden is for more than one.'), 'graag een bakkie pleur', FK(['willen', 'wil', 'gewild'], 0, 'zou',
+        'zou graag asks for an infinitive at the end: willen.'), '.'] },
+
+      // ---- builds: comparatives and superlatives, then V2 and a perfectum review
+      { en: 'The Euromast is much higher than the Witte Huis.', parts: ['De Euromast is veel', FK(['hoger', 'hooger', 'meer hoog'], 0, 'vergelijk',
+        'hoog is short, so -er. The long oo loses one o before the ending: ho-ger.'), 'dan', FK(['het', 'de'], 0, 'dehet',
+        'huis is a het-word: het Witte Huis.'), 'Witte Huis.'] },
+      { en: 'This is the nicest borrel of the year.', parts: ['Dit is', FK(['de gezelligste', 'het gezelligst', 'de meest gezellig'], 0, 'vergelijk',
+        'Before a noun the superlative is de plus -ste: de gezelligste borrel.'), 'borrel van het jaar.'] },
+      { en: 'Actually, you are right.', parts: ['Eigenlijk', FK(['heb jij', 'jij hebt', 'hebt jij'], 0, 'v2',
+        'Eigenlijk takes slot 1, so the verb comes second, and jij after it loses the -t: heb jij.'), 'gelijk.'] },
+      { en: 'Who ate all the bitterballen?', parts: ['Wie', FK(['heeft', 'is'], 0, 'aux',
+        'Eating is something you do, nothing moves: hebben.'), 'alle bitterballen', FK(['opgegeten', 'geopeten', 'opgeeten'], 0, 'sep',
+        'opeten is separable: op goes in front of the participle of eten, and eten is irregular, gegeten: opgegeten.'), '?'] },
+
+      // ---- words: people, the borrel, feelings, Rotterdam
+      { w: 'the argument', nl: 'de ruzie' }, { w: 'the mood', nl: 'het humeur', wrong: 'de humeur' },
+      { w: 'the opinion', nl: 'de mening' }, { w: 'the guest', nl: 'de gast' },
+      { w: 'the stranger', nl: 'de vreemdeling' }, { w: 'the round of drinks', nl: 'het rondje', wrong: 'de rondje' },
+      { w: 'the bitterballen', nl: 'de bitterballen', wrong: 'het bitterballen' }, { w: 'the smile', nl: 'de glimlach' },
+      { w: 'the hug', nl: 'de knuffel' }, { w: 'the fun', nl: 'het plezier', wrong: 'de plezier' },
+      { w: 'the silence', nl: 'de stilte' }, { w: 'the person from Rotterdam', nl: 'de Rotterdammer' },
+      { w: 'the dock worker', nl: 'de havenarbeider' }, { w: 'the neighbourhood', nl: 'de buurt' },
+      { w: 'the colleague', nl: 'de collega' }, { w: 'the joke', nl: 'de grap' },
+      { w: 'the neighbour (a woman)', nl: 'de buurvrouw' },
+
+      // ---- reads: three traps with their own options, three plain lines from the city and the borrel
+      { read: true, nl: 'Sorry, ik heb me vergist.', o: ['Sorry, I made a mistake.', 'Sorry, I forgot.', 'Sorry, I was late.'], a: 0, r: 'refl',
+        w: 'zich vergissen means to be mistaken. To forget is vergeten.' },
+      { read: true, nl: 'Zou u dit kunnen herhalen?', o: ['Could you repeat this?', 'Did you repeat this?', 'Have you repeated this?'], a: 0, r: 'zou',
+        w: 'zou plus an infinitive at the end is a polite request, not the past.' },
+      { read: true, nl: 'De buren verhuisden vorig jaar.', o: ['The neighbours moved last year.', 'The neighbours are moving next year.', 'The neighbours have to move this year.'], a: 0, r: 'imp',
+        w: 'verhuisden is the past, and vorig jaar means last year.' },
+      { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
+      { read: true, nl: 'Ze is een kop groter dan ik.', en: 'She is a head taller than me.' },
+      { read: true, nl: 'Het was gezellig, maar ik moet er zo vandoor.', en: 'It was lovely, but I have to run in a minute.' },
+
+      // ---- listens: two Rotterdam and people words, two verb forms by ear
+      { listen: true, nl: 'de wolkenkrabber', en: 'the skyscraper' }, { listen: true, nl: 'het misverstand', en: 'the misunderstanding' },
+      { listen: true, nl: 'ze kwamen', en: 'they came' }, { listen: true, nl: 'ik voelde me', en: 'I felt' },
+
+      // ---- looks: the dog, the bridge, the neighbour's door
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
+      { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
+
+      // ---- de of het
+      { dehet: true, nl: 'vriendschap', art: 'de', en: 'the friendship', w: 'Words ending in -schap are de: de vriendschap.' },
+      { dehet: true, nl: 'gezelschap', art: 'het', en: 'the company', w: 'The exception to -schap: het gezelschap.' },
+    ] }]);
+})();
+
+// ---- content/new/L82.js
+// Nachtrit, Rotterdam (tier 7, A2 to B1): level 82 De haven, the town's own place. The quays of the Nieuwe Maas under the
+// cranes, the container ships and tugs, the dockworkers on the night shift, the Erasmusbrug, the Markthal and the cube
+// houses at Blaak, the Euromast and the Witte Huis, the motto Niet lullen maar poetsen, the 1940 bombing and the rebuilding.
+// New at tier 7 and drilled here: the imperfectum of regular verbs by 't kofschip (werkte, woonden, voelde, vergiste),
+// the common irregulars (was, had, ging, kwam, zag, wilden), a separable verb in the imperfectum (kwam ... binnen),
+// reflexive verbs (zich voelen, zich vergissen), zou plus infinitive for polite requests, comparatives and superlatives
+// (drukker dan, de grootste, het beste). Review: the perfectum with hebben and zijn (gevaren, gelost), V2 after a time
+// word, the adjective -e, geen against niet.
+// Still inside the fence: 12 words max, no sub-clauses with the verb at the end, no passive.
+// Sources: dutch-lessons vault, 02 - Grammar/imperfectum (werkte, woonde, was, had, ging, deed, kwam, sprak, kocht),
+// reflexieve werkwoorden, 't kofschip, perfectum, zijn of hebben, V2 word order, scheidbare werkwoorden, zachtmakers;
+// _site/words (het schip, de schepen, het centrum, Vroeger werkte mijn vader in een fabriek, werkte, woonden);
+// content/towns.js for Rotterdam (de haven, de hijskraan, de Maas, de wolkenkrabber, de kubuswoning, de markthal,
+// de watertaxi, de metro, een bakkie pleur, Niet lullen maar poetsen, De Erasmusbrug, De Euromast, Het Witte Huis).
+// New rules: zou (polite requests); vergelijk is guarded here and defined the same way in the other levels.
+// New props: none. Only hond, fiets and lamp are used (not brug, water, huis or winkel: de Erasmusbrug, de Maas, de haven,
+// de watertaxi, de kubuswoning and de markthal are in the word pool and would be right answers for those props).
+(() => {
+  window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zachtmakers - wel even maar' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
+  const P = window.TIER_PRESET[7];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 82, act: 7, name: 'De haven', town: 'rotterdam', place: 'eigen', theme: 'dyke', ...P,
+    intro: 'The harbour of Rotterdam never sleeps, and since the mist neither do the dead. They still split the bill, down to the last container.',
+    introNl: 'De haven van Rotterdam slaapt nooit, en sinds de mist slapen de doden ook niet meer. Ze delen de rekening nog steeds, tot op de laatste container.',
+    mission: {
+      where: 'The quays of the Nieuwe Maas, under the cranes, then over the light-blue Erasmusbrug to the Markthal and the yellow cube houses at Blaak. Wide roads, tram rails, and a few old buildings that survived 1940.',
+      carry: 'Two dogs who want to see the ships, a flask of bakkie pleur, and the grammar book, never opened. No helmet. The wind on the bridge has an opinion about that.',
+      want: 'The dead dockworkers are on the night shift and want to know how it was. Was, had, ging, kwam, and werkte with a t. Nobody talks, they work. Politely, with zou, because the women among them are still taller than you, and the dogs still need a walk.' },
+    items: [
+      // ---- builds: the imperfectum, regular and irregular
+      { en: 'My grandfather used to work in the harbour.', parts: ['Mijn opa', FK(['werkte', 'werkde', 'werkten'], 0, 'kof',
+        'werk ends in k, a soft ketchup letter, so the past is werkte. One person, so no -n.'), 'vroeger in de haven.'] },
+      { en: 'We used to live right by the Maas.', parts: ['Vroeger', FK(['woonden we', 'woonde we', 'we woonden'], 0, 'imp',
+        'Vroeger takes slot 1, so the verb comes second. Plural we and stem woon: woonden.'), 'vlak bij de Maas.'] },
+      { en: 'The ship came in at eight o\'clock.', parts: ['Het schip', FK(['kwam', 'komde', 'kwamen'], 0, 'imp',
+        'komen is irregular: kwam. One ship, so no -en.'), 'om acht uur', FK(['binnen', 'in', 'binnengekomen'], 0, 'sep',
+        'The separable part stays behind and goes to the end: kwam ... binnen.'), '.'] },
+      { en: 'The dockworkers had no time for coffee.', parts: ['De havenarbeiders', FK(['hadden', 'had', 'haden'], 0, 'imp',
+        'hebben is irregular: had, and hadden for more than one person.'), 'geen tijd voor koffie.'] },
+      { en: 'Yesterday I saw an enormous crane.', parts: ['Gisteren', FK(['zag ik', 'ik zag'], 0, 'v2',
+        'Gisteren takes slot 1, so the verb comes second: zag ik. zien is irregular, zag.'), 'een', FK(['enorme', 'enorm'], 0, 'adj',
+        'hijskraan is a de-word, so the adjective after een takes -e.'), 'hijskraan.'] },
+      { en: 'Paola took the metro to the Markthal.', parts: ['Paola', FK(['ging', 'gingen', 'gaan'], 0, 'imp',
+        'gaan is irregular: ging. One person, so no -en.'), 'met de metro naar de Markthal.'] },
+      { en: 'The dogs wanted to see the ships.', parts: ['De honden', FK(['wilden', 'wilde', 'wilt'], 0, 'imp',
+        'Two dogs, plural, so wilden.'), 'de', FK(['schepen', 'scheepen', 'schipen'], 0, 'woord',
+        'The plural of het schip is de schepen, one p and a long e. Learn the pair.'), 'zien.'] },
+      { en: 'After the night shift the dockworker felt tired.', parts: ['Na de nachtdienst', FK(['voelde', 'voelte'], 0, 'kof',
+        'voel ends in l, which is not a soft ketchup letter, so -de: voelde.'), 'de havenarbeider', FK(['zich', 'me', 'je'], 0, 'refl',
+        'A third person (hij, zij, de havenarbeider) takes zich, and it sits right after the subject.'), 'moe.'] },
+      { en: 'Last night I made a mistake. It was the wrong quay.', parts: ['Gisteravond vergiste ik', FK(['me', 'zich', 'ons'], 0, 'refl',
+        'zich vergissen: ik takes me, and it sits right after ik: vergiste ik me.'), '. Het was de', FK(['verkeerde', 'verkeerd'], 0, 'adj',
+        'After de the adjective takes -e: de verkeerde kade.'), 'kade.'] },
+
+      // ---- builds: zou for polite requests
+      { en: 'Could you show me the way to the quay?', parts: ['Zou u me de weg naar de kade', FK(['kunnen wijzen', 'kan wijzen', 'kunt wijzen'], 0, 'zou',
+        'zou makes the request polite and the next verbs stay as infinitives at the end: kunnen wijzen.'), '?'] },
+      { en: 'Could you keep an eye on the dogs for a moment?', parts: ['Zou je even', FK(['op', 'voor', 'aan'], 0, 'woord',
+        'letten goes with op: op iets letten.'), 'de honden', FK(['willen letten', 'wil letten', 'te letten'], 0, 'zou',
+        'After zou je the verbs go to the end as infinitives: willen letten.'), '?'] },
+
+      // ---- builds: comparatives and superlatives
+      { en: 'Rotterdam has the biggest port in Europe.', parts: ['Rotterdam heeft de', FK(['grootste', 'groter', 'groots'], 0, 'vergelijk',
+        'After de the superlative takes -ste: de grootste. groter only compares, as in groter dan.'), 'haven van Europa.'] },
+      { en: 'It is busier here than in Alblasserdam.', parts: ['Het is hier', FK(['drukker', 'druker', 'drukter'], 0, 'vergelijk',
+        'druk is short and closed, so the k doubles when -er is added: drukker.'), 'dan in Alblasserdam.'] },
+      { en: 'Here you get the best coffee in town.', parts: ['Hier krijg je het', FK(['beste', 'best', 'goedste'], 0, 'vergelijk',
+        'goed is irregular: goed, beter, best. After het the superlative takes -e: het beste.'), 'bakkie pleur van de stad.'] },
+
+      // ---- builds: the perfectum and geen as review
+      { en: 'Yesterday we sailed to the Markthal by water taxi.', parts: ['Gisteren', FK(['zijn we', 'we zijn'], 0, 'v2',
+        'Gisteren takes slot 1, so the verb comes second, then we.'), 'met de watertaxi naar de Markthal', FK(['gevaren', 'gevaard', 'gevarend'], 0, 'perf',
+        'varen is irregular: gevaren. Going somewhere by boat takes zijn.'), '.'] },
+      { en: 'The dockworkers unloaded the ship.', parts: ['De havenarbeiders', FK(['hebben', 'zijn'], 0, 'aux',
+        'Unloading is something you do to a ship, not a trip: hebben.'), 'het schip', FK(['gelost', 'gelosd', 'gelossen'], 0, 'kof',
+        'los ends in s, a soft ketchup letter, so gelost with a t.'), '.'] },
+      { en: 'I had no helmet on and the bridge was slippery.', parts: ['Ik had', FK(['geen', 'niet'], 0, 'neg',
+        'geen takes the place of een: een helm becomes geen helm. niet cannot stand before a noun like that.'), 'helm op en de brug', FK(['was', 'waren', 'ben'], 0, 'imp',
+        'zijn is irregular: was for one thing, waren for more.'), 'glad.'] },
+
+      // ---- words: the harbour, the bridge and the city
+      { w: 'the harbour', nl: 'de haven' }, { w: 'the container', nl: 'de container' }, { w: 'the container ship', nl: 'het containerschip', wrong: 'de containerschip' },
+      { w: 'the crane', nl: 'de hijskraan' }, { w: 'the river Maas', nl: 'de Maas' }, { w: 'the quay', nl: 'de kade', wrong: 'het kade' },
+      { w: 'the tugboat', nl: 'de sleepboot' }, { w: 'the dockworker', nl: 'de havenarbeider' }, { w: 'the warehouse', nl: 'het pakhuis', wrong: 'de pakhuis' },
+      { w: 'the skyscraper', nl: 'de wolkenkrabber' }, { w: 'the cable', nl: 'de kabel' }, { w: 'the cube house', nl: 'de kubuswoning' },
+      { w: 'the market hall', nl: 'de markthal' }, { w: 'the water taxi', nl: 'de watertaxi' }, { w: 'the underground', nl: 'de metro' },
+      { w: 'the city centre', nl: 'het centrum', wrong: 'de centrum' }, { w: 'the bombing', nl: 'het bombardement', wrong: 'de bombardement' },
+      { w: 'the rebuilding', nl: 'de wederopbouw' }, { w: 'a coffee (Rotterdam slang)', nl: 'een bakkie pleur' },
+
+      // ---- reads: the motto, the bombing and the rebuilding, and two polite lines
+      { read: true, nl: 'Niet lullen maar poetsen.', o: ['Stop talking and get to work.', 'Keep talking until the work is done.', 'Do not clean up, just talk.'], a: 0, r: 'cult',
+        w: 'lullen is talking rubbish and poetsen is cleaning. The Rotterdam motto: less talk, more work.' },
+      { read: true, nl: 'In 1940 bombardeerden de Duitsers het centrum.', o: ['In 1940 the Germans bombed the centre.', 'In 1940 the Germans rebuilt the centre.', 'The centre has been bombed since 1940.'], a: 0, r: 'imp',
+        w: 'bombardeerden is the imperfectum of bombarderen, plural -den: they bombed. Rebuilding would be bouwden ... op.' },
+      { read: true, nl: 'Na de oorlog bouwden ze de stad weer op.', en: 'After the war they rebuilt the city.' },
+      { read: true, nl: 'Ik voelde me niet lekker op de boot.', o: ['I did not feel well on the boat.', 'I do not feel well on the boat.', 'I did not feel the boat at all.'], a: 0, r: 'refl',
+        w: 'voelde me is the past of zich voelen: I felt. Now it would be voel me.' },
+      { read: true, nl: 'Ik liep langs de kade en zag een sleepboot.', en: 'I walked along the quay and saw a tugboat.' },
+      { read: true, nl: 'Zou u dat nog een keer kunnen zeggen?', en: 'Could you say that one more time?' },
+
+      // ---- listens: three landmarks and the verb of the motto
+      { listen: true, nl: 'de Erasmusbrug', en: 'the Erasmus Bridge' }, { listen: true, nl: 'de Euromast', en: 'the Euromast' },
+      { listen: true, nl: 'het Witte Huis', en: 'the White House of Rotterdam' }, { listen: true, nl: 'poetsen', en: 'to clean, to polish' },
+
+      // ---- looks: the dog, the bike, the lamp on the quay
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
+
+      // ---- de of het
+      { dehet: true, nl: 'schip', art: 'het', en: 'the ship' },
+      { dehet: true, nl: 'bom', art: 'de', en: 'the bomb' },
     ] }]);
 })();

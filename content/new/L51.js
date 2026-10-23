@@ -13,9 +13,9 @@
 // neg, mag and woord come from data.js, presens and bezit from district3.js and town-gouda.js.
 // Props: hond, tuin, lamp. No deur look: the deur prop reads as a narrow house and het oude huis is in the pool.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.vergl = window.RULES.vergl || { name: 'Comparison: -er dan, het -st', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
 
@@ -51,7 +51,7 @@
         o: ['The dogs are not allowed on the couch.', "The dogs don't have to be on the couch.", 'The dogs like the couch.'], a: 0, r: 'mag',
         w: 'mag niet means not allowed. Not having to is hoeft niet.' },
       { read: true, nl: 'Zierikzee is kleiner dan Middelburg.', en: 'Zierikzee is smaller than Middelburg.',
-        o: ['Zierikzee is smaller than Middelburg.', 'Zierikzee is bigger than Middelburg.', 'Zierikzee is the smallest town.'], a: 0, r: 'vergl',
+        o: ['Zierikzee is smaller than Middelburg.', 'Zierikzee is bigger than Middelburg.', 'Zierikzee is the smallest town.'], a: 0, r: 'vergelijk',
         w: 'klein, kleiner, kleinst. -er with dan compares two things, and Zierikzee is the smaller one.' },
       { read: true, nl: 'Je hebt gelijk.', en: "You're right.",
         o: ["You're right.", 'You have the same.', 'You look alike.'], a: 0, r: 'woord',
@@ -70,7 +70,7 @@
         FK(['me', 'ik', 'mijn'], 0, 'obj', 'She calls, I get called: the object form, me. ik only does things, mijn needs a noun after it.'), 'elke zondag.'] },
       { en: 'I love her more than golf.', parts: ['Ik hou meer van',
         FK(['haar', 'zij'], 0, 'obj', 'After van you need the object form: haar. zij is she, the one doing it.'),
-        FK(['dan', 'dat'], 0, 'vergl', 'meer, groter, beter: a comparison is always followed by dan.'), 'van golf.'] },
+        FK(['dan', 'dat'], 0, 'vergelijk', 'meer, groter, beter: a comparison is always followed by dan.'), 'van golf.'] },
       { en: 'Do you see him in the garden?', parts: ['Zie je',
         FK(['hem', 'hij', 'zijn'], 0, 'obj', 'You see him, so the object form: hem. hij does the seeing, zijn needs a noun.'), 'in de tuin?'] },
       { en: 'Every evening I brush them.', parts: ['Elke avond',
@@ -96,12 +96,12 @@
 
       // building: comparing
       { en: 'My wife is taller than me.', parts: ['Mijn vrouw is',
-        FK(['groter', 'grootst', 'groot'], 0, 'vergl', 'Two people side by side: -er plus dan. grootst is for the top of the ladder.'), 'dan ik.'] },
+        FK(['groter', 'grootst', 'groot'], 0, 'vergelijk', 'Two people side by side: -er plus dan. grootst is for the top of the ladder.'), 'dan ik.'] },
       { en: 'Our house is the coldest in the street.', parts: [
         FK(['Ons', 'Onze'], 0, 'bezit', 'huis is a het-word, so ons huis. onze is for de-words and plurals.'), 'huis is',
-        FK(['het koudst', 'het kouder'], 0, 'vergl', 'The top of the ladder is het plus -st: het koudst.'), 'van de straat.'] },
+        FK(['het koudst', 'het kouder'], 0, 'vergelijk', 'The top of the ladder is het plus -st: het koudst.'), 'van de straat.'] },
       { en: 'It is windier than yesterday.', parts: ['Het waait',
-        FK(['harder', 'hardst', 'hard'], 0, 'vergl', 'Comparing with yesterday: -er plus dan, harder dan.'), 'dan gisteren.'] },
+        FK(['harder', 'hardst', 'hard'], 0, 'vergelijk', 'Comparing with yesterday: -er plus dan, harder dan.'), 'dan gisteren.'] },
 
       // building: adjective -e
       { en: 'We have a small house behind the dyke.', parts: ['We hebben een',

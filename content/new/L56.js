@@ -9,9 +9,9 @@
 // New rules: obj, er, vergl (same ids and notes as the other tier-4 levels, declared only if missing).
 // New props: none. Only water, brug, hond and nummer are used.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem-haar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.vergl = window.RULES.vergl || { name: 'Comparison: -er dan, het -st', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -27,17 +27,17 @@
     items: [
       // ---- builds: comparing, superlatives, object pronouns, er is / er zijn, adjective -e
       { en: 'The women are still taller than me.', parts: ['De vrouwen', FK(['zijn', 'is'], 0, 'presens', 'vrouwen is plural, so zijn.'), 'nog steeds',
-        FK(['langer', 'lang', 'langst'], 0, 'vergl', 'Comparing two: add -er, then dan. People are lang, not groot.'), 'dan ik.'] },
+        FK(['langer', 'lang', 'langst'], 0, 'vergelijk', 'Comparing two: add -er, then dan. People are lang, not groot.'), 'dan ik.'] },
       { en: 'On the dyke the wind is strongest.', parts: ['Op de dijk', FK(['is de wind', 'de wind is'], 0, 'v2', 'Op de dijk takes slot 1, so the verb comes next.'),
-        FK(['het sterkst', 'het sterker', 'het sterk'], 0, 'vergl', 'The most of all after zijn: het plus -st, het sterkst.'), '.'] },
+        FK(['het sterkst', 'het sterker', 'het sterk'], 0, 'vergelijk', 'The most of all after zijn: het plus -st, het sterkst.'), '.'] },
       { en: "Today it's colder than yesterday.", parts: ['Vandaag', FK(['is het', 'het is'], 0, 'v2', 'Vandaag in slot 1, then the verb, then het.'),
-        FK(['kouder', 'koud', 'koudst'], 0, 'vergl', 'Two days compared: koud plus -er, then dan. kouder dan gisteren.'), 'dan gisteren.'] },
-      { en: "I cycle faster than the dead, without a helmet.", parts: ['Ik fiets', FK(['harder', 'hard', 'hardst'], 0, 'vergl', 'On a bike, faster is harder. Comparing two: -er dan.'), 'dan de doden, zonder helm.'] },
-      { en: "I'd rather play golf than tennis.", parts: ['Ik speel', FK(['liever', 'graag', 'liefst'], 0, 'vergl', 'graag, liever, liefst is one ladder. With dan you need the middle step: liever.'), 'golf dan tennis.'] },
-      { en: 'This is the most beautiful golf course in Zeeland.', parts: ['Dit is de', FK(['mooiste', 'mooist', 'mooier'], 0, 'vergl', 'Before a noun the superlative takes the -e: de mooiste golfbaan.'), 'golfbaan van Zeeland.'] },
+        FK(['kouder', 'koud', 'koudst'], 0, 'vergelijk', 'Two days compared: koud plus -er, then dan. kouder dan gisteren.'), 'dan gisteren.'] },
+      { en: "I cycle faster than the dead, without a helmet.", parts: ['Ik fiets', FK(['harder', 'hard', 'hardst'], 0, 'vergelijk', 'On a bike, faster is harder. Comparing two: -er dan.'), 'dan de doden, zonder helm.'] },
+      { en: "I'd rather play golf than tennis.", parts: ['Ik speel', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk', 'graag, liever, liefst is one ladder. With dan you need the middle step: liever.'), 'golf dan tennis.'] },
+      { en: 'This is the most beautiful golf course in Zeeland.', parts: ['Dit is de', FK(['mooiste', 'mooist', 'mooier'], 0, 'vergelijk', 'Before a noun the superlative takes the -e: de mooiste golfbaan.'), 'golfbaan van Zeeland.'] },
       { en: "I can't see him anywhere in the mist.", parts: ['Ik zie', FK(['hem', 'hij'], 0, 'obj', 'ik is the one seeing. The one being seen is hem, not hij.'), 'nergens in de mist.'] },
       { en: 'The dogs like her best.', parts: ['De honden vinden', FK(['haar', 'zij'], 0, 'obj', 'zij does things. When the dogs like her, she is haar.'),
-        FK(['het leukst', 'het leuker', 'het leuk'], 0, 'vergl', 'Best of all after vinden: het leukst.'), '.'] },
+        FK(['het leukst', 'het leuker', 'het leuk'], 0, 'vergelijk', 'Best of all after vinden: het leukst.'), '.'] },
       { en: 'Paola is waiting for us at the beach.', parts: ['Paola wacht op het strand op', FK(['ons', 'wij', 'onze'], 0, 'obj', 'After op, we becomes ons. onze only goes before a noun.'), '.'] },
       { en: 'Can you help me with my golf bag?', parts: ['Kun je', FK(['me', 'ik', 'mijn'], 0, 'obj', 'je does the helping. The one being helped is the object, so me, not ik.'), 'even helpen met mijn golftas?'] },
       { en: 'After the walk I give them water.', parts: ['Na de wandeling', FK(['geef ik', 'ik geef', 'geeft ik'], 0, 'v2', 'Na de wandeling takes slot 1, so the verb comes before ik.'),
@@ -60,7 +60,7 @@
 
       // ---- reads
       { read: true, nl: 'Het waait harder dan gisteren.', en: "It's windier than yesterday.",
-        o: ["It's windier than yesterday.", "It's less windy than yesterday.", "It's as windy as yesterday."], a: 0, r: 'vergl',
+        o: ["It's windier than yesterday.", "It's less windy than yesterday.", "It's as windy as yesterday."], a: 0, r: 'vergelijk',
         w: 'harder dan compares today with yesterday. As windy as would be net zo hard als.' },
       { read: true, nl: 'Je hoeft geen helm te dragen.', en: "You don't have to wear a helmet.",
         o: ["You don't have to wear a helmet.", "You're not allowed to wear a helmet.", 'You have to wear a helmet.'], a: 0, r: 'mag',

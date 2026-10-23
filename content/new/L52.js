@@ -11,9 +11,9 @@
 // 'vinden' (the vault has no comparatives note; vinden carries "beter dan"). Each is declared only if missing.
 // New props: none. Only winkel, nummer and deur are used.
 (() => {
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'hem-haar' };
   window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er' };
-  window.RULES.vergr = window.RULES.vergr || { name: 'Comparatives and superlatives', note: 'vinden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -39,12 +39,12 @@
         FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'Modal first, the infinitive at the end: helpen.'), '?'] },
       { en: 'There are mussels at the fishmonger.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'mosselen is plural, so er zijn. er is is for one thing.'), 'mosselen bij de visboer.'] },
       { en: 'Is there a pharmacy here?', parts: [FK(['Is er', 'Zijn er', 'Er zijn'], 0, 'eris', 'A question starts with the verb, and one pharmacy means is: Is er.'), 'hier een apotheek?'] },
-      { en: "The bread is cheaper than at the baker's.", parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergr', 'Cheaper is the word plus -er: goedkoper. Dutch never says meer goedkoop.'), 'dan bij de bakker.'] },
+      { en: "The bread is cheaper than at the baker's.", parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk', 'Cheaper is the word plus -er: goedkoper. Dutch never says meer goedkoop.'), 'dan bij de bakker.'] },
       { en: 'This shop is the cheapest.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'winkel is a de-word, so deze winkel.'), 'winkel is',
-        FK(['het goedkoopst', 'het goedkoper', 'het goedkoop'], 0, 'vergr', 'After is the superlative takes het: het goedkoopst.'), '.'] },
+        FK(['het goedkoopst', 'het goedkoper', 'het goedkoop'], 0, 'vergelijk', 'After is the superlative takes het: het goedkoopst.'), '.'] },
       { en: 'Zeeland mussels are the tastiest.', parts: ['Zeeuwse mosselen', FK(['zijn', 'is'], 0, 'presens', 'mosselen is plural: zijn.'),
-        FK(['het lekkerst', 'het lekkerder', 'het lekker'], 0, 'vergr', 'The most is -st, with het in front after zijn: het lekkerst.'), '.'] },
-      { en: 'The women are still taller than me.', parts: ['De vrouwen zijn nog steeds', FK(['langer', 'langst', 'meer lang'], 0, 'vergr', 'Comparing two things: the word plus -er, then dan. Tall for people is lang.'), 'dan ik.'] },
+        FK(['het lekkerst', 'het lekkerder', 'het lekker'], 0, 'vergelijk', 'The most is -st, with het in front after zijn: het lekkerst.'), '.'] },
+      { en: 'The women are still taller than me.', parts: ['De vrouwen zijn nog steeds', FK(['langer', 'langst', 'meer lang'], 0, 'vergelijk', 'Comparing two things: the word plus -er, then dan. Tall for people is lang.'), 'dan ik.'] },
       { en: "I'd like a white bread.", parts: ['Ik wil graag een', FK(['wit', 'witte'], 0, 'adj', 'brood is a het-word, and after een a het-word drops the -e: een wit brood.'), 'brood.'] },
       { en: 'Can I have the fresh minced meat?', parts: ['Mag ik', FK(['het', 'de'], 0, 'dehet', 'gehakt is a het-word: het gehakt.'),
         FK(['verse', 'vers'], 0, 'adj', 'After het or de the adjective always takes -e: het verse gehakt.'), 'gehakt?'] },
@@ -65,7 +65,7 @@
       // ---- read
       { read: true, nl: 'Er zijn geen broodjes meer.', o: ['There are no rolls left.', 'There are more rolls.', 'The rolls are not ready yet.'], a: 0, r: 'eris',
         w: 'geen ... meer means none left. meer on its own would be more.' },
-      { read: true, nl: 'Deze trui is te klein.', o: ['This sweater is too small.', 'This sweater is smaller.', 'This sweater is the smallest.'], a: 0, r: 'vergr',
+      { read: true, nl: 'Deze trui is te klein.', o: ['This sweater is too small.', 'This sweater is smaller.', 'This sweater is the smallest.'], a: 0, r: 'vergelijk',
         w: 'te klein is too small. Smaller would be kleiner, the smallest het kleinst.' },
       { read: true, nl: 'Mag ik hem even passen?', o: ['Can I try it on?', 'Can I pass him?', 'Can I pay for it?'], a: 0, r: 'obj',
         w: 'passen is to try on, and hem is the sweater, a de-word.' },
