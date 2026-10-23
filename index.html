@@ -723,6 +723,7 @@ const LANDMARK = {
   texel: () => lighthouse(0xb8282a),
   groningen: () => { const g = new THREE.Group(); const t = tower(4, 20, brickMat(0x8a7a66), 0); g.add(t); const t2 = new THREE.Mesh(new THREE.BoxGeometry(3.2, 10, 3.2), brickMat(0x8a7a66)); t2.position.y = 25; g.add(t2); const t3 = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 6, 8), brickMat(0x8a7a66)); t3.position.y = 33; g.add(t3); const cap = new THREE.Mesh(new THREE.ConeGeometry(1.5, 3, 8), PM.roof); cap.position.y = 37.5; g.add(cap); return g; },
   maastricht: () => { const g = new THREE.Group(); const t = tower(3, 22, Mat({ color: 0xb8282a }), 9); g.add(t); for (let i = 0; i < 4; i++) { const arch = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.6, 6, 12, Math.PI), Mat({ color: 0x9a927f })); arch.position.set(-12 + i * 5.2, 1.2, -4); g.add(arch); } const deck = new THREE.Mesh(new THREE.BoxGeometry(22, 0.6, 3), Mat({ color: 0x9a927f })); deck.position.set(-4, 4.2, -4); g.add(deck); return g; },
+  nijmegen: () => { const g = new THREE.Group(); const arch = new THREE.Mesh(new THREE.TorusGeometry(14, 0.7, 8, 24, Math.PI), Mat({ color: 0x2e4a3a })); arch.position.set(-6, 1, -6); g.add(arch); const deck = new THREE.Mesh(new THREE.BoxGeometry(32, 0.6, 3.5), Mat({ color: 0x3d4652 })); deck.position.set(-6, 6, -6); g.add(deck); const t = tower(3.4, 20, brickMat(0x6b5a44), 0); t.position.set(10, 0, 4); g.add(t); const lantern = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 5, 8), Mat({ color: 0x9a8a7a })); lantern.position.set(10, 22.5, 4); g.add(lantern); return g; },
   amsterdam: () => { const g = new THREE.Group(); const t = tower(3.2, 22, brickMat(0x3b2f2b), 0); g.add(t); const lantern = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 6, 8), Mat({ color: 0xd8d4c8 })); lantern.position.y = 25; g.add(lantern); const crown = new THREE.Mesh(new THREE.SphereGeometry(1.5, 8, 6), Mat({ color: 0x2b4a9e })); crown.position.y = 29.5; g.add(crown); return g; },
 };
 const TOWN_EXTRA = {   // roadside props only this town has
@@ -733,6 +734,7 @@ const TOWN_EXTRA = {   // roadside props only this town has
   urk: [{ make: boat, n: 4, gap: 50, side: 'both', xr: [9, 14] }],
   texel: [{ make: sheep, n: 8, gap: 16, side: 'both', xr: [5.5, 9], r: 0.6 }],
   groningen: [{ make: bikeProp, n: 6, gap: 22, side: 'both', xr: [4.7, 5.0], r: 0.4 }],
+  nijmegen: [{ make: bikeProp, n: 6, gap: 22, side: 'both', xr: [4.7, 5.0], r: 0.4 }, { make: boat, n: 2, gap: 90, side: 'both', xr: [9, 13] }],
   utrecht: [{ make: bikeProp, n: 10, gap: 14, side: 'both', xr: [4.7, 5.0], r: 0.4 }],
   amsterdam: [{ make: bikeProp, n: 12, gap: 12, side: 'both', xr: [4.7, 5.0], r: 0.4 }, { make: boat, n: 3, gap: 70, side: 'both', xr: [9, 13] }],
 };
@@ -1478,6 +1480,7 @@ const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
   texel: 'M-2.4,1.2 L-1.6,2.4 L1.6,2.4 L2.4,1.2 z M0,1.2 L0,-2.4 M0,-2.4 L1.8,-1 L0,-0.6 M-1.6,-0.2 a0.9,0.9 0 1 0 0.01,0',
   groningen: 'M-0.8,2.4 L-0.8,-1.6 L0.8,-1.6 L0.8,2.4 z M-0.5,-1.6 L-0.5,-2.6 L0.5,-2.6 L0.5,-1.6 M0,-2.6 L0,-3.4 M-1.6,2.4 h3.2 M-0.3,0 h0.6 v0.8 h-0.6 z',
   maastricht: 'M-2.6,1.6 h5.2 M-2.4,1.6 a1.2,1.2 0 0 1 2.4,0 M0,1.6 a1.2,1.2 0 0 1 2.4,0 M-1.2,0.4 L-1.2,-1.8 M0,-2.6 L-1.2,-1.8 M1.2,0.4 L1.2,-1.8 L0,-2.6',
+  nijmegen: 'M-2.6,1.8 h5.2 M-2.4,1.8 a2.4,2.4 0 0 1 4.8,0 M-1.4,1.8 L-1.4,0.4 M1.4,1.8 L1.4,0.4 M-0.4,-0.4 L0,-2.4 L0.4,-0.4 z',
 };
 // the route board: towns in tier order along a winding road over a faint Netherlands
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
