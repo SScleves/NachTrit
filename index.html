@@ -250,8 +250,9 @@ renderer.domElement.addEventListener('webglcontextlost', (e) => {
   document.getElementById('err').textContent = 'The graphics card dropped the picture. Reloading in a lighter mode.';
   setTimeout(() => { const u = new URL(location.href); u.searchParams.set('post', '0'); location.href = u.toString(); }, 1200);
 });
-scene.background = new THREE.Color(BG);
-scene.fog = new THREE.FogExp2(BG, 0.025);
+// the haze: one colour shared by the fog and the background, so far things dissolve into the sky; buildScenery keys it per theme
+scene.fog = new THREE.FogExp2(0x4a545e, 0.016);
+scene.background = scene.fog.color;
 
 const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 400);
 camera.position.set(0, 22, 14);
@@ -280,7 +281,7 @@ function buildPost() {
         vec4 col = texture2D(tDiffuse, vUv); gl_FragColor = vec4(col.rgb * (1.0 - ink*0.9), col.a); }`,
   });
   composer.addPass(inkPass);
-  bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(innerWidth / 4), Math.floor(innerHeight / 4)), 0.32, 0.6, 0.82);
+  bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(innerWidth / 4), Math.floor(innerHeight / 4)), 0.55, 0.5, 0.8);
   composer.addPass(bloomPass);
   gradePass = new ShaderPass({
     uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(w, h) }, danger: { value: 0 } },
@@ -289,11 +290,12 @@ function buildPost() {
       void main(){ vec3 c = texture2D(tDiffuse, vUv).rgb;
         c = pow(max(c, 0.0), vec3(1.0/2.2));                      // linear to sRGB, the composer has no output pass
         float l = dot(c, vec3(0.299,0.587,0.114));
-        c *= mix(vec3(0.86,0.94,1.12), vec3(1.06,1.0,0.92), smoothstep(0.05, 0.7, l));
-        c = (c - 0.5) * 1.08 + 0.5 + 0.01;
-        float v = smoothstep(1.25, 0.3, length(vUv - 0.5)); c *= mix(0.45, 1.0, v);
+        c += vec3(0.028, 0.036, 0.056) * (1.0 - smoothstep(0.0, 0.3, l));                  // blacks lift to a cool navy slate, never crushed
+        c *= mix(vec3(0.93, 0.98, 1.07), vec3(1.08, 1.0, 0.88), smoothstep(0.15, 0.75, l)); // split tone: cold shadows, warm highlights
+        c = (c - 0.3) * 1.05 + 0.3;                                                           // a touch of contrast around the haze value
+        float v = smoothstep(1.2, 0.25, length(vUv - 0.5)); c *= mix(0.7, 1.0, v);
         c = mix(c, vec3(0.35, 0.02, 0.02), (1.0 - v) * danger * 0.9);
-        float n = fract(sin(dot(floor(vUv * res) + time, vec2(12.9898, 78.233))) * 43758.5453); c += (n - 0.5) * 0.05;
+        float n = fract(sin(dot(floor(vUv * res) + time, vec2(12.9898, 78.233))) * 43758.5453); c += (n - 0.5) * 0.035;
         gl_FragColor = vec4(clamp(c, 0.0, 1.0), 1.0); }`,
   });
   composer.addPass(gradePass);
@@ -307,29 +309,102 @@ addEventListener('resize', () => {
 });
 
 // lights
-const hemiLight = new THREE.HemisphereLight(0x4a5a70, 0x0a0c10, 1.0); scene.add(hemiLight);
-const moon = new THREE.DirectionalLight(0x8a9ab0, 0.75); moon.position.set(-30, 40, -20); scene.add(moon);
-const lampLight = new THREE.SpotLight(0xdfe8ec, 4.2, 60, Math.PI / 6, 0.6, 1.0);
+// cold slate from above, a dark violet bounce from below; the moon is a cool rim. Warmth comes only from lamps, windows and wisps.
+const hemiLight = new THREE.HemisphereLight(0x6c7888, 0x221e2c, 0.6); scene.add(hemiLight);
+const moon = new THREE.DirectionalLight(0xa4b4cc, 0.32); moon.position.set(-39, 29, -87); scene.add(moon);   // from the painted moon, ahead and to the left: what faces the road is backlit, a silhouette against the haze
+const lampLight = new THREE.SpotLight(0xf2ead6, 4.2, 60, Math.PI / 6, 0.6, 1.0);
 lampLight.position.set(0, 1.1, 0.4);
 lampLight.target.position.set(0, 0.2, -20);
 scene.add(lampLight, lampLight.target);
 const clueLight = new THREE.SpotLight(0xe8f0f4, 0, 30, Math.PI / 14, 0.7, 1.0); clueLight.position.set(0, 9, 0); scene.add(clueLight, clueLight.target);
 
+// ---------- the sky: a painted dome that follows the camera ----------
+// pale haze at the horizon (exactly the fog colour, so the far town melts into it), a little bluer above, a darker cold slate overhead,
+// a faint moon in a soft halo and a few soft cloud bands. Unlit, no fog; nightDepth() dims it through its colour.
+const SKY_W = 2048, SKY_H = 1024, SKY_THETA = Math.PI * 0.58;   // the dome covers the top 104 degrees: everything above the horizon and a little below
+const skyCanvas = document.createElement('canvas'); skyCanvas.width = SKY_W; skyCanvas.height = SKY_H;
+const skyTex = new THREE.CanvasTexture(skyCanvas); skyTex.colorSpace = THREE.SRGBColorSpace;
+const skyDome = new THREE.Mesh(new THREE.SphereGeometry(300, 48, 20, 0, Math.PI * 2, 0, SKY_THETA), new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false, depthWrite: false }));
+skyDome.frustumCulled = false; skyDome.renderOrder = -10;
+skyDome.onBeforeRender = (r, s, cam) => { skyDome.matrixWorld.setPosition(cam.position); };   // centred on the eye, every view, every frame
+scene.add(skyDome);
+function paintSky(fogHex, stars) {
+  const g = skyCanvas.getContext('2d'), W = SKY_W, H = SKY_H;
+  const h = [(fogHex >> 16) & 255, (fogHex >> 8) & 255, fogHex & 255];   // sRGB components, as painted
+  const rgb = (c, a) => `rgba(${c.map(Math.round).join(',')},${a == null ? 1 : a})`;
+  const yOf = elev => (90 - elev) / (SKY_THETA * 180 / Math.PI) * H;                 // canvas row of an elevation in degrees
+  const mid = [h[0] + 1, h[1] + 3, h[2] + 5], top = [h[0] * 0.76, h[1] * 0.8, h[2] * 0.86];
+  const gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, rgb(top)); gr.addColorStop(yOf(55) / H, rgb(top)); gr.addColorStop(yOf(22) / H, rgb(mid)); gr.addColorStop(yOf(9) / H, rgb(mid));
+  gr.addColorStop(yOf(1.5) / H, rgb(h)); gr.addColorStop(1, rgb(h));
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  const px = W / 360, py = H / (SKY_THETA * 180 / Math.PI);   // pixels per degree across and up
+  // the camera looks down -z, which is u = 0.75 on the sphere; positive az is to the left on screen
+  const xOf = az => (0.75 + az / 360) * W;
+  if (stars) { let seed = 7; const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647; for (let i = 0; i < 260; i++) { const e = 14 + r() * 70, a = r() * 360 - 180; g.fillStyle = `rgba(220,228,240,${0.08 + r() * 0.22})`; g.fillRect(xOf(a), yOf(e), 2, 2); } }
+  // soft cloud bands: long low-contrast streaks, a lighter top and a darker underside
+  let seed = 3; const rr = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 16; i++) {
+    const e = 6 + rr() * 26, a = rr() * 360 - 180, w = (40 + rr() * 70) * px, hh = (1.2 + rr() * 2.2) * py;
+    for (const [dy, c, al] of [[0, [h[0] + 14, h[1] + 16, h[2] + 18], 0.16], [hh * 0.45, [h[0] * 0.82, h[1] * 0.85, h[2] * 0.9], 0.12]]) {
+      const cx = xOf(a), cy = yOf(e) + dy, rg = g.createRadialGradient(0, 0, 0, 0, 0, 1);
+      rg.addColorStop(0, rgb(c, al)); rg.addColorStop(1, rgb(c, 0));
+      for (const off of [-W, 0, W]) { g.save(); g.translate(cx + off, cy); g.scale(w / 2, hh); g.fillStyle = rg; g.beginPath(); g.arc(0, 0, 1, 0, 7); g.fill(); g.restore(); }
+    }
+  }
+  // the moon: up and to the left of the road, small and veiled, in a wide soft halo
+  const mx = xOf(24), my = yOf(17);
+  for (const [rad, a] of [[14, 0.07], [6, 0.1], [2.4, 0.14]]) {
+    const rg = g.createRadialGradient(0, 0, 0, 0, 0, 1); rg.addColorStop(0, `rgba(222,228,232,${a})`); rg.addColorStop(1, 'rgba(222,228,232,0)');
+    g.save(); g.translate(mx, my); g.scale(rad * px, rad * py); g.fillStyle = rg; g.beginPath(); g.arc(0, 0, 1, 0, 7); g.fill(); g.restore();
+  }
+  g.save(); g.translate(mx, my); g.scale(0.75 * px, 0.75 * py); g.fillStyle = 'rgba(214,220,220,0.42)'; g.beginPath(); g.arc(0, 0, 1, 0, 7); g.fill(); g.restore();
+  skyTex.needsUpdate = true;
+}
+
 // materials: toon bands when the look pipeline is on, plain Lambert otherwise
 const toonRamp = (() => { const data = new Uint8Array([80, 80, 80, 255, 140, 140, 140, 255, 205, 205, 205, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(data, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();
-function Mat(opts = {}) { if (!POST) return new THREE.MeshLambertMaterial(opts); return new THREE.MeshToonMaterial(Object.assign({ gradientMap: toonRamp }, opts)); }
+// the Kyoto trick: the darker toon bands lean toward a cool blue-violet instead of just going darker; brick and timber take a warmer one
+const TINT = { cool: 0x5d5f8e, warm: 0x7a5a64 };
+const TOON_LINE = /vec3 irradiance = getGradientIrradiance\( ([\w.]+), directLight\.direction \) \* directLight\.color;/;
+const toonTinted = TOON_LINE.test(THREE.ShaderChunk.lights_toon_pars_fragment) ? 'uniform vec3 uShadowTint;\n' + THREE.ShaderChunk.lights_toon_pars_fragment.replace(TOON_LINE,
+  'vec3 celBand = getGradientIrradiance( $1, directLight.direction ); vec3 irradiance = celBand * mix( uShadowTint, vec3( 1.0 ), celBand ) * directLight.color;') : null;
+function Mat(opts = {}, tint = TINT.cool) {
+  if (!POST) return new THREE.MeshLambertMaterial(opts);
+  const m = new THREE.MeshToonMaterial(Object.assign({ gradientMap: toonRamp }, opts));
+  if (toonTinted) { const u = { value: new THREE.Color(tint) }; m.onBeforeCompile = sh => { sh.uniforms.uShadowTint = u; sh.fragmentShader = sh.fragmentShader.replace('#include <lights_toon_pars_fragment>', toonTinted); }; m.customProgramCacheKey = () => 'cel' + tint; }
+  return m;
+}
+// light that is not a light: additive, no depth writes, and fog that dims it toward black instead of washing it toward the haze
+function glowFog(m, keep) {
+  const k = (1 - (keep || 0.15)).toFixed(2);
+  m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', `#ifdef FOG_EXP2
+    gl_FragColor.rgb *= 1.0 - ${k} * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth ));
+  #endif`); };
+  m.customProgramCacheKey = () => 'glowFog' + k; return m;
+}
+function GlowMat(map, color, opacity, sprite, extra) {
+  const o = Object.assign({ map, color, opacity, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }, extra || {});
+  return glowFog(sprite ? new THREE.SpriteMaterial(o) : new THREE.MeshBasicMaterial(o));
+}
+const glowTex = (() => {   // a soft round glow with a hot centre
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  const r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.12, 'rgba(255,255,255,.75)'); r.addColorStop(0.35, 'rgba(255,255,255,.22)'); r.addColorStop(0.7, 'rgba(255,255,255,.05)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+})();
 const M = {
   road: new THREE.MeshPhongMaterial({ color: 0x2c313b, specular: 0x6a7a90, shininess: 90 }),   // wet
   ground: Mat({ color: 0x141f16 }),
-  water: Mat({ color: 0x0b1424 }),
-  wood: Mat({ color: 0x3b2a1c }),
+  water: Mat({ color: 0x2c3742 }),
+  wood: Mat({ color: 0x3b2a1c }, TINT.warm),
   dark: Mat({ color: 0x15161b }),
   mill: Mat({ color: 0x2a2520 }),
   bike: Mat({ color: 0x8c8c94 }),
   rider: Mat({ color: 0x14161b }),
   shirt: Mat({ color: 0xd9792a }),
   ghost: Mat({ color: 0xb9c4d6, emissive: 0x6f7fa8, emissiveIntensity: 0.35, transparent: true, opacity: 0.6, side: THREE.DoubleSide }),
-  wisp: new THREE.MeshBasicMaterial({ color: 0xcfd8dc }),
+  wisp: new THREE.MeshBasicMaterial({ color: 0xffe08a }),
   puddle: new THREE.MeshPhongMaterial({ color: 0x141c2c, specular: 0x9ab0c8, shininess: 160 }),
   eye: new THREE.MeshBasicMaterial({ color: 0xff2a1a }),
   hay: Mat({ color: 0x4a3d20 }),
@@ -448,8 +523,8 @@ const PM = {
   wall: Mat({ color: 0x2e3540 }),
   wall2: Mat({ color: 0x3a343c }),
   roof: Mat({ color: 0x15171b }),
-  window: new THREE.MeshBasicMaterial({ color: 0xd9974a }),
-  windowDim: new THREE.MeshBasicMaterial({ color: 0x9a6a2a }),
+  window: new THREE.MeshBasicMaterial({ color: 0xe8a458 }),
+  windowDim: new THREE.MeshBasicMaterial({ color: 0x8a5c2c }),
   orange: Mat({ color: 0xd9792a }),
   cheese: Mat({ color: 0xe0b040, emissive: 0x6a4a10, emissiveIntensity: 0.6 }),
   tulip: new THREE.MeshBasicMaterial({ color: 0xc8302a }),
@@ -458,6 +533,7 @@ const PM = {
   windowOff: new THREE.MeshBasicMaterial({ color: 0x0c0d10 }),
   pole: Mat({ color: 0x1b1d21 }),
   bulb: new THREE.MeshBasicMaterial({ color: 0xcfd6d8 }),
+  lampHead: new THREE.MeshBasicMaterial({ color: 0xfff2d2, fog: false }),
   stone: Mat({ color: 0x3e434c }),
   reed: Mat({ color: 0x2a3326 }),
   leaf: Mat({ color: 0x1d2a22 }),
@@ -472,6 +548,9 @@ const PG = {
   reed: new THREE.CylinderGeometry(0.02, 0.04, 1.4, 4),
   pool: new THREE.PlaneGeometry(6.5, 6.5).rotateX(-Math.PI / 2),
   streak: new THREE.PlaneGeometry(1.4, 9).rotateX(-Math.PI / 2),
+  wisp: new THREE.PlaneGeometry(0.9, 2.6).rotateX(-Math.PI / 2),
+  winGlow: (() => { const q = new THREE.PlaneGeometry(1, 1), uv = q.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setX(i, uv.getX(i) * 0.5); return q; })(),          // left half of the window atlas: the halo
+  winStreak: (() => { const q = new THREE.PlaneGeometry(1, 1), uv = q.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setX(i, 0.5 + uv.getX(i) * 0.5); return q; })(), // right half: the reflection
 };
 // a soft pool of lamplight: radial falloff
 const poolTex = (() => {
@@ -495,8 +574,30 @@ const streakTex = (() => {
   }
   return new THREE.CanvasTexture(c);
 })();
-const LAMP_POOL_MAT = new THREE.MeshBasicMaterial({ map: poolTex, color: 0x9a9684, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
-const LAMP_STREAK_MAT = new THREE.MeshBasicMaterial({ map: streakTex, color: 0xb4b09c, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+const LAMP_POOL_MAT = GlowMat(poolTex, 0xb0a07c, 1);
+const LAMP_STREAK_MAT = GlowMat(streakTex, 0xd8c49a, 1);
+// the visible cone of lamplight in the haze, painted soft-edged on a sprite that hangs from the lamp head: brightest under the head, gone near the ground
+const coneTex = (() => {
+  const W = 128, H = 128, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  for (let y = 0; y < H; y++) {
+    const t = y / (H - 1), hw = (0.05 + 0.43 * t) * W, a = Math.pow(1 - t, 1.25) * 0.95;
+    const r = g.createLinearGradient(W / 2 - hw, 0, W / 2 + hw, 0);
+    r.addColorStop(0, 'rgba(255,255,255,0)'); r.addColorStop(0.18, `rgba(255,255,255,${a * 0.6})`); r.addColorStop(0.5, `rgba(255,255,255,${a})`); r.addColorStop(0.82, `rgba(255,255,255,${a * 0.6})`); r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r; g.fillRect(0, y, W, 1);
+  }
+  return new THREE.CanvasTexture(c);
+})();
+const LAMP_CONE_MAT = GlowMat(coneTex, 0xd6c49c, 0.42, true);
+const LAMP_HALO_MAT = GlowMat(glowTex, 0xffdca0, 0.85, true);
+// lit windows: one atlas, a halo on the left and a wet reflection streak on the right, so a whole house of them is one draw call
+const winTex = (() => {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 128; const g = c.getContext('2d');
+  const r = g.createRadialGradient(64, 64, 0, 64, 64, 64); r.addColorStop(0, 'rgba(255,255,255,.9)'); r.addColorStop(0.3, 'rgba(255,255,255,.45)'); r.addColorStop(0.65, 'rgba(255,255,255,.1)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128);
+  g.drawImage(streakTex.image, 128, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+const WIN_GLOW_MAT = GlowMat(winTex, 0xffb466, 0.55);
 // ---------- kit: small parts merged into one mesh per material, so a street full of detail costs a handful of draw calls ----------
 // build-time only: kits run when the scenery is built, never inside update()
 const _kq = new THREE.Quaternion(), _ke = new THREE.Euler(), _kp = new THREE.Vector3(), _ks = new THREE.Vector3(), _km = new THREE.Matrix4(), _kd = new THREE.Vector3(), _kup = new THREE.Vector3(0, 1, 0);
@@ -694,9 +795,9 @@ function lamppost() {
   kadd(k, PG.pole, PM.pole, 0, 2.1, 0); kb(k, PM.pole, -0.4, 4.1, 0, 0.9, 0.06, 0.06);
   if (Math.random() < 0.3) { kat(k, 0.26, 0, rnd(-0.2, 0.2), rnd(-0.15, 0.15), 0.12); kBike(k, pick(PK.bikes), false, Math.random() < 0.4); }   // a bike locked to the lamppost
   kbuild(k, g);
-  const b = new THREE.Mesh(PG.bulb, PM.bulb); b.position.set(-0.8, 4.0, 0); g.add(b);
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.5, color: 0xd8dde0 }));
-  glow.scale.set(1.5, 1.5, 1); glow.material.opacity = 0.18; glow.position.set(-0.8, 3.6, 0); g.add(glow);
+  const b = new THREE.Mesh(PG.bulb, PM.lampHead); b.position.set(-0.8, 4.0, 0); b.scale.set(1.5, 0.45, 1.5); g.add(b);
+  const glow = new THREE.Sprite(LAMP_HALO_MAT); glow.scale.set(2.2, 2.2, 1); glow.position.set(-0.8, 3.92, 0); g.add(glow);
+  const cone = new THREE.Sprite(LAMP_CONE_MAT); cone.center.set(0.5, 1); cone.scale.set(3.6, 3.9, 1); cone.position.set(-0.8, 3.98, 0); cone.renderOrder = 4; g.add(cone);
   // lamplight on the ground and its long reflection on the wet road: additive decals, no real light
   const pool = new THREE.Mesh(PG.pool, LAMP_POOL_MAT); pool.position.set(-1.3, 0.11, 0); pool.renderOrder = 2; g.add(pool);
   const streak = new THREE.Mesh(PG.streak, LAMP_STREAK_MAT); streak.position.set(-1.25, 0.12, 0); streak.renderOrder = 3; g.add(streak);
@@ -721,10 +822,10 @@ const TOWN_STYLE = {
   amsterdam:    { brick: [0x3b2f2b, 0x4a3a35, 0x2e2a30, 0x5a4038, 0x1f1c22], gables: 0.9, height: [9, 13], width: [3.2, 4.2] },
 };
 const brickMats = new Map();
-function brickMat(col) { if (!brickMats.has(col)) brickMats.set(col, Mat({ color: col })); return brickMats.get(col); }
+function brickMat(col) { if (!brickMats.has(col)) brickMats.set(col, Mat({ color: col }, TINT.warm)); return brickMats.get(col); }
 const brickMats2 = new Map();
-function brickMat2(col) { if (!brickMats2.has(col)) brickMats2.set(col, Mat({ color: col, side: THREE.DoubleSide })); return brickMats2.get(col); }
-const PM_frame = new THREE.MeshBasicMaterial({ color: 0xd8d4c8 });
+function brickMat2(col) { if (!brickMats2.has(col)) brickMats2.set(col, Mat({ color: col, side: THREE.DoubleSide }, TINT.warm)); return brickMats2.get(col); }
+const PM_frame = new THREE.MeshBasicMaterial({ color: 0x5e5c58 });   // pale paint, but unlit: kept dim so it does not glow at night
 function house(opts = {}) {
   // every part goes into one kit and comes out as one mesh per material: shutters, cellar windows, chimneys and gutters cost no extra draw calls
   const g = new THREE.Group(); const st = townStyle; const k = kit();
@@ -771,6 +872,10 @@ function house(opts = {}) {
     const r0 = Math.random(), lit = r0 < litP;
     kadd(k, KG.plane, PM_frame, fx - 0.005, y, z, 0, yaw, 0, 0.95, 1.5);
     kadd(k, KG.plane, lit ? PM.window : r0 < litP + 0.2 ? PM.windowDim : PM.windowOff, fx - 0.012, y, z, 0, yaw, 0, 0.75, 1.3);
+    if (lit) {   // warm light spilling onto the brick, and its streak on the wet pavement below
+      kadd(k, PG.winGlow, WIN_GLOW_MAT, fx - 0.07, y, z, 0, yaw, 0, 2.5, 2.9);
+      if (r < 2) kadd(k, PG.winStreak, WIN_GLOW_MAT, fx - 0.95, 0.09, z, -Math.PI / 2, 0, 0, 0.9, 3.2 + r * 1.6);
+    }
     kadd(k, KG.plane, PM_frame, fx - 0.016, y + 0.3, z, 0, yaw, 0, 0.75, 0.05); kadd(k, KG.plane, PM_frame, fx - 0.016, y - 0.175, z, 0, yaw, 0, 0.05, 0.95);
     if (lit && pet) { kadd(k, KG.cat, PM.windowOff, fx - 0.02, y - 0.64, z + 0.08, 0, yaw, 0, 0.9, 0.9); pet = false; }
     else if (lit && Math.random() < 0.2) kadd(k, KG.plant, PM.windowOff, fx - 0.02, y - 0.64, z - 0.18, 0, yaw, 0, 0.9, 0.9);
@@ -804,6 +909,7 @@ function house(opts = {}) {
     const sgn = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9), Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45 }));
     sgn.position.set(fx - 0.05, 3.5, 0); sgn.rotation.y = yaw; sgn.userData.ownTex = true; g.add(sgn);
     kadd(k, KG.plane, PM.window, fx - 0.02, 1.4, -0.6, 0, yaw, 0, 3.6, 1.8);
+    kadd(k, PG.winGlow, WIN_GLOW_MAT, fx - 0.08, 1.5, -0.6, 0, yaw, 0, 6.2, 4.2); kadd(k, PG.winStreak, WIN_GLOW_MAT, fx - 1.0, 0.09, -0.6, -Math.PI / 2, 0, 0, 2.6, 4.5);
     for (const bz of [-1.8, -0.6, 0.6]) kb(k, PM.pole, fx - 0.04, 1.4, bz, 0.04, 1.9, 0.07);
     kb(k, PM.pole, fx - 0.04, 0.48, -0.6, 0.05, 0.08, 3.7); kb(k, PM.pole, fx - 0.04, 2.32, -0.6, 0.05, 0.08, 3.7);
     // the hanging sign from the concept sheet: an iron bracket, two chains and a board with the trade on it
@@ -1008,11 +1114,12 @@ let townId = 'alblasserdam';
 // ---------- themes: what lines the road per place ----------
 // street furniture sits on the pavement with a footprint under 1, so it never pushes a house away; houses stand back a little for front gardens
 const THEMES = {
-  polder: { ground: 0x141f16, groundY: -0.9, canal: 1, curv: 0.0035, spawn: [
+  // fog: the horizon haze (sky and fog share it), fogD: its density at the start, night: how far the haze dims by the end of a level
+  polder: { fog: 0x4b555c, fogD: 0.015, night: 0.16, stars: true, water: 0x35414b, ground: 0x18201b, groundY: -0.9, canal: 1, curv: 0.0035, spawn: [
     { make: windmill, n: 5, gap: 50, side: 'both', xr: [12, 26], y: -0.6 }, { make: deadTree, n: 10, gap: 16, side: 'both', xr: [6.5, 14], y: -0.6 },
     { make: fencePost, n: 36, gap: 4.5, side: 'left', xr: [4.6, 4.6] }, { make: reeds, n: 22, gap: 8, side: 'right', xr: [5.0, 5.8], y: -0.7 },
     { make: ducks, n: 2, gap: 90, side: 'right', xr: [8, 14], y: -0.62 }, { make: moorings, n: 3, gap: 60, side: 'right', xr: [5.6, 5.9], y: -0.6 } ] },
-  street: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
+  street: { fog: 0x4b555f, fogD: 0.016, night: 0.17, ground: 0x1b1f25, groundY: -0.05, canal: 0, curv: 0.003, spawn: [
     { make: house, n: 16, gap: 8.5, side: 'alt', xr: [7.6, 8.4], y: 0 }, { make: lamppost, n: 10, gap: 15, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 3, gap: 55, side: 'both', xr: [5.0, 5.0] }, { make: bollard, n: 20, gap: 7, side: 'alt', xr: [4.4, 4.4], r: 0.2 },
     { make: bench, n: 2, gap: 70, side: 'both', xr: [4.9, 4.9], r: 1 }, { make: () => fingerpost(['Dorp', 'Molen', 'Kerk']), n: 1, gap: 140, side: 'both', xr: [4.6, 4.6], r: 0.5 },
@@ -1020,28 +1127,28 @@ const THEMES = {
     { make: tulipBox, n: 4, gap: 36, side: 'both', xr: [4.8, 4.9], r: 0.4 }, { make: bikeLaneSign, n: 2, gap: 75, side: 'both', xr: [4.6, 4.6], r: 0.3 },
     { make: bakfiets, n: 1, gap: 150, side: 'both', xr: [5.0, 5.1], r: 0.7 },
     { make: 'zombieWalk', n: 6, gap: 26, side: 'both', xr: [4.8, 5.4], r: 0.6 } ] },
-  shops: { ground: 0x171b22, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
+  shops: { fog: 0x4e555d, fogD: 0.016, night: 0.17, ground: 0x1b1f25, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 14, gap: 9, side: 'alt', xr: [7.2, 7.6], y: 0 }, { make: lamppost, n: 12, gap: 13, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 5, gap: 36, side: 'both', xr: [5.0, 5.0] }, { make: cheeseCart, n: 2, gap: 80, side: 'both', xr: [5.4, 5.6], r: 1.5 },
     { make: bollard, n: 12, gap: 10, side: 'alt', xr: [4.4, 4.4], r: 0.2 }, { make: bikeRow, n: 6, gap: 26, side: 'both', xr: [4.9, 5.0], r: 0.6 },
     { make: crates, n: 4, gap: 38, side: 'both', xr: [5.0, 5.2], r: 0.5 }, { make: bins, n: 3, gap: 50, side: 'both', xr: [5.0, 5.1], r: 0.5 },
     { make: bakfiets, n: 2, gap: 75, side: 'both', xr: [5.0, 5.1], r: 0.7 }, { make: bikeLaneSign, n: 1, gap: 150, side: 'both', xr: [4.6, 4.6], r: 0.3 },
     { make: 'zombieWalk', n: 7, gap: 22, side: 'both', xr: [4.8, 5.4], r: 0.6 } ] },
-  dyke: { ground: 0x141f16, groundY: -0.9, canal: -1, curv: 0.004, spawn: [
+  dyke: { fog: 0x4a545d, fogD: 0.0145, night: 0.16, water: 0x37434d, ground: 0x18201b, groundY: -0.9, canal: -1, curv: 0.004, spawn: [
     { make: windmill, n: 4, gap: 60, side: 'right', xr: [12, 26], y: -0.6 }, { make: reeds, n: 40, gap: 4.2, side: 'left', xr: [4.8, 5.6], y: -0.7 }, { make: lamppost, n: 5, gap: 36, side: 'right', xr: [4.7, 4.7] },
     { make: boat, n: 5, gap: 40, side: 'left', xr: [9, 13], y: 0 }, { make: moorings, n: 6, gap: 28, side: 'left', xr: [5.8, 6.2], y: -0.6 }, { make: ducks, n: 3, gap: 55, side: 'left', xr: [7, 12], y: -0.62 },
     { make: fencePost, n: 36, gap: 4.5, side: 'right', xr: [4.6, 4.6] },
     { make: drawbridge, n: 1, gap: 160, side: 'left', xr: [4.2, 4.2] }, { make: tree, n: 5, gap: 34, side: 'right', xr: [6, 10], y: -0.6 },
     { make: () => fingerpost(['Kinderdijk', 'Dordrecht']), n: 1, gap: 180, side: 'right', xr: [4.6, 4.6], r: 0.5 },
     { make: bikeRow, n: 2, gap: 80, side: 'right', xr: [4.9, 5.0], r: 0.6 }, { make: 'zombieWalk', n: 2, gap: 80, side: 'right', xr: [4.8, 5.1], r: 0.6 } ] },
-  square: { ground: 0x181c24, groundY: -0.05, canal: 0, curv: 0.002, spawn: [
+  square: { fog: 0x4a545f, fogD: 0.016, night: 0.17, ground: 0x1c2026, groundY: -0.05, canal: 0, curv: 0.002, spawn: [
     { make: church, n: 1, gap: 200, side: 'right', xr: [12, 12] }, { make: tree, n: 12, gap: 13, side: 'both', xr: [5.5, 9] },
     { make: lamppost, n: 8, gap: 18, side: 'alt', xr: [4.7, 4.7] }, { make: house, n: 8, gap: 16, side: 'left', xr: [9, 11] },
     { make: bench, n: 4, gap: 40, side: 'both', xr: [5.0, 5.2], r: 1 }, { make: tulipBox, n: 6, gap: 26, side: 'both', xr: [4.6, 4.8], r: 0.4 },
     { make: bikeRow, n: 4, gap: 40, side: 'both', xr: [4.9, 5.0], r: 0.6 }, { make: bins, n: 3, gap: 50, side: 'both', xr: [5.0, 5.1], r: 0.5 },
     { make: bakfiets, n: 1, gap: 160, side: 'both', xr: [5.0, 5.1], r: 0.7 }, { make: bikeLaneSign, n: 1, gap: 150, side: 'both', xr: [4.6, 4.6], r: 0.3 },
     { make: 'zombieWalk', n: 5, gap: 34, side: 'both', xr: [5.0, 6.0], r: 0.6 } ] },
-  nightshop: { ground: 0x141820, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
+  nightshop: { fog: 0x3c4552, fogD: 0.017, night: 0.22, ground: 0x171a20, groundY: -0.05, canal: 0, curv: 0.0025, spawn: [
     { make: 'shop', n: 12, gap: 10, side: 'alt', xr: [7.2, 7.6] }, { make: lamppost, n: 5, gap: 28, side: 'alt', xr: [4.7, 4.7] },
     { make: 'graffiti', n: 6, gap: 30, side: 'both', xr: [5.0, 5.0] }, { make: dogProp, n: 1, gap: 120, side: 'both', xr: [4.8, 5.2] },
     { make: cheeseCart, n: 1, gap: 120, side: 'both', xr: [5.4, 5.6], r: 1.5 }, { make: bollard, n: 10, gap: 12, side: 'alt', xr: [4.4, 4.4], r: 0.2 },
@@ -1086,6 +1193,9 @@ function buildScenery(th) {
   clearScenery(); theme = th;
   for (const v of ZOMBIE_VARIANTS) zombieParts(v);
   ground.material.color.set(th.ground); ground.position.y = th.groundY;
+  if (!th.fogC) th.fogC = new THREE.Color(th.fog);
+  scene.fog.color.copy(th.fogC); scene.fog.density = th.fogD; skyDome.material.color.setScalar(1); paintSky(th.fog, !!th.stars);
+  M.water.color.set(th.water || 0x2c3742);
   const spawn = th.spawn.concat(TOWN_EXTRA[townId] || [], LANDMARK[townId] ? [{ make: LANDMARK[townId], n: 1, gap: 240, side: townId === 'zeeland' ? 'left' : 'both', xr: [16, 24], r: 12, y: th.groundY + 0.3 }] : []);
   for (const sp of spawn) {
     for (let i = 0; i < sp.n; i++) {
@@ -1104,8 +1214,8 @@ function buildScenery(th) {
 
 const wieven = [];
 for (let i = 0; i < 10; i++) {
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: rnd(0.4, 0.9) }));
-  s.scale.set(rnd(5, 9), rnd(2, 4), 1); s.position.set(rnd(-14, 14), Math.max(rnd(0.3, 2), s.scale.y * 0.42), -i * 18 - 10); s.userData.drift = rnd(0.2, 0.6);   // the lower edge stays above the road so the mist does not clip flat
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, color: 0xb4c0cc, transparent: true, depthWrite: false, opacity: rnd(0.18, 0.32) }));
+  s.scale.set(rnd(12, 20), rnd(1.6, 2.6), 1); s.position.set(rnd(-14, 14), Math.max(rnd(0.3, 2), s.scale.y * 0.42), -i * 18 - 10); s.userData.drift = rnd(0.2, 0.6);   // the lower edge stays above the road so the mist does not clip flat
   scene.add(s); wieven.push(s);
 }
 
@@ -1210,7 +1320,7 @@ const G = {
   hay: new THREE.SphereGeometry(0.8, 8, 6),
   wheel: new THREE.CylinderGeometry(0.35, 0.35, 0.1, 10),
   puddle: new THREE.CircleGeometry(0.9, 14),
-  wisp: new THREE.SphereGeometry(0.09, 6, 6),
+  wisp: new THREE.SphereGeometry(0.13, 10, 8),
   ghostBody: new THREE.ConeGeometry(0.45, 1.9, 8, 1, true),
   ghostHead: new THREE.SphereGeometry(0.22, 8, 8),
 };
@@ -1328,9 +1438,16 @@ function cart() {
 function puddle() {
   const m = new THREE.Mesh(G.puddle, M.puddle); m.rotation.x = -Math.PI / 2; m.position.y = 0.01; m.scale.x = 1.1; return m;
 }
+// a wisp is the lamp's fuel: a hot golden core in a soft halo, and its reflection on the wet road; update() bobs it and keeps the reflection down
+const WISP_HALO_MAT = GlowMat(glowTex, 0xffc65a, 1, true); WISP_HALO_MAT.userData.shared = true;
+const WISP_REFL_MAT = GlowMat(streakTex, 0xffb848, 0.8); WISP_REFL_MAT.userData.shared = true;
 function wisp() {
-  const m = new THREE.Mesh(G.wisp, M.wisp); m.position.y = 1.0;
-  return m;
+  const g = new THREE.Group(); g.position.y = 1.0;
+  g.add(new THREE.Mesh(G.wisp, M.wisp));
+  const halo = new THREE.Sprite(WISP_HALO_MAT); halo.scale.set(1.9, 1.9, 1); g.add(halo);
+  const refl = new THREE.Mesh(PG.wisp, WISP_REFL_MAT); refl.position.y = -0.96; refl.renderOrder = 3; g.add(refl);
+  g.userData.halo = halo; g.userData.refl = refl;
+  return g;
 }
 
 // ---------- warm-up: compile every material variant once so nothing stalls mid-ride ----------
@@ -1341,7 +1458,7 @@ function warmUp() {
   renderer.compile(scene, camera);
   renderer.render(scene, camera);
   follower.visible = false;
-  tmp.forEach(o => { scene.remove(o); o.traverse(m => { if (m.material && m.material.map) { m.material.map.dispose(); m.material.dispose(); } }); });
+  tmp.forEach(o => { scene.remove(o); o.traverse(m => { if (m.material && m.material.map && !m.material.userData.shared) { m.material.map.dispose(); m.material.dispose(); } }); });
 }
 
 // ---------- state ----------
@@ -2168,6 +2285,7 @@ function update(dt) {
     follower.position.z = lerp(11, 5.5, smooth(clamp((S.dieT - 1.2) / 2.0, 0, 1)));
     follower.userData.glow.intensity = k * 2.5;
     scene.fog.density = lerp(scene.fog.density, 0.12, dt * 0.8);
+    scene.fog.color.multiplyScalar(1 - dt * 0.9); skyDome.material.color.multiplyScalar(1 - dt * 0.9);   // the haze closes in and goes dark
     lampLight.intensity = lerp(lampLight.intensity, 0, dt * 2);
     if (S.dieT > 1.0 && S.dieT - dt <= 1.0) thump(0.9);
     if (S.dieT > 2.2 && S.dieT - dt <= 2.2) thump(1.0);
@@ -2205,10 +2323,13 @@ function update(dt) {
   // lamp look
   const Lf = S.lamp / 100;
   lampLight.intensity = 0.8 + Lf * 4.0;
-  hemiLight.intensity = 1.0 - 0.42 * nightDepth();
+  const nd = nightDepth(), nightK = lerp(1, theme.night || 0.17, nd);
+  hemiLight.intensity = 0.6 - 0.4 * nd;
+  scene.fog.color.copy(theme.fogC).multiplyScalar(nightK); skyDome.material.color.setScalar(nightK);   // the haze and the sky dim together as the night deepens
+  const town = 1 - 0.45 * nd; LAMP_POOL_MAT.opacity = town; LAMP_STREAK_MAT.opacity = town; LAMP_CONE_MAT.opacity = 0.42 * town; LAMP_HALO_MAT.opacity = 0.85 * town; WIN_GLOW_MAT.opacity = 0.55 * town;   // the town's lights burn lower too; the wisps do not
   bike.userData.lampMesh.material.color.setHSL(0.55, 0.15, 0.3 + Lf * 0.65);
   beam.material.opacity = 0.02 + Lf * 0.04;
-  scene.fog.density = 0.035 - Lf * 0.017 + S.forkZoom * 0.003 + 0.006 * nightDepth();   // a little thinner so the road reads further ahead
+  scene.fog.density = theme.fogD * (1.28 - 0.4 * Lf) + S.forkZoom * 0.002 + 0.004 * nd;   // a weak lamp thickens the haze; about 70 percent fogged at 70 m
   const lw = Math.round(S.lamp); if (lw !== S.lampLast) { S.lampLast = lw; $('lampfill').style.width = lw + '%'; }
   const danger = 1 - Lf;
   const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = composer ? 0 : vo; }
@@ -2248,7 +2369,7 @@ function update(dt) {
     const z = S.dist - o.d;
     if (o.mesh) {
       o.mesh.position.z = z; o.mesh.position.x = o.bx + bend(z);
-      if (o.type === 'wisp' && !o.hit) o.mesh.position.y = 1.0 + Math.sin(S.t * 3 + o.d) * 0.15;
+      if (o.type === 'wisp' && !o.hit) { o.mesh.position.y = 1.0 + Math.sin(S.t * 3 + o.d) * 0.15; const u = o.mesh.userData; if (u.refl) { u.refl.position.y = 0.04 - o.mesh.position.y; const p = 1.85 + Math.sin(S.t * 5 + o.d * 1.7) * 0.22; u.halo.scale.set(p, p, 1); } }
       if (o.type === 'passenger') { o.mesh.position.y = 0.15 + Math.sin(S.t * 1.5 + o.d) * 0.08; o.mesh.rotation.y = Math.atan2(S.x - o.mesh.position.x, -z) + Math.PI; }
       if (o.zombie && !o.hit) o.mesh.rotation.z = Math.sin(S.t * (o.mesh.userData.lean || 1)) * 0.08;
       if (o.drift && !o.hit && riding) o.d += o.drift * dt;
@@ -2306,7 +2427,7 @@ function update(dt) {
   // cleanup
   for (let i = S.objs.length - 1; i >= 0; i--) {
     const o = S.objs[i]; if (S.dist - o.d > 14) {
-      if (o.mesh) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.material && m.material.map) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); }
+      if (o.mesh) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.material && m.material.map && !m.material.userData.shared) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); }
       S.objs.splice(i, 1); }
   }
 
