@@ -10,7 +10,7 @@
   const A = window.NRART;
   const DE = ['de hond', 'de vrouw', 'de fiets', 'de nacht', 'de molen'], HET = ['het huis', 'het brood', 'het ei', 'het water', 'het meisje'];
   const CX = 160, X0 = 36, X1 = 284, Y0 = 22, Y1 = 160;           // book page area
-  const DEX = 60, HETX = 210, ROW0 = 78, ROWH = 12;
+  const DEX = 68, HETX = 220, ROW0 = 78, ROWH = 12;
   const TAU = Math.PI * 2, cache = new WeakMap();
   const hash = A.hash;
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
@@ -75,7 +75,7 @@
     // a graphite pencil, slate and steel with a wooden tip, lying in the moon slab
     A.shadow(g, 22, 46, 22, 3, 0.55);
     for (let k = -2; k <= 2; k++) A.line(g, 6, 29 + k, 34, 41 + k, k < -1 ? 'steel5' : k < 0 ? 'slate6' : k < 2 ? 'slate5' : 'slate3');
-    A.line(g, 6, 27, 34, 39, 'steel4');
+    A.line(g, 6, 27, 34, 39, 'mist6'); A.line(g, 8, 28, 30, 37, 'mist7');
     A.poly(g, [34, 38, 45, 43, 34, 44], 'wood5'); A.poly(g, [40, 41, 45, 43, 40, 43], 'wood6'); A.px(g, 44, 43, 'slate2'); A.px(g, 45, 43, 'slate1');
     A.rect(g, 3, 26, 4, 8, 'red4'); A.rect(g, 7, 26, 2, 9, 'steel5'); A.rect(g, 9, 26, 1, 9, 'steel3'); A.px(g, 3, 26, 'red5');
   }
@@ -128,36 +128,43 @@
         x += w + 3; k++;
       }
     };
-    for (const [bx, seed] of [[68, 1], [210, 2]]) {
-      for (let r = 0; r < 3; r++) seg(bx, 134 + r * 3, r === 2 ? 38 : 62, seed * 10 + r, -0.2);
-    }
-    seg(48, 31, 30, 5, -0.22); seg(236, 31, 22, 6, -0.22);
+    for (let r = 0; r < 3; r++) seg(68, 134 + r * 3, r === 2 ? 38 : 62, 10 + r, -0.3);
     for (let x = 62; x < 136; x++) paperPx(g, x, 36, -0.14, false);
     for (let x = 184; x < 262; x++) paperPx(g, x, 36, -0.14, false);
     for (const [px, rows] of [[DEX, DE], [HETX, HET]]) for (let i = 0; i < rows.length; i++) {
-      const y = ROW0 + i * ROWH + 2; for (let x = px; x < px + 60; x++) if ((x + i) % 4 !== 3) paperPx(g, x, y, -0.12, false);
+      const y = ROW0 + i * ROWH + 2; for (let x = px; x < px + 56; x++) if ((x + i) % 4 !== 3) paperPx(g, x, y, -0.12, false);
     }
   }
 
   // ---- pencil marks: graphite ticks that are crossed out, and the red pencil
   const GR = 'slate4';
-  function tick(g, x, y) { A.line(g, x, y - 3, x + 2, y, GR); A.line(g, x + 2, y, x + 7, y - 7, GR); A.px(g, x + 3, y, 'slate3'); }
-  function cross(g, x, y) { A.line(g, x, y - 7, x + 6, y, GR); A.line(g, x + 6, y - 7, x, y, GR); }
-  function strike(g, x, y, s) {
-    A.line(g, x - 1, y - 6, x + 8, y - 5 + (s & 1), GR); A.line(g, x + 8, y - 5 + (s & 1), x - 1, y - 3, GR); A.line(g, x - 1, y - 3, x + 8, y - 1 - (s & 1), 'slate3');
+  const SL = 'slate2';
+  function tick(g, x, y) {
+    A.line(g, x, y - 4, x + 2, y - 1, GR); A.line(g, x + 1, y - 4, x + 2, y - 2, GR); A.line(g, x + 2, y - 1, x + 7, y - 9, GR); A.line(g, x + 3, y - 1, x + 8, y - 9, GR); A.px(g, x + 2, y, 'slate3');
+  }
+  function cross(g, x, y) { A.line(g, x, y - 9, x + 6, y - 1, GR); A.line(g, x + 6, y - 9, x, y - 1, GR); }
+  function slash(g, x, y, s) {       // one hard diagonal stroke through a mark, longer than the mark
+    const d = s & 1;
+    A.line(g, x - 1, y - 10 + d, x + 9, y + 1, SL); A.line(g, x, y - 10 + d, x + 10, y + 1, SL);
+  }
+  function strike(g, x, y, s) {      // a flat strike-through, for the crosses
+    const d = s & 1;
+    A.line(g, x - 2, y - 5 + d, x + 9, y - 4, SL); A.line(g, x - 2, y - 4 + d, x + 9, y - 3, SL);
   }
   function ruling(g) {
     for (let i = 0; i < 5; i++) {
-      const y = ROW0 + i * ROWH, x0 = 38, x1 = 190;
-      // DE: tick, crossed out, ticked again (and the last one crossed out too)
-      tick(g, x0, y); strike(g, x0, y, i); tick(g, x0 + 10, y); if (i === 4) strike(g, x0 + 10, y, 1);
-      // HET: every mark crossed out
-      if (i & 1) tick(g, x1, y); else cross(g, x1, y); strike(g, x1, y, i + 1); if (i % 3 === 0) { tick(g, x1 + 10, y); strike(g, x1 + 10, y, 0); }
+      const y = ROW0 + i * ROWH + 1, x0 = 42, x1 = 189;
+      // DE: tick, crossed out, ticked again (and de molen: crossed out twice)
+      tick(g, x0, y); slash(g, x0, y, i); tick(g, x0 + 13, y); if (i === 4) slash(g, x0 + 13, y, 1);
+      // HET: every mark crossed out, two of them ticked again, none of it agreeing
+      if (i & 1) tick(g, x1, y); else cross(g, x1, y);
+      if (i & 1) slash(g, x1, y, i); else strike(g, x1, y, i);
+      if (i === 3) { tick(g, x1 + 13, y); slash(g, x1 + 13, y, 0); }
     }
     // red heading underlines: wobbly pencil
     for (const cx of [98, 234]) for (let k = 0; k < 2; k++) for (let x = cx - 20; x < cx + 20; x++) A.px(g, x, 60 + k + Math.round(Math.sin(x * 0.4 + cx) * 0.7), k ? 'red3' : 'red4');
     // the loop round 'het meisje' (the girl is neuter, apparently)
-    const tw = A.textWidth('het meisje', 9), cx = HETX + tw / 2, cy = ROW0 + 4 * ROWH - 3, rx = tw / 2 + 7, ry = 8.5;
+    const tw = A.textWidth('het meisje', 9), cx = HETX + tw / 2, cy = ROW0 + 4 * ROWH - 3, rx = tw / 2 + 8, ry = 9.5;
     for (let pass = 0; pass < 2; pass++) {
       const n = 160; for (let k = 0; k < n; k++) {
         const u = k / n, th = -0.5 + u * (TAU + 1.3 + pass * 0.3), r = 1 + (u - 0.5) * 0.14 * (pass ? -1 : 1);
@@ -165,12 +172,12 @@
         if (hash(k, pass + 40) > 0.1) { A.px(g, Math.round(x), Math.round(y), pass ? 'red3' : 'red4'); if (!pass && u > 0.5) A.px(g, Math.round(x), Math.round(y) + 1, 'red3'); }
       }
     }
-    A.line(g, Math.round(cx + rx + 1), Math.round(cy - 6), Math.round(cx + rx + 6), Math.round(cy - 10), 'red4');   // the flick
+    A.line(g, Math.round(cx + rx * 0.7), Math.round(cy + ry + 1), Math.round(cx + rx * 0.7 + 7), Math.round(cy + ry + 6), 'red4');   // the flick, pointing down to the note
   }
 
   function coffeeRing(g) {
     // an old mug ring on the open left page; the page's own ramp, a stain not a pattern
-    const rings = [[112, 142, 14, 11, 0.9], [118, 137, 12, 10, 0.5]];
+    const rings = [[134, 146, 14, 10, 0.9], [139, 142, 12, 9, 0.5]];
     for (const [cx, cy, rx, ry, a] of rings) {
       for (let k = 0; k < 360; k++) {
         const th = k / 360 * TAU; if (th > 4.2 && th < 4.9) continue;
@@ -181,7 +188,7 @@
         }
       }
     }
-    for (const [x, y] of [[98, 150], [124, 146], [121, 131], [105, 133]]) { A.px(g, x, y, 'wood4'); A.px(g, x + 1, y, 'wood5'); }
+    for (const [x, y] of [[120, 154], [146, 150], [142, 137], [126, 139]]) { A.px(g, x, y, 'wood4'); A.px(g, x + 1, y, 'wood5'); }
   }
 
   // ---- the red pencil question mark
@@ -230,7 +237,6 @@
     // ink bleed round the dot, and emphasis flicks
     for (let k = 0; k < 40; k++) { const th = k / 40 * TAU; if (hash(k, 77) > 0.5) A.px(g, Math.round(dx + Math.cos(th) * 6.8), Math.round(dy + Math.sin(th) * 6.8), 'red2'); }
     A.line(g, 196, 66, 202, 61, 'red3'); A.line(g, 198, 76, 205, 75, 'red3'); A.line(g, 195, 57, 198, 51, 'red3');
-    A.line(g, 120, 70, 115, 65, 'red3'); A.line(g, 118, 82, 111, 82, 'red3');
   }
   function drawQ(g, t) {
     const pulse = 0.5 + 0.5 * Math.sin(TAU * t / 3 - 1.2), { core, pathB, rad } = QS;
@@ -261,13 +267,24 @@
     poly([[31, 145], [47, 141], [55, 151], [47, 166], [36, 168]], 'skin4');
     line(31, 145, 47, 141, 'skin5'); line(47, 141, 55, 151, 'skin5'); line(36, 168, 47, 166, 'skin2'); line(33, 160, 44, 163, 'skin3');
     for (const [kx, ky] of [[48, 143], [52, 147], [54, 151]]) px(kx, ky, 'skin6');
-    // four fingers resting over the page corner: a body, a lit top, a shaded underside and a nail
-    const F = [[49, 143, 62, 137], [52, 148, 66, 144], [54, 152, 67, 151], [52, 157, 63, 159]];
-    F.forEach(([a, b, c, d], i) => {
-      line(a, b + 1, c, d + 1, 'skin2'); line(a, b, c, d, 'skin4'); line(a, b - 1, c, d - 1, 'skin5'); line(a + 1, b - 2, c - 1, d - 2, 'skin6');
-      px(c + 1, d, 'skin3'); px(c, d - 1, 'skin6'); px(c, d, 'paper5');
-    });
-    if (thumb) { line(38, 152, 50, 136, 'skin4'); line(39, 152, 51, 136, 'skin4'); line(37, 150, 49, 134, 'skin5'); line(40, 153, 52, 137, 'skin2'); px(50, 134, 'skin6'); px(51, 134, 'paper5'); px(52, 135, 'skin3'); }
+    // fingers: capsules with a lit top, a shaded underside, knuckle creases and a pale nail
+    const finger = (a, b, ang, len, w) => {
+      const ca = Math.cos(ang), sa = Math.sin(ang), nx = -sa, ny = ca;
+      for (let k = 0; k <= len; k++) {
+        const tipw = k > len - 2 ? w - (k - (len - 2)) * 0.8 : w;
+        for (let o = -tipw / 2; o <= tipw / 2; o += 1) {
+          const f = (o + w / 2) / w;                       // 0 = top edge (toward the lamp), 1 = underside
+          const c = f < 0.2 ? 'skin6' : f < 0.55 ? 'skin5' : f < 0.85 ? 'skin4' : 'skin2';
+          px(Math.round(a + ca * k + nx * o), Math.round(b + sa * k + ny * o), c);
+        }
+        if (k === Math.round(len * 0.42) || k === Math.round(len * 0.74)) { px(Math.round(a + ca * k + nx * (w * 0.35)), Math.round(b + sa * k + ny * (w * 0.35)), 'skin3'); px(Math.round(a + ca * k - nx * (w * 0.1)), Math.round(b + sa * k - ny * (w * 0.1)), 'skin3'); }
+      }
+      for (let k = len - 3; k <= len - 1; k++) { px(Math.round(a + ca * k + nx * -0.8), Math.round(b + sa * k + ny * -0.8), 'paper5'); }
+      px(Math.round(a + ca * (len - 3) + nx * 1.2), Math.round(b + sa * (len - 3) + ny * 1.2), 'skin3');
+    };
+    const D = Math.PI / 180;
+    finger(50, 144, -38 * D, 15, 4); finger(54, 149, -20 * D, 17, 4); finger(55, 154, -2 * D, 16, 4); finger(53, 159, 18 * D, 12, 3.4);
+    if (thumb) finger(40, 151, -64 * D, 16, 5);
   }
 
   function mug(g) {
@@ -287,13 +304,12 @@
 
   function dogNose(g) {
     // a dog resting its chin on the desk edge, looking up at the book: a dark near-plane shape
-    const x = 118, y = 187;
+    const x = 112, y = 181;
     A.poly(g, [x - 26, y - 8, x - 23, y - 26, x - 11, y - 15], 'fur1'); A.poly(g, [x - 24, y - 10, x - 22, y - 22, x - 14, y - 15], 'fur2');
     A.poly(g, [x + 26, y - 8, x + 23, y - 26, x + 11, y - 15], 'fur1'); A.poly(g, [x + 24, y - 10, x + 22, y - 22, x + 14, y - 15], 'fur2');
     A.ellipse(g, x, y, 26, 18, 'fur1'); A.ellipse(g, x, y + 1, 25, 17, 'fur2');
     A.ellipse(g, x, y - 12, 15, 4, 'fur3'); A.hline(g, x - 9, y - 16, 14, 'fur4'); A.hline(g, x - 5, y - 17, 6, 'fur5');
     for (const ex of [x - 11, x + 11]) { A.ellipse(g, ex, y - 7, 3, 2, 'slate0'); A.px(g, ex - 1, y - 8, 'amber6'); A.px(g, ex, y - 8, 'amber8'); A.hline(g, ex - 4, y - 11, 8, 'fur1'); }
-    A.tint(g, x - 30, y - 28, 60, 30, 'night1', 0.3, 'mul');
   }
 
   function lampShade(g) {
@@ -309,17 +325,17 @@
 
   function paintStatic(g) {
     A.depth(g, 0.4); wood(g);
-    A.depth(g, 0.7); pencil(g);
     A.depth(g, 1);
     // the desk: a wide warm pool from the lamp, then the room falls into the dark
     A.glow(g, CX, 20, 200, { ry: 150, color: 'amber6', strength: 0.34, power: 1.1 });
     for (let x = 0; x < 320; x++) { const f = Math.max(0, (Math.abs(x - CX) - 90) / 80); if (f > 0) A.tint(g, x, 0, 1, 180, 'night0', Math.min(0.75, 0.75 * f * f), 'mul'); }
-    cover(g); moon(g); pages(g); printed(g); coffeeRing(g); ruling(g); paintQ(g);
-    // top-right corner turned up: the missing corner shows cover, the fold is lighter, and it throws a shadow
+    cover(g); moon(g); A.depth(g, 0.85); pencil(g); A.depth(g, 1); pages(g); printed(g); coffeeRing(g); ruling(g); paintQ(g);
+    // top-right corner dog-eared: the missing corner shows the cover, the flap is the page's back, with a shadow under its fold
     A.poly(g, [X1 - 16, Y0, X1, Y0, X1, Y0 + 16], 'red2'); A.hline(g, X1 - 16, Y0 - 1, 17, 'red4');
-    for (let k = 0; k < 6; k++) A.line(g, X1 - 16 + k, Y0 + 17 + k * 0, X1 - 1, Y0 + 1 + k * 0 + 16 - 16 + k, 'paper3');
-    A.poly(g, [X1 - 16, Y0, X1 - 16, Y0 + 16, X1, Y0 + 16], 'paper6'); A.line(g, X1 - 16, Y0, X1, Y0 + 16, 'paper3'); A.line(g, X1 - 16, Y0 + 17, X1, Y0 + 17, 'paper2');
-    A.line(g, X1 - 17, Y0 + 1, X1 - 17, Y0 + 17, 'paper2');
+    for (let k = 1; k <= 3; k++) A.line(g, X1 - 16 + k, Y0 + 16 + k, X1 + k - 1, Y0 + 16 + k, k === 1 ? 'paper2' : 'paper3');
+    for (let k = 1; k <= 3; k++) A.line(g, X1 - 16 - k, Y0 + k, X1 - 16 - k, Y0 + 16, k === 1 ? 'paper3' : 'paper4');
+    for (let y = 0; y <= 16; y++) for (let x = 0; x <= y; x++) A.px(g, X1 - 16 + x, Y0 + y, 'paper' + (6 - Math.min(2, Math.floor((16 - y + x) / 8))));
+    A.line(g, X1 - 16, Y0, X1, Y0 + 16, 'paper3'); A.line(g, X1 - 15, Y0, X1, Y0 + 15, 'paper2');
     A.depth(g, 1); mug(g); dogNose(g); hand(g, 1, 0, true); hand(g, -1, 4, false); lampShade(g);
     A.tint(g, 0, 150, 320, 30, 'night0', 0.0, 'mul');
   }
@@ -363,13 +379,14 @@
       A.text(98, 54, 'DE', 'slate5', 16, true, { align: 'center' }); A.text(234, 54, 'HET', 'slate5', 16, true, { align: 'center' });
       DE.forEach((w, i) => A.text(DEX, ROW0 + i * ROWH, w, 'slate3', 9));
       HET.forEach((w, i) => A.text(HETX, ROW0 + i * ROWH, w, 'slate3', 9));
-      for (const x of [66, 208]) {
-        A.text(x, 154, 'regel:', 'slate4', 9);
+      for (const x of [78, 186]) {
+        A.text(x, 153, 'regel:', 'slate4', 9);
         const rx = x + A.textWidth('regel: ', 9) + 1;     // the dash is red pencil, scribbled
         for (let k = 0; k < 2; k++) A.line(g, Math.round(rx), 150 + k, Math.round(rx + 11), 149 + k * 2, k ? 'red3' : 'red4');
         A.line(g, Math.round(rx + 2), 148, Math.round(rx + 10), 152, 'red3');
       }
-      A.text(260, 124, 'het?!', 'red4', 8, true);
+      A.text(228, 142, 'het?!', 'red4', 9, true);
+      A.text(52, 31, 'HOOFDSTUK 1', 'slate3', 6); A.text(220, 31, 'LIDWOORDEN', 'slate3', 6);
     },
   };
 })();

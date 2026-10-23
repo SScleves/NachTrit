@@ -63,6 +63,9 @@
   }
   const DITCH = [[-90, 4.4], [100, 4.4], [236, 2.6], [300, 4.4]];
   const ditchX = (b, d) => VP[0] + (b - VP[0]) * d;
+  const ditchHW = (i, d) => i === 2 ? 0.8 + d * 6.5 : 0.6 + d * 4.4;   // the middle one is a wedge that opens toward the viewer
+  // the polder's field tones, dark to pale; adjacent steps only, so the dither between them stays soft
+  const FIELD = ['night0', 'green0', 'night1', 'green1', 'night2', 'green2', 'night3', 'green3', 'night4', 'mist1', 'mist2'];
 
   A.panels[0] = {
     text: 'The night the mist came in, the windmills turned the wrong way.',
@@ -79,10 +82,10 @@
         A.depth(g, 0);
         A.sky(g, ['night1', 'night1', 'night2', 'night3', 'night4', 'mist1', 'mist2'], 0, 130);
         A.glow(g, 268, 34, 70, { color: 'mist4', strength: 0.22, power: 1.8 });
-        A.glow(g, 236, 60, 66, { color: 'mist4', strength: 0.4, power: 1.3 });   // the pale backlight that makes the hero mill a clean silhouette
+        A.glow(g, 236, 60, 66, { color: 'night7', strength: 0.75, power: 1.2 }); A.glow(g, 238, 64, 42, { color: 'mist1', strength: 0.55, power: 1.4 });   // the pale backlight that makes the hero mill a clean silhouette
         A.glow(g, 200, 118, 130, { color: 'mist3', strength: 0.2, power: 1.3, ry: 40 });
         A.moon(g, 268, 32, 10, { halo: 0.35 });
-        bank(g, -10, 150, 66, 16, 1.3); bank(g, 20, 110, 52, 9, 4.1); bank(g, 150, 250, 78, 10, 2.2);
+        bank(g, -10, 150, 66, 16, 1.3); bank(g, 8, 118, 30, 11, 6.2); bank(g, 70, 170, 14, 6, 3.3); bank(g, 20, 110, 52, 9, 4.1); bank(g, 150, 250, 78, 10, 2.2);
         // far plane: tree line, church, far mill towers, lit farm windows
         A.depth(g, 0.2);
         for (let x = -20; x < 340; x += 4) A.disc(g, x, 122 - rnd(A.hash(x, 2) * 3), 2 + rnd(A.hash(x, 3) * 2), 'night3');
@@ -113,19 +116,33 @@
         A.haze(g, -20, 120, 360, 14, { top: 0, bottom: 0.45, color: 'mist3' });   // static mist lying round the mill's feet
         // ============ the polder: fields between ditches converging on the mill ============
         A.depth(g, 1);
+        // parcels: perspective bands, each a slightly different tone, like ploughed and grazed strips
+        const bandOf = d => Math.floor(11 * Math.pow(d, 1.5));
         for (let yy = HZ; yy < 181; yy++) {
-          const d = (yy - HZ) / 46, hz = Math.pow(1 - d, 1.5) * 0.85;
+          const d = (yy - HZ) / 46, hz = Math.pow(1 - d, 1.6), band = bandOf(d), edge = bandOf(d) !== bandOf((yy - 1 - HZ) / 46);
+          const bt = (A.hash(band, 7) - 0.5) * 0.16;
           for (let xx = -14; xx < 334; xx++) {
             let c = null;
             for (let i = 0; i < DITCH.length && !c; i++) {
-              const cx = ditchX(DITCH[i][0], d), hw = i === 2 ? 0.5 + d * 2.6 : 0.6 + d * 4.4, dx = xx - cx;
+              const cx = ditchX(DITCH[i][0], d), hw = ditchHW(i, d), dx = xx - cx;
               if (Math.abs(dx) > hw + 1) continue;
               if (Math.abs(dx) > hw) c = dx > 0 ? 'night0' : (d > 0.15 ? 'night3' : 'night1');
+              else if (i === 2) { c = (0.28 + (1 - d) * 0.3) > A.bayer(xx, yy) ? 'night4' : 'night2'; }
               else { const m = clamp(1 - Math.abs(cx - 268) / 80, 0, 1), lv = (1 - d) * 0.75 + m * 0.2 + 0.1; c = lv > A.bayer(xx, yy) ? 'mist3' : 'night4'; }
             }
-            if (!c) { c = hz > A.bayer(xx, yy) ? 'mist1' : (d > 0.7 ? 'night0' : 'green1'); if (c !== 'mist1' && A.hash(xx, yy) < 0.05 * (1 - d)) c = 'green2'; }
+            if (!c) {
+              const sheen = clamp(1 - Math.abs(xx - 262) / 120, 0, 1) * 0.1 * (1 - d);
+              let v = clamp(hz * 0.62 + 0.1 + bt + sheen - d * 0.1 - (edge ? 0.07 : 0) + (A.hash(xx >> 1, yy) - 0.5) * 0.04, 0, 0.999) * (FIELD.length - 1);
+              const q = v | 0; c = FIELD[(v - q) > A.bayer(xx, yy) ? q + 1 : q];
+            }
             A.px(g, xx, yy, c);
           }
+        }
+        for (let i = 0; i < 260; i++) {
+          const d = 0.25 + 0.75 * Math.pow(A.hash(i, 21), 0.6), yy = HZ + rnd(d * 46), xx = rnd(-10 + A.hash(i, 22) * 340), h = 1 + rnd(d * 3);
+          if (DITCH.some((D, k) => Math.abs(xx - ditchX(D[0], d)) < ditchHW(k, d) + 2)) continue;
+          A.vline(g, xx, yy - h, h, A.hash(i, 23) < 0.5 ? 'green2' : 'night3');
+          if (h > 2 && A.hash(i, 24) < 0.5) A.px(g, xx + 1, yy - h + 1, 'green2');
         }
         A.glow(g, 21, 133, 24, { color: 'amber5', strength: 0.14, power: 1.6, ry: 3 });   // the farm's light on its field
         // foreground frame: tall black reeds and cattails, a crooked mooring post
@@ -142,12 +159,24 @@
       const ph = TAU * t / 8, step = Math.floor(t * 2) % 16;
       A.depth(g, 0);
       A.stars(g, t, { n: 26, y0: 2, y1: 36, x1: 205, seed: 4 });
-      // a cloud bank drifts over the moon and clears again; sin(ph) loops
-      { const s = 0.5 - 0.5 * Math.cos(ph), xo = rnd(Math.sin(ph) * 5), x0 = 212 + xo, x1 = 322 + xo;
+      // a real cloud bank sails in from the right and veils the moon's lower half, then drifts clear (sin loop)
+      { const s = 0.5 - 0.5 * Math.cos(ph), xo = rnd(Math.sin(ph) * 6), x0 = 190 + xo, x1 = 330 + xo;
         for (let xx = x0; xx < x1; xx++) {
-          const env = Math.pow(Math.sin(Math.PI * (xx - x0) / (x1 - x0)), 0.7), L = 0.55 + 0.3 * Math.sin(xx * 0.11 + 1) + 0.15 * Math.sin(xx * 0.3);
-          const bot = rnd((7 + 17 * s) * env * L + 2 * Math.sin(xx * 0.4 + ph)); if (bot < 1) continue;
-          for (let yy = 0; yy < bot; yy++) A.px(g, xx, yy, yy > bot - 3 ? (A.bayer(xx, yy) < 0.55 ? 'mist4' : 'mist3') : yy > bot - 6 ? 'night3' : 'night2');
+          const u = (xx - x0) / (x1 - x0), env = Math.pow(Math.sin(Math.PI * u), 0.6), s1 = Math.sin(xx * 0.065 + 1), s2 = Math.sin(xx * 0.14 + 2);
+          const lump = 0.55 + 0.3 * s1 * s1 + 0.15 * s2 * s2;
+          const bot = rnd((12 + 24 * s) * env * lump + 4 * env); if (bot < 1) continue;
+          const pm = clamp(1 - Math.abs(xx - MOON[0]) / 70, 0, 1);
+          const sp = bot - 6;   // rows above the lit rim are two flat runs
+          if (sp > 0) { const n0 = rnd(bot * 0.4); A.vline(g, xx, 0, Math.min(n0, sp), 'night0'); if (sp > n0) A.vline(g, xx, n0, sp - n0, 'night1'); }
+          for (let yy = Math.max(0, sp); yy < bot; yy++) {
+            const k = bot - 1 - yy, bz = A.bayer(xx, yy);
+            let c;
+            if (k > 2) c = bz < 0.5 ? 'night2' : 'night1';
+            else if (k === 2) c = bz < 0.5 ? 'night3' : 'night2';
+            else if (k === 1) c = pm > 0.1 ? (bz < 0.5 ? 'night5' : 'night4') : (bz < 0.4 ? 'night4' : 'night3');
+            else { if (bz > 0.7) continue; c = pm > 0.25 ? (bz < 0.3 ? 'mist2' : 'night6') : 'night5'; }
+            A.px(g, xx, yy, c);
+          }
         } }
       // far mills: one small one turns the right way (the odd one out); the others turn wrong
       A.depth(g, 0.2);
@@ -169,12 +198,18 @@
       A.depth(g, 1);
       DITCH.forEach(([b, hwK], i) => {
         for (let yy = HZ + 3; yy < 181; yy += 2) {
-          const d = (yy - HZ) / 46, cx = ditchX(b, d), hw = i === 2 ? 0.5 + d * 2.6 : 0.6 + d * hwK;
+          const d = (yy - HZ) / 46, cx = ditchX(b, d), hw = ditchHW(i, d);
           const h = A.hash(yy + i * 61, step), h2 = A.hash(yy * 3 + i * 17, (step + 5) % 16); if (h < 0.35) continue;
           const w = Math.max(1, rnd((1 + d * (hw * 1.7)) * (0.5 + h2))), m = clamp(1 - Math.abs(cx - 268) / 28, 0, 1) * (i === 3 ? 1 : 0.25);
-          const c = i === 2 ? (h2 < 0.5 ? 'amber4' : 'amber3') : m > 0.4 ? (h2 < 0.5 ? 'paper5' : 'mist6') : m > 0.1 ? 'mist5' : 'mist4';
+          if (i === 2) { if (h2 < 0.45) A.hline(g, cx - (w >> 1) + rnd((h2 - 0.5) * hw), yy, Math.min(w, rnd(hw * 1.4)), 'night5'); continue; }
+          const c = m > 0.4 ? (h2 < 0.5 ? 'paper5' : 'mist6') : m > 0.1 ? 'mist5' : 'mist4';
           A.hline(g, cx + rnd((h2 - 0.5) * hw) - (w >> 1), yy, Math.min(w, rnd(hw * 2)), c);
         }
+      });
+      [[10, 0.7], [17, 0.9], [25, 1.2]].forEach(([dy, wk], j) => {
+        const yy = HZ + dy, d = (yy - HZ) / 46, sh = Math.sin(ph * 4 + j * 2.1), w = Math.max(1, rnd((1.2 + d * 5) * wk * (0.75 + 0.25 * sh)));
+        A.hline(g, VP[0] + rnd(sh * d * 2) - (w >> 1), yy + (sh > 0.6 ? 1 : 0), w, j === 1 ? 'amber5' : 'amber4');
+        if (w > 2) A.hline(g, VP[0] + rnd(sh * d * 2) - (w >> 1) - 1, yy + 2, w + 2, 'amber2');
       });
       A.mist(g, t, 137, 12, { amount: 0.55, speed: 6, seed: 11, color: 'mist3' });
       // the duck, dim, only its eyes glow
@@ -183,7 +218,7 @@
       // foreground: reeds sway, a fingerpost marked Molen
       A.reeds(g, -14, 182, 30, 40, { t, seed: 2, tone: 'night0', dense: 0.8 });
       A.reeds(g, 292, 182, 36, 38, { t, seed: 5, tone: 'night0', dense: 0.8 });
-      A.fingerpost(g, 262, 178, { signs: [['Molen', 'left']], tone: 'wood1' });
+      A.fingerpost(g, 277, 178, { signs: [['Molen', 'left']], tone: 'wood1' });
     },
   };
 })();
