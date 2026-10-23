@@ -116,8 +116,8 @@
   <div class="overlay" id="intro" style="display:none;background:#000">
     <div class="box" style="max-width:860px">
       <div style="position:relative;width:min(92vw,860px);aspect-ratio:16/9;margin:0 auto;border:1px solid #1a1d24">
-        <canvas id="pix" width="192" height="108" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
-        <canvas id="pixhi" width="1152" height="648" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <canvas id="pix" width="320" height="180" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
+        <canvas id="pixhi" width="1280" height="720" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
       </div>
       <div id="pixtext" style="min-height:2.6em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:14px auto 2px;max-width:720px;color:#d8d4c8"></div>
       <div id="pixnl" style="min-height:2.4em;font-size:clamp(13px,2vw,17px);line-height:1.4;margin:0 auto 6px;max-width:720px;color:#9fb0cc;font-style:italic"></div>
@@ -128,7 +128,7 @@
     <div id="world" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
       <div style="text-align:center;padding:calc(10px + env(safe-area-inset-top)) 12px 0">
         <h1 style="font-size:clamp(26px,5vw,38px)">NEDERLAND</h1>
-        <div class="sub" style="margin:4px 0 0">Twelve towns, A1 to B2. Ride to a town, go in, pick a place.</div>
+        <div class="sub" style="margin:4px 0 0">Thirteen towns, A1 to B2. Ride to a town, go in, pick a place.</div>
       </div>
       <div id="mapwrap" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px"><svg id="nl" viewBox="0 0 100 110" style="height:100%;max-height:78vh;aspect-ratio:100/110;pointer-events:auto"></svg></div>
       <div style="text-align:center;padding:0 0 14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
@@ -186,6 +186,26 @@
 <script src="content/towns-new.js"></script>
 <script src="fares.js"></script>
 <script src="content/extra.js"></script>
+<script src="intro/art.js"></script>
+<script src="intro/panel-1.js"></script>
+<script src="intro/panel-2.js"></script>
+<script src="intro/panel-3.js"></script>
+<script src="intro/panel-4.js"></script>
+<script src="intro/panel-5.js"></script>
+<script src="intro/panel-6.js"></script>
+<script src="intro/panel-7.js"></script>
+<script src="intro/panel-8.js"></script>
+<script src="intro/panel-9.js"></script>
+<script src="intro/panel-10.js"></script>
+<script src="intro/panel-11.js"></script>
+<script src="intro/panel-12.js"></script>
+<script src="intro/panel-13.js"></script>
+<script src="intro/panel-14.js"></script>
+<script src="intro/scene-street.js"></script>
+<script src="intro/scene-dyke.js"></script>
+<script src="intro/scene-square.js"></script>
+<script src="intro/scene-nightshop.js"></script>
+<script src="intro/scene-shops.js"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
@@ -539,6 +559,8 @@ const TOWN_STYLE = {
 };
 const brickMats = new Map();
 function brickMat(col) { if (!brickMats.has(col)) brickMats.set(col, Mat({ color: col })); return brickMats.get(col); }
+const brickMats2 = new Map();
+function brickMat2(col) { if (!brickMats2.has(col)) brickMats2.set(col, Mat({ color: col, side: THREE.DoubleSide })); return brickMats2.get(col); }
 const PM_frame = new THREE.MeshBasicMaterial({ color: 0xd8d4c8 });
 function house(opts = {}) {
   const g = new THREE.Group(); const st = townStyle;
@@ -546,15 +568,24 @@ function house(opts = {}) {
   const mat = brickMat(pick(st.brick));
   const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, dpt), mat); body.position.y = h / 2; g.add(body);
   const gable = opts.gable || (Math.random() < st.gables ? pick(['step', 'step', 'bell', 'neck', 'spout']) : 'roof');
-  if (gable === 'roof') {
-    const roof = new THREE.Mesh(new THREE.ConeGeometry(w * 0.72, 2.2, 4), PM.roof); roof.position.y = h + 1.1; roof.rotation.y = Math.PI / 4; roof.scale.z = dpt / w * 0.95; g.add(roof);
-  } else {
-    const back = new THREE.Mesh(new THREE.BoxGeometry(w - 0.5, 1.4, dpt - 1.2), PM.roof); back.position.set(0.25, h + 0.7, 0); g.add(back);   // the roof behind the gable
-    if (gable === 'step') { const steps = 3 + Math.floor(Math.random() * 3); for (let i = 0; i < steps; i++) { const sw = dpt * (1 - (i + 1) / (steps + 1)); const stp = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.75, sw), mat); stp.position.set(-w / 2 + 0.25, h + 0.37 + i * 0.75, 0); g.add(stp); } }
-    if (gable === 'bell') { const bell = new THREE.Mesh(new THREE.CylinderGeometry(dpt * 0.4, dpt * 0.4, 0.5, 14, 1, false, 0, Math.PI), mat); bell.rotation.z = Math.PI / 2; bell.rotation.y = Math.PI / 2; bell.position.set(-w / 2 + 0.25, h, 0); g.add(bell); const base = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.9, dpt * 0.9), mat); base.position.set(-w / 2 + 0.25, h + 0.45, 0); g.add(base); }
-    if (gable === 'neck') { const neck = new THREE.Mesh(new THREE.BoxGeometry(0.5, 2.2, dpt * 0.4), mat); neck.position.set(-w / 2 + 0.25, h + 1.1, 0); g.add(neck); const cap = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, dpt * 0.55), PM.roof); cap.position.set(-w / 2 + 0.25, h + 2.3, 0); g.add(cap); }
-    if (gable === 'spout') { const sp = new THREE.Mesh(new THREE.ConeGeometry(dpt * 0.42, 2.4, 4), mat); sp.rotation.y = Math.PI / 4; sp.scale.x = 0.12; sp.position.set(-w / 2 + 0.25, h + 1.2, 0); g.add(sp); }
-    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.12), PM.pole); beam.position.set(-w / 2 - 0.35, h + 0.5, 0); g.add(beam);   // hijsbalk
+  // a pitched roof: a triangular prism whose ridge runs from the street to the back of the house
+  const ridge = dpt * 0.36;
+  {
+    const prof = new THREE.Shape(); prof.moveTo(-dpt / 2 - 0.15, 0); prof.lineTo(dpt / 2 + 0.15, 0); prof.lineTo(0, ridge); prof.closePath();
+    const roof = new THREE.Mesh(new THREE.ExtrudeGeometry(prof, { depth: w + 0.3, bevelEnabled: false }), PM.roof);
+    roof.rotation.y = Math.PI / 2; roof.position.set(-w / 2 - 0.15, h - 0.02, 0); g.add(roof);
+  }
+  // the gable: a flat shaped facade on the street side that rises above the roof and hides it
+  if (gable !== 'roof') {
+    const hw = dpt / 2 + 0.05, top = ridge + rnd(0.6, 1.4);
+    const sh = new THREE.Shape(); sh.moveTo(-hw, -0.3); sh.lineTo(hw, -0.3);
+    if (gable === 'step') { const steps = 3 + Math.floor(Math.random() * 3); const sw = hw * 0.3; for (let i = 1; i <= steps; i++) { const u = hw - (hw - sw) * i / steps, v = top * i / steps; sh.lineTo(u, v - top / steps); sh.lineTo(u, v); } sh.lineTo(-sw, top); for (let i = steps - 1; i >= 0; i--) { const u = hw - (hw - sw) * i / steps, v = top * i / steps; sh.lineTo(-u, v + top / steps); sh.lineTo(-u, v); } }
+    else if (gable === 'bell') { const tw = hw * 0.38; sh.lineTo(hw, top * 0.35); sh.quadraticCurveTo(hw * 0.55, top * 0.45, tw, top * 0.8); sh.lineTo(tw + 0.15, top * 0.8); sh.lineTo(tw + 0.15, top * 0.9); sh.lineTo(-tw - 0.15, top * 0.9); sh.lineTo(-tw - 0.15, top * 0.8); sh.lineTo(-tw, top * 0.8); sh.quadraticCurveTo(-hw * 0.55, top * 0.45, -hw, top * 0.35); }
+    else if (gable === 'neck') { const nw = hw * 0.42; sh.lineTo(hw, top * 0.3); sh.lineTo(nw + 0.2, top * 0.3); sh.lineTo(nw, top * 0.4); sh.lineTo(nw, top * 0.85); sh.lineTo(nw + 0.25, top * 0.85); sh.lineTo(nw + 0.25, top); sh.lineTo(-nw - 0.25, top); sh.lineTo(-nw - 0.25, top * 0.85); sh.lineTo(-nw, top * 0.85); sh.lineTo(-nw, top * 0.4); sh.lineTo(-nw - 0.2, top * 0.3); sh.lineTo(-hw, top * 0.3); }
+    else { sh.lineTo(hw, 0.2); sh.lineTo(0.45, top); sh.lineTo(-0.45, top); sh.lineTo(-hw, 0.2); }
+    sh.closePath();
+    const face = new THREE.Mesh(new THREE.ShapeGeometry(sh), brickMat2(mat.color.getHex())); face.rotation.y = Math.PI / 2; face.position.set(-w / 2 - 0.03, h, 0); g.add(face);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.12), PM.pole); beam.position.set(-w / 2 - 0.45, h + top * 0.7, 0); g.add(beam);   // hijsbalk
   }
   const cols = Math.max(1, Math.round(dpt / 2.1)), rows = Math.max(1, Math.round((h - 1.2) / 2.3));
   const litP = opts.lit == null ? 0.35 : opts.lit;
@@ -755,6 +786,7 @@ const LANDMARK = {
   texel: () => lighthouse(0xb8282a),
   groningen: () => { const g = new THREE.Group(); const t = tower(4, 20, brickMat(0x8a7a66), 0); g.add(t); const t2 = new THREE.Mesh(new THREE.BoxGeometry(3.2, 10, 3.2), brickMat(0x8a7a66)); t2.position.y = 25; g.add(t2); const t3 = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 6, 8), brickMat(0x8a7a66)); t3.position.y = 33; g.add(t3); const cap = new THREE.Mesh(new THREE.ConeGeometry(1.5, 3, 8), PM.roof); cap.position.y = 37.5; g.add(cap); return g; },
   maastricht: () => { const g = new THREE.Group(); const t = tower(3, 22, Mat({ color: 0xb8282a }), 9); g.add(t); for (let i = 0; i < 4; i++) { const arch = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.6, 6, 12, Math.PI), Mat({ color: 0x9a927f })); arch.position.set(-12 + i * 5.2, 1.2, -4); g.add(arch); } const deck = new THREE.Mesh(new THREE.BoxGeometry(22, 0.6, 3), Mat({ color: 0x9a927f })); deck.position.set(-4, 4.2, -4); g.add(deck); return g; },
+  nijmegen: () => { const g = new THREE.Group(); const arch = new THREE.Mesh(new THREE.TorusGeometry(14, 0.7, 8, 24, Math.PI), Mat({ color: 0x2e4a3a })); arch.position.set(-6, 1, -6); g.add(arch); const deck = new THREE.Mesh(new THREE.BoxGeometry(32, 0.6, 3.5), Mat({ color: 0x3d4652 })); deck.position.set(-6, 6, -6); g.add(deck); const t = tower(3.4, 20, brickMat(0x6b5a44), 0); t.position.set(10, 0, 4); g.add(t); const lantern = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 5, 8), Mat({ color: 0x9a8a7a })); lantern.position.set(10, 22.5, 4); g.add(lantern); return g; },
   amsterdam: () => { const g = new THREE.Group(); const t = tower(3.2, 22, brickMat(0x3b2f2b), 0); g.add(t); const lantern = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 6, 8), Mat({ color: 0xd8d4c8 })); lantern.position.y = 25; g.add(lantern); const crown = new THREE.Mesh(new THREE.SphereGeometry(1.5, 8, 6), Mat({ color: 0x2b4a9e })); crown.position.y = 29.5; g.add(crown); return g; },
 };
 const TOWN_EXTRA = {   // roadside props only this town has
@@ -765,6 +797,7 @@ const TOWN_EXTRA = {   // roadside props only this town has
   urk: [{ make: boat, n: 4, gap: 50, side: 'both', xr: [9, 14] }],
   texel: [{ make: sheep, n: 8, gap: 16, side: 'both', xr: [5.5, 9], r: 0.6 }],
   groningen: [{ make: bikeProp, n: 6, gap: 22, side: 'both', xr: [4.7, 5.0], r: 0.4 }],
+  nijmegen: [{ make: bikeProp, n: 6, gap: 22, side: 'both', xr: [4.7, 5.0], r: 0.4 }, { make: boat, n: 2, gap: 90, side: 'both', xr: [9, 13] }],
   utrecht: [{ make: bikeProp, n: 10, gap: 14, side: 'both', xr: [4.7, 5.0], r: 0.4 }],
   amsterdam: [{ make: bikeProp, n: 12, gap: 12, side: 'both', xr: [4.7, 5.0], r: 0.4 }, { make: boat, n: 3, gap: 70, side: 'both', xr: [9, 13] }],
 };
@@ -1476,23 +1509,35 @@ const SCENES = {
   shops: (g, t) => { px_sky(g, '#0a0f1c', '#162638'); px_ground(g, 86, '#121820'); [['BAKKER', 10], ['SLAGER', 70], ['KAAS', 130]].forEach(([n, x], i) => { g.fillStyle = i % 2 ? '#2a2e38' : '#1a2430'; g.fillRect(x, 36, 54, 50); g.fillStyle = '#e0b45a'; g.fillRect(x + 8, 60, 38, 20); px_text(x + 6, 48, n, '#e8e4d8', 7, true); }); px_zombie(g, 100, 86, t, 'Tikkie?'); },
   polder: (g, t) => SCENES.dyke(g, t),
 };
+const rumourShown = new Set();
 function showLevelIntro(lv, then) {
   if (!lv.intro) return then();
-  const panel = { text: lv.intro, nl: lv.introNl || '', draw: SCENES[lv.theme] || SCENES.street };
-  showIntro(then, [panel]);
+  const NA = window.NRART, sc = NA && (NA.scenes[lv.theme] || NA.scenes.street);
+  const draw = sc || SCENES[lv.theme] || SCENES.street;
+  const panels = [];
+  const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id)));
+  if (t && t.rumour && !rumourShown.has(t.id)) { rumourShown.add(t.id); panels.push({ text: `${t.name}. Nobody agrees on what caused it. Here they say: ${t.rumour}`, nl: `${t.name}. Niemand is het eens over de oorzaak. Hier zeggen ze: ${t.rumourNl}`, draw, nr: !!sc }); }
+  panels.push({ text: lv.intro, nl: lv.introNl || '', draw, nr: !!sc });
+  showIntro(then, panels);
 }
 
 let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
 function showIntro(then, panels) {
-  const PANELS_ = panels || PANELS;
+  const NA = window.NRART, nrOk = NA && NA.panels.length >= 14 && NA.panels.slice(0, 14).every(Boolean);
+  const PANELS_ = panels || (nrOk ? NA.panels.slice(0, 14).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
   introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
   const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
   const txt = $('pixtext'), nlEl = $('pixnl'); PANELS_.forEach(p => { p._nlShown = false; });
   let last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
-    const p = PANELS_[introI]; pxLabels = []; p.draw(g, introT);
-    hg.clearRect(0, 0, 1152, 648); for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * 6}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * 6, l.y * 6); }
+    const p = PANELS_[introI], hc = $('pixhi');
+    hg.clearRect(0, 0, hc.width, hc.height);
+    if (p.nr) { NA.labels.length = 0; NA.paint(g, p.draw, introT); NA.drawLabels(hg, NA.labels, hc.width / cv.width); }
+    else {   // legacy 192x108 drawings, scaled up to the canvas
+      pxLabels = []; g.setTransform(cv.width / 192, 0, 0, cv.height / 108, 0, 0); p.draw(g, introT); g.setTransform(1, 0, 0, 1, 0, 0);
+      const k = hc.width / 192; for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * k}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * k, l.y * k); }
+    }
     introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
     if (introTyped >= p.text.length && !p._nlShown) { p._nlShown = true; nlEl.textContent = p.nl || ''; if (p.nl && p.nl !== '...') speak(p.nl); } else if (introTyped < p.text.length) { nlEl.textContent = ''; }
     introRaf = requestAnimationFrame(frame);
@@ -1549,6 +1594,7 @@ const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
   texel: 'M-2.4,1.2 L-1.6,2.4 L1.6,2.4 L2.4,1.2 z M0,1.2 L0,-2.4 M0,-2.4 L1.8,-1 L0,-0.6 M-1.6,-0.2 a0.9,0.9 0 1 0 0.01,0',
   groningen: 'M-0.8,2.4 L-0.8,-1.6 L0.8,-1.6 L0.8,2.4 z M-0.5,-1.6 L-0.5,-2.6 L0.5,-2.6 L0.5,-1.6 M0,-2.6 L0,-3.4 M-1.6,2.4 h3.2 M-0.3,0 h0.6 v0.8 h-0.6 z',
   maastricht: 'M-2.6,1.6 h5.2 M-2.4,1.6 a1.2,1.2 0 0 1 2.4,0 M0,1.6 a1.2,1.2 0 0 1 2.4,0 M-1.2,0.4 L-1.2,-1.8 M0,-2.6 L-1.2,-1.8 M1.2,0.4 L1.2,-1.8 L0,-2.6',
+  nijmegen: 'M-2.6,1.8 h5.2 M-2.4,1.8 a2.4,2.4 0 0 1 4.8,0 M-1.4,1.8 L-1.4,0.4 M1.4,1.8 L1.4,0.4 M-0.4,-0.4 L0,-2.4 L0.4,-0.4 z',
 };
 // the route board: towns in tier order along a winding road over a faint Netherlands
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
@@ -1661,7 +1707,7 @@ function dehetBonus(t) {
 function openTown(t) {
   const open = townOpen(t);
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
-  $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || ''; $('t_blurbnl').textContent = t.blurbNl || '';
+  $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || ''; $('t_blurbnl').innerHTML = (t.blurbNl || '') + (t.rumour ? `<div style="margin-top:6px;color:#9fb0cc;font-style:normal"><span style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase">What they say here</span><br>${t.rumour}<br><i>${t.rumourNl}</i></div>` : '');
   const box = $('t_places'); box.innerHTML = '';
   for (const [pid, pname] of PLACES) {
     const lvls = townLevels(t).filter(l => (l.place || PLACE_OF[l.id]) === pid && !l.soon);

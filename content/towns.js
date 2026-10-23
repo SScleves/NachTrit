@@ -5,6 +5,7 @@
 window.TOWNS = [
   {
     id: 'alblasserdam', name: 'Alblasserdam', tier: 1, cefr: 'A1',
+    rumour: "A one-cent Tikkie that is still open.", rumourNl: "Een Tikkie van één cent dat nog steeds openstaat.",
     pos: [0.349, 0.601], // 51.866 N, 4.661 E
     blurb: 'Home. A dyke, a river and the shipyards. The neighbours still wave, just a bit too slowly.',
     blurbNl: 'Thuis. Een dijk, een rivier en de scheepswerven. De buren zwaaien nog, alleen iets te langzaam.',
@@ -34,6 +35,7 @@ window.TOWNS = [
   },
   {
     id: 'kinderdijk', name: 'Kinderdijk en Dordrecht', tier: 2, cefr: 'A1',
+    rumour: "Someone asked the windmills to hold still for a selfie.", rumourNl: "Iemand vroeg of de molens even stil wilden staan voor een selfie.",
     pos: [0.356, 0.620], // Dordrecht 51.813 N, 4.690 E (Kinderdijk is 51.884 N, 4.637 E)
     blurb: 'Nineteen mills that turn without wind. Then the oldest city of Holland, where three rivers meet.',
     blurbNl: 'Negentien molens die draaien zonder wind. Daarna de oudste stad van Holland, waar drie rivieren samenkomen.',
@@ -63,6 +65,7 @@ window.TOWNS = [
   },
   {
     id: 'gouda', name: 'Gouda', tier: 3, cefr: 'A1-A2',
+    rumour: "Bad cheese. Gouda denies everything.", rumourNl: "Slechte kaas. Gouda ontkent alles.",
     pos: [0.362, 0.550], // 52.011 N, 4.711 E
     blurb: 'Cheese, candles and syrup waffles. The town hall stands alone in the middle of the square, as if it is waiting for someone.',
     blurbNl: 'Kaas, kaarsen en stroopwafels. Het stadhuis staat alleen midden op de Markt, alsof het op iemand wacht.',
@@ -91,6 +94,7 @@ window.TOWNS = [
   },
   {
     id: 'zeeland', name: 'Zeeland: de Deltawerken', tier: 4, cefr: 'A2',
+    rumour: "Someone called the whole country Holland. Again.", rumourNl: "Weer iemand die het hele land Holland noemde.",
     pos: [0.101, 0.685], // Neeltje Jans 51.633 N, 3.695 E (Zierikzee 51.650 N, 3.918 E; Middelburg 51.499 N, 3.614 E)
     blurb: 'In 1953 the sea came in at night and 1,836 people died. Now there are doors in the sea, and they close when it storms.',
     blurbNl: 'In 1953 kwam de zee \'s nachts binnen en vielen er 1.836 doden. Nu staan er deuren in de zee, en die gaan dicht als het stormt.',
@@ -120,6 +124,7 @@ window.TOWNS = [
   },
   {
     id: 'utrecht', name: 'Utrecht', tier: 5, cefr: 'A2',
+    rumour: "A student said \"gezellig\", but ironically.", rumourNl: "Een student zei \"gezellig\", maar dan ironisch.",
     pos: [0.467, 0.521], // 52.091 N, 5.122 E
     blurb: 'Students, bikes by the thousand and a tower of 112 metres that sees you coming.',
     blurbNl: 'Studenten, duizenden fietsen en een toren van 112 meter die jou al ziet aankomen.',
@@ -148,6 +153,7 @@ window.TOWNS = [
   },
   {
     id: 'denhaag', name: 'Den Haag', tier: 6, cefr: 'A2',
+    rumour: "A worldwide poll called Flemish the nicer Dutch. Parliament is still in a meeting about it.", rumourNl: "In een wereldwijde peiling werd Vlaams het mooiste Nederlands genoemd. De Tweede Kamer vergadert er nog over.",
     pos: [0.260, 0.525], // Binnenhof 52.080 N, 4.313 E
     blurb: 'The government, the king, the judges of the world and a beach. Everyone here is important, or works for someone who is.',
     blurbNl: 'De regering, de koning, de rechters van de wereld en een strand. Iedereen hier is belangrijk, of werkt voor iemand die belangrijk is.',
@@ -177,6 +183,7 @@ window.TOWNS = [
   },
   {
     id: 'rotterdam', name: 'Rotterdam', tier: 7, cefr: 'A2-B1',
+    rumour: "Nobody here believes in rumours. They are working.", rumourNl: "Hier gelooft niemand in geruchten. Niet lullen maar poetsen.",
     pos: [0.302, 0.581], // 51.922 N, 4.479 E
     blurb: 'Bombed flat in 1940 and rebuilt in glass and steel. The harbour never sleeps, which is now a problem.',
     blurbNl: 'In 1940 platgebombardeerd en herbouwd in glas en staal. De haven slaapt nooit, en dat is nu een probleem.',
@@ -206,6 +213,7 @@ window.TOWNS = [
   },
   {
     id: 'urk', name: 'Urk', tier: 8, cefr: 'B1',
+    rumour: "It was Sunday. On Urk nothing happens on a Sunday.", rumourNl: "Het was zondag. Op Urk gebeurt er op zondag niks.",
     pos: [0.590, 0.317], // 52.662 N, 5.601 E
     blurb: 'An island until 1939, and it still acts like one. The biggest fishing fleet in the country, 24 churches and a dialect nobody else understands.',
     blurbNl: 'Tot 1939 een eiland, en zo voelt het nog steeds. De grootste vissersvloot van het land, 24 kerken en een dialect dat niemand anders verstaat.',
@@ -234,6 +242,7 @@ window.TOWNS = [
   },
   {
     id: 'texel', name: 'Texel', tier: 9, cefr: 'B1',
+    rumour: "The sheep know. The sheep are not talking.", rumourNl: "De schapen weten ervan. De schapen zeggen niks.",
     pos: [0.384, 0.177], // Den Burg 53.054 N, 4.797 E
     blurb: 'The biggest Wadden island, twenty minutes by ferry from Den Helder. More sheep than people. The sheep have noticed.',
     blurbNl: 'Het grootste Waddeneiland, twintig minuten met de boot vanaf Den Helder. Meer schapen dan mensen. Dat hebben de schapen ook door.',
@@ -263,6 +272,7 @@ window.TOWNS = [
   },
   {
     id: 'groningen', name: 'Groningen', tier: 10, cefr: 'B1',
+    rumour: "They asked Groningen what happened. Groningen said: could be worse.", rumourNl: "Ze vroegen Groningen wat er gebeurd was. Groningen zei: kon minder.",
     pos: [0.838, 0.118], // 53.219 N, 6.567 E
     blurb: 'Far north, full of students, with a tower they call the old grey one. Er gaat niets boven Groningen, which is also true on the map.',
     blurbNl: 'Ver in het noorden, vol studenten, met een toren die ze d\'Olle Grieze noemen. Er gaat niets boven Groningen, en op de kaart klopt dat ook.',
@@ -291,6 +301,7 @@ window.TOWNS = [
   },
   {
     id: 'maastricht', name: 'Maastricht', tier: 11, cefr: 'B1-B2',
+    rumour: "Someone ordered \"patat\" in Maastricht. Here it is \"friet\". Nobody has got over it.", rumourNl: "Iemand bestelde patat in Maastricht. Dat heet hier friet. Daar is nog niemand overheen.",
     pos: [0.612, 0.965], // Vrijthof 50.849 N, 5.688 E
     blurb: 'The far south, almost Belgium. Hills, old churches, good pastry and a dialect that sounds like German singing. The European Union was signed here in 1992.',
     blurbNl: 'Het verre zuiden, bijna België. Heuvels, oude kerken, goede vlaai en een dialect dat klinkt als zingend Duits. In 1992 werd hier de Europese Unie getekend.',
@@ -318,7 +329,31 @@ window.TOWNS = [
     obstacles: ['parade float', 'brass band', 'café chair']
   },
   {
-    id: 'amsterdam', name: 'Amsterdam', tier: 12, cefr: 'B1-B2',
+    id: 'nijmegen', name: 'Nijmegen', tier: 12, cefr: 'B1-B2',
+    rumour: "Someone said Maastricht is older. Nijmegen has not slept since.", rumourNl: "Iemand zei dat Maastricht ouder is. Nijmegen heeft sindsdien niet meer geslapen.",
+    pos: [0.657, 0.61],
+    blurb: 'The oldest city in the country. Two thousand years, and they still cannot agree with Maastricht about it.',
+    blurbNl: 'De oudste stad van het land. Tweeduizend jaar, en ze zijn het er met Maastricht nog steeds niet over eens.',
+    joke: 'During the Vierdaagse the dead walk fifty kilometres a day. Then they ask where the party is.',
+    jokeNl: 'Tijdens de Vierdaagse lopen de doden vijftig kilometer per dag. Daarna vragen ze waar het feest is.',
+    look: 'A hill city on the Waal, rare in the Netherlands: streets climb from the river, brick and the odd Roman stone, the long arched Waalbrug and the pale De Oversteek bridge, the Stevenskerk tower over the old centre, students everywhere, and the wide river with barges at night.',
+    landmarks: [
+      { name: 'De Waalbrug', look: 'Long steel arch road bridge from 1936 over the Waal, dark green, the arch rising over the river' },
+      { name: 'De Stevenskerk', look: 'Gothic church with a tall square tower topped by an open lantern, the highest point of the old centre' },
+      { name: 'Het Valkhof', look: 'A park on the hill by the river with a small ruined Roman-era chapel, the Barbarossa ruin, and the Sint-Nicolaaskapel' },
+      { name: 'De Oversteek', look: 'Modern pale arch bridge from 2013 downstream of the Waalbrug, its lamps lit one by one each evening for the 48 soldiers of 1944' },
+      { name: 'De Grote Markt en de Waag', look: 'Market square below the church with the 1612 weigh house, stepped gable and arcade' },
+    ],
+    words: [
+      { nl: 'de Waal', en: 'the Waal river' }, { nl: 'de brug', en: 'the bridge' }, { nl: 'de Vierdaagse', en: 'the Four Days Marches' },
+      { nl: 'de wandelaar', en: 'the walker' }, { nl: 'de heuvel', en: 'the hill (rare here)' }, { nl: 'de Romeinen', en: 'the Romans' },
+      { nl: 'de student', en: 'the student' }, { nl: 'het feest', en: 'the party' }, { nl: 'de gladiool', en: 'the gladiolus, handed to finishers' }, { nl: 'de oudste stad', en: 'the oldest city' },
+    ],
+    obstacles: ['walker', 'student', 'barge rope', 'gladiolus stand']
+  },
+  {
+    id: 'amsterdam', name: 'Amsterdam', tier: 13, cefr: 'B1-B2',
+    rumour: "The millionth tourist said it sounds like a drunk German.", rumourNl: "De miljoenste toerist zei dat het klinkt als een dronken Duitser.",
     pos: [0.410, 0.420], // 52.373 N, 4.900 E
     blurb: 'Canals, trams, bells and tourists. The tourists were already a bit like this before the mist.',
     blurbNl: 'Grachten, trams, bellen en toeristen. De toeristen waren voor de mist al een beetje zo.',
