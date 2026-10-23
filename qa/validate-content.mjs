@@ -4,6 +4,9 @@ import vm from 'node:vm'; import fs from 'node:fs'; import path from 'node:path'
 const ROOT = process.cwd();
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const listed = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]).filter(s => /^(data|levels)\.js$|^content\//.test(s));
+// Bundles are generated; read the source folders instead so a new level is checked before anyone rebuilds.
+const BUNDLES = { 'content/extra.js': 'content/extra', 'content/towns-new.js': 'content/new' };
+for (let i = 0; i < listed.length; i++) { const dir = BUNDLES[listed[i]]; if (dir && fs.existsSync(path.join(ROOT, dir))) { const files = fs.readdirSync(path.join(ROOT, dir)).filter(f => f.endsWith('.js')).sort().map(f => `${dir}/${f}`); listed.splice(i, 1, ...files); i += files.length - 1; } }
 const ctx = { console }; ctx.window = ctx; vm.createContext(ctx);
 const loadErrors = [];
 for (const src of listed) {
