@@ -62,6 +62,27 @@
   #lanes div { flex:1; background:var(--card); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:8px 6px; text-align:center; font-size:clamp(12px,2.2vw,16px); min-height:40px; }
   #lanes div.here { border-color:#ffd27a; }
   #err { position:absolute; left:8px; bottom:8px; right:8px; color:#ff8b84; font:12px ui-monospace,monospace; white-space:pre-wrap; pointer-events:none; }
+  #walletpill { white-space:nowrap; }
+  #walletfx { font-size:11px; margin-left:6px; }
+  #walletfx.lost { color:var(--bad); text-decoration:line-through; }
+  #walletfx.tip { color:#ffd27a; }
+  #walletpill.shake { animation:wshake .4s; border-color:var(--bad); }
+  @keyframes wshake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-4px); } 40% { transform:translateX(4px); } 60% { transform:translateX(-3px); } 80% { transform:translateX(2px); } }
+  #card .fare { font-size:13px; color:var(--dim); margin-top:6px; }
+  #card .fare:empty { display:none; }
+  #card .fare i { color:#9fb0cc; }
+  #card .fare s { color:#ff8b84; }
+  #card .fare .no { color:#ff8b84; }
+  .place .lv em { color:var(--dim); font-style:normal; font-size:11px; margin-left:4px; }
+  #summary .money { color:var(--dim); font-size:13px; margin:-4px 0 10px; line-height:1.5; }
+  @media (max-width: 520px) {
+    #distpill { display:none; }
+    /* phone: keep the pills clear of the sound button, and let the wallet flash sit under the pill so the row never grows */
+    #hud { padding-right:48px; gap:6px; }
+    #hud .pill { padding:6px 7px; }
+    #walletpill { position:relative; }
+    #walletfx { position:absolute; left:0; right:0; top:100%; margin:3px 0 0; text-align:center; text-shadow:0 1px 4px #000; }
+  }
 </style>
 </head>
 <body>
@@ -73,11 +94,12 @@
   <div id="hud">
     <div class="pill" id="lampwrap"><small>Lamp</small><div id="lampbar"><div id="lampfill"></div></div></div>
     <div class="pill"><small>Delivered</small><span id="souls">0</span></div>
+    <div class="pill" id="walletpill"><small>Wallet</small><span id="wallet">€ 0,00</span><span id="walletfx"></span></div>
     <div class="pill"><small>Streak</small><span id="streak">0</span></div>
-    <div class="pill"><small>Distance</small><span id="dist">0 m</span></div>
+    <div class="pill" id="distpill"><small>Distance</small><span id="dist">0 m</span></div>
   </div>
   <div id="topright"><button class="ico" id="snd" title="Dutch voice">🔊</button></div>
-  <div id="card"><div class="who"></div><div class="en"></div><div class="nl"></div></div>
+  <div id="card"><div class="who"></div><div class="en"></div><div class="nl"></div><div class="fare"></div></div>
   <div id="toast"></div>
   <div id="lanes"><div></div><div></div><div></div></div>
   <div id="err"></div>
@@ -94,8 +116,8 @@
   <div class="overlay" id="intro" style="display:none;background:#000">
     <div class="box" style="max-width:860px">
       <div style="position:relative;width:min(92vw,860px);aspect-ratio:16/9;margin:0 auto;border:1px solid #1a1d24">
-        <canvas id="pix" width="192" height="108" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
-        <canvas id="pixhi" width="1152" height="648" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <canvas id="pix" width="320" height="180" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
+        <canvas id="pixhi" width="1280" height="720" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
       </div>
       <div id="pixtext" style="min-height:2.6em;font-size:clamp(16px,2.6vw,22px);line-height:1.4;margin:14px auto 2px;max-width:720px;color:#d8d4c8"></div>
       <div id="pixnl" style="min-height:2.4em;font-size:clamp(13px,2vw,17px);line-height:1.4;margin:0 auto 6px;max-width:720px;color:#9fb0cc;font-style:italic"></div>
@@ -122,6 +144,7 @@
     <div class="box">
       <div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="m_act"></div>
       <h1 style="font-size:40px" id="m_name"></h1>
+      <div id="m_fare" style="color:#ffd27a;font-size:13px;margin-top:4px"></div>
       <div style="text-align:left;margin:14px auto;max-width:460px;line-height:1.5" id="m_lines"></div>
       <div id="m_words" style="text-align:left;margin:0 auto 14px;max-width:460px;font-size:13px;color:#c9d6ff;line-height:1.6"></div>
       <button class="btn" id="m_go">Ride</button> <button class="btn ghost" id="m_back">Back</button>
@@ -137,6 +160,12 @@
         <div class="pill"><small>Right</small><span id="s_good">0</span></div>
         <div class="pill"><small>Wrong</small><span id="s_bad">0</span></div>
       </div>
+      <div class="stats">
+        <div class="pill"><small>Wallet</small><span id="s_wallet">€ 0,00</span></div>
+        <div class="pill"><small>Score</small><span id="s_score">0</span></div>
+        <div class="pill"><small>Best</small><span id="s_best">0</span></div>
+      </div>
+      <div class="money" id="s_money"></div>
       <textarea id="log" readonly></textarea>
       <div id="stars" style="font-size:34px;letter-spacing:.2em;margin:4px 0 10px"></div>
       <div><button class="btn ghost" id="copy">Copy mistakes</button><button class="btn ghost" id="tomap">Map</button><button class="btn" id="again">Again</button></div>
@@ -155,7 +184,28 @@
 <script src="content/town-gouda.js"></script>
 <script src="content/towns.js"></script>
 <script src="content/towns-new.js"></script>
+<script src="fares.js"></script>
 <script src="content/extra.js"></script>
+<script src="intro/art.js"></script>
+<script src="intro/panel-1.js"></script>
+<script src="intro/panel-2.js"></script>
+<script src="intro/panel-3.js"></script>
+<script src="intro/panel-4.js"></script>
+<script src="intro/panel-5.js"></script>
+<script src="intro/panel-6.js"></script>
+<script src="intro/panel-7.js"></script>
+<script src="intro/panel-8.js"></script>
+<script src="intro/panel-9.js"></script>
+<script src="intro/panel-10.js"></script>
+<script src="intro/panel-11.js"></script>
+<script src="intro/panel-12.js"></script>
+<script src="intro/panel-13.js"></script>
+<script src="intro/panel-14.js"></script>
+<script src="intro/scene-street.js"></script>
+<script src="intro/scene-dyke.js"></script>
+<script src="intro/scene-square.js"></script>
+<script src="intro/scene-nightshop.js"></script>
+<script src="intro/scene-shops.js"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
@@ -181,6 +231,8 @@ const smooth = t => t * t * (3 - 2 * t);
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const today = () => new Date().toISOString().slice(0, 10);
+// fares.js fills this; without it the game runs with no money instead of a black page
+const FARES = window.FARES || { fareFor: () => 0, payCents: () => 0, euroToWords: () => '', fmtEuro: c => '€ 0,00', FLAT: {}, REFUSE: [], TIPS: [] };
 
 // ---------- renderer / scene ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -1303,6 +1355,9 @@ const S = {
   mistakes: [], introT: 0, dieT: 0, stumble: 0,
   voice: true, heartT: 0,
   sentencePool: [], curv: 0, curvTarget: 0, curvNextAt: 60, wordPool: [],
+  // fares, all integer cents
+  cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: 1, score: 0, fxT: 0,
+  paid: 0, walletLast: 0, tickT: -1,
 };
 let audioCtx = null;
 window.NR = S; // debug handle
@@ -1314,12 +1369,17 @@ window.NRsnap = async () => { render(); const url = renderer.domElement.toDataUR
 window.NRstep = n => { for (let i = 0; i < (n || 60); i++) update(1 / 60); render(); };
 window.NRbright = () => { render(); const c = renderer.domElement, t = document.createElement('canvas'); t.width = 64; t.height = 36; const g = t.getContext('2d'); g.drawImage(c, 0, 0, 64, 36); const d = g.getImageData(0, 0, 64, 36).data; let sum = 0; for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2]; return Math.round(sum / (d.length / 4) / 3); };
 window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, calls: renderer.info.render.calls, dpr: DPR, post: !!composer });
+window.NRfare = () => ({ cents: S.cents, missed: S.missed, tips: S.tips, tikkie: S.tikkie, cleanRow: S.cleanRow, score: S.score, paid: S.paid });
+window.NRfareFns = { paidLine, payTikkie };   // qa: the toast line and the Tikkie, called directly
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 buildScenery(THEMES.polder);
 let L = null;                 // current level, null = endless
 let BASE = BASE_SPEED, MAXS = MAX_SPEED;
 let progress = {}; try { progress = JSON.parse(localStorage.getItem('nachtrit.progress') || '{}'); } catch (e) { progress = {}; }
 function saveProgress() { try { localStorage.setItem('nachtrit.progress', JSON.stringify(progress)); } catch (e) {} }
+// best score per level id (and 'endless'), its own key so nachtrit.progress stays stars only
+let scores = {}; try { const raw = JSON.parse(localStorage.getItem('nachtrit.scores') || '{}'); if (raw && typeof raw === 'object') for (const k in raw) if (Number.isFinite(raw[k])) scores[k] = raw[k]; } catch (e) { scores = {}; }
+function saveScores() { try { localStorage.setItem('nachtrit.scores', JSON.stringify(scores)); } catch (e) {} }
 function districtStars(a) { return LEVELS.filter(l => l.act === a).reduce((n, l) => n + (progress[l.id] || 0), 0); }
 const DISTRICT_NEED = 5; // stars in the previous district to open the next
 function unlocked(lv) { const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); return t ? townOpen(t) : lv.act === 1; }
@@ -1403,12 +1463,13 @@ function planSentence(entry) {
   if (entry.read) {
     const d0 = S.planCursor + 14;
     add(bigSign(entry.nl), d0, null, 'readsign', { nl: entry.nl }).mesh.position.x = 0;
-    const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true };
+    const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true, fare: FARES.FLAT.read || 0 };
     placeFork(fork, d0 + 34);
     S.planCursor = d0 + 34 + 10;
     return;
   }
-  const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0 };
+  // fareFor gives passengers their tier fare, look entries FLAT.look and de/het entries FLAT.dehet
+  const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0, fare: FARES.fareFor(entry, S.fareTier) || 0, lostAt: -1 };
   if (entry.look) { // the thing stands beside the road, the signs come right after it
     const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
     const mesh = pr.make(entry.value); if (pr.scale) mesh.scale.setScalar(pr.scale); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;
@@ -1466,10 +1527,18 @@ function plan() {
 // ---------- HUD ----------
 const card = $('card'), toast = $('toast');
 let toastT = 0;
-function showCard(who, en, nlHtml) {
-  card.querySelector('.who').textContent = who; card.querySelector('.en').textContent = en; card.querySelector('.nl').innerHTML = nlHtml; card.style.opacity = 1;
+let cardSeq = 0;
+function showCard(who, en, nlHtml, fareHtml) {
+  cardSeq++;
+  card.querySelector('.who').textContent = who; card.querySelector('.en').textContent = en; card.querySelector('.nl').innerHTML = nlHtml; card.querySelector('.fare').innerHTML = fareHtml || ''; card.style.opacity = 1;
 }
-function hideCard() { card.style.opacity = 0; }
+function hideCard() { card.style.opacity = 0; }   // .fare is left to fade with the rest: showCard always rewrites it
+// the fare line on the card: what the ride is worth, struck through with what is left once a gap went wrong
+function fareRow(fare, wrong, forks) {
+  if (!fare) return '';
+  if (wrong > 0) return `<s>${FARES.fmtEuro(fare)}</s> ${FARES.fmtEuro(FARES.payCents(fare, wrong, forks))}`;
+  return FARES.fmtEuro(fare) + (S.fareTier <= 3 ? ` <i>${FARES.euroToWords(fare / 100)}</i>` : '');
+}
 function say(msg, cls, why, secs = 2.4) {
   toast.className = cls; toast.innerHTML = msg + (why ? `<span class="why">${why}</span>` : ''); toast.style.opacity = 1; toastT = secs;
 }
@@ -1502,6 +1571,14 @@ function thump(vol = 0.5) {
   g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
   o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + 0.3);
 }
+function tick() {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(2200, t);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.03, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.025);
+  o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + 0.03);
+}
 function chime(good) {
   if (!audioCtx) return;
   const t = audioCtx.currentTime;
@@ -1526,6 +1603,20 @@ function speak(text, whisper = false) {
     u.lang = 'nl-NL'; if (nlVoice) u.voice = nlVoice;
     u.rate = whisper ? 0.85 : 0.9; u.pitch = whisper ? 0.7 : 0.9; u.volume = whisper ? 0.6 : 1;
     speechSynthesis.speak(u);
+  } catch (e) {}
+}
+// one cancel, then the sentence and the passenger's lines queued back to back; the dead speak the amount lower
+function speakSeq(list) {
+  if (!S.voice || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    list.forEach((text, i) => {
+      if (!text) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'nl-NL'; if (nlVoice) u.voice = nlVoice;
+      u.rate = 0.9; u.pitch = i ? 0.75 : 0.9; u.volume = 1;
+      speechSynthesis.speak(u);
+    });
   } catch (e) {}
 }
 $('snd').onclick = () => { S.voice = !S.voice; $('snd').textContent = S.voice ? '🔊' : '🔇'; };
@@ -1652,24 +1743,32 @@ const SCENES = {
 const rumourShown = new Set();
 function showLevelIntro(lv, then) {
   if (!lv.intro) return then();
+  const NA = window.NRART, sc = NA && (NA.scenes[lv.theme] || NA.scenes.street);
+  const draw = sc || SCENES[lv.theme] || SCENES.street;
   const panels = [];
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id)));
-  if (t && t.rumour && !rumourShown.has(t.id)) { rumourShown.add(t.id); panels.push({ text: `${t.name}. Nobody agrees on what caused it. Here they say: ${t.rumour}`, nl: `${t.name}. Niemand is het eens over de oorzaak. Hier zeggen ze: ${t.rumourNl}`, draw: SCENES[lv.theme] || SCENES.street }); }
-  panels.push({ text: lv.intro, nl: lv.introNl || '', draw: SCENES[lv.theme] || SCENES.street });
+  if (t && t.rumour && !rumourShown.has(t.id)) { rumourShown.add(t.id); panels.push({ text: `${t.name}. Nobody agrees on what caused it. Here they say: ${t.rumour}`, nl: `${t.name}. Niemand is het eens over de oorzaak. Hier zeggen ze: ${t.rumourNl}`, draw, nr: !!sc }); }
+  panels.push({ text: lv.intro, nl: lv.introNl || '', draw, nr: !!sc });
   showIntro(then, panels);
 }
 
 let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
 function showIntro(then, panels) {
-  const PANELS_ = panels || PANELS;
+  const NA = window.NRART, nrOk = NA && NA.panels.length >= 14 && NA.panels.slice(0, 14).every(Boolean);
+  const PANELS_ = panels || (nrOk ? NA.panels.slice(0, 14).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
   introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
   const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
   const txt = $('pixtext'), nlEl = $('pixnl'); PANELS_.forEach(p => { p._nlShown = false; });
   let last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
-    const p = PANELS_[introI]; pxLabels = []; p.draw(g, introT);
-    hg.clearRect(0, 0, 1152, 648); for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * 6}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * 6, l.y * 6); }
+    const p = PANELS_[introI], hc = $('pixhi');
+    hg.clearRect(0, 0, hc.width, hc.height);
+    if (p.nr) { NA.labels.length = 0; NA.paint(g, p.draw, introT); NA.drawLabels(hg, NA.labels, hc.width / cv.width); }
+    else {   // legacy 192x108 drawings, scaled up to the canvas
+      pxLabels = []; g.setTransform(cv.width / 192, 0, 0, cv.height / 108, 0, 0); p.draw(g, introT); g.setTransform(1, 0, 0, 1, 0, 0);
+      const k = hc.width / 192; for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * k}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * k, l.y * k); }
+    }
     introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
     if (introTyped >= p.text.length && !p._nlShown) { p._nlShown = true; nlEl.textContent = p.nl || ''; if (p.nl && p.nl !== '...') speak(p.nl); } else if (introTyped < p.text.length) { nlEl.textContent = ''; }
     introRaf = requestAnimationFrame(frame);
@@ -1845,12 +1944,12 @@ function openTown(t) {
     const lvls = townLevels(t).filter(l => (l.place || PLACE_OF[l.id]) === pid && !l.soon);
     const el = document.createElement('div'); el.className = 'place' + (open && lvls.length ? '' : ' locked');
     const st = lvls.reduce((n, l) => n + (progress[l.id] || 0), 0);
-    el.innerHTML = `<small>${pname}</small>` + (lvls.length ? lvls.map(l => `<span class="lv">${l.name}${progress[l.id] ? ' ★' + progress[l.id] : ''}</span>`).join('') : `<span style="color:var(--dim);font-size:12px">soon</span>`);
+    el.innerHTML = `<small>${pname}</small>` + (lvls.length ? lvls.map(l => `<span class="lv">${l.name}${progress[l.id] ? ' ★' + progress[l.id] : ''}${scores[l.id] ? `<em>${scores[l.id]}</em>` : ''}</span>`).join('') : `<span style="color:var(--dim);font-size:12px">soon</span>`);
     if (open && lvls.length) { if (lvls.length === 1) el.onclick = () => openMission(lvls[0]); else el.querySelectorAll('.lv').forEach((b, i) => { b.style.cursor = 'pointer'; b.onclick = (e) => { e.stopPropagation(); openMission(lvls[i]); }; }); }
     box.appendChild(el);
   }
   const bonus = dehetBonus(t); const bel = document.createElement('div'); bel.className = 'place' + (open ? '' : ' locked'); bel.style.borderColor = 'rgba(255,210,122,.4)';
-  bel.innerHTML = `<small>Bonus</small><span class="lv">De of het · ${bonus.items.length}${progress[bonus.id] ? ' ★' + progress[bonus.id] : ''}</span>`;
+  bel.innerHTML = `<small>Bonus</small><span class="lv">De of het · ${bonus.items.length}${progress[bonus.id] ? ' ★' + progress[bonus.id] : ''}${scores[bonus.id] ? `<em>${scores[bonus.id]}</em>` : ''}</span>`;
   if (open) bel.onclick = () => openMission(bonus);
   box.appendChild(bel);
   $('town').style.transform = 'translate(-50%,0)';
@@ -1868,10 +1967,18 @@ function openMission(lv) {
   pendingLevel = lv; $('map').style.display = 'none';
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); const pl = PLACES.find(p => p[0] === (lv.place || PLACE_OF[lv.id]));
   $('m_act').textContent = `${t ? t.name : ''} · ${pl ? pl[1] : ''} · tier ${t ? t.tier : lv.act}`; $('m_name').textContent = lv.name;
+  $('m_fare').textContent = missionFares(lv, t ? t.tier : (lv.act || 1));
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
   const words = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.read ? (i.en || (i.o && i.o[i.a])) : (i.w || i.en)}`).filter((v, i, a) => a.indexOf(v) === i).slice(0, 24);
   $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
   $('mission').style.display = 'flex';
+}
+// 'Fares here € 1,00 to € 2,90 · best 1284': every fare on this road, signposts and look forks included
+function missionFares(lv, tier) {
+  const fares = (lv.items || []).map(i => FARES.fareFor(i, tier)).filter(f => f > 0);
+  if (!fares.length) return '';
+  const lo = Math.min(...fares), hi = Math.max(...fares), best = scores[lv.id];
+  return 'Fares here ' + (lo === hi ? FARES.fmtEuro(lo) + ' each' : FARES.fmtEuro(lo) + ' to ' + FARES.fmtEuro(hi)) + (best ? ' · best ' + best : '');
 }
 function start(lv) {
   L = lv || null;
@@ -1885,10 +1992,18 @@ function start(lv) {
   setRoadLook(LANE_X.length, theme);
   reset(); S.mode = 'intro'; S.introT = 0;
 }
+// the town's tier prices the rides; endless rides as tier 6
+function fareTier() {
+  if (!L) return 6;
+  const t = towns().find(t => t.id === (L.town || TOWN_OF(L.id)));
+  return t ? t.tier : (L.act || 1);
+}
 function reset() {
   for (const o of S.objs) if (o.mesh) scene.remove(o.mesh);
   Object.assign(S, { t: 0, dist: 0, speed: BASE, slow: 1, slowTarget: 1, lane: LANE_X.length === 2 ? 0 : 1, x: 0, lean: 0, lamp: L ? 85 : 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
-    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100 });
+    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100,
+    cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: fareTier(), score: 0, fxT: 0, paid: 0, walletLast: 0, tickT: -1 });
+  $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
   follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); rackGhost = null; }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
   hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0;
@@ -1917,6 +2032,14 @@ function showSummary(won) {
     : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (S.deliveriesTotal >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
   $('again').textContent = L && won && stars ? 'Next place' : 'Again';
   $('log').value = S.mistakes.map(m => `- ${today()} — ${m.said} → ${m.should} → [[${m.note}]]`).join('\n') || '(no mistakes)';
+  // money: score, best per level (levels only when home, endless on every death), the wallet line
+  S.score = S.delivered * 100 + S.cents / 10 + Math.round(clamp(S.lampMin, 0, 100));
+  const sk = L ? String(L.id) : 'endless';
+  if ((!L || won) && S.score > (scores[sk] || 0)) { scores[sk] = S.score; saveScores(); }
+  $('s_wallet').textContent = FARES.fmtEuro(S.cents); $('s_score').textContent = S.score; $('s_best').textContent = scores[sk] || 0;
+  const f = FARES.fmtEuro;
+  $('s_money').innerHTML = `<div>Fares ${f(S.paid)} · tips ${f(S.tips)} · Tikkie − ${f(S.tikkie)} · missed ${f(S.missed)}</div>`
+    + (S.riding ? `<div>Niet afgeleverd · ${f(S.riding.fare)}</div>` : '') + (L && !won ? '<div>Score counts when you get home.</div>' : '');
   $('summary').style.display = 'flex';
 }
 function levelDone() { S.mode = 'dying'; S.dieT = 10; showSummary(true); }
@@ -1939,33 +2062,86 @@ function resolveFork(gate) {
     S.good++; S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
     S.lamp = clamp(S.lamp + 18, 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
-    if (fork.read) { S.souls++; S.delivered++; say(`<b>${fork.o[fork.a]}</b>`, 'good', fork.w, 3); speak(fork.entry.nl); }
+    if (fork.read) { S.souls++; S.delivered++; const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
     else {
       fork.st.chosen.push(fork.o[fork.a]);
       const done = fork.idx === fork.st.forks.length - 1;
-      if (done) { S.souls++; if (fork.st.wrong === 0) S.delivered++; say(`<b>${fork.entry.nl}</b>`, 'good', L ? fork.w : 'Delivered.', 3.2); speak(fork.entry.nl); hideCard(); dropPassenger(); }
+      if (done) { S.souls++; if (fork.st.wrong === 0) S.delivered++; hideCard(); const m = settleRide(fork); say(`<b>${fork.entry.nl}</b>`, 'good', whyLine(L ? fork.w : 'Delivered.', m.line), 3.2); speakSeq(m.voice); dropPassenger(); }
       else { say(`<b>${fork.o[fork.a]}</b>`, 'good', null, 1.6); speak(fork.o[fork.a], true); }
     }
   } else {
-    S.bad++; S.streak = 0; S.wrongRow++; setFace('ouch', 2.2);
+    S.bad++; S.streak = 0; S.wrongRow++; S.cleanRow = 0; setFace('ouch', 2.2);
     S.lamp = clamp(S.lamp - (L ? 14 : 22), 0, 100); S.speed = clamp(S.speed - 3, BASE, MAXS);
     flash('#a01010', 0.45); chime(false); S.stumble = 1;
     const saidTxt = chosenIdx >= 0 ? fork.o[chosenIdx] : '(geen keuze)';
     if (fork.read) {
-      say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', fork.w, 3.6);
+      S.missed += fork.fare;
+      say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', whyLine(fork.w, 'Geen cent.'), 3.6);
       S.mistakes.push({ said: `"${fork.entry.nl}" read as "${saidTxt}"`, should: `"${fork.o[fork.a]}"`, note: rule.note });
     } else {
       const wrongSentence = assembled(fork.st, fork.idx, chosenIdx >= 0 ? saidTxt : '___').replace(' …', '');
-      say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', fork.w, 3.6);
       S.mistakes.push({ said: wrongSentence, should: fork.entry.nl, note: rule.note });
       fork.st.chosen.push(fork.o[fork.a]); // the sentence continues with the right word
-      fork.st.wrong++;
+      fork.st.wrong++; if (fork.st.lostAt < 0) fork.st.lostAt = fork.idx;
       const done = fork.idx === fork.st.forks.length - 1;
-      if (done) { S.souls++; hideCard(); speak(fork.entry.nl); dropPassenger(); }
+      if (done) { S.souls++; hideCard(); const m = settleRide(fork); say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', whyLine(fork.w, m.line), 3.6); speakSeq(m.voice); dropPassenger(); }
+      else say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', fork.w, 3.6);
     }
     if (S.wrongRow >= 3) S.lamp = 0;
   }
   for (const p of gate.posts) p.mesh.userData.board.material.color.set(p.oi === fork.a ? 0x9fdc7a : 0x7a3a3a);
+}
+// ---------- fares ----------
+const whyLine = (...parts) => parts.filter(Boolean).join(' · ');
+// what the passenger names: the fare, or fare + the tip euro when the tip line is 'Klopt zo.' (said over the amount handed over)
+const handed = (cents, tip) => cents + (tip && FARES.TIPS.some(t => t.handOver && t.nl === tip) ? 100 : 0);
+function paidLine(cents, tip) {   // 'Alsjeblieft. Twee euro dertig.' plus the tip line
+  const w = FARES.euroToWords(handed(cents, tip) / 100).replace(/^één/, 'eén');
+  return w ? 'Alsjeblieft. ' + w.charAt(0).toUpperCase() + w.slice(1) + '.' + (tip ? ' ' + tip : '') : '';
+}
+// the last fork of a ride settles the money: full or part pay, or a refusal; returns the toast line and what is said
+function settleRide(fork) {
+  const st = fork.st, nl = fork.entry.nl; S.riding = null;
+  const quiet = fork.entry.dehet || (L && L.id > 1000);   // de/het and bonus fares are not spoken: the next card comes too fast
+  const pay = FARES.payCents(st.fare, st.wrong, st.forks.length);
+  if (S.wrongRow >= 3) { S.missed += st.fare; return { line: '', voice: [nl] }; }   // the death on the next frame owns this moment
+  if (pay > 0) {
+    S.missed += st.fare - pay;
+    const tip = payFare(pay, st.wrong === 0);
+    return { line: paidLine(pay, tip), voice: quiet ? [nl] : [nl, FARES.euroToWords(handed(pay, tip) / 100), tip] };
+  }
+  const r = refuse(st);
+  return { line: '', voice: quiet ? [nl] : [nl, r] };
+}
+// money in; every third clean ride in a row adds a tip; returns the tip line or ''
+function payFare(cents, clean = true) {
+  if (!(cents > 0)) return '';
+  S.cents += cents; S.paid += cents;
+  if (!clean || ++S.cleanRow % 3) return '';
+  S.cents += 100; S.tips += 100;
+  const later = FARES.TIPS.filter(t => !t.first && t.minTier <= S.fareTier);
+  const t = S.tipN === 0 || !later.length ? (FARES.TIPS.find(x => x.first) || FARES.TIPS[0]) : later[(S.tipN - 1) % later.length];
+  S.tipN++; walletFx('+ € 1,00', 'tip');
+  return t ? t.nl : '';
+}
+// no pay: a dry line on the card, never the same one twice in a row
+function refuse(st) {
+  const pool = FARES.REFUSE.filter(r => r.minTier <= S.fareTier && S.fareTier <= (r.maxTier || 99) && r.nl !== S.lastRefuse);
+  const r = pool.length ? pick(pool) : null;
+  S.missed += st.fare;
+  if (!r) return '';
+  S.lastRefuse = r.nl;
+  card.querySelector('.nl').textContent = st.entry.nl; card.querySelector('.fare').innerHTML = `<span class="no">${r.nl} <i>${r.en}</i></span>`; card.style.opacity = 1;
+  const seq = cardSeq; setTimeout(() => { if (cardSeq === seq) hideCard(); }, 2400);
+  return r.nl;
+}
+function walletFx(text, cls) { const fx = $('walletfx'); fx.textContent = text; fx.className = cls; S.fxT = 1.8; }
+// a zombie's Tikkie: up to € 4,50 out of the wallet, never below zero
+function payTikkie() {
+  const taken = Math.min(S.cents, 450); S.cents -= taken; S.tikkie += taken; S.cleanRow = 0;
+  if (!taken) return;   // an empty wallet loses nothing: the toast still asks for € 4,50, the pill stays put
+  walletFx('− ' + FARES.fmtEuro(taken), 'lost');
+  const p = $('walletpill'); p.classList.add('shake'); setTimeout(() => p.classList.remove('shake'), 400);
 }
 
 // ---------- update ----------
@@ -2085,13 +2261,14 @@ function update(dt) {
       else if (o.type === 'puddle') { o.hit = true; S.speed = clamp(S.speed - 2, BASE, MAXS); S.stumble = 0.6; }
       else if (o.type === 'obstacle') {
         o.hit = true; S.stumble = 1; flash('#000', 0.6); thump(0.8);
-        if (o.zombie) { S.lamp = clamp(S.lamp - 8, 0, 100); S.speed = BASE; say('€4,50', 'bad', 'Tikkie.', 1.4); setFace('ouch', 1.5); o.mesh.rotation.z = 1.2; }
+        if (o.zombie) { S.lamp = clamp(S.lamp - 8, 0, 100); S.speed = BASE; say('€4,50', 'bad', 'Tikkie.', 1.4); setFace('ouch', 1.5); o.mesh.rotation.z = 1.2; payTikkie(); }
         else if (!o.forkFence) { S.lamp = clamp(S.lamp - 10, 0, 100); S.speed = BASE; say('Au.', 'bad', null, 1); setFace('ouch', 1.5); }
       }
     }
     if (o.type === 'passenger' && !o.hit && z > -2) {
-      o.hit = true; o.mesh.visible = false; mountPassenger(o.mesh.userData.variant); S.slowTarget = 0.6; setTimeout(() => { if (S.activeFork == null) S.slowTarget = 1; }, 1800);
-      if (o.st.entry.listen) { showCard('Listen', '🔊 …', assembled(o.st, 0)); speak(o.st.entry.nl); } else if (o.st.entry.dehet) showCard('De or het?', o.st.entry.parts[1], '<b>___</b> ' + o.st.entry.parts[1]); else showCard('The passenger says', o.st.entry.en, assembled(o.st, 0)); thump(0.5);
+      o.hit = true; o.mesh.visible = false; mountPassenger(o.mesh.userData.variant); S.riding = o.st; S.slowTarget = 0.6; setTimeout(() => { if (S.activeFork == null) S.slowTarget = 1; }, 1800);
+      const fr = fareRow(o.st.fare, o.st.wrong, o.st.forks.length);
+      if (o.st.entry.listen) { showCard('Listen', '🔊 …', assembled(o.st, 0), fr); speak(o.st.entry.nl); } else if (o.st.entry.dehet) showCard('De or het?', o.st.entry.parts[1], '<b>___</b> ' + o.st.entry.parts[1], fr); else showCard('The passenger says', o.st.entry.en, assembled(o.st, 0), fr); thump(0.5);
     }
     if (o.type === 'finish' && !o.hit && z > 0) { o.hit = true; levelDone(); return; }
   }
@@ -2105,11 +2282,12 @@ function update(dt) {
     if (!g.armed && z > -46) {
       g.armed = true; S.activeFork = g; setFace('worry', 2.0, false);
       const f = g.fork;
-      if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.');
-      else if (f.entry.look) showCard('Look', f.entry.side === 'links' ? '← What is that, on your left?' : 'What is that, on your right? →', 'The thing under the marker.');
-      else if (f.entry.dehet) showCard('De or het?', f.entry.parts[1], '<b>___</b> ' + f.entry.parts[1] + ' <span style="color:#9fb0cc">· ' + f.entry.en + '</span>');
-      else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx)); speak(f.entry.nl); }
-      else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx) + (L && L.hint === 'letter' && firstLetterHint(f.o[f.a]) ? ` <span style="color:#9fb0cc">(${firstLetterHint(f.o[f.a])})</span>` : ''));
+      const fr = f.read ? fareRow(f.fare, 0, 1) : fareRow(f.st.fare, f.st.wrong, f.st.forks.length);
+      if (f.read) showCard('What does it say?', f.entry.nl, 'Ride through the right meaning.', fr);
+      else if (f.entry.look) showCard('Look', f.entry.side === 'links' ? '← What is that, on your left?' : 'What is that, on your right? →', 'The thing under the marker.', fr);
+      else if (f.entry.dehet) showCard('De or het?', f.entry.parts[1], '<b>___</b> ' + f.entry.parts[1] + ' <span style="color:#9fb0cc">· ' + f.entry.en + '</span>', fr);
+      else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx), fr); speak(f.entry.nl); }
+      else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx) + (L && L.hint === 'letter' && firstLetterHint(f.o[f.a]) ? ` <span style="color:#9fb0cc">(${firstLetterHint(f.o[f.a])})</span>` : ''), fr);
       for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
       const cells = $('lanes').children; for (let i = 0; i < 3; i++) { const p = g.posts.find(q => q.lane === i); cells[i].style.display = i < LANE_X.length ? '' : 'none'; cells[i].textContent = p ? p.fork.o[p.oi] : '✕'; }
       $('lanes').style.opacity = 1;
@@ -2141,6 +2319,15 @@ function update(dt) {
 
   // HUD
   const hud = `${S.souls}|${S.streak}|${Math.round(S.dist)}`; if (hud !== S.hudLast) { S.hudLast = hud; $('souls').textContent = S.souls; $('streak').textContent = S.streak; $('dist').textContent = Math.round(S.dist) + ' m'; }
+  // wallet: counts toward the real amount, a tick per whole euro crossed, written only when the shown amount changes
+  if (S.walletShown !== S.cents) {
+    const diff = S.cents - S.walletShown, step = Math.max(100, Math.abs(diff) / 0.5) * dt, prev = S.walletShown;
+    S.walletShown = Math.abs(diff) <= step ? S.cents : S.walletShown + Math.sign(diff) * step;
+    if (Math.floor(prev / 100) !== Math.floor(S.walletShown / 100) && S.t - S.tickT > 0.07) { S.tickT = S.t; tick(); }
+    const shown = Math.round(S.walletShown / 10) * 10;
+    if (shown !== S.walletLast) { S.walletLast = shown; $('wallet').textContent = FARES.fmtEuro(shown); }
+  }
+  if (S.fxT > 0) { S.fxT -= dt; if (S.fxT <= 0) { $('walletfx').textContent = ''; $('walletfx').className = ''; } }
   if (toastT > 0) { toastT -= dt; if (toastT <= 0) toast.style.opacity = 0; }
 }
 

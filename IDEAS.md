@@ -4,6 +4,10 @@
   three wrong and they get off without paying with a dry line. Wallet in the HUD, Dutch amounts
   spoken aloud, tips on streaks, zombies charge €4,50. Score per level = deliveries, euros, lamp.
   (Brief in FARES-BRIEF.md; first attempt delegated to Opus on branch opus-fares.)
+  Left out of the first fares pass (FARES-SPEC.md section 8): coins flying from the passenger to
+  the wallet, a kassabon receipt tab on the summary, 'Duurste fout' (the mistake that cost most),
+  a little price jitter per ride, the ghost who turns its back when it refuses to pay, and a
+  lifetime bank across runs.
 - **Upgrades bought with euros**: brighter lamp, a bell that pushes the follower back, a faster
   omafiets, a dog in the basket that barks at zombies.
 - **Eigen place per town**: Urk's dress, Den Haag's politicians, Zeeland's dams, Texel's ferry.
