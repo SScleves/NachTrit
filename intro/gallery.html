@@ -41,6 +41,9 @@
 <script src="panel-6.js"></script>
 <script src="panel-7.js"></script>
 <script src="panel-8.js"></script>
+<script src="panel-9.js"></script>
+<script src="panel-10.js"></script>
+<script src="panel-11.js"></script>
 <script src="scene-street.js"></script>
 <script src="scene-dyke.js"></script>
 <script src="scene-square.js"></script>
@@ -53,13 +56,13 @@
 (function () {
   const q = new URLSearchParams(location.search), A = window.NRART;
   const state = window.NRGALLERY = { done: false, benchDone: false, benchText: '', errors: [] };
-  const PIECES = ['panel-1', 'panel-2', 'panel-3', 'panel-4', 'panel-5', 'panel-6', 'panel-7', 'panel-8',
+  const PIECES = ['panel-1', 'panel-2', 'panel-3', 'panel-4', 'panel-5', 'panel-6', 'panel-7', 'panel-8', 'panel-9', 'panel-10', 'panel-11',
     'scene-street', 'scene-dyke', 'scene-square', 'scene-nightshop', 'scene-shops'];
   const scale = Math.max(1, Math.min(8, +q.get('scale') || 3));
   const tFixed = q.has('t') ? parseFloat(q.get('t')) || 0 : null;
   const names = q.get('only') ? q.get('only').split(',') : PIECES;
   document.documentElement.style.setProperty('--fw', (A ? A.W : 320) * scale + 'px');
-  document.getElementById('what').textContent = (q.get('only') || 'all thirteen') + (tFixed == null ? ', animated' : `, t = ${tFixed}`) + `, ${scale}x`;
+  document.getElementById('what').textContent = (q.get('only') || 'all sixteen') + (tFixed == null ? ', animated' : `, t = ${tFixed}`) + `, ${scale}x`;
 
   function piece(name) {
     if (!A) return null;
