@@ -1132,7 +1132,7 @@ let audioCtx = null;
 // how deep into the night we are: 0 at the start of a level, 1 at the end (endless: by distance)
 function nightDepth() { return clamp(S.dist / (L && S.deliveriesTotal ? S.deliveriesTotal * 95 : 2600), 0, 1); }
 // what a right answer refuels: generous in the first town, thinner as the tiers rise
-const TUNE = window.NRTUNE = { drain: 2.5, wisp: 2.0, right: 3 };
+const TUNE = window.NRTUNE = { drain: 2.5, wisp: 2.0, right: 3, cap: 0.6 };  // cap: tier presets above 0.6 only get harder through speed and obstacles
 function refuelRight() { return TUNE.right + Math.min(S.streak, 4) * 0.3; }
 window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
@@ -1949,7 +1949,7 @@ function update(dt) {
     if (!L || L.ramp) S.speed = clamp(S.speed + dt * 0.08, BASE, MAXS);      // slow ramp with time
     const v = S.speed * S.slow * (S.stumble > 0 ? 0.6 : 1);
     S.dist += v * dt;
-    S.lamp -= dt * (L ? L.lampDecay * TUNE.drain : (1.1 + (S.speed < 17 ? 0.6 : 0))) * (0.6 + 1.1 * nightDepth());
+    S.lamp -= dt * (L ? Math.min(L.lampDecay, TUNE.cap) * TUNE.drain : (1.1 + (S.speed < 17 ? 0.6 : 0))) * (0.6 + 1.1 * nightDepth());
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
     if (S.lamp <= 0) { S.lamp = 0; die(); return; }
