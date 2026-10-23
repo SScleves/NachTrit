@@ -1,380 +1,237 @@
-// Panel 8: every word said right brings a piece of it back; someone has to say them.
-// One 8 s loop, read left to right and in time:
-//   0-1.5 s   the hero says "de fiets"; amber motes leave his mouth, fog gathers over open sky and the word
-//             sharpens out of it into gold, a lamp made of language
-//   ~2-3.3 s  a thread of amber motes runs from the word to the one dark window
-//   3.3 s     the window catches with a flicker and then stays lit until the loop ends
-//   7-8 s     a mist pass hides the reset (the window is never switched off in the open)
-// The street is deliberately dark: the word and the window are the only warm notes.
-// Loop hygiene: the camera drifts out and back in exactly 8 s, the mill turns one quarter (the sails repeat every
-// PI/2), the drifting mist sways out and back, every other motion is a function of T = t % 8 with periods 8, 4, 2, 1.
-// Speed: everything that never moves is painted once per camera offset and copied back each frame.
+// Panel 5: two years here and he never practised; everyone was so nice about it.
+// Before the mist: a café terrace on a wet, mild evening, the warmest panel of the intro. Right third opens onto a canal.
+// Beat: 0..1.1 "Hoi!" alone; 1.1..1.4 blink; 1.4+ "Oh, English is fine!" and the whole café beams.
+// Loops: pendant sway, candle flicker, steam, far mill sails (anticlockwise), mist, blinks and talk, a waving patron.
 (function () {
   const A = window.NRART;
-  const TAU = Math.PI * 2;
-  const sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-  const bez = (a, b, c, u) => (1 - u) * (1 - u) * a + 2 * (1 - u) * u * b + u * u * c;
-  const WX = 206, WY = 66;                          // the word, in open fog (the text baseline)
-  const WIN = { x: 70, y: 104, w: 20, h: 22 };      // the one window that comes back
-  const MOUTH = [109, 116];
-  const GROUND = 157;                               // where the cast stands
-
-  // ---------------------------------------------------------------- a cheap light: the falloff is tabulated once
-  const BAY = new Float32Array([0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map(v => (v + 0.5) / 16));
-  const falloffs = new Map();
-  function falloff(r, ry, pw) {
-    const key = r + ':' + ry + ':' + pw; let f = falloffs.get(key); if (f) return f;
-    const w = 2 * r + 1, h = 2 * ry + 1, tab = new Float32Array(w * h);
-    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
-      const dx = (i - r) / r, dy = (j - ry) / ry, d2 = dx * dx + dy * dy;
-      tab[j * w + i] = d2 >= 1 ? 0 : Math.pow(1 - Math.sqrt(d2), pw);
-    }
-    f = { w, h, tab }; falloffs.set(key, f); return f;
-  }
-  // light (mode 'add'), fog ('mix') or shade ('mul') around (x, y), like NRART.glow but with the falloff precomputed
-  function glow(g, x, y, r, color, strength, o) {
-    o = o || {}; const mode = o.mode || 'add', Q = 6, pw = o.power == null ? 1.5 : o.power, ry = o.ry || r;
-    const st = Math.round(strength * 20) / 20; if (st <= 0) return;
-    const Ls = []; for (let q = 0; q <= Q; q++) Ls.push(A.lut(mode, color, st * q / Q));
-    const f = falloff(r, ry, pw), cx = Math.round(x) + g.ox, cy = Math.round(y) + g.oy, buf = g.buf, gw = g.w;
-    const x0 = Math.max(0, cx - r), x1 = Math.min(gw - 1, cx + r), y0 = Math.max(0, cy - ry), y1 = Math.min(g.h - 1, cy + ry);
-    for (let yy = y0; yy <= y1; yy++) {
-      const row = (yy - cy + ry) * f.w + r - cx;
-      for (let xx = x0; xx <= x1; xx++) {
-        const lv = f.tab[row + xx]; if (lv <= 0) continue;
-        const v = lv * Q; let q = v | 0; if (v - q > BAY[((yy & 3) << 2) | (xx & 3)]) q++;
-        if (q > 0) { const i = yy * gw + xx; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
-      }
+  const H = A.hash;
+  function steam(g, x, y, t, seed) {
+    for (let i = 0; i < 5; i++) {
+      const k = ((t * 0.8 + i / 5 + seed * 0.13) % 1), yy = y - k * 9, xx = x + Math.sin(k * 6 + i + seed) * 1.5;
+      if (k < 0.85) A.px(g, xx, yy, k < 0.4 ? 'mist6' : 'mist4');
     }
   }
-
-  // fog over a rect: pull pixels toward `color` by an amount that runs top to bottom (a cheap NRART.haze)
-  function fog(g, x, y, w, h, color, top, bottom) {
-    const Q = 8, Ls = []; for (let q = 0; q <= Q; q++) Ls.push(A.lut('mix', color, q / Q));
-    const buf = g.buf, gw = g.w, x0 = Math.max(0, x + g.ox), x1 = Math.min(gw, x + g.ox + w), y0 = Math.max(0, y + g.oy), y1 = Math.min(g.h, y + g.oy + h);
-    for (let yy = y0; yy < y1; yy++) {
-      const v = (top + (bottom - top) * (yy - y0 + 0.5) / (y1 - y0)) * Q; if (v <= 0) continue;
-      const q0 = v | 0, fr = v - q0, A0 = Ls[q0], A1 = Ls[Math.min(Q, q0 + 1)], row = yy * gw, by = (yy & 3) << 2;
-      for (let xx = x0; xx < x1; xx++) { const i = row + xx; buf[i] = (fr > BAY[by | (xx & 3)] ? A1 : A0)[buf[i]]; }
+  function cobbles(g, x, y, w, h, base) {
+    A.rect(g, x, y, w, h, base);
+    for (let r = 0; r < h; r += 3) for (let c = -8; c < w; c += 6) {
+      const xx = x + c + ((r / 3) & 1 ? 3 : 0), v = H(c + 50, r);
+      A.hline(g, xx, y + r + 2, 6, 'slate1'); A.vline(g, xx, y + r, 3, 'slate1');
+      if (v < 0.3) A.hline(g, xx + 1, y + r, 4, 'slate5'); else if (v < 0.5) A.hline(g, xx + 1, y + r, 3, 'slate4');
     }
   }
-
-  // drifting mist, like NRART.mist but with the noise tabulated (it moves in whole pixels): a soft band that thickens and thins along x
-  const noise = new Map();
-  function noiseTab(seed, w) {
-    const key = seed + ':' + w; let n = noise.get(key); if (n) return n;
-    n = { a: new Float32Array(w), b: new Float32Array(w) };
-    for (let i = 0; i < w; i++) { n.a[i] = A.wave(i, w, seed); n.b[i] = A.wave(i * 0.5 + 40, w, seed + 3); }
-    noise.set(key, n); return n;
+  function pendant(g, x, t, seed) {
+    const sway = Math.round(Math.sin(t * Math.PI * 2 / 4 + seed));
+    A.vline(g, x, 69, 18, 'wood1');
+    A.poly(g, [x - 4 + sway, 94, x + 4 + sway, 94, x + 2 + sway, 88, x - 2 + sway, 88], 'wood3');
+    A.hline(g, x - 3 + sway, 94, 7, 'amber8');
   }
-  const AMB0 = A.col('amber0'), AMB8 = A.col('amber8');
-  function mist(g, shift, y, h, amt, seed, color) {
-    const Q = 8, Ls = []; for (let q = 0; q <= Q; q++) Ls.push(A.lut('mix', color, Math.round(q / Q * 20) / 20));
-    const gw = g.w, buf = g.buf, nt = noiseTab(seed, gw), cy0 = y + g.oy + h / 2, sh = Math.round(shift);
-    for (let xx = 0; xx < gw; xx++) {
-      const idx = (((xx - g.ox + sh) % gw) + gw) % gw, n = nt.a[idx], n2 = nt.b[idx];
-      const th = Math.max(0.5, h * (0.35 + 0.65 * n) / 2), cy = cy0 + (n2 - 0.5) * h * 0.5;
-      const r0 = Math.max(0, Math.ceil(cy - th)), r1 = Math.min(g.h - 1, Math.floor(cy + th)), base = amt * (0.55 + 0.45 * n);
-      for (let yy = r0; yy <= r1; yy++) {
-        const d = Math.abs(yy + 0.5 - cy) / th; if (d >= 1) continue;
-        const i = yy * gw + xx, c = buf[i]; let lv = base * (1 - d * d); if (c >= AMB0 && c <= AMB8) lv *= 0.3;
-        const v = lv * Q; let q = v | 0; if (v - q > BAY[((yy & 3) << 2) | (xx & 3)]) q++;
-        if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
-      }
+  // a far-bank house drawn locally: flat facade, a gable, a grid of small windows, no per-window glow
+  function house(g, x, by, w, h, gable, brickC, litP, seed) {
+    const top = by - h;
+    A.rect(g, x, top, w, h, brickC);
+    if (gable === 'step') for (let i = 0; i < 3; i++) A.rect(g, x + 2 + i * 3, top - 3 * (i + 1), w - 4 - i * 6, 3, brickC);
+    else if (gable === 'bell') { A.poly(g, [x + 2, top, x + w - 2, top, x + w - 7, top - 7, x + w / 2, top - 13, x + 7, top - 7], brickC); A.disc(g, x + w / 2, top - 12, 2, brickC); }
+    A.brick(g, x, top - 14, w, h + 14, { base: brickC, only: brickC, seed });
+    A.hline(g, x, top, w, 'night5');
+    const cols = Math.floor((w - 3) / 6), rows = Math.floor((h - 8) / 10), x0 = x + Math.floor((w - (cols * 6 - 3)) / 2);
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const wx = x0 + c * 6, wy = top + 5 + r * 10, lit = A.hash(seed * 9 + c, r + 2) < litP;
+      A.rect(g, wx - 1, wy - 1, 5, 7, 'night5'); A.rect(g, wx, wy, 3, 5, lit ? 'amber4' : 'night1');
+      if (lit) { A.hline(g, wx, wy, 3, 'amber6'); A.px(g, wx + 1, wy + 4, 'amber3'); }
+    }
+    A.rect(g, x, by - 3, w, 3, 'night1');
+  }
+  // the moon without the big glow: a dithered halo and the disc with its dark side
+  function moon(g, x, y, r) {
+    A.ditherDisc(g, x, y, r * 2, 'night5', 0.5, 2, null);
+    A.disc(g, x, y, r, 'paper5');
+    for (let yy = -r; yy <= r; yy++) for (let xx = -r; xx <= r; xx++) {
+      if (xx * xx + yy * yy > r * r + r) continue;
+      if ((xx + 4) * (xx + 4) + yy * yy > r * r + r) A.px(g, x + xx, y + yy, xx > 0 ? 'paper3' : 'paper4');
+    }
+    A.px(g, x - 3, y - 2, 'paper4'); A.px(g, x + 1, y + 2, 'paper4'); A.px(g, x - 1, y + 4, 'paper3');
+  }
+  // a patron in the window, drawn locally: dark bob, a scarf, eyes on the door, a glass that goes up for the English
+  function patron(g, x, y, t, seed, up) {
+    const k = seed % 3, hair = ['wood1', 'night1', 'wood2'][k], top = ['red2', 'green3', 'teal3'][k], edge = ['red3', 'green4', 'teal4'][k];
+    A.rect(g, x - 7, y - 24, 14, 24, top); A.rect(g, x - 7, y - 24, 2, 24, edge); A.rect(g, x - 3, y - 24, 6, 3, 'paper4');
+    A.rect(g, x - 4, y - 36, 8, 10, 'skin4'); A.rect(g, x - 5, y - 38, 10, 4, hair); A.rect(g, x - 5, y - 36, 2, 9, hair); A.rect(g, x + 3, y - 36, 2, 9, hair);
+    A.px(g, x - 1, y - 32, 'night1'); A.px(g, x + 2, y - 32, 'night1');
+    A.hline(g, x - 2, y - 29, 4, 'red3'); A.px(g, x - 3, y - 30, 'red3'); A.px(g, x + 2, y - 30, 'red3');
+    const w = up ? (Math.sin(t * 3 + seed) > 0 ? 0 : 1) : 0;
+    if (up) { A.rect(g, x + 7, y - 27 - w, 2, 12, top); A.rect(g, x + 6, y - 32 - w, 4, 5, 'cheese4'); A.hline(g, x + 6, y - 32 - w, 4, 'paper6'); }
+    else { A.rect(g, x + 7, y - 20, 2, 7, top); A.rect(g, x + 6, y - 18, 4, 5, 'cheese4'); A.hline(g, x + 6, y - 18, 4, 'paper6'); }
+  }
+  // a long reflection on wet ground: dashes that thin, darken and wobble with the distance, broken by ripples
+  function bar(g, x, y, w, len, t, seed, bright) {
+    for (let k = 0; k < len; k++) {
+      const f = k / len, ph = Math.floor(t * 1.5 + k * 0.5 + seed);
+      if ((k + ph) % 4 === 3 || H(k + seed * 7, ph) > 0.92 - f * 0.5) continue;               // ripples cut the bar into pieces
+      const ww = Math.max(2, Math.round(w * (1 - 0.3 * f))), off = f > 0.5 ? Math.round(Math.sin(k * 0.5 + t * 1.5 + seed)) : 0;
+      const c = bright ? (f < 0.3 ? 'amber5' : f < 0.6 ? 'amber4' : 'amber3') : (f < 0.25 ? 'amber3' : f < 0.6 ? 'amber2' : 'amber1');
+      A.hline(g, x - ww / 2 + off, y + k, ww, c);
     }
   }
-
-  // the windmill is the one big moving thing, so each angle (96 per full turn of the sails' symmetry) is drawn once into its own sprite
-  const MILL = { x: 296, y: 126, s: 0.95, steps: 48, w: 96, h: 80, ax: 48, ay: 66 };
-  const millSprites = [];
-  function millSprite(g, step) {
-    let sp = millSprites[step]; if (sp) return sp;
-    const m = MILL, sg = A.surface(m.w, m.h); sg.buf.fill(255);
-    sg.camX = sg.camY = 0; sg.keyX = WX - m.x + m.ax; sg.keyY = WY - m.y + m.ay; sg.rimK = 2;
-    A.windmill(sg, m.ax, m.ay, m.s, -step / m.steps * (TAU / 4), { tone: 'night1', lit: 0, stage: true });
-    const px = []; for (let i = 0; i < sg.buf.length; i++) if (sg.buf[i] !== 255) px.push(i % m.w, (i / m.w) | 0, sg.buf[i]);
-    sp = millSprites[step] = Int16Array.from(px); return sp;
-  }
-  function drawMill(g, T) {
-    const m = MILL, sp = millSprite(g, Math.floor(T / 8 * m.steps) % m.steps), ox = m.x - m.ax + g.ox, oy = m.y - m.ay + g.oy, buf = g.buf;
-    for (let k = 0; k < sp.length; k += 3) {
-      const x = sp[k] + ox, y = sp[k + 1] + oy; if (x < 0 || y < 0 || x >= g.w || y >= g.h) continue; buf[y * g.w + x] = sp[k + 2];
-    }
+  // the barman, drawn locally: white shirt, apron, a polite smile
+  function barman(g, x, y, t) {
+    A.rect(g, x - 7, y - 20, 14, 20, 'paper4'); A.rect(g, x - 5, y - 12, 10, 12, 'paper3'); A.vline(g, x - 7, y - 20, 20, 'paper2');
+    A.rect(g, x - 2, y - 20, 4, 2, 'red3');
+    A.rect(g, x - 3, y - 29, 6, 8, 'skin4'); A.rect(g, x - 4, y - 31, 8, 3, 'wood1'); A.rect(g, x - 4, y - 28, 1, 2, 'wood1');
+    A.px(g, x - 2, y - 26, 'night1'); A.px(g, x + 1, y - 26, 'night1');
+    A.hline(g, x - 1, y - 23, 3, 'red3'); A.px(g, x - 2, y - 24, 'red3'); A.px(g, x + 2, y - 24, 'red3');
+    const w = Math.sin(t * 5) > 0 ? 0 : 1;
+    A.rect(g, x + 7, y - 17 - w, 2, 6, 'paper3'); A.rect(g, x + 7, y - 19 - w, 2, 2, 'skin4');
   }
 
-  // ---------------------------------------------------------------- the painted, never-moving backdrop
-  const DEPTHS = [0, 0.25, 0.5, 0.85, 1];
-  const store = new Map();
-  function backdropKey(g) { return g.w + 'x' + g.h + ':' + DEPTHS.map(d => Math.round(-g.camX * d)).join(','); }
+  // ---- static layers are painted once per camera offset and copied back each frame (the camera drifts a few pixels, so there are only a handful)
+  const cacheA = new Map(), cacheB = new Map();
+  const offs = (g, ds) => ds.map(d => { A.depth(g, d); return g.ox; }).join(',');
 
-  function paintBackdrop(g) {
-    // sky: five bands that dither fully into each other and into the fog at the horizon
+  // far town and the bank, the bridge: everything in the canal vista that never moves (the mill, mist, water and stars come later)
+  function paintVista(g) {
     A.depth(g, 0);
-    A.sky(g, ['night0', 'night1', 'night2', 'night3', 'mist0', 'mist1'], 0, 130, { blend: 26 });
-    A.glow(g, 250, 90, 80, { ry: 34, color: 'mist3', strength: 0.16, power: 1.4 });
-    // far: trees and the church, one haze pass over both
-    A.depth(g, 0.25);
-    for (let i = 0; i < 9; i++) A.tree(g, 180 + i * 17 + (i % 2) * 5, 122, 0.5 + (i % 3) * 0.12, { tone: 'night2' });
-    A.church(g, 250, 124, 0.9, { tone: 'night2', lit: false });
-    A.haze(g, -6, 24, 332, 100, { top: 0.0, bottom: 0.62, color: 'mist2' });
+    A.sky(g, ['night2', 'night4', 'night5', 'mist2', 'mist4'], 0, 128);   // moonlit fog: palest at the horizon
+    A.glow(g, 288, 122, 70, { ry: 46, color: 'mist5', strength: 0.4, power: 1.2 });   // the fog glows where the moon lights it
+    moon(g, 292, 24, 8);
+    A.depth(g, 0.25);                                          // far town: dark silhouettes on the pale fog
+    A.church(g, 254, 124, 1.15, { tone: 'night3' });
+    A.canalHouse(g, 268, 124, 22, 30, { gable: 'step', brick: 'night3', lit: 0, glow: 0, door: false, hoist: false, seed: 21 });
+    A.haze(g, 220, 60, 110, 66, { top: 0.0, bottom: 0.4, color: 'mist3', lights: 0.7 });
+    A.depth(g, 0.5);                                           // the near bank, the bridge, the canal
+    A.rect(g, 205, 128, 130, 26, 'night2');
+    house(g, 212, 134, 30, 46, 'step', 'night3', 0.75, 3);
+    A.rect(g, 284, 124, 46, 11, 'night2'); A.hline(g, 284, 124, 46, 'night4');                       // the far quay under the mill
+    A.archBridge(g, 240, 135, 48, 12, { brick: 'brick2' });
+    for (const lx of [246, 264]) { A.vline(g, lx, 109, 3, 'slate1'); A.px(g, lx, 108, 'amber7'); }   // lanterns on the bridge rail
+  }
 
-    // mid: far houses, the bridge, a quay that climbs toward the mill so it recedes
-    A.depth(g, 0.5);
-    A.canalHouse(g, 150, 128, 26, 52, { gable: 'step', lit: 0, seed: 41, brick: 'night2', trim: 'night3', door: false });
-    A.canalHouse(g, 232, 128, 24, 40, { gable: 'roof', lit: 0, seed: 42, brick: 'night2', trim: 'night3', door: false });
-    A.haze(g, -6, 52, 332, 74, { top: 0.0, bottom: 0.5, color: 'mist2', lights: 0.1 });
-    A.rect(g, 100, 124, 240, 8, 'night3');
-    A.drawbridge(g, 196, 126, 70, { tone: 'night3' });
-    A.haze(g, 190, 84, 90, 48, { top: 0.0, bottom: 0.38, color: 'mist2', lights: 0.5 });
-    A.poly(g, [100, 142, 340, 127, 340, 148, 100, 148], 'night2');
-    A.line(g, 100, 142, 340, 127, 'slate3');
-    for (let i = 0; i < 7; i++) { const bx = 112 + i * 34; A.bollard(g, bx, 142 - (bx - 100) * 0.0625); }
-
-    // near: the dark row of houses, silhouettes with a rim from the key light, no window wallpaper
+  // the café wall, the ground and everything on them that holds still
+  function paintWall(g, nice) {
     A.depth(g, 0.85);
-    A.canalHouse(g, -8, 146, 62, 126, { gable: 'roof', lit: 0, seed: 51, brick: 'night2', trim: 'night3', door: false });
-    A.canalHouse(g, 54, 146, 56, 110, { gable: 'bell', lit: 0, seed: 52, brick: 'night2', trim: 'night3', door: false });
-    A.canalHouse(g, 110, 146, 44, 96, { gable: 'step', lit: 0, seed: 53, brick: 'night2', trim: 'night3', door: false });
-    A.tint(g, -10, 57, 66, 90, 'night0', 0.8, 'mix');
-    A.tint(g, 54, 80, 56, 67, 'night0', 0.8, 'mix');
-    A.tint(g, 110, 88, 44, 59, 'night0', 0.8, 'mix');
-    // dead windows: cold glass with one glint, different sizes, nothing like a grid
-    for (const [x, y, w, h] of [[63, 88, 6, 9], [96, 86, 5, 8], [118, 100, 6, 9], [136, 104, 5, 8]]) {
-      A.rect(g, x - 1, y - 1, w + 2, h + 2, 'night0'); A.rect(g, x, y, w, h, 'night1');
-      A.px(g, x + w - 1, y, 'night3'); A.hline(g, x, y + h - 1, w, 'night2');
-    }
-    // the window that is about to come back, dark and cold
-    const { x: wx, y: wy, w: ww, h: wh } = WIN;
-    A.rect(g, wx - 2, wy - 2, ww + 4, wh + 4, 'night0');
-    A.window(g, wx, wy, ww, wh, { lit: 0, seed: 7, frame: 'slate2' });
-    A.rect(g, wx - 3, wy + wh + 2, ww + 6, 2, 'slate3');
-    A.rect(g, 126, 130, 14, 16, 'night1'); A.hline(g, 126, 130, 14, 'slate2');           // a door
-    A.lamp(g, 156, 148, { style: 'lantern', h: 44, on: false });                         // a dead lamp says it all
-
-    // the street: kerb, wet cobbles that grow toward the viewer
-    A.rect(g, -20, 146, 360, 8, 'slate1');
-    A.hline(g, -20, 146, 360, 'slate3'); A.hline(g, -20, 147, 360, 'slate2');
-    A.rect(g, -20, 154, 360, 30, 'night1');
-    A.ditherRect(g, -20, 154, 360, 6, 'slate1', 'night1', 0.35);
-    A.hline(g, -20, 152, 360, 'slate4');                                                 // kerb highlight
-    for (const [ry, step_, off] of [[160, 14, 0], [165, 18, 7]]) {
-      A.hline(g, -20, ry, 360, 'night2');
-      for (let x = -20 + off; x < 340; x += step_) A.vline(g, x, ry, 4, 'night2');
-    }
-    // near plane: big perspective cobbles under the water strip
-    A.hline(g, -20, 171, 360, 'slate3');
-    for (const [ry, rh, cw, off] of [[172, 4, 9, 0], [176, 5, 13, 6]]) {
-      A.rect(g, -20, ry, 360, rh, 'night0');
-      for (let x = -20 + off; x < 340; x += cw) {
-        A.rect(g, x + 1, ry, cw - 2, rh - 1, ry === 172 ? 'night2' : 'slate1');
-        A.hline(g, x + 1, ry, cw - 2, ry === 172 ? 'slate2' : 'slate3');
-      }
-    }
-    A.ditherRect(g, -20, 172, 360, 8, null, 'night0', 0.3);
-
-    // the signpost and the bike leaning in the dark: the Dutch were here (a post, a bike, a word)
+    A.rect(g, -20, 0, 242, 152, 'brick2'); A.rect(g, -20, 0, 242, 40, 'brick1');
+    A.ditherGradient(g, -20, 40, 242, 6, 'brick1', 'brick2', 'down');
+    A.brick(g, -20, 0, 242, 40, { base: 'brick1', only: 'brick1', seed: 4 });        // brick only where it shows
+    A.brick(g, -20, 40, 242, 26, { base: 'brick2', only: 'brick2', seed: 4 });
+    A.brick(g, -20, 66, 23, 72, { base: 'brick2', only: 'brick2', seed: 4 }); A.brick(g, 102, 66, 120, 24, { base: 'brick2', only: 'brick2', seed: 4 });
+    A.brick(g, 146, 90, 76, 48, { base: 'brick2', only: 'brick2', seed: 4 }); A.brick(g, 102, 90, 8, 48, { base: 'brick2', only: 'brick2', seed: 4 });
+    A.vline(g, 221, 0, 152, 'brick3'); A.vline(g, 222, 0, 152, 'brick1');   // the corner of the house
+    A.rect(g, -20, 138, 242, 14, 'wood1'); for (let x = -20; x < 222; x += 9) A.vline(g, x, 138, 14, 'wood0'); A.hline(g, -20, 138, 242, 'wood3');
+    // upper windows (their light is added below, once)
+    A.window(g, 40, 10, 20, 30, { lit: 1, seed: 4, frame: 'paper2', detail: 'cat', glow: 0 });
+    A.window(g, 160, 12, 20, 30, { lit: 0.6, seed: 5, frame: 'paper2', detail: 'tulip', glow: 0 });
+    A.window(g, 196, 12, 16, 30, { lit: 0, frame: 'paper2' });
+    A.glow(g, 50, 25, 39, { strength: 0.12, color: 'amber5', power: 1.2, q: 4 }); A.glow(g, 170, 27, 39, { strength: 0.1, color: 'amber5', power: 1.2, q: 4 });
+    // awning: dark, so the faces lead
+    A.poly(g, [-2, 40, 108, 40, 114, 54, -8, 54], 'red1');
+    for (let x = -8; x < 114; x += 14) A.poly(g, [x, 40, x + 7, 40, x + 9, 54, x + 2, 54], 'paper2');
+    for (let x = -8; x < 114; x += 7) A.px(g, x + 3, 55, x % 14 ? 'paper1' : 'red1');
+    A.hline(g, -2, 40, 110, 'red2');
+    A.rect(g, 28, 56, 56, 10, 'wood1'); A.hline(g, 28, 56, 56, 'wood2');
+    A.text(56, 64, 'CAFÉ', 'amber6', 8, true, { align: 'center' });
+    // big front window: flat amber bands, shelves and bottles; the people come later, in front
+    A.rect(g, 3, 66, 99, 68, 'wood2'); A.rect(g, 6, 69, 93, 61, 'amber3');
+    A.rect(g, 6, 88, 93, 20, 'amber4'); A.rect(g, 6, 108, 93, 22, 'amber5');
+    A.ditherGradient(g, 6, 85, 93, 3, 'amber3', 'amber4', 'down'); A.ditherGradient(g, 6, 105, 93, 3, 'amber4', 'amber5', 'down');
+    for (let i = 0; i < 2; i++) { A.rect(g, 10, 80 + i * 12, 86, 2, 'wood3'); for (let j = 0; j < 17; j++) A.rect(g, 11 + j * 5, 74 + i * 12 + (j & 1), 2, 6 - (j & 1), ['red3', 'green3', 'paper4', 'cheese4', 'teal3'][(i + j) % 5]); }
+    // door, dark enough that the hero stands out on brick
+    A.rect(g, 110, 90, 36, 48, 'wood1'); A.rect(g, 113, 93, 30, 45, 'amber1'); A.rect(g, 113, 93, 30, 20, 'amber2');
+    A.vline(g, 128, 93, 45, 'wood1'); A.hline(g, 113, 113, 30, 'wood1'); A.rect(g, 117, 98, 7, 9, 'amber4'); A.rect(g, 133, 98, 7, 9, 'amber4');
+    // hanging wall lantern between the two of them, above the candle
+    A.rect(g, 176, 78, 8, 10, 'amber7'); A.rect(g, 175, 77, 10, 2, 'night1'); A.rect(g, 175, 88, 10, 2, 'night1'); A.vline(g, 180, 66, 11, 'night1');
+    A.glow(g, 180, 83, 34, { ry: 28, color: 'amber5', strength: 0.4, power: 1.4 });
+    A.glow(g, 54, 106, 66, { ry: 50, color: 'amber5', strength: 0.32, power: 1.3 });      // the window's spill, one glow
+    // pavement and quay
+    cobbles(g, -20, 150, 350, 12, 'slate3');
+    A.ditherGradient(g, -20, 150, 350, 4, 'slate3', null, 'up');
+    A.hline(g, -20, 162, 350, 'slate1');
+    A.rect(g, 222, 150, 100, 2, 'slate4'); A.hline(g, 222, 150, 100, 'slate5');   // quay coping
     A.depth(g, 1);
-    A.rect(g, 12, 122, 2, 31, 'wood1');
-    for (const [k, w] of [[0, 20], [1, 22]]) {
-      const sy = 124 + k * 8;
-      A.rect(g, 14, sy, w, 6, 'wood2'); A.hline(g, 14, sy, w, 'wood3');
-      A.vline(g, 14 + w, sy + 1, 4, 'wood2'); A.vline(g, 15 + w, sy + 2, 2, 'wood2');
-    }
-    A.omafiets(g, 44, GROUND, { rider: false, speed: 0, shadow: false });
-    A.tint(g, 14, 126, 62, 34, 'night0', 0.62, 'mix');
-    A.cheeseCart(g, 304, 156, { glow: 0 });
-    A.tint(g, 286, 134, 34, 24, 'night0', 0.7, 'mix');
-
-    // the cobble strip at the very bottom, the near foreground
-    A.hline(g, -20, 179, 360, 'night0');
+    A.rect(g, -20, 163, 350, 20, 'night2');
+    A.rect(g, 6, 148, 28, 6, 'wood2'); A.hline(g, 6, 148, 28, 'wood4');
+    A.omafiets(g, 66, 160, { t: 0, facing: 'right', basket: null });
+    A.bollard(g, 236, 162); A.bollard(g, 262, 162); A.bollard(g, 108, 162);
   }
+  const copyWall = (g, B) => {
+    const w = g.w, edge = Math.min(w - 1, B.edge);
+    for (let y = 0; y < 148; y++) g.buf.set(B.buf.subarray(y * w, y * w + edge + 1), y * w);
+    g.buf.set(B.buf.subarray(148 * w), 148 * w);
+  };
 
-  function backdrop(g) {
-    const key = backdropKey(g), hit = store.get(key);
-    if (hit) { g.buf.set(hit); g.mask.fill(0); return; }
-    paintBackdrop(g);
-    if (store.size > 48) store.delete(store.keys().next().value);
-    store.set(key, g.buf.slice());
-  }
-
-  // a light's reflection on the wet street: a faint broken column of amber, dimmer with distance, a few wider dashes
-  function shimmer(g, x, y, len, w, seed, strength, T) {
-    if (strength < 0.1) return;
-    for (let r = 0; r < len; r++) {
-      const f = 1 - r / len, h = A.hash(r + seed * 37, Math.floor(T * 3 + seed));
-      if (h > (0.3 + 0.55 * f) * Math.min(1, strength * 1.4)) continue;
-      const wob = Math.round(Math.sin(r * 0.9 + T * 3 + seed) * (0.3 + r / len)), c = f > 0.5 ? 'amber4' : 'amber2';
-      const dw = h < 0.12 * w ? w : 1 + (r & 1);
-      A.hline(g, x + wob - (dw >> 1), y + r, dw, c);
-    }
-  }
-
-  // ---------------------------------------------------------------- the changed neighbour (a local sprite)
-  // A tall thin woman in a long skirt and a bonnet, hunched, head pushed forward, facing left. A dark
-  // silhouette with two eye pixels. She holds her Tikkie phone up to her face until the window lights,
-  // then lowers it. (x, y): the ground under her.
-  function neighbour(g, x, y, t, phoneUp, flash) {
-    const sway = Math.sin(t * 1.3 + 2) > 0.2 ? 1 : 0;
-    const body = 'night1', body2 = 'night2';
-    A.begin(g);
-    A.line(g, x - 2, y - 36, x - 1, y - 14, 'night0', 2);                                            // the far arm, long and loose
-    A.poly(g, [x - 2, y - 25, x + 5, y - 26, x + 9, y - 2, x - 7, y - 2], body);                      // the long skirt
-    A.poly(g, [x - 1, y - 22, x + 3, y - 22, x + 5, y - 4, x - 2, y - 4], body2);                     // the apron, a shade paler
-    A.rect(g, x - 7, y - 2, 17, 2, 'night0');
-    A.rect(g, x - 8, y - 3, 3, 3, 'night2'); A.rect(g, x - 10, y - 1, 3, 1, 'night2');                // clog toes
-    A.poly(g, [x - 2, y - 24, x + 5, y - 25, x + 6, y - 33, x + 4, y - 39 - sway, x - 3, y - 40, x - 8, y - 38, x - 6, y - 31], body);  // hunched back
-    A.rect(g, x - 13, y - 44 + sway, 6, 6, body);                                                      // head, pushed forward
-    A.rect(g, x - 14, y - 41 + sway, 1, 3, body);                                                      // the slack jaw
-    // the bonnet: a pale cap with a flap behind the neck, a shape of its own (not ears)
-    A.rect(g, x - 12, y - 46 + sway, 6, 3, 'mist2'); A.hline(g, x - 11, y - 47 + sway, 4, 'mist3');
-    A.rect(g, x - 8, y - 43 + sway, 3, 6, 'mist1'); A.px(g, x - 7, y - 37 + sway, 'mist1');
-    // the near arm: up with the phone, or hanging long
-    if (phoneUp) {
-      A.line(g, x - 6, y - 36, x - 11, y - 29, body2, 2); A.line(g, x - 11, y - 29, x - 14, y - 36, body2, 2);
-      A.rect(g, x - 17, y - 40 + sway, 2, 4, 'phone2'); A.px(g, x - 17, y - 40 + sway, 'phone5');
-    } else {
-      A.line(g, x - 6, y - 36, x - 8, y - 26, body2, 2); A.line(g, x - 8, y - 26, x - 9, y - 15, body2, 2);
-      A.rect(g, x - 10, y - 15, 2, 3, 'night3'); A.px(g, x - 10, y - 12, 'phone1');
-    }
-    A.end(g);
-    // eyes glow on top of the rim light
-    const ex = x - 13, ey = y - 42 + sway;
-    A.px(g, ex, ey, flash ? 'amber8' : 'eye4'); A.px(g, ex + 2, ey, flash ? 'amber6' : 'eye2');
-    glow(g, ex + 1, ey, 5, flash ? 'amber6' : 'eye3', flash ? 0.6 : 0.4, { power: 1.4 });
-    if (phoneUp) glow(g, x - 16, y - 38 + sway, 7, 'phone4', 0.34, { power: 1.4 });
-  }
-
-  // ---------------------------------------------------------------- the piece
-  const WORD_COLORS = ['mist3', 'mist4', 'mist5', 'mist6', 'amber6', 'amber6', 'amber7', 'amber7'];
   A.panels[7] = {
-    text: 'Every word said right brings a piece of it back. Someone has to say them.',
-    nl: 'Elk woord dat goed gezegd wordt, brengt een stukje terug. Iemand moet ze zeggen.',
+    text: 'Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.',
+    nl: 'Twee jaar hier en nooit geoefend. Iedereen sprak Engels. Iedereen deed er zo aardig over.',
     draw(g, t) {
-      const T = t % 8;
-      // the mist pass that hides the loop seam: thick at the end of one loop and the start of the next
-      const pass = Math.max(sm((T - 6.9) / 0.9), 1 - sm(T / 0.7));
-      const L = sm((T - 0.25) / 1.25) * (1 - pass);        // how much of the word is back
-      const k = 0.85 + 0.15 * Math.sin(T * TAU / 4);             // it breathes
-      const lit0 = sm((T - 3.3) / 0.35);
-      // the window catches with a flicker, then holds
-      const stut = T < 4.1 ? (Math.sin(T * 41) + Math.sin(T * 23 + 1) > -0.4 ? 1 : 0.25) : 1;
-      const wake = lit0 * stut * (1 - sm((pass - 0.5) / 0.5));      // holds until the fog is thick, only then fades under it
-      const fl = 1 + 0.05 * Math.sin(T * TAU / 2) + 0.03 * Math.sin(T * TAU + 1);
-      const tm = 1.6 * (1 - Math.cos(T * TAU / 8));              // mist drifts out and back, so it loops
-
-      A.camera(g, T * 2, { x: 4, period: 8 });                   // out and back in exactly 8 s
-      A.key(g, WX, WY, 2);
-      backdrop(g);
-
-      // the mill turns anticlockwise, a quarter turn per loop; a bit of fog over its feet
-      A.depth(g, 0.25);
-      drawMill(g, T);
+      const T1 = 1.1, T2 = 1.4, nice = t >= T2;                 // 'Hoi!' alone, then the deflation
+      A.camera(g, t, { x: 5, period: 8 }); A.key(g, 60, 100, 1);
+      // ---- 1. the vista: cached sky, far town, bank and bridge; then what moves (stars, mill, mist, water, a moored sloep)
+      const kA = offs(g, [0.25, 0.5]);
+      if (cacheA.has(kA)) g.buf.set(cacheA.get(kA)); else { paintVista(g); cacheA.set(kA, g.buf.slice()); }
+      A.depth(g, 0); A.stars(g, t, { n: 9, y0: 0, y1: 60, x0: 224, x1: 270 });
+      A.depth(g, 0.3);
+      A.windmill(g, 304, 124, 0.85, -t * Math.PI * 2 / 16, { tone: 'night3', t, lit: 1 });
       A.depth(g, 0.5);
-      fog(g, 266, 52, 60, 74, 'mist2', 0, 0.4);
-      // one hunched walker mid-bridge: a clean silhouette, two eye pixels against the fog
-      A.zombie(g, 232, 126, { t, seed: 3, variant: 'plain', height: 26, hunch: 0.85, tone: 'night1', pose: 'walk', glow: 1 });
-      fog(g, 214, 94, 36, 36, 'mist2', 0, 0.3);
-
+      A.mist(g, t, 124, 12, { amount: 0.2, speed: 3, seed: 7 });
+      A.water(g, 205, 135, 130, 15, { t, amp: 0.7, speed: 0.6, color: 'night2', dark: 0.3, glints: 4, gaps: 0.12 });
+      A.depth(g, 0.8);
+      A.boat(g, 272, 147, { kind: 'barge', len: 40, mast: true, t });
+      A.streak(g, 233, 135, 14, { t, seed: 11, width: 2, strength: 0.7 });
+      A.water(g, 252, 148, 40, 3, { t, amp: 0.4, speed: 0.6, color: 'night2', dark: 0.3, glints: 0 });
+      A.reeds(g, 300, 150, 22, 14, { t });
+      // ---- 2. the wall and ground, cached the same way and copied over (right of the corner the vista shows through)
+      const kB = offs(g, [0.85, 1]);
+      let B = cacheB.get(kB);
+      if (B) copyWall(g, B);
+      else { paintWall(g, nice); B = { buf: g.buf.slice(), edge: 222 + (A.depth(g, 0.85), g.ox) }; cacheB.set(kB, B); }
+      A.depth(g, 0.85);
+      // ---- 3. the window: everyone in the café, turned toward the door, beaming
+      A.friend(g, 18, 128, { t, seed: 6, face: nice ? 'smile' : 'blink', arm: 'drink', shadow: false });
+      patron(g, 38, 118, t, 1, nice);
+      A.friend(g, 62, 128, { t, seed: 9, face: 'smile', arm: 'wave', shadow: false });
+      barman(g, 76, 118, t);
+      patron(g, 90, 118, t, 2, false);
+      A.rect(g, 6, 118, 93, 12, 'wood2'); A.hline(g, 6, 118, 93, 'wood4');
+      for (let i = 0; i < 4; i++) A.rect(g, 14 + i * 22, 115, 3, 3, 'paper5');
+      A.vline(g, 51, 69, 61, 'wood2'); A.vline(g, 52, 69, 61, 'wood1');
+      pendant(g, 28, t, 0); pendant(g, 76, t, 2);
+      // ---- 4. the street: mist behind the people, the lamp, dogs, the two of them at the table
       A.depth(g, 1);
-      // ---- the window catches
-      const { x: wx, y: wy, w: ww, h: wh } = WIN;
-      if (wake > 0.04) {
-        const lv = Math.min(1, wake * fl);
-        A.window(g, wx, wy, ww, wh, { lit: lv, t, seed: 7, frame: 'wood3', flicker: 0.1, detail: 'tulip', glow: 0 });
-        glow(g, wx + ww / 2, wy + wh / 2, 34, 'amber6', 0.55 * lv, { power: 1.6 });
-        A.cone(g, wx + ww / 2, wy + wh, Math.PI / 2 + 0.7, 0.35, 34, { color: 'amber5', strength: 0.3 * lv, width: 10, fade: 1 });
-        glow(g, wx + ww / 2 + 4, GROUND - 6, 30, 'amber5', 0.33 * lv, { ry: 5, power: 1.2 });   // a pool of light on the street
-      }
-
-      // ---- the cast
-      A.omafiets(g, 112, GROUND, { t, rider: true, speed: 0, face: T < 1.6 ? 'talk' : 'deadpan', basket: 'book' });
-      A.book(g, 131, GROUND - 22, { open: true, w: 10, h: 5, t, dust: false });          // the book he never opened, open at last
-      glow(g, 131, GROUND - 24, 10, 'amber5', 0.12 + 0.3 * L, { power: 1.5 });
-      A.dog(g, 143, GROUND + 1, { coat: 'brown', pose: 'sit', look: 'up', t });
-      A.dog(g, 80, GROUND + 1, { coat: 'black', pose: 'sit', look: 'up', facing: 'left', t, seed: 5 });
-      // the changed neighbour, nearer, a dark silhouette: phone up until the window lights, then lowered
-      neighbour(g, 228, GROUND + 1, t, T < 3.6, T > 3.3 && T < 3.9);
-
-      // ---- the word: a golden lamp. Fog gathers, then clears from the centre outwards.
-      if (T < 2) glow(g, WX, WY - 4, 34, 'mist4', 0.75 * (1 - sm((T - 0.2) / 1.6)), { mode: 'mix', power: 1.2 });
-      if (L > 0.03) {
-        glow(g, WX, WY - 4, 26, 'amber5', 0.5 * L * k, { power: 2 });
-        glow(g, WX, WY - 4, 12, 'amber7', 0.45 * L * k, { power: 1.6 });
-      }
-      // the little line icon of ref E, a bicycle drawn in light under the word
-      if (L > 0.5) {
-        const ic = L > 0.85 ? 'amber6' : 'amber4', iy = WY + 13;
-        A.ring(g, WX - 5, iy, 2, ic, 1); A.ring(g, WX + 5, iy, 2, ic, 1);
-        A.line(g, WX - 5, iy, WX - 1, iy - 3, ic); A.line(g, WX - 1, iy - 3, WX + 4, iy - 3, ic); A.line(g, WX - 1, iy - 3, WX + 1, iy, ic);
-        A.line(g, WX + 1, iy, WX + 5, iy, ic); A.line(g, WX + 4, iy - 3, WX + 5, iy, ic); A.px(g, WX + 3, iy - 4, ic);
-      }
-
-      // ---- wet street: reflections, ripples, streaks (below the cast's feet, above the cobble strip)
-      A.water(g, -20, GROUND + 2, 360, 12, { t, amp: 0.7, dark: 0.5, color: 'night1', gaps: 0.45, glints: 5, stretch: 1.4 });
-      shimmer(g, WX, GROUND + 2, 11, 3, 1, L * k, T);
-      if (wake > 0.04) shimmer(g, wx + ww / 2, GROUND + 2, 11, 5, 4, wake, T);
-      // a puddle that mirrors the sky and the word (a flipped low echo broken by ripples)
-      A.ellipse(g, 200, 176, 22, 2, 'slate2'); A.ellipse(g, 199, 176, 19, 1, 'mist0');
-      A.ditherRect(g, 181, 176, 38, 1, 'mist1', null, 0.4);
-      if (L > 0.3) for (let i = 0; i < 14; i++) {
-        const dx = -13 + i * 2, row = 175 + (i & 1);
-        if (Math.sin(i * 2.3 + T * 2) > 0.5) continue;
-        A.px(g, WX + dx - 3, row, L > 0.8 ? 'amber4' : 'amber2'); A.px(g, WX + dx - 2, row, 'amber2');
-      }
-
-      // ---- motes: his mouth to the word (0.2-1.6 s), the word to the window (1.9-3.4 s)
-      for (let i = 0; i < 7; i++) {
-        const u = (T - 0.2 - i * 0.1) / 1.2; if (u <= 0 || u >= 1) continue;
-        const x = bez(MOUTH[0], 150, WX - 8, u), y = bez(MOUTH[1], 70, WY + 2, u);
-        A.px(g, x, y, i % 3 === 0 ? 'amber7' : 'amber5');
-      }
-      for (let i = 0; i < 12; i++) {
-        const u = (T - 1.9 - i * 0.09) / 1.3; if (u <= 0 || u >= 1) continue;
-        const x = bez(WX - 6, 130, WIN.x + 14, u), y = bez(WY + 6, 80, WIN.y + 8, u) + Math.sin(u * 14 + i) * 1.5;
-        A.px(g, x, y, u > 0.8 ? 'amber8' : i % 2 ? 'amber7' : 'amber5');
-        if (i % 3 === 0) A.px(g, x - 1, y + 1, 'amber3');
-      }
-      // a few motes rise off the word once it is back
-      if (L > 0.5) for (let i = 0; i < 6; i++) {
-        const u = ((T / 4 + i * 0.17) % 1);
-        A.px(g, WX - 18 + i * 7 + Math.sin(u * TAU + i) * 2, WY + 4 - u * 24, Math.sin(u * Math.PI) > 0.5 ? 'amber6' : 'amber3');
-      }
-      // wake-up spark on the window
-      if (T > 3.3 && T < 3.9) glow(g, wx + ww / 2, wy + wh / 2, 12, 'amber8', 0.5 * (1 - (T - 3.3) / 0.6), { power: 1 });
-
-      // the word itself (text overlay): it sharpens, a blur of two ghosts closing into one gold word
-      if (L > 0.04) {
-        const ci = Math.min(WORD_COLORS.length - 1, Math.floor(L * WORD_COLORS.length));
-        const blur = 2.2 * (1 - sm(L / 0.85));
-        if (blur > 0.2) {
-          A.text(WX - blur, WY, 'de fiets', WORD_COLORS[Math.max(0, ci - 2)], 12, true, { align: 'center' });
-          A.text(WX + blur, WY, 'de fiets', WORD_COLORS[Math.max(0, ci - 2)], 12, true, { align: 'center' });
-        }
-        A.text(WX, WY, 'de fiets', WORD_COLORS[ci], 12, true, { align: 'center', shadow: L > 0.6 });
-      }
-      // the signboards read dimly in the dark
-      if (pass < 0.5) {
-        A.text(24, 129.5, 'Fiets', 'mist3', 4.5, true, { align: 'center' });
-        A.text(25, 137.5, 'Molen', 'mist3', 4.5, true, { align: 'center' });
-      }
-
-      // ---- foreground: a dead lamppost cuts the frame, bollards with a chain, reeds, drifting mist
-      A.depth(g, 1);
-      A.rect(g, 311, 28, 3, 160, 'night0'); A.rect(g, 301, 26, 14, 3, 'night0'); A.vline(g, 311, 29, 150, 'night1');
-      for (const bx of [166, 262]) {
-        A.rect(g, bx, 163, 5, 17, 'night0'); A.rect(g, bx + 1, 161, 3, 2, 'night0'); A.px(g, bx + 2, 160, 'night0');
-        A.hline(g, bx, 168, 5, 'red1'); A.vline(g, bx + 4, 164, 15, 'night2'); A.px(g, bx + 3, 161, 'night2');
-      }
-      A.line(g, 171, 166, 217, 170, 'night1'); A.line(g, 217, 170, 262, 166, 'night1');
-      A.reeds(g, 296, 180, 40, 34, { t });
-      A.reeds(g, -4, 180, 26, 24, { t });
-      mist(g, tm * 5, 128, 26, 0.25, 8, 'mist5');
-      mist(g, -tm * 3, 150, 18, 0.18, 4, 'mist4');
-      if (pass > 0.02) {
-        fog(g, -6, 0, 332, 180, 'mist3', 0.4 * pass, 0.62 * pass);
-        mist(g, tm * 4, 60, 70, 0.8 * pass, 2, 'mist4');
-        mist(g, -tm * 3, 120, 50, 0.8 * pass, 6, 'mist4');
-      }
+      A.tulips(g, 8, 148, 24, { t });
+      A.mist(g, t, 148, 12, { amount: 0.16, speed: 4, seed: 3 });
+      A.lamp(g, 232, 152, { t, style: 'lantern', h: 46, flicker: 0.05, light: false });
+      A.glow(g, 233, 103, 12, { color: 'amber6', strength: 0.5, power: 1.6, q: 4 });
+      A.dog(g, 166, 160, { coat: 'brown', pose: 'lie', t, shadow: false });
+      A.dog(g, 183, 160, { coat: 'golden', pose: 'lie', t, look: 'up', shadow: false });
+      A.shadow(g, 208, 156, 11, 2, 0.8);
+      const f = A.friend(g, 208, 156, { t, face: nice ? (t < 3.2 ? 'talk' : 'smile') : 'smile', arm: nice && t > 3.4 ? 'drink' : 'down', shadow: false });
+      const mx = 140, seat = 148;
+      A.rect(g, mx - 8, seat - 18, 16, 2, 'wood3'); A.rect(g, mx - 8, seat - 18, 2, 20, 'wood2'); A.rect(g, mx + 6, seat - 18, 2, 20, 'wood2'); A.rect(g, mx - 8, seat, 16, 2, 'wood2');
+      A.vline(g, mx - 7, seat + 2, 10, 'wood1'); A.vline(g, mx + 6, seat + 2, 10, 'wood1');
+      A.shadow(g, mx, 160, 11, 2, 0.8);
+      const manFace = t < T1 ? (Math.sin(t * 10) > 0 ? 'talk' : 'smug') : t < T2 ? 'blink' : t < 3.6 ? 'deadpan' : 'worry';
+      A.man(g, mx, seat, { t, pose: 'sit', facing: 'front', face: manFace, floor: 12 });
+      steam(g, mx + 15, 138, t, 1);
+      // table in front of both
+      A.shadow(g, 166, 160, 24, 2, 0.6);
+      A.rect(g, 165, 146, 3, 14, 'wood1'); A.rect(g, 158, 158, 17, 2, 'wood1');
+      A.ellipse(g, 166, 142, 19, 3, 'wood3'); A.hline(g, 149, 141, 35, 'wood5'); A.hline(g, 152, 144, 29, 'wood1');
+      A.rect(g, 153, 135, 4, 6, 'cheese4'); A.rect(g, 153, 135, 4, 1, 'paper6');
+      A.rect(g, 176, 136, 4, 5, 'cheese4'); A.rect(g, 176, 136, 4, 1, 'paper6');
+      A.rect(g, 165, 136, 3, 5, 'paper5'); A.px(g, 166, 135, 'night1');
+      const fl = Math.round(Math.sin(t * Math.PI * 2 * 3) * 0.6 + Math.sin(t * Math.PI * 2 * 5) * 0.4);
+      A.px(g, 166 + (fl > 0 ? 1 : 0), 134, 'amber8'); A.px(g, 166, 133, 'amber7');
+      A.glow(g, 166, 135, 18, { color: 'amber6', strength: 0.5 + 0.08 * fl, power: 1.3, q: 4 });
+      // ---- 5. wet street reflecting everything above
+      A.water(g, -20, 163, 350, 17, { t, amp: 0.6, speed: 0.5, color: 'night2', dark: 0.3, glints: 5, gaps: 0.1 });
+      // long, thin, broken reflections of the window, the door, the lantern and the candle, from the kerb down to the bottom edge
+      [[18, 9], [40, 7], [64, 10], [88, 7]].forEach(([sx, w], i) => bar(g, sx, 163, w, 17, t, i + 1, false));
+      bar(g, 128, 163, 8, 17, t, 8, false); bar(g, 180, 163, 3, 17, t, 10, true); bar(g, 232, 163, 4, 17, t, 11, true);
+      A.ellipse(g, 166, 172, 26, 4, 'night3'); A.ellipse(g, 166, 172, 22, 3, 'night4');
+      A.rect(g, 138, 166, 5, 6, 'orange3'); A.rect(g, 202, 166, 5, 7, 'blue2');
+      A.streak(g, 166, 166, 8, { t, seed: 9, width: 2, strength: 0.8 });
+      A.px(g, 150 + Math.round(Math.sin(t * 1.5) * 3), 174, 'mist5'); A.px(g, 182 - Math.round(Math.sin(t * 1.5) * 3), 170, 'mist4');
+      // ---- 6. speech: two steps
+      A.say(g, mx, seat - 28, 'Hoi!', {});
+      if (nice) A.say(g, f.head[0], f.head[1], 'Oh, English is fine!', { dx: 14 });
     },
   };
 })();

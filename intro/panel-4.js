@@ -1,558 +1,423 @@
-// Panel 4: the language left. A real one-point-perspective street, vanishing point (200,108), deep in mist.
-// Left: gabled houses behind a picket fence. Right: a canal with a little arched bridge. Far end: the mill and the spire.
-// The Dutch words drift down the centre line and into the fog; English phone-talkers keep their backs turned.
-// Story (16 s loop): 'hallo?' drifts up to a talker, gets 'sorry, English?', droops and leaves. 'gezellig' goes first and
-// the windows go out behind it. 'de' and 'het' squabble off as a pair. 'doei' is last and smallest: it hangs at the
-// vanishing point, waving, until the mist closes. Then the windows come back on and the loop starts again.
-// Speed: the street, houses, lamps and water are painted once (twice: windows dark and windows lit) and cached.
-// Each frame copies the cache, switches windows by copying their pixels from the lit copy, and draws only what moves.
+// Panel 3: nobody agrees on what caused it. A wall of rumours in the mist: a hero exhibit (the
+// mouldy cheese), the poll where Flemish wins, the millionth tourist laughing, a red string of
+// conspiracy between them. Amber only in pools (one bare bulb per board) inside a cold blue night.
+//
+// Speed: the wall, boards and cobbles never change, so they are painted once into a cache and
+// copied back each frame; only the animated parts and the light run live. Static words are
+// recorded at build time and replayed every frame (labels are cleared by the caller).
 (function () {
   const A = window.NRART;
-  const VX = 200, VY = 108, F = 45, CH = 1.6, T = 16, TAU = Math.PI * 2;
-  const cl = (v, a, b) => Math.max(a, Math.min(b, v));
-  const sm = (a, b, x) => { const k = cl((x - a) / (b - a), 0, 1); return k * k * (3 - 2 * k); };
-  const hash = A.hash, rnd = Math.round;
-  // projection: lateral metres (negative = left), distance d, height above the pavement
-  const PX = (lat, d) => VX + lat * F / d, PY = (h, d) => VY + (CH - h) * F / d, GY = d => VY + CH * F / d;
-  const pj = (lat, d, h) => [PX(lat, d), PY(h, d)];
+  const W = 320, H = 180, WALL = 39;
+  const h01 = (a, b) => { let n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return n - Math.floor(n); };
+  const ease = u => 0.5 - 0.5 * Math.cos(Math.PI * Math.max(0, Math.min(1, u)));
+  const BAY = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map(v => (v + 0.5) / 16);
 
-  // ---------------------------------------------------------------- 3x5 pixel letters for words that go into the mist
-  const FONT = {
-    a: '.#.' + '#.#' + '###' + '#.#' + '#.#', d: '##.' + '#.#' + '#.#' + '#.#' + '##.', e: '###' + '#..' + '##.' + '#..' + '###',
-    f: '###' + '#..' + '##.' + '#..' + '#..', g: '.##' + '#..' + '#.#' + '#.#' + '.##', h: '#.#' + '#.#' + '###' + '#.#' + '#.#',
-    i: '###' + '.#.' + '.#.' + '.#.' + '###', k: '#.#' + '#.#' + '##.' + '#.#' + '#.#', l: '#..' + '#..' + '#..' + '#..' + '###',
-    o: '.#.' + '#.#' + '#.#' + '#.#' + '.#.', r: '##.' + '#.#' + '##.' + '#.#' + '#.#', s: '.##' + '#..' + '.#.' + '..#' + '##.',
-    t: '###' + '.#.' + '.#.' + '.#.' + '.#.', z: '###' + '..#' + '.#.' + '#..' + '###', '?': '##.' + '..#' + '.#.' + '...' + '.#.',
-  };
-  // a word drawn into the pixel buffer so the fog can swallow it. h: letter height 5..1 (it shrinks as it recedes)
-  const pixWord = (g, str, cx, cy, h, c, keepP, seed) => {
-    const lw = h >= 4 ? 3 : 2, adv = lw + 1, w = str.length * adv - 1, x0 = rnd(cx - w / 2), y0 = rnd(cy - h / 2);
-    for (let n = 0; n < str.length; n++) {
-      const p = FONT[str[n]], lx = x0 + n * adv; if (!p) continue;
-      if (h <= 1) { if (hash(n + seed, 5) < keepP) { A.px(g, lx, y0, c); if (hash(n + seed, 6) < 0.6) A.px(g, lx + 1, y0, c); } continue; }
-      for (let r = 0; r < h; r++) {
-        const sr = Math.min(4, Math.floor((r + 0.5) * 5 / h));
-        for (let k = 0; k < lw; k++) {
-          const sc = lw === 3 ? k : (k === 0 ? 0 : 2);
-          if (p[sr * 3 + sc] === '#' && (keepP >= 1 || hash(lx + k + seed, y0 + r) < keepP)) A.px(g, lx + k, y0 + r, c);
-        }
+  // ---------------------------------------------------------------- local fast light
+  const lvl = new Map(), falls = new Map();
+  function levelsOf(mode, c, s, Q) {
+    s = Math.round(s * 20) / 20; const k = mode + c + s + Q; let L = lvl.get(k);
+    if (!L) { L = []; for (let q = 0; q <= Q; q++) L.push(A.lut(mode, c, s * q / Q)); lvl.set(k, L); }
+    return L;
+  }
+  function fallTab(pw) {
+    // indexed by the squared distance (0..1 in 256 steps), so the inner loop needs no sqrt
+    let T = falls.get(pw); if (!T) { T = new Float32Array(257); for (let i = 0; i <= 256; i++) T[i] = Math.pow(1 - Math.sqrt(i / 256), pw); falls.set(pw, T); }
+    return T;
+  }
+  // an elliptical light (add), shade (mul) or fog (mix), dithered between palette levels
+  function glow(g, x, y, rx, ry, o) {
+    const Q = o.q || 4, Ls = levelsOf(o.mode || 'add', o.color || 'amber5', o.strength == null ? 0.5 : o.strength, Q), tab = fallTab(o.power == null ? 1.2 : o.power);
+    const buf = g.buf, c = o.clip || [0, 0, W - 1, H - 1], ref = o.ref, refOff = WALL * W; x = Math.round(x); y = Math.round(y);
+    for (let yy = Math.max(c[1], Math.ceil(y - ry)), ye = Math.min(c[3], Math.floor(y + ry)); yy <= ye; yy++) {
+      const dy = (yy - y) / ry, dy2 = dy * dy; if (dy2 >= 1) continue;
+      const hx = Math.floor(rx * Math.sqrt(1 - dy2)), xa = Math.max(c[0], x - hx), xb = Math.min(c[2], x + hx);
+      for (let xx = xa; xx <= xb; xx++) {
+        const dx = (xx - x) / rx, d2 = dx * dx + dy2; if (d2 >= 1) continue;
+        const v = tab[(d2 * 256) | 0] * Q; let q = v | 0; if (v - q > BAY[((yy & 3) << 2) | (xx & 3)]) q++;
+        if (q > 0) { const i = yy * W + xx; if (ref && buf[i] === ref[i - refOff]) continue; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
       }
     }
-  };
-
-  // ---------------------------------------------------------------- fast glow for the per-frame lights
-  // Same look as NRART.glow (radial falloff, 4x4 Bayer between levels), but the falloff field is cached, so a frame only does lookups.
-  const FIELD = new Map(), LEV = new Map();
-  const fieldOf = (rx, ry, pw) => {
-    const key = rx + '|' + ry + '|' + pw; let f = FIELD.get(key); if (f) return f;
-    const w = 2 * rx + 1, h = 2 * ry + 1; f = new Float32Array(w * h);
-    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const d = Math.sqrt(((i - rx) / rx) * ((i - rx) / rx) + ((j - ry) / ry) * ((j - ry) / ry)); f[j * w + i] = d >= 1 ? 0 : Math.pow(1 - d, pw); }
-    FIELD.set(key, f); return f;
-  };
-  const levelsOf = (mode, color, strength, Q) => {
-    strength = Math.round(strength * 20) / 20; const key = mode + color + strength + Q; let L = LEV.get(key); if (L) return L;
-    L = []; for (let q = 0; q <= Q; q++) L.push(A.lut(mode, color, strength * q / Q)); LEV.set(key, L); return L;
-  };
-  const fglow = (g, x, y, rx, ry, color, strength, power, mode, Q) => {
-    if (strength < 0.03) return;
-    x = rnd(x); y = rnd(y); rx = Math.max(1, rnd(rx)); ry = Math.max(1, rnd(ry)); Q = Q || 4;
-    const f = fieldOf(rx, ry, power || 1.3), Ls = levelsOf(mode || 'add', color, strength, Q), w = 2 * rx + 1, B = g.buf, gw = g.w, gh = g.h;
-    const j0 = Math.max(0, ry - y), j1 = Math.min(2 * ry, gh - 1 - y + ry), i0 = Math.max(0, rx - x), i1 = Math.min(2 * rx, gw - 1 - x + rx);
-    for (let j = j0; j <= j1; j++) {
-      const yy = y - ry + j, row = yy * gw, by = (yy & 3) << 2;
-      for (let i = i0; i <= i1; i++) {
-        const lv = f[j * w + i]; if (lv <= 0) continue;
-        const xx = x - rx + i, v = lv * Q; let q = v | 0; if (v - q > A.bayer(xx, yy)) q++;
-        if (q > 0) B[row + xx] = Ls[q > Q ? Q : q][B[row + xx]];
+  }
+  const shadow = (g, x, y, rx, ry, s) => glow(g, x, y, rx, ry, { mode: 'mul', color: 'black', strength: s == null ? 0.55 : s, power: 0.6 });
+  // an even wash over a rect, dithered (fog, flash)
+  function wash(g, x, y, w, h, color, amount, mode) {
+    const Q = 8, Ls = levelsOf(mode || 'mix', color, 1, Q), buf = g.buf, v = Math.min(1, amount) * Q, qb = v | 0, fr = v - qb;
+    for (let yy = Math.max(0, y), ye = Math.min(H, y + h); yy < ye; yy++) for (let xx = Math.max(0, x), xe = Math.min(W, x + w); xx < xe; xx++) {
+      const q = qb + (fr > BAY[((yy & 3) << 2) | (xx & 3)] ? 1 : 0); if (q > 0) { const i = yy * W + xx; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
+    }
+  }
+  // drifting mist band, a cheaper copy of NRART.mist (same look, noise from a table)
+  const NZ1 = {}, NZ2 = {};
+  function noiseTab(store, seed, k, off, len) {
+    const key = seed; if (store[key]) return store[key];
+    const tab = new Float32Array(W * 4 * len); for (let i = 0; i < tab.length; i++) tab[i] = A.wave(i / 4 * k + off, W, seed); store[key] = tab; return tab;
+  }
+  function fog(g, t, y, h, o) {
+    const amt = o.amount, sp = o.speed, seed = o.seed || 0, Ls = levelsOf('mix', o.color || 'mist5', 1, 8), buf = g.buf;
+    const n1 = noiseTab(NZ1, seed, 1, 0, 1), n2 = noiseTab(NZ2, seed + 3, 0.5, 40, 2), cy0 = y + h / 2;
+    for (let xx = 0; xx < W; xx++) {
+      const pi = Math.round((xx + t * sp) * 4), ix = ((pi % (W * 4)) + W * 4) % (W * 4), ix2 = ((pi % (W * 8)) + W * 8) % (W * 8), n = n1[ix], n2v = n2[ix2];
+      const th = Math.max(0.5, h * (0.35 + 0.65 * n) / 2), cy = cy0 + (n2v - 0.5) * h * 0.5, inv = 1 / th;
+      const r0 = Math.max(0, Math.ceil(cy - th)), r1 = Math.min(H - 1, Math.floor(cy + th)), k = amt * (0.55 + 0.45 * n) * 8;
+      for (let yy = r0; yy <= r1; yy++) {
+        const d = (yy + 0.5 - cy) * inv, d2 = d * d; if (d2 >= 1) continue;
+        const v = k * (1 - d2); let q = v | 0; if (v - q > BAY[((yy & 3) << 2) | (xx & 3)]) q++;
+        if (q > 0) { const i = yy * W + xx; buf[i] = Ls[q > 8 ? 8 : q][buf[i]]; }
       }
     }
-  };
-
-  // ---------------------------------------------------------------- street geometry
-  const KERB = 3.3, QUAY = 4.3, BANK = 9.0;           // lateral metres: kerb, canal edge, far bank
-  const LFRONT = 6.4, RFRONT = 9.4;                    // house frontage lines
-  const GABLES = ['step', 'bell', 'neck', 'spout', 'roof'];
-  const PROFILE = {
-    step: [[0, 0], [0, .34], [.15, .34], [.15, .67], [.3, .67], [.3, 1], [.7, 1], [.7, .67], [.85, .67], [.85, .34], [1, .34], [1, 0]],
-    neck: [[0, 0], [0, .45], [.3, .55], [.3, .85], [.5, 1], [.7, .85], [.7, .55], [1, .45], [1, 0]],
-    spout: [[0, 0], [0, .3], [.3, .6], [.3, 1], [.7, 1], [.7, .6], [1, .3], [1, 0]],
-    roof: [[0, 0], [.08, .8], [.92, .8], [1, 0]],
-    bell: (() => { const a = [[0, 0]]; for (let i = 1; i < 12; i++) { const u = i / 12; a.push([u, Math.pow(Math.sin(Math.PI * u), 0.55)]); } a.push([1, 0]); return a; })(),
-  };
-  const HOUSES = [];
-  const addRow = (side, lat, spans, seed0, bricks) => {
-    for (let i = 0; i + 1 < spans.length; i++) {
-      const s = seed0 + i * 7;
-      HOUSES.push({ side, lat: side * lat, d0: spans[i], d1: spans[i + 1], H: 6.4 + hash(s, 1) * 2.8, gh: 1.8 + hash(s, 2) * 2.2,
-        gb: GABLES[Math.floor(hash(s, 3) * 5)], brick: bricks[Math.floor(hash(s, 4) * bricks.length)], seed: s, doorAt: hash(s, 5) < 0.5 ? 0 : 1 });
-    }
-  };
-  addRow(-1, LFRONT, [1.5, 5.4, 9.6, 14.2, 19.8, 26.4, 35, 47, 65, 93, 135, 210], 11, ['brick1', 'slate2', 'brick2', 'slate2', 'brick1']);
-  const NR0 = HOUSES.length;
-  addRow(1, RFRONT, [4.4, 8.2, 12.2, 16.6, 21.6, 27.6, 35, 45, 59, 79, 109, 150, 230], 29, ['slate2', 'slate3', 'slate2', 'brick1', 'slate3']);
-  HOUSES[NR0].gb = 'step'; HOUSES[NR0 + 1].gb = 'neck'; HOUSES[NR0].H = 6.6;
-  // windows: one list for the whole street, filled while painting the dark pass
-  const WIN = [];
-  const layoutWindows = (h) => {
-    const out = [], w = h.d1 - h.d0, ncol = w >= 6.5 ? 3 : w >= 3.2 ? 2 : 1;
-    const floors = [[0.8, 2.3], [3.1, 4.7], [5.4, 7.0]];
-    const doorCol = h.doorAt ? ncol - 1 : 0;
-    for (let f = 0; f < 3; f++) {
-      if (floors[f][1] > h.H - 0.6) break;
-      for (let c = 0; c < ncol; c++) {
-        const cu = h.d0 + (c + 0.5) / ncol * w, ww = Math.min(1.0, w / ncol * 0.42);
-        if (f === 0 && c === doorCol) { out.push({ door: true, da: cu - 0.55, db: cu + 0.55, h0: 0.12, h1: 2.35 }); continue; }
-        const sd = h.seed * 13 + f * 5 + c;
-        out.push({ da: cu - ww / 2, db: cu + ww / 2, h0: floors[f][0], h1: floors[f][1], seed: sd, detail: hash(sd, 8) < 0.22 ? (['plant', 'cat', 'tulip'][Math.floor(hash(sd, 9) * 3)]) : null });
+  }
+  const EDGE_L = [], EDGE_R = [];
+  for (let i = 0; i < 76; i++) { EDGE_L.push(Math.pow(1 - i / 76, 1.3) * 0.62); EDGE_R.push(Math.pow((i + 1) / 76, 1.3) * 0.55); }
+  // fog that thickens toward both edges of the wall: the exhibits dissolve at the sides
+  function edgeFog(g, y0, y1, xa, xb, ref) {
+    const Ls = levelsOf('mix', 'mist2', 1, 8), buf = g.buf, refOff = WALL * W;
+    for (let xx = Math.max(0, xa); xx < Math.min(W, xb); xx++) {
+      const e = xx < 76 ? EDGE_L[xx] : xx >= 244 ? EDGE_R[xx - 244] : 0; if (e <= 0) continue;
+      for (let yy = y0; yy < y1; yy++) {
+        const v = e * (0.85 + 0.15 * Math.sin(yy * 0.37 + xx * 0.11)) * 8; let q = v | 0; if (v - q > BAY[((yy & 3) << 2) | (xx & 3)]) q++;
+        if (q > 0) { const i = yy * W + xx; if (ref && buf[i] === ref[i - refOff]) continue; buf[i] = Ls[q > 8 ? 8 : q][buf[i]]; }
       }
     }
-    return out;
-  };
+  }
 
-  // ---------------------------------------------------------------- the static painting
-  const quad = (g, a, b, c, d, col) => A.poly(g, [a, b, c, d], col);
-  const quadBBox = pts => { let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; for (const [x, y] of pts) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } return [Math.floor(x0), Math.floor(y0), Math.ceil(x1), Math.ceil(y1)]; };
-  // fill a quad; if it is under 2 px in either direction, drop a small rect instead so far windows never vanish
-  const quadSafe = (g, pts, col) => {
-    const bb = quadBBox(pts);
-    if (bb[2] - bb[0] < 3 || bb[3] - bb[1] < 3) A.rect(g, bb[0], bb[1], Math.max(1, bb[2] - bb[0] - 1), Math.max(1, bb[3] - bb[1] - 1), col);
-    else A.poly(g, pts, col);
-    return bb;
-  };
-  const dashLine = (g, x0, y0, x1, y1, c, keep, seed) => {
-    const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)) | 0; if (n < 1) return;
-    for (let i = 0; i <= n; i++) { const x = rnd(x0 + (x1 - x0) * i / n), y = rnd(y0 + (y1 - y0) * i / n); if (hash(x + seed, y) < keep) A.px(g, x, y, c); }
-  };
-  const speckle = (g, x0, y0, x1, y1, base, seed) => {
-    const lo = A.step(base, -1), hi = A.step(base, 1), B = g.buf, bi = A.col(base);
-    for (let y = Math.max(0, y0); y <= Math.min(g.h - 1, y1); y++) for (let x = Math.max(0, x0); x <= Math.min(g.w - 1, x1); x++) {
-      if (B[y * g.w + x] !== bi) continue; const r = hash(x * 3 + seed, y * 5);
-      if (r < 0.09) B[y * g.w + x] = lo; else if (r > 0.95) B[y * g.w + x] = hi;
-    }
-  };
+  // ---------------------------------------------------------------- text: recorded once, replayed
+  let building = false; const statics = [];
+  const T = (x, y, s, c, sz, b, o) => { if (building) statics.push([x, y, s, c, sz, b, o]); else A.text(x, y, s, c, sz, b, o); };
 
-  const paintHouse = (g, h, lit, record) => {
-    const { lat, d0, d1, H, gh } = h, P = (d, hh) => pj(lat, d, hh), base = A.col(h.brick), trim = 'slate5';
-    // wall and gable
-    const wall = [P(d0, 0), P(d1, 0), P(d1, H), P(d0, H)];
-    A.poly(g, wall, base);
-    const prof = PROFILE[h.gb], gp = prof.map(([u, v]) => P(d0 + (d1 - d0) * u, H + gh * v));
-    A.poly(g, gp, base);
-    let bx0 = 1e9, by0 = 1e9, bx1 = -1e9, by1 = -1e9;
-    for (const [x, y] of wall.concat(gp)) { bx0 = Math.min(bx0, x); by0 = Math.min(by0, y); bx1 = Math.max(bx1, x); by1 = Math.max(by1, y); }
-    // brick courses: convergent dashed lines are the strongest perspective cue on a wall
-    const dark = A.step(base, -1), stp = d0 < 6 ? 0.28 : d0 < 15 ? 0.6 : 1.4;
-    if (d0 < 40) for (let hh = stp; hh < H; hh += stp) dashLine(g, ...P(d0, hh), ...P(d1, hh), dark, 0.55, h.seed + (hh * 10 | 0));
-    if (d0 < 14) speckle(g, bx0 | 0, by0 | 0, Math.ceil(bx1), Math.ceil(by1), base, h.seed);
-    // plinth, cornice and the gable's top edge
-    quad(g, P(d0, 0), P(d1, 0), P(d1, 0.55), P(d0, 0.55), A.step(base, -2));
-    A.line(g, ...P(d0, H), ...P(d1, H), trim);
-    for (let i = 0; i + 1 < gp.length; i++) if (prof[i][1] > 0 || prof[i + 1][1] > 0) A.line(g, ...gp[i], ...gp[i + 1], A.step(trim, 1));
-    A.line(g, ...P(d0, 0), ...P(d0, H + (h.gb === 'roof' ? gh * 0.7 : gh * 0.3)), dark);
-    // windows
-    for (const w of layoutWindows(h)) {
-      const a = [P(w.da, w.h0), P(w.db, w.h0), P(w.db, w.h1), P(w.da, w.h1)];
-      if (w.door) {
-        quadSafe(g, [P(w.da - 0.1, 0.12), P(w.db + 0.1, 0.12), P(w.db + 0.1, w.h1 + 0.1), P(w.da - 0.1, w.h1 + 0.1)], trim);
-        quadSafe(g, a, h.seed % 3 === 0 ? 'green2' : 'wood1');
-        if (w.da > 7) quadSafe(g, [P(w.da, w.h1 - 0.45), P(w.db, w.h1 - 0.45), P(w.db, w.h1 - 0.1), P(w.da, w.h1 - 0.1)], 'amber3');
-        else A.line(g, ...P((w.da + w.db) / 2, 0.12), ...P((w.da + w.db) / 2, w.h1), 'slate1');
-        continue;
-      }
-      const e = 0.09, fr = [P(w.da - e, w.h0 - e), P(w.db + e, w.h0 - e), P(w.db + e, w.h1 + e), P(w.da - e, w.h1 + e)];
-      const bb = quadSafe(g, fr, trim), ww = bb[2] - bb[0], hh = bb[3] - bb[1];
-      if (lit) {
-        const nr = w.da < 7, fr2 = w.da > 11, c0 = nr ? 'amber3' : fr2 ? 'amber3' : 'amber5', c1 = nr ? 'amber2' : fr2 ? 'amber2' : 'amber4', c2 = nr ? 'amber4' : fr2 ? 'amber4' : 'amber6';
-        quadSafe(g, a, c0);
-        if (ww > 5) { quad(g, P(w.da, (w.h0 + w.h1) / 2 + 0.2), P(w.db, (w.h0 + w.h1) / 2 + 0.2), P(w.db, w.h1), P(w.da, w.h1), c1); quad(g, P(w.da, w.h0), P(w.db, w.h0), P(w.db, w.h0 + 0.35), P(w.da, w.h0 + 0.35), c2); }
-        if (w.detail && ww >= 12) {
-          const dm = (w.da + w.db) / 2, sx = Math.max(1, ww / 12);
-          if (w.detail === 'plant') { quad(g, P(dm - .12, w.h0), P(dm + .12, w.h0), P(dm + .1, w.h0 + .3), P(dm - .1, w.h0 + .3), 'wood1'); for (const [ax, ay] of [[-.2, .8], [.22, .75], [0, .95]]) A.line(g, ...P(dm, w.h0 + .3), ...P(dm + ax, w.h0 + ay), 'green1'); }
-          else if (w.detail === 'cat') { const c0 = P(dm, w.h0), cx = rnd(c0[0]), cy = rnd(c0[1]), r = rnd(2 + sx); A.ellipse(g, cx, cy - 2, r, 2, 'night0'); A.disc(g, cx + r, cy - 4, 1, 'night0'); A.px(g, cx + r + 1, cy - 5, 'night0'); A.px(g, cx + r - 1, cy - 5, 'night0'); A.px(g, cx + r + 1, cy - 4, 'eye3'); }
-          else { quad(g, P(dm - .12, w.h0), P(dm + .12, w.h0), P(dm + .1, w.h0 + .28), P(dm - .1, w.h0 + .28), 'wood2'); A.line(g, ...P(dm, w.h0 + .28), ...P(dm, w.h0 + .75), 'green2'); const t0 = P(dm, w.h0 + .8); A.rect(g, t0[0] - 1, t0[1] - 1, 2, 2, 'red4'); }
-        }
-      } else {
-        quadSafe(g, a, 'night2');
-        if (ww > 5) { const q = P(w.da, w.h1); A.px(g, rnd(q[0]) + 1, rnd(q[1]) + 1, 'mist1'); }
-      }
-      if (ww >= 5 && hh >= 8) {
-        A.line(g, ...P((w.da + w.db) / 2, w.h0), ...P((w.da + w.db) / 2, w.h1), trim);
-        A.line(g, ...P(w.da, w.h0 + (w.h1 - w.h0) * 0.55), ...P(w.db, w.h0 + (w.h1 - w.h0) * 0.55), trim);
-      }
-      if (record) {
-        const bw = quadBBox(a);
-        WIN.push({ x0: bb[0] - 1, y0: bb[1] - 1, x1: bb[2] + 1, y1: bb[3] + 1, d: (w.da + w.db) / 2, seed: w.seed, keep: false, cx: (bw[0] + bw[2]) / 2, cy: (bw[1] + bw[3]) / 2, ww: bw[2] - bw[0], hh: bw[3] - bw[1] });
-      }
-    }
-  };
+  // ---------------------------------------------------------------- small drawing helpers
+  function tpoly(g, x, y, w, h, a, c) { // a tilted paper: a is the rise across the width in px
+    A.poly(g, [x, y + a, x + w, y, x + w, y + h - a, x, y + h], c);
+  }
+  // a pinned paper with a real headline (str may be an array of lines)
+  function note(g, x, y, str, o) {
+    o = o || {}; const lines = Array.isArray(str) ? str : [str], sz = o.size || 5, tilt = o.tilt || 0;
+    const w = o.w || Math.ceil(Math.max(...lines.map(s => A.textWidth(s, sz, true)))) + 6, h = o.h || 9;
+    if (tilt) { tpoly(g, x + 1, y + 1, w, h, tilt, 'night0'); tpoly(g, x, y, w, h, tilt, o.tone || 'paper3'); A.line(g, x, y + tilt, x + w - 1, y, 'paper5'); }
+    else { A.rect(g, x + 1, y + 1, w, h, 'night0'); A.rect(g, x, y, w, h, o.tone || 'paper3'); A.hline(g, x, y, w, 'paper5'); }
+    const py = y + (tilt > 0 ? tilt >> 1 : 0) - 1;
+    A.rect(g, x + (w >> 1) - 1, py, 3, 3, 'red5'); A.px(g, x + (w >> 1) - 1, py, 'paper6');
+    lines.forEach((s, i) => T(x + w / 2, y + h - 2 - (lines.length - 1 - i) * (sz + 1) + (tilt ? tilt >> 1 : 0), s, o.ink || 'night1', sz, true, { align: 'center' }));
+    return w;
+  }
+  // a wooden board with a flat three-step backdrop (dither only at the two seams)
+  function frame(g, x, y, w, h) {
+    A.rect(g, x - 3, y - 3, w + 6, h + 6, 'wood1');
+    A.hline(g, x - 3, y - 3, w + 6, 'wood3'); A.hline(g, x - 3, y - 2, w + 6, 'wood2');
+    A.vline(g, x - 3, y - 3, h + 6, 'wood2'); A.vline(g, x + w + 2, y - 3, h + 6, 'wood0'); A.hline(g, x - 3, y + h + 2, w + 6, 'wood0');
+    for (const [a, b] of [[x - 2, y - 2], [x + w + 1, y - 2], [x - 2, y + h + 1], [x + w + 1, y + h + 1]]) A.px(g, a, b, 'steel3');
+    const a = Math.round(h * 0.36), b = Math.round(h * 0.7);
+    A.rect(g, x, y, w, a, 'night3'); A.rect(g, x, y + a, w, b - a, 'night2'); A.rect(g, x, y + b, w, h - b, 'night1');
+    A.ditherGradient(g, x, y + a - 3, w, 6, 'night3', 'night2', 'down'); A.ditherGradient(g, x, y + b - 3, w, 6, 'night2', 'night1', 'down');
+    A.hline(g, x, y, w, 'night1'); A.hline(g, x, y + 1, w, 'night2'); // the top rail shades the board
+  }
+  function bulbStatic(g, bx, by) {
+    A.vline(g, bx, 43, by - 45, 'slate3'); A.rect(g, bx - 1, by - 3, 3, 2, 'steel2');
+    A.disc(g, bx, by, 2, 'amber7'); A.px(g, bx, by, 'amber8');
+  }
+  // the flicker is live: a small bright halo and a soft pool that breathe with the bulb
+  function bulbLive(g, bx, by, fl) {
+    glow(g, bx, by, 9, 9, { color: 'amber7', strength: 0.55 * fl, power: 1.6 });
+    glow(g, bx, by + 6, 26, 20, { color: 'amber5', strength: 0.16 * fl, power: 1.2, q: 4 });
+  }
+  const POOLS = [[69, 56, 62, 46, 0.22], [187, 66, 40, 32, 0.34], [283, 52, 44, 40, 0.3]];
+  const BULBS = [[69, 48], [187, 62], [283, 54]];
+  const VIGN = [[0, 43, 110, 70], [320, 43, 110, 70], [0, 131, 100, 60], [320, 131, 100, 60]];
+  // re-apply the baked pools, vignette and edge fog to a live object: only the pixels the object
+  // changed (compared with the cache) are lit, so the background is not lit twice. clip = the rect it moves in.
+  function relight(g, clip) {
+    const ref = cache.wall;
+    for (const [x, y, rx, ry, st] of POOLS) glow(g, x, y, rx, ry, { color: 'amber5', strength: st, power: 1.1, q: 5, clip, ref });
+    for (const [x, y, rx, ry] of VIGN) glow(g, x, y, rx, ry, { mode: 'mix', color: 'night0', strength: 0.8, power: 1, q: 5, clip, ref });
+    edgeFog(g, clip[1], clip[3] + 1, clip[0], clip[2] + 1, ref);
+  }
+  function bracket(g, bx) { A.rect(g, bx - 6, 41, 13, 2, 'steel2'); A.hline(g, bx - 6, 41, 13, 'steel4'); A.px(g, bx - 5, 43, 'steel1'); A.px(g, bx + 5, 43, 'steel1'); }
+  function star(g, x, y, r, c) { A.hline(g, x - r, y, 2 * r + 1, c); A.vline(g, x, y - r, 2 * r + 1, c); A.line(g, x - (r >> 1), y - (r >> 1), x + (r >> 1), y + (r >> 1), c); A.line(g, x - (r >> 1), y + (r >> 1), x + (r >> 1), y - (r >> 1), c); }
+  // the speech bubble as pixels plus a recorded word, so it can live in the cache
+  function sayStatic(g, x, y, str, sz) {
+    const w = Math.ceil(A.textWidth(str, sz, true)) + 8, h = Math.round(sz * 1.5) + 2, bx = 244, by = 72;
+    A.bubble(g, bx, by, w, h, {}); A.poly(g, [bx + w - 1, by + 2, bx + w - 1, by + h - 3, x, y], 'paper6'); A.line(g, bx + w - 1, by + h - 3, x, y, 'paper3');
+    T(bx + w / 2, by + h / 2 + sz * 0.36, str, 'night1', sz, true, { align: 'center' });
+  }
 
-  // a ground strip between two lateral lines, from distance d0 to d1, at height h
-  const strip = (g, la, lb, d0, d1, h, c) => A.poly(g, [pj(la, d0, h), pj(lb, d0, h), pj(lb, d1, h), pj(la, d1, h)], c);
-  const face = (g, lat, d0, d1, h0, h1, c) => A.poly(g, [pj(lat, d0, h0), pj(lat, d1, h0), pj(lat, d1, h1), pj(lat, d0, h1)], c);
-
-  // a wet-ground reflection of a light: a soft elongated glow under it plus a thin broken core
-  const wetStreak = (g, x, y, len, wd, strength, color, t, seed) => {
-    fglow(g, x, y + 1, wd + 2, len, color, strength * 0.5, 1.4);
-    wstreak(g, x, y + 2, len, wd, color, strength, t, seed);
-  };
-  // an airy winter-ish tree like the big one in the concept art: thin trunk, forked branches, leaf clumps
-  const bigTree = (g, x, y, ht, seed, tone) => {
-    const c = tone || 'night0';
-    for (let k = 0; k < ht; k++) { const w = ht > 60 ? (k < ht * 0.3 ? 4 : 3) : (k < ht * 0.3 ? 2 : 1); A.rect(g, x - (w >> 1) + (k > ht * 0.5 ? rnd((k - ht * 0.5) * 0.05) : 0), y - k, w, 1, c); }
-    const tips = [];
-    const fork = (bx, by, ang, len, depth) => {
-      const ex = bx + Math.cos(ang) * len, ey = by + Math.sin(ang) * len;
-      A.line(g, bx, by, ex, ey, c, depth > 0 ? 2 : 1);
-      if (depth === 0) { tips.push([ex, ey]); return; }
-      if (depth === 1) tips.push([ex, ey, 1]);
-      fork(ex, ey, ang - 0.5 - hash(seed + depth, 1) * 0.3, len * 0.72, depth - 1);
-      fork(ex, ey, ang + 0.5 + hash(seed + depth, 2) * 0.3, len * 0.72, depth - 1);
-    };
-    const top = y - ht * 0.72;
-    fork(x, top, -Math.PI / 2 - 0.55, ht * 0.34, 3); fork(x, top, -Math.PI / 2 + 0.5, ht * 0.36, 3); fork(x, y - ht * 0.45, -Math.PI + 0.55, ht * 0.3, 2); fork(x, y - ht * 0.5, -0.5, ht * 0.28, 2);
-    const k = ht / 118;
-    tips.forEach((tp, i) => { const tx = tp[0], ty = tp[1]; const r = Math.max(1, rnd((4 + Math.floor(hash(seed + i, 5) * 4)) * k * (tp[2] ? 0.7 : 1))); A.disc(g, tx, ty, r, c); if (hash(seed + i, 6) < 0.6) A.disc(g, tx + rnd(5 * k), ty + rnd(3 * k), Math.max(1, r - 2), c); if (hash(seed + i, 7) < 0.5) A.disc(g, tx - rnd(5 * k), ty + rnd(4 * k), Math.max(1, r - 2), c); });
-  };
-  // a puddle on wet ground: a pale sheen with the lamp's colour in it
-  const puddle = (g, lat, d, rx) => {
-    const x = rnd(PX(lat, d)), y = rnd(GY(d));
-    A.glow(g, x, y, rx, { ry: Math.max(1, rx * 0.2), mode: 'mix', color: 'mist4', strength: 0.55, power: 0.5, q: 4 });
-    A.glow(g, x + rnd(rx * 0.2), y, rx * 0.5, { ry: Math.max(1, rx * 0.1), color: 'amber5', strength: 0.4, power: 1, q: 4 });
-  };
-  // a wet reflection streak drawn straight into the buffer (same look as NRART.streak, without the per-row field closures)
-  const wstreak = (g, x, y, len, wd, color, strength, t, seed) => {
-    const Q = 5, Ls = levelsOf('add', color, strength, Q), B = g.buf, gw = g.w, ph = Math.floor(t * 3) + seed;
-    x = rnd(x); y = rnd(y);
-    for (let k = 0; k < len; k++) {
-      const yy = y + k; if (yy < 0 || yy >= g.h) continue;
-      const f = 1 - k / len, w = wd + rnd(1.6 * k / len * wd), x0 = x - (w >> 1) + (((k + ph) % 7) === 0 ? 1 : 0);
-      const lv = Math.pow(f, 1.1) * (((k + ph) % 4) === 3 ? 0.35 : 1) * (0.75 + 0.25 * hash(k + seed * 9, ph >> 1));
-      for (let xx = x0; xx < x0 + w; xx++) {
-        if (xx < 0 || xx >= gw) continue;
-        const edge = (xx === x0 || xx === x0 + w - 1) && w > 2 ? 0.55 : 1, v = lv * edge * Q; let q = v | 0; if (v - q > A.bayer(xx, yy)) q++;
-        if (q > 0) B[yy * gw + xx] = Ls[q > Q ? Q : q][B[yy * gw + xx]];
+  // ---------------------------------------------------------------- the cheese
+  function bloom(g, x, y, r, s) { // blue-green mould: white fuzz, a blue-green body, olive centre, spores
+    A.ditherDisc(g, x, y, r + 3, 'mist6', 0.7, 0.6);
+    A.disc(g, x, y, r + 1, 'mist5'); A.disc(g, x, y, r, 'teal5'); A.disc(g, x - 1, y - 1, Math.max(1, r - 2), 'teal4');
+    A.disc(g, x - 1, y, Math.max(1, r - 4), 'green7');
+    for (let i = 0; i < r + 4; i++) A.px(g, x + Math.round((h01(s, i) - 0.5) * 2 * (r + 3)), y + Math.round((h01(s, i + 9) - 0.5) * 2 * (r + 2) * 0.8), h01(s, i + 3) < 0.5 ? 'mist7' : 'teal5');
+    A.px(g, x - 2, y - 2, 'mist7'); A.px(g, x + 1, y - 2, 'mist6');
+  }
+  function hole(g, x, y, rx, ry) { A.ellipse(g, x, y, rx, ry, 'cheese2'); A.hline(g, x - rx + 1, y - ry, Math.max(1, rx * 2 - 1), 'cheese1'); }
+  function cheeseStatic(g) {
+    // shelf: planks
+    A.rect(g, 8, 112, 124, 15, 'wood2');
+    for (let i = 0; i < 5; i++) A.hline(g, 8, 114 + i * 3, 124, i % 2 ? 'wood1' : 'wood3');
+    A.hline(g, 8, 112, 124, 'wood5'); A.hline(g, 8, 113, 124, 'wood4');
+    shadow(g, 56, 113, 44, 4, 0.65);
+    // wheel: rind side, then the top
+    A.ellipse(g, 56, 109, 41, 9, 'cheese2');
+    A.rect(g, 15, 88, 82, 21, 'cheese3');
+    A.vline(g, 15, 90, 20, 'cheese5'); A.vline(g, 16, 91, 18, 'cheese4');
+    A.ditherGradient(g, 74, 90, 22, 20, 'cheese3', 'cheese1', 'right'); A.rect(g, 91, 90, 6, 20, 'cheese1'); A.vline(g, 90, 91, 18, 'cheese2');
+    A.ellipse(g, 56, 109, 41, 7, 'cheese2'); A.rect(g, 15, 88, 82, 18, 'cheese4');
+    A.vline(g, 15, 90, 18, 'cheese6'); A.vline(g, 16, 91, 16, 'cheese5');
+    A.ditherGradient(g, 70, 90, 26, 18, 'cheese4', 'cheese2', 'right'); A.rect(g, 91, 90, 6, 18, 'cheese2'); A.vline(g, 90, 91, 16, 'cheese3');
+    A.ellipse(g, 56, 88, 41, 11, 'cheese5'); A.ellipse(g, 56, 88, 37, 9, 'cheese6');
+    A.ellipse(g, 56, 87, 31, 7, 'cheese6'); A.hline(g, 22, 81, 30, 'paper5');
+    for (const [hx, hy, a, b] of [[30, 86, 3, 1], [74, 90, 3, 2], [58, 93, 2, 1]]) hole(g, hx, hy, a, b);
+        for (const [hx, hy, a, b] of [[28, 98, 3, 2], [46, 102, 2, 2], [66, 96, 3, 2], [82, 101, 2, 2]]) hole(g, hx, hy, a, b);
+    // the mould: big blue-green blooms, fuzzy, creeping over the edge
+    for (const [mx, my, r, s] of [[40, 86, 8, 1], [66, 90, 7, 2], [24, 99, 6, 3], [54, 103, 7, 4], [80, 103, 6, 5], [88, 93, 5, 6], [52, 84, 4, 7], [34, 107, 4, 8], [70, 108, 4, 9]]) bloom(g, mx, my, r, s);
+    // the cut slice: pale veined inside, standing on the shelf
+    A.poly(g, [100, 113, 128, 113, 128, 100, 100, 104], 'cheese6');
+    A.poly(g, [100, 104, 128, 100, 126, 97, 103, 100], 'cheese4');
+    A.rect(g, 124, 100, 4, 13, 'cheese3'); A.hline(g, 100, 113, 28, 'cheese2'); A.hline(g, 100, 114, 28, 'cheese1');
+    for (const [hx, hy, r] of [[105, 109, 2], [113, 106, 2], [120, 109, 1], [109, 111, 1], [117, 111, 2]]) { A.disc(g, hx, hy, r, 'cheese3'); A.px(g, hx, hy + 1, 'cheese4'); }
+    A.line(g, 101, 111, 111, 105, 'teal5'); A.line(g, 107, 113, 121, 106, 'green7'); A.line(g, 112, 104, 124, 103, 'teal5'); A.line(g, 114, 109, 120, 112, 'green6');
+    A.px(g, 119, 105, 'mist5'); A.px(g, 105, 106, 'mist5');
+    // paper tag tied on: best before
+    A.line(g, 30, 99, 24, 120, 'paper2'); A.rect(g, 14, 118, 18, 9, 'paper3'); A.hline(g, 14, 118, 18, 'paper5'); A.px(g, 23, 118, 'red5');
+    T(23, 125, '1987', 'night1', 5, true, { align: 'center' });
+    T(66, 67, 'KAAS?', 'paper4', 10, true, { align: 'center', shadow: true });
+  }
+  function cheeseLive(g, t) {
+    // stink: thick wavy green lines (2 px) climbing off the mould, fading as they rise
+    for (let i = 0; i < 4; i++) {
+      const ph = (t * 0.35 + i * 0.27) % 1;
+      for (let k = 0; k < 16; k++) {
+        const u = k / 16, sy = Math.round(80 - u * 24 - ph * 4), sx = 33 + i * 17 + Math.round(Math.sin(k * 0.6 + t * 2 + i * 2) * (1.5 + u * 2));
+        const c = u < 0.5 ? 'green7' : u < 0.8 ? 'green6' : 'green5'; A.rect(g, sx, sy, 3, 1, c);
+        if (u < 0.6) A.px(g, sx + 1, sy - 1, 'mist4');
       }
     }
-  };
-  const lampAt = (g, lat, d, o) => {
-    const h = rnd(4.4 * F / d), x = rnd(PX(lat, d)), y = rnd(GY(d));
-    if (h >= 26) {
-      A.lamp(g, x, y, { style: 'lantern', h, light: false, seed: o.seed });
-      const lx = x + 1, ly = y - h - 3;
-      A.glow(g, lx, ly, Math.max(8, h * 0.28), { color: 'amber6', strength: 0.6, power: 1.5 });
-      A.cone(g, lx, ly + 2, Math.PI / 2, 0.4, Math.min(h, 180 - ly) + 4, { color: 'amber5', strength: o.cone || 0.3, width: 4, fade: 0.6, edge: 0.6 });
-      A.glow(g, lx, y, h * 0.55, { ry: Math.max(2, h * 0.07), color: 'amber5', strength: 0.42, power: 1 });
-      wetStreak(g, x, y, Math.min(h * 0.5, 180 - y), h > 50 ? 4 : 1, 0.6, 'amber6', 0, o.seed);
-    } else {
-      A.rect(g, x, y - h, 1, h, 'slate1'); A.rect(g, x - 1, y - h - 2, 3, 2, 'amber7'); A.px(g, x, y - h - 3, 'slate1');
-      A.glow(g, x, y - h - 1, Math.max(3, h * 0.55), { color: 'amber6', strength: 0.6, power: 1.4, q: 4 });
-      A.glow(g, x, y, Math.max(3, h * 0.6), { ry: 1, color: 'amber5', strength: 0.4, power: 1, q: 4 });
-      if (h > 8) wetStreak(g, x, y, rnd(h * 0.7), 1, 0.4, 'amber5', 0, o.seed);
-    }
-  };
-  const fogAt = (g, d, a) => {
-    const yb = GY(d), y0 = VY - 96;
-    A.haze(g, 0, y0, g.w, yb - y0 + 1, { top: 0, bottom: a, color: 'mist3', lights: 0.12 });
-  };
-
-  // the mill's tower (static) and its sails (live), at the end of the street
-  const MILL = { x: 199, y: 108, s: 0.82 };
-  const millTower = (g) => {
-    const { x, y, s } = MILL, bh = rnd(50 * s), b0 = rnd(11 * s), b1 = rnd(5.5 * s), top = y - bh;
-    A.poly(g, [[x - b0, y], [x + b0 + 1, y], [x + b1 + 1, top], [x - b1, top]], 'night4');
-    A.poly(g, [[x + rnd(b0 * 0.45), y], [x + b0 + 1, y], [x + b1 + 1, top], [x + rnd(b1 * 0.45), top]], 'night5');
-    A.poly(g, [[x - b0, y], [x - rnd(b0 * 0.4), y], [x - rnd(b1 * 0.4), top], [x - b1, top]], 'night3');
-    const sy = y - rnd(bh * 0.33), hw = b0 + 7;
-    A.rect(g, x - hw, sy, 2 * hw + 1, 1, 'night2'); A.hline(g, x - hw, sy - 3, 2 * hw + 1, 'night3');
-    A.line(g, x - hw, sy + 1, x - b0 + 1, y - 1, 'night3'); A.line(g, x + hw, sy + 1, x + b0 - 1, y - 1, 'night3');
-    const cw = b1 + 2; A.poly(g, [[x - cw, top + 1], [x + cw + 1, top + 1], [x + b1 + 1, top - 5], [x - b1, top - 5]], 'night2');
-    A.rect(g, x, y - rnd(bh * 0.55), 2, 3, 'amber6'); A.rect(g, x - 3, y - rnd(bh * 0.75), 1, 2, 'amber5'); A.rect(g, x + 2, y - rnd(bh * 0.42), 1, 2, 'amber5');
-    A.glow(g, x + 1, y - rnd(bh * 0.55) + 1, 6, { color: 'amber5', strength: 0.3, q: 3 });
-    return [x + 0.5, top - 2];
-  };
-  const sails = (g, hx, hy, angle, L, c1, c2) => {
-    const sw = 5;
+    // flies, 2 px, with a wing flick
     for (let k = 0; k < 4; k++) {
-      const an = angle + k * Math.PI / 2, ca = Math.cos(an), sa = Math.sin(an), px = -sa, py = ca, a0 = 0.2 * L;
-      A.poly(g, [[hx + ca * a0, hy + sa * a0], [hx + ca * L, hy + sa * L], [hx + ca * L + px * sw, hy + sa * L + py * sw], [hx + ca * a0 + px * sw, hy + sa * a0 + py * sw]], 'mist1');
-      A.line(g, hx, hy, hx + ca * L, hy + sa * L, c1);
-      A.line(g, hx + ca * L, hy + sa * L, hx + ca * L + px * sw, hy + sa * L + py * sw, c2);
-      A.line(g, hx + ca * L + px * sw, hy + sa * L + py * sw, hx + ca * a0 + px * sw, hy + sa * a0 + py * sw, c2);
-      A.line(g, hx + ca * a0 + px * sw, hy + sa * a0 + py * sw, hx + ca * a0, hy + sa * a0, c2);
-      for (let i = 1; i < 6; i += 2) { const f = a0 + (L - a0) * i / 6; A.line(g, hx + ca * f, hy + sa * f, hx + ca * f + px * sw, hy + sa * f + py * sw, c2); }
+      const a = t * (5 + k) + k * 2, fx = [30, 84, 56, 112][k] + Math.round(Math.cos(a) * 6), fy = [72, 70, 62, 94][k] + Math.round(Math.sin(a * 1.3) * 4);
+      A.rect(g, fx, fy, 2, 2, 'night0'); if (Math.sin(a * 9) > 0) A.px(g, fx + 1, fy - 1, 'paper4'); else A.px(g, fx - 1, fy - 1, 'paper4');
     }
-    A.rect(g, rnd(hx) - 1, rnd(hy) - 1, 2, 2, c1);
-  };
+  }
 
-  let HUB = [0, 0];
-  const paintStatic = (g, lit) => {
-    g.buf.fill(A.C.night1); g.mask.fill(0); A.depth(g, 1); A.key(g, VX, 70, 1);
-    // ---- sky: cold night above, pale fog on the horizon
-    const SKY = ['night0', 'night1', 'night2', 'night3', 'mist0', 'mist1', 'mist2', 'mist3'], sg = (VY + 6) / (SKY.length - 1);
-    for (let i = 0; i + 1 < SKY.length; i++) A.ditherGradient(g, 0, rnd(i * sg), g.w, Math.ceil(sg) + 1, SKY[i], SKY[i + 1], 'down');
-    A.stars(g, 1.3, { n: 26, y0: 2, y1: 56, seed: 11 });
-    A.haze(g, 0, 40, g.w, 70, { top: 0.0, bottom: 0.55, color: 'mist3' });
-    // ---- far skyline: spire and mill, almost lost in the fog
-    A.church(g, 170, 108, 0.8, { tone: 'night4', clock: false });
-    HUB = millTower(g);
-    A.haze(g, 0, 40, g.w, 72, { top: 0.15, bottom: 0.7, color: 'mist4' });
-    // ---- ground: road, pavements, kerbs, canal
-    A.rect(g, 0, VY, g.w, 80, 'slate1');
-    strip(g, -KERB, KERB, 0.9, 900, 0, 'slate1');
-    strip(g, -LFRONT - 3, -KERB, 0.9, 900, 0.12, 'slate2');
-    strip(g, KERB, QUAY, 0.9, 900, 0.12, 'slate2');
-    face(g, QUAY, 0.9, 900, 0.12, -0.6, 'slate0');
-    strip(g, QUAY, BANK, 0.9, 900, -0.6, 'night2');
-    face(g, BANK, 0.9, 900, -0.6, 0, 'night0');
-    strip(g, BANK, BANK + 8, 0.9, 900, 0, 'slate1');
-    A.ditherGradient(g, 0, VY, g.w, 60, 'slate1', 'slate2', 'up');
-    for (let d = 1.2; d < 14; d += d < 6 ? 0.55 : 1.4) {
-      A.line(g, ...pj(-LFRONT - 3, d, 0.12), ...pj(-KERB, d, 0.12), 'slate1'); A.line(g, ...pj(KERB, d, 0.12), ...pj(QUAY, d, 0.12), 'slate1');
+  // ---------------------------------------------------------------- the poll
+  const PB = { x: 146, y: 62, w: 82, h: 64 }, BASE = 118;
+  function pollStatic(g) {
+    const x = PB.x;
+    A.rect(g, x + 6, 84, 70, 35, 'night1'); A.rect(g, x + 5, 83, 72, 1, 'steel3'); // the chart card
+    for (let i = 0; i < 3; i++) A.hline(g, x + 8, 92 + i * 9, 66, 'night3');
+    A.hline(g, x + 5, BASE, 72, 'paper3');
+    T(x + 41, 73, 'PEILING', 'paper4', 8, true, { align: 'center', shadow: true });
+    T(x + 41, 80, 'welk Nederlands is mooier?', 'slate6', 4, true, { align: 'center' });
+    T(x + 22, 126, 'Vlaams', 'paper5', 5, true, { align: 'center' }); T(x + 58, 126, 'NL', 'slate5', 5, true, { align: 'center' });
+  }
+  function pollLive(g, t) {
+    const x = PB.x, u = (t % 12) / 12, grow = 0.3 + 0.7 * (u < 0.2 ? ease(u / 0.2) : u < 0.75 ? 1 : ease((1 - u) / 0.25));
+    const bh = Math.round(20 * grow), nl = 3, bx = x + 10;
+    A.rect(g, bx - 1, BASE - bh - 1, 26, bh + 1, 'paper3'); // paper outline so the black stripe reads
+    for (let s = 0; s < 3; s++) A.rect(g, bx + s * 8, BASE - bh, 8, bh, ['night0', 'cheese5', 'red4'][s]);
+    A.vline(g, bx + 8, BASE - bh, bh, 'cheese6'); A.vline(g, bx + 16, BASE - bh, bh, 'red5');
+    A.rect(g, x + 50, BASE - nl, 16, nl, 'blue2'); A.hline(g, x + 50, BASE - nl, 16, 'slate4');
+    A.px(g, x + 66, BASE - nl - 1, 'blue1'); // a sad little droop
+    if (grow > 0.55) {
+      const cy = BASE - bh - 8 + Math.round(Math.sin(t * 3));
+      A.poly(g, [bx + 3, cy + 7, bx + 3, cy + 1, bx + 7, cy + 4, bx + 12, cy - 1, bx + 17, cy + 4, bx + 21, cy + 1, bx + 21, cy + 7], 'paper6');
+      A.hline(g, bx + 3, cy + 7, 19, 'paper4'); A.px(g, bx + 12, cy - 2, 'red5'); A.px(g, bx + 3, cy, 'red5'); A.px(g, bx + 21, cy, 'red5');
+      A.text(bx + 36, cy + 5, '87%', 'paper6', 8, true, { align: 'center', shadow: true });
     }
-    for (const s of [-1, 1]) {
-      A.line(g, ...pj(s * KERB, 0.9, 0.12), ...pj(s * KERB, 400, 0.12), 'slate5');
-      A.line(g, ...pj(s * KERB, 0.9, 0), ...pj(s * KERB, 400, 0), 'slate0');
-    }
-    A.line(g, ...pj(QUAY, 0.9, 0.12), ...pj(QUAY, 400, 0.12), 'slate4');
-    A.glow(g, VX, VY + 12, 70, { ry: 16, mode: 'mix', color: 'mist3', strength: 0.3, power: 0.9, q: 5 });
-    for (let d = 1.6; d < 70; d += d < 8 ? 2.6 : d < 20 ? 4.5 : 9) quad(g, pj(-0.07, d, 0), pj(0.07, d, 0), pj(0.07, d + 1.3 + d * 0.03, 0), pj(-0.07, d + 1.3 + d * 0.03, 0), 'mist5');
-    // ---- the painter's pass: everything from far to near, fog after each depth band
-    const items = [];
-    HOUSES.forEach(h => items.push({ d: h.d1, fn: () => paintHouse(g, h, lit, !lit && !WIN.done) }));
-    const FD = [1, 1.4, 1.9, 2.6, 3.5, 4.7, 6.3, 8.5, 11.5, 15, 20, 27, 36, 50, 70, 100, 150, 230, 400];
-    for (let i = 0; i + 1 < FD.length; i++) {
-      const d0 = FD[i], d1 = FD[i + 1];
-      items.push({ d: d1, fn: () => {
-        face(g, -5.1, d0, d1, 0, 1.45, 'green0'); face(g, -5.1, d0, d1, 1.1, 1.45, 'green1');
-        if (d0 < 12) { const bb = quadBBox([pj(-5.1, d0, 0), pj(-5.1, d1, 0), pj(-5.1, d1, 1.45), pj(-5.1, d0, 1.45)]); speckle(g, bb[0], bb[1], bb[2], bb[3], 'green0', d0 * 7 | 0); }
-        if (d0 < 26) { for (let d = d0; d < d1; d += Math.max(0.05, d * d / 42)) A.line(g, ...pj(-4.8, d, 0), ...pj(-4.8, d, 0.95), 'slate3'); A.line(g, ...pj(-4.8, d0, 0.7), ...pj(-4.8, d1, 0.7), 'slate2'); A.line(g, ...pj(-4.8, d0, 0.25), ...pj(-4.8, d1, 0.25), 'slate2'); }
-        else face(g, -4.8, d0, d1, 0, 0.9, 'slate2');
-      } });
-    }
-    for (const [d0, d1] of [[1, 2.4], [2.4, 4.2], [4.2, 7], [7, 11], [11, 18], [18, 30], [30, 60]]) items.push({ d: d1, fn: () => {
-      A.line(g, ...pj(QUAY - 0.05, d0, 0.95), ...pj(QUAY - 0.05, d1, 0.95), 'slate4'); A.line(g, ...pj(QUAY - 0.05, d0, 0.5), ...pj(QUAY - 0.05, d1, 0.5), 'slate3');
-      for (let d = d0; d < d1; d += 1.1) A.line(g, ...pj(QUAY - 0.05, d, 0.1), ...pj(QUAY - 0.05, d, 1.0), 'slate4');
-    } });
-    [[-KERB - 0.2, 2.4, 1], [KERB + 0.2, 4.9, 2], [-KERB - 0.2, 9.4, 3], [KERB + 0.2, 15.5, 4], [-KERB - 0.2, 26, 5], [KERB + 0.2, 42, 6]].forEach(([lat, d, k]) => items.push({ d, fn: () => lampAt(g, lat, d, { seed: k, cone: k === 1 ? 0.34 : 0.26 }) }));
-    items.push({ d: 1.9, fn: () => bigTree(g, rnd(PX(-5.5, 1.75)), rnd(GY(1.75)) + 6, 118, 7) });
-    items.push({ d: 3.8, fn: () => bigTree(g, rnd(PX(9.7, 3.8)), rnd(GY(3.8)), rnd(7 * F / 3.8), 9, 'night1') });
+    A.text(x + 58, BASE - nl - 3, '13%', 'slate5', 5, true, { align: 'center' });
+  }
 
-    items.push({ d: 10, fn: () => { const x0 = rnd(PX(QUAY, 10)), x1 = rnd(PX(BANK, 10)); A.archBridge(g, x0, rnd(PY(-0.5, 10)), x1 - x0, 6, { brick: 'brick2' }); } });
-    [1.7, 3.1, 4.6, 6.4, 8.9].forEach(d => items.push({ d, fn: () => { const x = rnd(PX(-KERB + 0.15, d)), y = rnd(GY(d)); A.bollard(g, x, y, { h: Math.max(3, rnd(0.95 * F / d)) }); } }));
-    items.push({ d: 2.4, fn: () => A.omafiets(g, rnd(PX(-4.3, 2.1)) + 4, rnd(GY(2.1)) + 1, { rider: false, speed: 0 }) });
-    items.push({ d: 1.7, fn: () => A.tulips(g, rnd(PX(-4.3, 1.6)) - 6, rnd(GY(1.5)) - 2, 14) });
-    items.push({ d: 2.6, fn: () => { puddle(g, -1.6, 2.7, 15); puddle(g, 1.3, 4.4, 10); puddle(g, -0.4, 7.5, 6); } });
-    items.push({ d: 1.4, fn: () => { A.reeds(g, 262, 182, 58, 30, { tone: 'night0', seed: 3, dense: 0.55 }); A.reeds(g, 298, 182, 30, 42, { tone: 'night0', seed: 5, dense: 0.5 }); } });
-    items.sort((a, b) => b.d - a.d);
-    const FOG = [[70, 0.5], [38, 0.38], [22, 0.3], [13, 0.24], [8, 0.18], [4.8, 0.1], [3, 0.05]];
-    let bi = 0;
-    for (const it of items) {
-      while (bi < FOG.length && it.d < FOG[bi][0]) { fogAt(g, FOG[bi][0], FOG[bi][1]); bi++; }
-      it.fn();
-    }
-    while (bi < FOG.length) { fogAt(g, FOG[bi][0], FOG[bi][1]); bi++; }
-    // ---- the canal: mirror the far bank, darkened, with broken lines
-    const Lm = A.lut('mix', 'mist3', 0.4), Ld = A.lut('mix', 'night2', 0.5), Lg = A.lut('mix', 'night2', 0.72), B = g.buf, gw = g.w;
-    for (let y = VY + 1; y < 180; y++) for (let x = VX + 6; x < gw; x++) {
-      const dd = (x - VX), yb = VY + 0.2444 * dd, yq = VY + 0.5238 * dd;
-      if (y <= yb + 1 || y >= yq) continue;
-      const ym = VY + 0.2416 * dd, ys = rnd(2 * ym - y); if (ys < 0 || ys >= y) continue;
-      const off = rnd(Math.sin(y * 0.9 + x * 0.05) * 1.2), sx = cl(x + off, 0, gw - 1), c = B[ys * gw + sx];
-      let v = (hash(y, 3) < 0.2) ? Lg[c] : Ld[c];
-      if (0.75 * Math.pow(1 - (y - yb) / (yq - yb), 0.8) > A.bayer(x, y)) v = Lm[v];
-      B[y * gw + x] = v;
-    }
-    if (!lit) WIN.done = true;
-  };
+  // ---------------------------------------------------------------- the millionth tourist
+  function tourist(g, x, y, t, fi) {
+    const bob = Math.sin(t * 14) > 0.2 ? -1 : 0, hb = Math.sin(t * 7 + 1) > 0.5 ? -1 : 0;
+    const r = (dx, dy, w, h, c) => A.rect(g, x + dx, y + dy + (dy < -18 ? bob : 0), w, h, c);
+    shadow(g, x, y, 12, 2, 0.6);
+    // sneakers, white socks, bare calves, khaki shorts
+    r(-6, -2, 5, 2, 'paper5'); r(1, -2, 5, 2, 'paper5'); r(-6, -1, 5, 1, 'paper3'); r(1, -1, 5, 1, 'paper3');
+    r(-5, -9, 3, 7, 'paper6'); r(2, -9, 3, 7, 'paper6'); r(-5, -9, 3, 1, 'paper4'); r(2, -9, 3, 1, 'paper4');
+    r(-5, -16, 3, 7, 'skin4'); r(2, -16, 3, 7, 'skin4');
+    r(-6, -25, 12, 9, 'wood5'); r(-6, -25, 12, 1, 'wood6'); r(-1, -18, 2, 2, 'wood3'); r(-6, -17, 5, 1, 'wood4'); r(1, -17, 5, 1, 'wood4');
+    // rucksack behind
+    r(-13, -43, 7, 20, 'blue3'); r(-13, -43, 7, 3, 'blue5'); r(-13, -43, 1, 20, 'blue2'); r(-12, -36, 5, 4, 'blue2'); r(-12, -36, 5, 1, 'blue4');
+    // loud shirt, belly out
+    r(-7, -44, 14, 20, 'teal4'); r(-8, -34, 15, 10, 'teal4'); r(6, -44, 2, 20, 'teal2'); r(-8, -26, 16, 1, 'teal3');
+    for (const [dx, dy, c] of [[-4, -41, 'paper5'], [0, -43, 'red5'], [3, -39, 'paper5'], [-5, -35, 'red4'], [-1, -37, 'paper4'], [4, -33, 'red5'], [-3, -30, 'paper5'], [1, -29, 'red4'], [5, -27, 'paper4'], [-6, -28, 'paper4']]) r(dx, dy, 2, 2, c);
+    // strap and camera on his chest
+    A.line(g, x - 5, y - 44 + bob, x + 1, y - 36 + bob, 'night0'); A.line(g, x + 5, y - 44 + bob, x + 3, y - 36 + bob, 'night0');
+    r(-1, -37, 9, 6, 'slate1'); r(-1, -37, 9, 1, 'steel3'); r(0, -36, 2, 1, 'steel4'); r(1, -35, 5, 4, 'slate0');
+    A.disc(g, x + 4, y - 33 + bob, 2, fi ? 'paper6' : 'steel3'); A.px(g, x + 4, y - 33 + bob, fi ? 'paper6' : 'night0');
+    r(6, -37, 2, 1, fi ? 'paper6' : 'steel4');
+    // both hands on his belly (the classic laugh)
+    r(-10, -42, 3, 10, 'skin4'); r(-10, -33, 9, 3, 'skin4'); r(-2, -34, 3, 4, 'skin5');
+    r(7, -41, 3, 6, 'skin4'); r(3, -34, 6, 3, 'skin4'); r(2, -35, 2, 2, 'skin5');
+    // head thrown back: chin up, mouth a wide dark O, eyes squeezed, tears
+    r(-2, -48, 5, 4, 'skin3');
+    const hy = hb + bob;
+    A.ellipse(g, x + 2, y - 52 + hy, 6, 6, 'skin4'); A.hline(g, x - 3, y - 57 + hy, 11, 'skin5');
+    A.rect(g, x - 1, y - 54 + hy, 9, 1, 'skin3');
+    A.ellipse(g, x + 3, y - 50 + hy, 3, 3, 'night0'); A.hline(g, x + 1, y - 52 + hy, 5, 'paper6'); A.hline(g, x + 1, y - 51 + hy, 5, 'paper5'); A.rect(g, x + 2, y - 49 + hy, 3, 2, 'red4'); A.px(g, x + 3, y - 48 + hy, 'red5');
+    A.px(g, x - 2, y - 55 + hy, 'night0'); A.px(g, x - 3, y - 56 + hy, 'night0'); A.px(g, x - 3, y - 54 + hy, 'night0');
+    A.px(g, x + 5, y - 55 + hy, 'night0'); A.px(g, x + 6, y - 56 + hy, 'night0'); A.px(g, x + 6, y - 54 + hy, 'night0');
+    A.px(g, x - 3, y - 53 + hy, 'blue5'); A.px(g, x + 6, y - 53 + hy, 'blue5');
+    A.px(g, x + 2, y - 54 + hy, 'skin2'); // nose
+    // sunhat, knocked back by the laugh
+    A.ellipse(g, x + 1, y - 59 + hy, 11, 2, 'paper4'); A.hline(g, x - 10, y - 59 + hy, 23, 'paper5');
+    A.rect(g, x - 5, y - 66 + hy, 10, 7, 'paper4'); A.hline(g, x - 5, y - 66 + hy, 10, 'paper5'); A.hline(g, x - 5, y - 61 + hy, 10, 'blue3'); A.hline(g, x - 5, y - 60 + hy, 10, 'blue2');
+    A.vline(g, x + 4, y - 65 + hy, 5, 'paper3');
+  }
 
-  // ---------------------------------------------------------------- the phone-talkers (alive, drawn every frame)
-  const TALK = [
-    { x: PX(-3.9, 3.6), y: GY(3.6), h: 23, mode: 'ear', face: 1, coat: 'mist2', legs: 'night3', hair: 'wood3', k: 0 },
-    { x: PX(3.9, 3.7), y: GY(3.7), h: 22, mode: 'chest', face: -1, coat: 'red3', legs: 'night1', hair: 'night0', k: 2 },
-    { x: PX(-4.1, 7.6), y: GY(7.6), h: 11, mode: 'ear', face: 1, coat: 'slate4', legs: 'night1', hair: 'paper2', k: 4 },
-    { x: PX(3.8, 10.5), y: GY(10.5), h: 8, mode: 'ear', face: -1, coat: 'steel2', legs: 'night1', hair: 'night1', k: 6 },
-  ];
-  const talker = (g, o, t) => {
-    const { mode } = o, x = o.x, h = o.h, y = o.y, dir = o.face, w = Math.max(1, rnd(h / 8)), hd = Math.max(1, rnd(h / 9));
-    const hy = rnd(y - h * 0.82), ty = rnd(y - h * 0.74), cx = rnd(x);
-    fglow(g, cx, rnd(y), h / 3, 2, 'black', 0.55, 0.6, 'mul', 4);
-    A.begin(g);
-    A.rect(g, cx - w, rnd(y - h * 0.42), 2 * w, rnd(h * 0.42), o.legs);
-    if (h > 16) A.rect(g, cx - w - 1, rnd(y) - 1, 2 * w + 2, 1, 'slate0');
-    A.poly(g, [[cx - w - 1.5, ty], [cx + w + 1.5, ty], [cx + w + 2, rnd(y - h * 0.38)], [cx - w - 2, rnd(y - h * 0.38)]], o.coat);
-    A.rect(g, cx - 1, rnd(ty - 1), 2, 2, o.coat);
-    A.disc(g, cx, hy - 1, hd + (h > 16 ? 1 : 0), o.hair);
-    if (h > 16) A.hline(g, cx - hd, hy - hd - 1, 2 * hd + 1, A.step(o.hair, 1));
-    let gx, gy2;
-    if (mode === 'ear') {
-      const px = cx + dir * (hd + 2), py = hy - 1;
-      A.line(g, cx + dir * (w + 1), ty + 1, px, py + 3, o.coat); A.line(g, cx + dir * (w + 1), ty + 2, px, py + 4, A.step(o.coat, -1));
-      A.rect(g, px - (dir < 0 ? 0 : 1), py - 1, 2, h > 16 ? 4 : 2, 'slate0'); A.px(g, px, py, 'phone5');
-      gx = px; gy2 = py;
-    } else {
-      const px = cx + dir * (w + 3), py = rnd(y - h * 0.62);
-      A.line(g, cx + dir * (w + 1), ty + 2, px, py, o.coat); A.rect(g, px - 1, py - 2, 3, 3, 'phone3'); A.px(g, px, py - 1, 'phone5');
-      gx = px; gy2 = py - 1;
-    }
-    A.end(g);
-    const pulse = 0.82 + 0.18 * Math.sin(t * TAU / 2.5 + o.k);
-    fglow(g, gx, gy2, Math.max(4, h / 2.6), Math.max(4, h / 2.6), 'phone4', 0.85 * pulse, 1.2, 'add', 5);
-    A.px(g, gx, gy2, 'phone5');
-  };
+  // ---------------------------------------------------------------- tiny paper icons
+  function poster5G(g, x, y) {
+    A.rect(g, x + 1, y + 1, 12, 23, 'night0'); A.rect(g, x, y, 12, 23, 'paper2'); A.px(g, x + 6, y, 'red5');
+    A.line(g, x + 6, y + 5, x + 3, y + 18, 'night1'); A.line(g, x + 6, y + 5, x + 9, y + 18, 'night1'); A.hline(g, x + 4, y + 12, 5, 'night1'); A.hline(g, x + 3, y + 16, 7, 'night1');
+    A.ring(g, x + 6, y + 4, 3, 'red4'); A.ring(g, x + 6, y + 4, 5, 'red3');
+    T(x + 6, y + 22, '5G!', 'red3', 5, true, { align: 'center' });
+  }
+  function posterOwl(g, x, y) { // a green language-app owl, crossed out
+    tpoly(g, x + 1, y + 1, 16, 26, 2, 'night0'); tpoly(g, x, y, 16, 26, 2, 'paper3'); A.px(g, x + 8, y + 2, 'red5');
+    A.ellipse(g, x + 8, y + 12, 5, 6, 'green6'); A.ellipse(g, x + 8, y + 14, 3, 3, 'green7');
+    A.rect(g, x + 4, y + 7, 3, 3, 'paper6'); A.rect(g, x + 9, y + 7, 3, 3, 'paper6'); A.px(g, x + 5, y + 8, 'night0'); A.px(g, x + 10, y + 8, 'night0'); A.px(g, x + 7, y + 10, 'cheese5'); A.px(g, x + 8, y + 10, 'cheese5');
+    A.px(g, x + 3, y + 5, 'green6'); A.px(g, x + 12, y + 5, 'green6');
+    A.line(g, x + 1, y + 2, x + 14, y + 24, 'red5'); A.line(g, x + 14, y + 2, x + 1, y + 24, 'red5'); A.line(g, x + 2, y + 2, x + 15, y + 24, 'red4');
+  }
+  function polaroid(g, x, y) { // a grey photo of a dark street, two eyes in the dark
+    tpoly(g, x + 1, y + 1, 18, 21, -2, 'night0'); tpoly(g, x, y, 18, 21, -2, 'paper5');
+    A.rect(g, x + 2, y + 2, 14, 13, 'night2'); A.ditherGradient(g, x + 2, y + 2, 14, 13, 'mist1', 'night1', 'down');
+    A.rect(g, x + 6, y + 8, 5, 7, 'night0'); A.rect(g, x + 7, y + 6, 3, 3, 'night0'); A.px(g, x + 7, y + 7, 'eye3'); A.px(g, x + 9, y + 7, 'eye3');
+    A.rect(g, x + 3, y + 10, 2, 5, 'night0'); A.px(g, x + 3, y + 3, 'amber5');
+    A.px(g, x + 8, y, 'red5');
+  }
 
-  // ---------------------------------------------------------------- the words
-  const WORDS = [
-    { w: 'hallo?', t0: 0, kind: 'hello' },
-    { w: 'gezellig', t0: 0.9, lane: 1.1, v: 0.8, a: 0.36, tmax: 11 },
-    { w: 'de', t0: 3.9, lane: -0.8, v: 0.8, a: 0.4, tmax: 10.5, kind: 'pairA' },
-    { w: 'het', t0: 4.2, lane: 0.8, v: 0.8, a: 0.4, tmax: 10.5, kind: 'pairB' },
-    { w: 'lekker', t0: 6.3, lane: 1.3, v: 0.9, a: 0.55, tmax: 8.5 },
-    { w: 'fiets', t0: 7.3, lane: -2.7, v: 0.9, a: 0.6, tmax: 7.2 },
-    { w: 'doei', t0: 8.4, kind: 'last' },
-  ];
-  const DOEI_END = 15.5;
-  const wordState = (W, t) => {
-    const tau = (((t - W.t0) % T) + T) % T;
-    let d, lat, e = 1;
-    if (W.kind === 'hello') {
-      if (tau > 14.6) return null;
-      const arrive = sm(0.2, 2.2, tau), rec = Math.max(0, tau - 5.6);
-      d = 3.9 - 0.55 * arrive + (tau > 5.6 ? 0.8 * rec + 0.52 * rec * rec : 0);
-      lat = tau > 5.6 ? -3.1 * (1 - sm(5.6, 9.5, tau)) - 0.4 * sm(5.6, 9.5, tau) : -1.2 - 1.9 * arrive;
-      e = 1 - sm(13.2, 14.6, tau);
-    } else if (W.kind === 'last') {
-      if (tau > DOEI_END - W.t0) return null;
-      const ph = tau * 9.5 / (DOEI_END - W.t0);          // the whole walk is squeezed into the time that is left
-      d = ph < 6 ? 3.6 + 0.7 * ph + 0.25 * ph * ph : 16.8 + 9.2 * sm(6, 9.2, ph) + 0.35 * Math.max(0, ph - 9.2);
-      lat = 0.0; e = 1 - sm(8.6, 9.5, ph);
-      return { tau: ph, d, lat, e, grow: sm(0, 1.3, ph) };
-    } else {
-      if (tau > W.tmax) return null;
-      d = 2.9 + W.v * tau + W.a * tau * tau; lat = W.lane;
-      if (W.kind === 'pairB') lat = W.lane - 1.5 * Math.exp(-Math.pow((tau - 2.1) * 1.5, 2)) + 0.5 * sm(2, 4, tau);
-      if (W.kind === 'pairA') lat = W.lane - 0.55 * Math.exp(-Math.pow((tau - 2.35) * 1.6, 2));
-      e = 1 - sm(W.tmax - 1.4, W.tmax, tau);
+  // ---------------------------------------------------------------- the static scene
+  let cache = null;
+  function build(g) {
+    building = true; statics.length = 0;
+    A.key(g, 68, 60, 1);
+    // ---- far layer: a foggy skyline above the wall
+    A.depth(g, 0);
+    A.sky(g, ['night2', 'night4', 'mist0', 'mist1'], 0, 46);
+    A.moon(g, 148, 12, 5);
+    A.depth(g, 0.25);
+    A.church(g, 84, 52, 0.95, { tone: 'night4' });
+    A.haze(g, -20, 0, 360, 50, { top: 0.25, bottom: 0.6, color: 'mist2' });
+    for (let i = 0; i < 8; i++) A.canalHouse(g, -8 + i * 44, 33 + (i * 5) % 7, 26 + (i % 3) * 5, 25, { gable: ['step', 'bell', 'neck', 'spout'][i % 4], brick: 'slate1', lit: 0.35, t: 0, seed: i + 3 });
+    A.haze(g, -20, 4, 360, 40, { top: 0.3, bottom: 0.5, color: 'mist2' });
+    const sky = g.buf.slice(0, WALL * W);
+    // ---- the wall: cold brick, coping, brackets
+    A.depth(g, 0.9);
+    A.rect(g, -10, 43, 340, 90, 'night2');
+    A.brick(g, -10, 43, 340, 90, { base: 'night2', only: 'night2', seed: 5, bw: 7, vary: 0.2 });
+    A.rect(g, -10, 39, 340, 4, 'slate2'); A.hline(g, -10, 39, 340, 'slate4'); A.hline(g, -10, 40, 340, 'slate3'); A.hline(g, -10, 42, 340, 'slate0');
+    for (let x = 6; x < 320; x += 28) A.vline(g, x, 40, 2, 'slate1');
+    A.rect(g, -10, 131, 340, 3, 'slate3'); A.hline(g, -10, 131, 340, 'slate5'); A.hline(g, -10, 134, 340, 'slate0'); // the ledge
+    // ---- boards
+    frame(g, 8, 54, 122, 72); frame(g, PB.x, PB.y, PB.w, PB.h); frame(g, 242, 50, 82, 76);
+    cheeseStatic(g);
+    pollStatic(g);
+    // the tourist board: a shelf and a postcard
+    A.rect(g, 242, 116, 82, 10, 'wood2'); A.hline(g, 242, 116, 82, 'wood5'); A.hline(g, 242, 117, 82, 'wood4'); A.hline(g, 242, 121, 82, 'wood1'); A.hline(g, 242, 124, 82, 'wood1');
+    A.rect(g, 247, 88, 25, 28, 'paper3'); A.rect(g, 249, 90, 21, 19, 'night3'); A.ditherGradient(g, 249, 90, 21, 19, 'mist1', 'mist0', 'down');
+    A.windmill(g, 260, 109, 0.28, 0.5, { tone: 'night1', sail: 'night0', stage: false });
+    A.rect(g, 249, 105, 21, 4, 'night1'); for (let i = 0; i < 7; i++) { A.px(g, 250 + i * 3, 105, i % 2 ? 'red4' : 'cheese4'); A.px(g, 250 + i * 3, 106, 'red3'); }
+    A.px(g, 259, 87, 'red5'); T(259, 114, 'HOLLAND!', 'night1', 4, true, { align: 'center' });
+    T(263, 62, 'toerist', 'paper4', 6, true, { align: 'center', shadow: true }); T(263, 69, '#1.000.000', 'paper5', 6, true, { align: 'center', shadow: true });
+    // ---- clippings and posters, overlapping the boards
+    note(g, 4, 45, 'OOSTENRIJK?', { tilt: 1 });
+    note(g, 142, 49, ['Ik spreek', 'liever Engels'], { h: 16, tilt: 2 });
+    note(g, 195, 52, 'TIKKIE?!', { tone: 'paper2', w: 33, tilt: -1 });
+    note(g, 238, 44, 'HAGELSLAG!', { tone: 'paper2', tilt: 1 });
+    posterOwl(g, 130, 84); poster5G(g, 229, 91);
+    polaroid(g, 112, 56);
+    for (const bx of [69, 187, 283]) bracket(g, bx);
+    sayStatic(g, 297, 77, 'drunk German!', 6);
+    for (const [bx, by] of BULBS) bulbStatic(g, bx, by);
+    // ---- the three amber pools (baked; the bulbs flicker live on top)
+    for (const [x, y, rx, ry, st] of POOLS) glow(g, x, y, rx, ry, { color: 'amber5', strength: st, power: 1.1, q: 5 });
+    // ---- wall vignette: real night0 in the corners, over everything on the wall
+    for (const [x, y, rx, ry] of VIGN) glow(g, x, y, rx, ry, { mode: 'mix', color: 'night0', strength: 0.8, power: 1, q: 5 });
+    edgeFog(g, 43, 133, 0, W);
+    // ---- wet cobbles: slate with shaded joints, darker toward the bottom, no mirror
+    A.depth(g, 1);
+    A.rect(g, -10, 134, 340, 50, 'slate2');
+    for (let r = 0, yy = 135; yy < 182; r++, yy += 4 + (r > 3 ? 1 : 0)) {
+      A.hline(g, 0, yy, 320, 'slate0');
+      for (let xx = -(r % 2) * 5; xx < 330; xx += 10) {
+        A.vline(g, xx, yy, 4, 'slate0');
+        const v = h01(xx, r); if (v > 0.55) A.hline(g, xx + 2, yy + 1, 5, 'slate3'); else if (v < 0.2) A.hline(g, xx + 2, yy + 2, 4, 'slate1'); else A.hline(g, xx + 2, yy + 1, 3, 'slate1');
+      }
     }
-    return { tau, d, lat, e, grow: sm(0, 1.3, tau) };
-  };
+    A.ditherGradient(g, 0, 134, 320, 12, 'slate0', 'slate2', 'down');
+    glow(g, 160, 186, 260, 42, { mode: 'mix', color: 'night0', strength: 0.5, power: 0.9, q: 4 });
+    for (const [bx] of BULBS) glow(g, bx, 136, 52, 15, { color: 'amber5', strength: 0.3, power: 1.2, q: 4 });
+    // litter from the rumour mill
+    tpoly(g, 214, 166, 11, 6, 1, 'paper3'); A.hline(g, 215, 168, 7, 'paper1'); tpoly(g, 100, 172, 10, 5, -1, 'paper2'); A.hline(g, 102, 174, 6, 'paper1');
+    A.rect(g, 262, 159, 6, 3, 'cheese3'); A.hline(g, 262, 159, 6, 'cheese4'); A.px(g, 264, 160, 'teal4');
+    A.omafiets(g, 236, 177, { facing: 'left', t: 0, basket: 'cheese', rider: false });
+    cache = { sky, wall: g.buf.slice(WALL * W) };
+    building = false;
+  }
+  const PINS = [[26, 49], [71, 66], [121, 57], [138, 86], [161, 52], [187, 60], [211, 52], [235, 93], [253, 44], [262, 62]];
+  function sagLine(g, a, b, sag, c) {
+    let px = a[0], py = a[1];
+    for (let i = 1; i <= 9; i++) {
+      const u = i / 9, x = Math.round(a[0] + (b[0] - a[0]) * u), y = Math.round(a[1] + (b[1] - a[1]) * u + Math.sin(u * Math.PI) * sag);
+      A.line(g, px, py, x, y, c); px = x; py = y;
+    }
+  }
+  function banner(g) {
+    const bw = 76, bcx = 187;
+    A.poly(g, [bcx - bw / 2, 31, bcx + bw / 2, 32, bcx + bw / 2 - 2, 37, bcx + bw / 2 + 1, 42, bcx + bw / 2 - 3, 47, bcx - bw / 2 + 2, 47, bcx - bw / 2 - 1, 41], 'paper3');
+    A.hline(g, bcx - bw / 2, 31, bw, 'paper5'); A.hline(g, bcx - bw / 2 + 2, 47, bw - 4, 'paper2');
+    A.text(bcx, 44, 'GERUCHTEN', 'red3', 10, true, { align: 'center' });
+  }
 
-  const cache = new WeakMap(), TW = new Map();
-  const tw = (str) => { let v = TW.get(str); if (v === undefined) { v = Math.ceil(A.textWidth(str, 5, true)) + 8; TW.set(str, v); } return v; };
-  // a speech bubble whose text width is measured once
-  const speak = (g, x, y, str) => {
-    const w = tw(str), h = 10, bx = Math.max(2, Math.min(A.W - w - 2, x - w / 2)), by = y - 3 - h;
-    A.bubble(g, bx, by, w, h, { text: str, tail: [x, y - 1], size: 5 });
-  };
-  const POST = { x: rnd(PX(3.8, 2.0)), y: rnd(GY(2.0)) + 4 };
   A.panels[3] = {
-    text: 'The language had been ignored for years. Every time someone tried, the Dutch switched to English. One night it left.',
-    nl: 'De taal werd al jaren genegeerd. Elke keer als iemand een poging deed, schakelden de Nederlanders over op Engels. Op een nacht is hij vertrokken.',
+    text: 'Others blame the worldwide poll in which Flemish was voted the nicer Dutch.',
+    nl: 'Anderen geven de schuld aan de wereldwijde peiling waarin Vlaams het mooiste Nederlands werd genoemd.',
     draw(g, t) {
-      t = ((t % T) + T) % T;
-      let c = cache.get(g);
-      if (!c) {
-        const L0 = A.labels.length;
-        paintStatic(g, false); const dark = g.buf.slice();
-        paintStatic(g, true); const lit = g.buf.slice();
-        // the fingerpost's pixels go into the cache; its text labels are kept and re-posted every frame
-        g.buf.set(dark); A.fingerpost(g, POST.x, POST.y, { signs: [['Nederlands', 'left'], ['Engels', 'right']] });
-        const post = A.labels.slice(L0); const postBuf = g.buf.slice(); A.labels.length = L0;
-        for (let i = 0; i < dark.length; i++) if (postBuf[i] !== dark[i]) { dark[i] = postBuf[i]; lit[i] = postBuf[i]; }
-        // window records: who stays lit, and a sparse patch of the light each window spills on the wall around it
-        const scratch = new Uint8Array(dark.length), pseudo = { buf: scratch, w: g.w, h: g.h };
-        WIN.forEach((w, i) => {
-          w.keep = hash(i, 91) < 0.07 && w.ww >= 2; w.j = hash(i, 92); w.patch = null;
-          if (w.ww < 4) return;
-          scratch.set(dark); const r = Math.min(22, rnd(4 + w.ww * 0.8)); fglow(pseudo, w.cx, w.cy, r, r, 'amber5', 0.24, 1.2, 'add', 3);
-          const idx = [], val = [];
-          for (let y = Math.max(0, rnd(w.cy) - r); y <= Math.min(g.h - 1, rnd(w.cy) + r); y++) for (let x = Math.max(0, rnd(w.cx) - r); x <= Math.min(g.w - 1, rnd(w.cx) + r); x++) { const k = y * g.w + x; if (scratch[k] !== dark[k]) { idx.push(k); val.push(scratch[k]); } }
-          w.patch = { idx: Uint32Array.from(idx), val: Uint8Array.from(val) };
-        });
-        c = { dark, lit, post }; cache.set(g, c);
+      if (!cache || cache.wall.length !== (H - WALL) * W) build(g);
+      for (const s of statics) A.text.apply(null, s);
+      // ---- far layer: cached skyline, live stars, the turning mill, drifting mist
+      g.buf.set(cache.sky, 0);
+      A.stars(g, t, { n: 14, y1: 22, seed: 6, x0: 0, x1: 130 }); A.stars(g, t, { n: 6, y1: 18, seed: 9, x0: 160, x1: 230 });
+      A.windmill(g, 270, 62, 0.8, -t * 0.35, { tone: 'night3', sail: 'night2', stage: true, lit: 0, t });
+      fog(g, t, 14, 26, { amount: 0.4, speed: 3, seed: 2, color: 'mist3' });
+      g.buf.set(cache.wall, WALL * W);
+      banner(g);
+      // ---- exhibits, live parts (each one is lit and fogged to match the baked wall)
+      const fl1 = 0.85 + 0.15 * Math.sin(t * 7) * Math.sin(t * 3.1), fl2 = 0.85 + 0.15 * Math.sin(t * 6 + 1.7) * Math.sin(t * 2.7 + 1.7), fl3 = 0.85 + 0.15 * Math.sin(t * 8 + 3.4) * Math.sin(t * 3.3 + 3.4);
+      const q = v => Math.round(v * 10) / 10;
+      cheeseLive(g, t);
+      pollLive(g, t); relight(g, [150, 84, 224, 119]);
+      const fp = (t + 0.9) % 2.5, fi = fp < 0.3 ? (fp < 0.08 ? 1 : 1 - (fp - 0.08) / 0.22) : 0;
+      tourist(g, 296, 125, t, fi > 0.4);
+      glow(g, 296, 92, 26, 40, { color: 'amber5', strength: 0.3, power: 1, q: 5, clip: [280, 56, 316, 127], ref: cache.wall });
+      // the flash: a bright star on the camera and the whole board blown out for a moment
+      if (fi > 0) {
+        wash(g, 238, 46, 82, 86, 'paper6', 0.6 * fi, 'mix');
+        glow(g, 300, 92, 38, 34, { color: 'paper6', strength: 0.8 * fi, power: 0.8, q: 4 });
+        star(g, 300, 92, 6 + Math.round(fi * 4), 'paper6');
       }
-      g.buf.set(c.dark); g.mask.fill(0);
-      for (const l of c.post) A.labels.push(l);
-      const st = WORDS.map(W => wordState(W, t));
-      const gz = st[1];
-      // the "dark front": how far the lead word has got; windows behind it go out. At the end the street relights.
-      const front = gz ? gz.d : (t > 0.9 + 11 ? 400 : 0);
-      const relight = sm(14.9, 15.95, t);
-      // ---- windows: copy lit pixels from the lit pass; a window that is dying flickers on and off
-      const B = g.buf, LB = c.lit, gw = g.w;
-      for (const w of WIN) {
-        let lv = 1;
-        if (!w.keep) {
-          const off = front > w.d + 0.8 + w.j * 1.6;
-          lv = off ? 0 : 1;
-          if (!off && front > w.d + 0.2 + w.j * 1.6) lv = hash(w.seed | 0, Math.floor(t * 9)) < 0.5 ? 1 : 0;
-          if (t > 14.9 && off) { const r = (relight - w.j * 0.6) / 0.4; lv = r <= 0 ? 0 : r >= 1 ? 1 : (hash(w.seed | 0, Math.floor(t * 14)) < r ? 1 : 0); }
-        } else if (hash(w.seed | 0, Math.floor(t * 5)) < 0.05) lv = 0;
-        if (lv <= 0) continue;
-        if (w.patch) { const { idx, val } = w.patch; for (let k = 0; k < idx.length; k++) B[idx[k]] = val[k]; }
-        const x0 = Math.max(0, w.x0), x1 = Math.min(gw - 1, w.x1), y0 = Math.max(0, w.y0), y1 = Math.min(g.h - 1, w.y1);
-        if (x1 < x0) continue;
-        if (lv >= 1) for (let y = y0; y <= y1; y++) B.set(LB.subarray(y * gw + x0, y * gw + x1 + 1), y * gw + x0);
-        else for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (lv > A.bayer(x, y)) B[y * gw + x] = LB[y * gw + x];
-      }
-      for (const [lx, ly, r] of [[PX(-KERB - 0.2, 2.4) + 1, GY(2.4) - 4.4 * F / 2.4 - 3, 9], [PX(KERB + 0.2, 4.9) + 1, GY(4.9) - 4.4 * F / 4.9 - 3, 6]]) {
-        const fl = 0.8 + 0.2 * Math.sin(t * 7 + lx) * Math.sin(t * 2.3);
-        fglow(g, lx, ly, r, r, 'amber7', 0.35 * fl, 1.5);
-      }
-      // ---- glints on the canal
-      for (let i = 0; i < 7; i++) {
-        const k = Math.floor(t * 2.2 + i * 0.43);
-        if (hash(i, k) < 0.4) continue;
-        const dd = 24 + hash(i, 3) * 90, yy = VY + (0.2444 + (0.18 + hash(i, k + 9) * 0.7) * 0.2794) * dd;
-        A.rect(g, VX + dd, yy, 1 + (hash(i, k + 5) < 0.4 ? 1 : 0), 1, 'mist5');
-      }
-      // ---- the mill's sails turn the right way (anticlockwise)
-      sails(g, HUB[0], HUB[1] - 1, -t * 0.32, 24, 'night4', 'night3');
-      // ---- key light follows the lead word
-      const leadI = st[1] ? 1 : st[4] ? 4 : st[0] ? 0 : -1;
-      const lk = leadI >= 0 ? { x: PX(st[leadI].lat, st[leadI].d), y: PY(1.0, st[leadI].d) } : { x: VX, y: 100 };
-      A.key(g, lk.x, lk.y, 1);
-      // ---- the people, talking English into their phones with their backs turned
-      TALK.forEach(o => talker(g, o, t));
-      // ---- the words
-      const over = [];
-      const order = st.map((s, i) => [s, i]).filter(p => p[0]).sort((a, b) => b[0].d - a[0].d);
-      for (const [s, i] of order) {
-        const W = WORDS[i], d = s.d, x = rnd(PX(s.lat, d)), gy = rnd(GY(d));
-        const bob = Math.sin(t * 1.4 + i * 2.1) * (d < 6 ? 1.4 : 0.6);
-        let hy = PY(W.kind === 'last' ? 1.05 + 1.9 * sm(5, 7, s.tau) : 1.05, d) + bob; if (W.kind === 'hello' && s.tau > 5.6) hy += 2 * sm(5.6, 6.6, s.tau);
-        const cy = rnd(hy), e = s.e * s.grow;
-        const rx = cl(rnd(80 / d), 2, 26), ry = cl(rnd(rx * 0.2), 1, 5);
-        fglow(g, x, gy, rx, ry, 'amber5', 0.6 * e, 1.1);
-        const sl = cl(rnd(110 / d), 2, 22);
-        if (d < 34) wetStreak(g, x, gy, sl, d < 5 ? 2 : 1, 0.7 * e, d < 8 ? 'amber6' : 'amber5', t, i * 5 + 3);
-        const tone = d < 5.5 ? 'amber7' : d < 10 ? 'amber6' : d < 18 ? 'amber5' : d < 30 ? 'amber4' : 'mist5';
-        if (d < 4.9) {
-          const size = Math.max(6, Math.min(10, rnd(29 / d))), fs = rnd(6 + (size - 6) * s.grow);
-          fglow(g, x, cy, 7 + fs, 4 + fs * 0.5, 'amber5', 0.5 * e, 1.3);
-          over.push([x, cy + fs * 0.35, W.w, tone, fs]);
-        } else {
-          const h = d < 7 ? 5 : d < 9.5 ? 4 : d < 14 ? 3 : d < 22 ? 2 : 1, hh = W.kind === 'last' ? Math.max(4, h) : h;
-          fglow(g, x, cy, cl(rnd(70 / d), 3, 14), cl(rnd(30 / d), 2, 6), 'amber5', 0.45 * e, 1.3, 'add', 3);
-          let keepP = 1, col = tone;
-          if (W.kind === 'last') { const f = sm(8.5, 9.5, s.tau); col = f > 0.8 ? 'mist5' : f > 0.5 ? 'amber4' : f > 0.2 ? 'amber5' : 'amber6'; keepP = 1 - sm(9.0, 9.5, s.tau); }
-          else keepP = s.e > 0.5 ? 1 : 0.55 * s.e + 0.25;
-          const wave = (W.kind === 'last' && s.tau > 6.5) ? (Math.sin(t * 5) > 0.2 ? 1 : 0) : 0;
-          pixWord(g, W.w, x, cy - wave, hh, col, keepP, i * 17);
-          if (W.kind === 'last') fglow(g, x, cy, 14, 8, 'amber5', 0.5 * (1 - sm(8.8, 9.5, s.tau)), 1.2, 'add', 4);
-        }
-      }
-      // ---- the fog closes over the end of the street, thickest while 'doei' hangs there
-      const ds = st[6], dl = ds ? sm(5.8, 8.8, ds.tau) : 0, closing = ds ? sm(8.4, 9.1, ds.tau) : 0;
-      for (let k = 0; k < 2; k++) {
-        const cx = VX + 18 * Math.sin(t * 0.35 + k * 2.6), cyy = VY + 3 + k * 2 + Math.sin(t * 0.5 + k) * 2;
-        fglow(g, cx, cyy, 52 - k * 14, 19 - k * 4, 'mist4', 0.2 + 0.1 * dl + 0.45 * closing, 0.8, 'mix', 5);
-      }
-      over.forEach(([x, y, w, col, fs]) => A.text(x, y, w, col, fs, true, { align: 'center', shadow: true }));
-      // ---- the one-line story
-      const hs = st[0], t1 = TALK[0], t2 = TALK[1];
-      const head = (o) => [rnd(o.x), rnd(o.y - o.h * 0.82) - Math.max(1, rnd(o.h / 9)) - 3];
-      if (hs && hs.tau > 2.8 && hs.tau < 5.7) { const [hx, hy] = head(t1); speak(g, hx, hy, 'sorry, English?'); }
-      else if (t < 2.6 || (t > 10.2 && t < 12.6)) { const [hx, hy] = head(t2); speak(g, hx, hy, t < 2.6 ? 'omg, same' : 'yeah no, so fine'); }
+      bulbLive(g, 69, 48, q(fl1)); bulbLive(g, 187, 62, q(fl2)); bulbLive(g, 283, 54, q(fl3));
+      // ---- the red string: every rumour tied to the next, with a few crossovers
+      for (let i = 0; i < PINS.length - 1; i++) sagLine(g, PINS[i], PINS[i + 1], 3 + (i % 3) * 2, 'red3');
+      sagLine(g, PINS[1], PINS[3], 7, 'red2'); sagLine(g, PINS[4], PINS[6], 4, 'red2');
+      for (const [a, b] of PINS) { A.rect(g, a - 1, b - 1, 3, 3, 'red5'); A.px(g, a - 1, b - 1, 'paper6'); }
+      // ---- fog drifting in front of the wall
+      fog(g, t, 62, 56, { amount: 0.32, speed: 3, seed: 4, color: 'mist3' });
+      // ---- floor: puddles under the bulbs, streaks
+      for (const [px, py, pw, ph] of [[30, 142, 56, 12], [150, 148, 72, 11], [244, 142, 62, 10]]) A.water(g, px, py, pw, ph, { t, amp: 0.8, dark: 0.3, color: 'slate3', gaps: 0.3, glints: 4, glint: 'amber5' });
+      [69, 187, 283].forEach((x, i) => A.streak(g, x, 137, 28, { t, color: 'amber5', strength: 0.3, seed: i + 1 }));
+      fog(g, t, 142, 30, { amount: 0.24, speed: 4, seed: 6 });
+      // ---- watchers: the hat zombie creeps closer to the cheese; the phone zombie reads the poll
+      const creep = Math.round(ease((t % 12) / 12) * 3);
+      A.zombie(g, 40 + creep, 173, { variant: 'hat', t, facing: 'right', pose: 'stand', height: 52, hunch: 0.8 });
+      const pz = A.zombie(g, 292, 166, { variant: 'phone', t, facing: 'left', pose: 'stand', height: 44, hunch: 0.7 });
+      const hand = (pz && pz.hand) || [286, 150], pul = 0.7 + 0.3 * Math.sin(t * 5);
+      glow(g, hand[0], hand[1], 17, 13, { color: 'phone3', strength: 0.5 * (Math.round(pul * 10) / 10), power: 1.3, q: 4 });
+      if ((t % 6) > 3.6 && (t % 6) < 5.6) A.say(g, (pz && pz.head ? pz.head[0] : 286), (pz && pz.head ? pz.head[1] : 130) - 2, 'tikkie?', { size: 5, dy: 3, dx: -6 });
+      A.dog(g, 196, 177, { coat: 'brown', pose: 'sit', look: 'up', t });
+      // ---- the hero studies the wall: poll, then the cheese (pointing), poll, then the tourist
+      const m = t % 12, face = m < 3 ? 'back' : m < 5.5 ? 'left' : m < 8 ? 'back' : m < 10.5 ? 'right' : 'back';
+      A.man(g, 168, 179, { facing: face, pose: 'stand', t, arm: face === 'left' ? 'point' : null, face: face === 'right' ? 'worry' : 'deadpan' });
     },
   };
 })();

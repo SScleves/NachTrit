@@ -168,6 +168,9 @@
 <script src="intro/panel-9.js"></script>
 <script src="intro/panel-10.js"></script>
 <script src="intro/panel-11.js"></script>
+<script src="intro/panel-12.js"></script>
+<script src="intro/panel-13.js"></script>
+<script src="intro/panel-14.js"></script>
 <script src="intro/scene-street.js"></script>
 <script src="intro/scene-dyke.js"></script>
 <script src="intro/scene-square.js"></script>
@@ -1449,8 +1452,8 @@ function showLevelIntro(lv, then) {
 
 let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
 function showIntro(then, panels) {
-  const NA = window.NRART, nrOk = NA && NA.panels.length >= 11 && NA.panels.slice(0, 11).every(Boolean);
-  const PANELS_ = panels || (nrOk ? NA.panels.slice(0, 11).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
+  const NA = window.NRART, nrOk = NA && NA.panels.length >= 14 && NA.panels.slice(0, 14).every(Boolean);
+  const PANELS_ = panels || (nrOk ? NA.panels.slice(0, 14).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
   introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
   const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
   const txt = $('pixtext'), nlEl = $('pixnl'); PANELS_.forEach(p => { p._nlShown = false; });

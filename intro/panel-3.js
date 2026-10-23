@@ -370,8 +370,8 @@
   }
 
   A.panels[2] = {
-    text: 'Nobody agrees on what caused it. Bad cheese, some say. Others blame a worldwide poll that called Flemish the nicer Dutch. Or the millionth tourist who said it sounds like a drunk German. Probably all of it.',
-    nl: 'Niemand is het eens over de oorzaak. Slechte kaas, zeggen sommigen. Anderen geven de schuld aan een wereldwijde peiling waarin Vlaams het mooiste Nederlands werd genoemd. Of aan de miljoenste toerist die zei dat het klinkt als een dronken Duitser. Waarschijnlijk allemaal.',
+    text: 'Nobody agrees on what caused it. Some say it was the cheese.',
+    nl: 'Niemand is het eens over de oorzaak. Sommigen zeggen: de kaas.',
     draw(g, t) {
       if (!cache || cache.wall.length !== (H - WALL) * W) build(g);
       for (const s of statics) A.text.apply(null, s);

@@ -44,6 +44,9 @@
 <script src="panel-9.js"></script>
 <script src="panel-10.js"></script>
 <script src="panel-11.js"></script>
+<script src="panel-12.js"></script>
+<script src="panel-13.js"></script>
+<script src="panel-14.js"></script>
 <script src="scene-street.js"></script>
 <script src="scene-dyke.js"></script>
 <script src="scene-square.js"></script>
@@ -56,7 +59,7 @@
 (function () {
   const q = new URLSearchParams(location.search), A = window.NRART;
   const state = window.NRGALLERY = { done: false, benchDone: false, benchText: '', errors: [] };
-  const PIECES = ['panel-1', 'panel-2', 'panel-3', 'panel-4', 'panel-5', 'panel-6', 'panel-7', 'panel-8', 'panel-9', 'panel-10', 'panel-11',
+  const PIECES = ['panel-1', 'panel-2', 'panel-3', 'panel-4', 'panel-5', 'panel-6', 'panel-7', 'panel-8', 'panel-9', 'panel-10', 'panel-11', 'panel-12', 'panel-13', 'panel-14',
     'scene-street', 'scene-dyke', 'scene-square', 'scene-nightshop', 'scene-shops'];
   const scale = Math.max(1, Math.min(8, +q.get('scale') || 3));
   const tFixed = q.has('t') ? parseFloat(q.get('t')) || 0 : null;

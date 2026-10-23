@@ -71,7 +71,7 @@ async function playIntro() {
   await page.waitForTimeout(1200);
   await shot('title');
   await page.click('#go');
-  for (let i = 0; i < 11; i++) { await page.waitForTimeout(3400); await shot(`intro${i + 1}`); await page.keyboard.press('Space'); await page.waitForTimeout(150); await page.keyboard.press('Space'); }
+  for (let i = 0; i < 14; i++) { await page.waitForTimeout(3400); await shot(`intro${i + 1}`); await page.keyboard.press('Space'); await page.waitForTimeout(150); await page.keyboard.press('Space'); }
   await page.waitForTimeout(400); await shot('after-intro');
   report.runs.push({ intro: true, err: await errBox() });
 }
