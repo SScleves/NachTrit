@@ -14,6 +14,7 @@
   const BAY = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map(v => (v + 0.5) / 16);
   // ---- cheap local light: a dithered elliptical pool and a lamp cone, straight on the buffer
   function pool(g, cx, cy, rx, ry, color, st) {
+    st = Math.round(st * 20) / 20;   // same 1/20 steps as the toolkit's levels(): a bounded, cached set of lookups
     const T = [0, 1, 2, 3].map(q => A.lut('add', color, st * q / 3)), buf = g.buf, gw = g.w;
     cx += g.ox + 0.5; cy += g.oy + 0.5;
     const x0 = Math.max(0, Math.floor(cx - rx)), x1 = Math.min(gw - 1, Math.ceil(cx + rx)), y0 = Math.max(0, Math.floor(cy - ry)), y1 = Math.min(g.h - 1, Math.ceil(cy + ry));
@@ -27,6 +28,7 @@
     }
   }
   function cone(g, x, y, len, spread, color, st) {
+    st = Math.round(st * 20) / 20;   // same 1/20 steps as the toolkit's levels(): a bounded, cached set of lookups
     const T = [0, 1, 2, 3].map(q => A.lut('add', color, st * q / 3)), buf = g.buf, gw = g.w;
     x += g.ox; y += g.oy;
     for (let yy = Math.max(0, y); yy < Math.min(g.h, y + len); yy++) {
