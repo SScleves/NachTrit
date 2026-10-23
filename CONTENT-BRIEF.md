@@ -101,3 +101,35 @@ One file, `content/district<N>.js`, starting with a comment listing any new prop
 need, then `window.defineLevels([...])` with the five levels in id order. No other output. Run
 `node -e "require('./content/district<N>.js')"` is not possible (browser globals), so check the
 syntax with `node --check content/district<N>.js` before you finish.
+
+
+## Tier fences for towns 7 to 13 (added 23 Oct 2026; word limits are in `window.TIER_PRESET`)
+
+Each tier includes everything below it. A tier may drill only what it introduces, but earlier
+grammar returns in builds as review.
+
+- Tier 7, Rotterdam, A2 to B1, 12 words: the imperfectum of regular verbs ('t kofschip: werkte, woonde) and
+  the common irregulars (was, had, ging, kwam, deed, zag, kocht, sprak, liep), the perfectum as review,
+  reflexive verbs (zich wassen, zich voelen, zich herinneren, zich vergissen), zou plus infinitive for polite
+  requests, comparatives and superlatives. No sub-clauses with the verb at the end yet.
+- Tier 8, Urk, B1, 14 words: sub-clauses with the verb at the end after omdat, dat, als, toen, terwijl,
+  voordat; want, maar, dus keep V2; the main clause after a sub-clause starts with its verb.
+- Tier 9, Texel, B1, 14 words: relative clauses with die and dat (het schaap dat ...), te plus infinitive
+  (om te), conditionals with als ... dan and zou, er as place and quantity, pronominal adverbs (erop, ermee).
+- Tier 10, Groningen, B1, 16 words: opinions and arguments (ik vind dat, volgens mij, hoewel, ondanks),
+  the future with zullen for probability, separable verbs in sub-clauses (omdat hij vroeg opstaat),
+  diminutives and their het-article, the adjective -e in all cases.
+- Tier 11, Maastricht, B1 to B2, 16 words: the passive with worden and zijn plus participle (het huis wordt
+  verbouwd), the plusquamperfectum (had gewerkt, was gegaan), indirect speech (hij zei dat ...), words with
+  dialect colour marked as such.
+- Tier 12, Nijmegen, B1 to B2, 16 words: idioms and modal particles (wel, eens, maar, hoor, toch, even, nou),
+  compound nouns, formal register (u, geachte, hoogachtend), the Vierdaagse: history and dates.
+- Tier 13, Amsterdam, B1 to B2, 18 words: everything, the hardest reading forks (subtle meaning pairs), long
+  builds with two or three forks, tourist and local registers, numbers and prices, directions in the city.
+  The Wallen level is dry and funny and stays clean: neon, alleys, tourists, bollards, the Oude Kerk, nothing explicit.
+- The `eigen` place of each town is its own thing: Rotterdam De haven; Urk De vloot en de klederdracht; Texel
+  De veerboot en de schapen; Groningen De Martinitoren; Maastricht Het Vrijthof; Nijmegen De Vierdaagse;
+  Amsterdam De Wallen. Ground it in the town's entry in `content/towns.js` (landmarks, words, joke).
+- Ids: Rotterdam 75 to 82, Urk 83 to 90, Texel 91 to 98, Groningen 99 to 106, Maastricht 107 to 114,
+  Nijmegen 115 to 122, Amsterdam 123 to 130, in the place order thuis, winkels, eten, station, werk, sport,
+  mensen, eigen.

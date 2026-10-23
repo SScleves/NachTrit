@@ -121,6 +121,13 @@ window.TIER_PRESET = {
   4: { lanes: 3, speed: 13, maxSpeed: 16, ramp: false, lampDecay: 0.55, forkSlow: 0.35, hint: null, obstacles: 'light', filler: [26, 36], deliveries: 20, cefr: 'A2', maxWords: 8 },
   5: { lanes: 3, speed: 14, maxSpeed: 17, ramp: true, lampDecay: 0.6, forkSlow: 0.35, hint: null, obstacles: 'light', filler: [26, 36], deliveries: 20, cefr: 'A2', maxWords: 10 },
   6: { lanes: 3, speed: 14, maxSpeed: 18, ramp: true, lampDecay: 0.65, forkSlow: 0.3, hint: null, obstacles: 'normal', filler: [26, 36], deliveries: 20, cefr: 'A2', maxWords: 10 },
+  7: { lanes: 3, speed: 15, maxSpeed: 19, ramp: true, lampDecay: 0.7, forkSlow: 0.3, hint: null, obstacles: 'normal', filler: [24, 34], deliveries: 20, cefr: 'A2-B1', maxWords: 12 },
+  8: { lanes: 3, speed: 15, maxSpeed: 20, ramp: true, lampDecay: 0.75, forkSlow: 0.28, hint: null, obstacles: 'normal', filler: [24, 34], deliveries: 20, cefr: 'B1', maxWords: 14 },
+  9: { lanes: 3, speed: 16, maxSpeed: 20, ramp: true, lampDecay: 0.8, forkSlow: 0.28, hint: null, obstacles: 'normal', filler: [24, 32], deliveries: 20, cefr: 'B1', maxWords: 14 },
+  10: { lanes: 3, speed: 16, maxSpeed: 21, ramp: true, lampDecay: 0.85, forkSlow: 0.26, hint: null, obstacles: 'normal', filler: [22, 32], deliveries: 20, cefr: 'B1', maxWords: 16 },
+  11: { lanes: 3, speed: 17, maxSpeed: 22, ramp: true, lampDecay: 0.9, forkSlow: 0.25, hint: null, obstacles: 'normal', filler: [22, 30], deliveries: 20, cefr: 'B1-B2', maxWords: 16 },
+  12: { lanes: 3, speed: 17, maxSpeed: 22, ramp: true, lampDecay: 0.95, forkSlow: 0.25, hint: null, obstacles: 'normal', filler: [22, 30], deliveries: 20, cefr: 'B1-B2', maxWords: 16 },
+  13: { lanes: 3, speed: 18, maxSpeed: 24, ramp: true, lampDecay: 1.0, forkSlow: 0.25, hint: null, obstacles: 'normal', filler: [20, 28], deliveries: 24, cefr: 'B1-B2', maxWords: 18 },
 };
 
 // content files can lengthen an existing level: new items are appended (duplicates skipped), knobs overwritten
