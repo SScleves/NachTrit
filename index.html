@@ -307,7 +307,7 @@ addEventListener('resize', () => {
 });
 
 // lights
-scene.add(new THREE.HemisphereLight(0x4a5a70, 0x0a0c10, 1.0));
+const hemiLight = new THREE.HemisphereLight(0x4a5a70, 0x0a0c10, 1.0); scene.add(hemiLight);
 const moon = new THREE.DirectionalLight(0x8a9ab0, 0.75); moon.position.set(-30, 40, -20); scene.add(moon);
 const lampLight = new THREE.SpotLight(0xdfe8ec, 4.2, 60, Math.PI / 6, 0.6, 1.0);
 lampLight.position.set(0, 1.1, 0.4);
@@ -1129,6 +1129,11 @@ const S = {
   paid: 0, walletLast: 0, tickT: -1,
 };
 let audioCtx = null;
+// how deep into the night we are: 0 at the start of a level, 1 at the end (endless: by distance)
+function nightDepth() { return clamp(S.dist / (L && S.deliveriesTotal ? S.deliveriesTotal * 95 : 2600), 0, 1); }
+// what a right answer refuels: generous in the first town, thinner as the tiers rise
+const TUNE = window.NRTUNE = { drain: 2.5, wisp: 2.0, right: 3 };
+function refuelRight() { return TUNE.right + Math.min(S.streak, 4) * 0.3; }
 window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
 window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
@@ -1215,7 +1220,7 @@ function planFiller(len) {
       else add(puddle(), d, lane, 'puddle');
       S.lastObstacleD = d;
       // wisps in a free lane, just after
-      if (Math.random() < 0.6) {
+      if (Math.random() < 0.7) {
         const free = [...Array(LANE_X.length).keys()].filter(l => l !== lane); const wl = pick(free);
         for (let i = 0; i < 4; i++) add(wisp(), d + 4 + i * 2.2, wl, 'wisp');
       }
@@ -1829,7 +1834,7 @@ function resolveFork(gate) {
   const rule = RULES[fork.r] || { name: fork.r, note: fork.r };
   if (ok) {
     S.good++; S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
-    S.lamp = clamp(S.lamp + 18, 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
+    S.lamp = clamp(S.lamp + refuelRight(), 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
     if (fork.read) { S.souls++; S.delivered++; const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
     else {
@@ -1944,7 +1949,7 @@ function update(dt) {
     if (!L || L.ramp) S.speed = clamp(S.speed + dt * 0.08, BASE, MAXS);      // slow ramp with time
     const v = S.speed * S.slow * (S.stumble > 0 ? 0.6 : 1);
     S.dist += v * dt;
-    S.lamp -= dt * (L ? L.lampDecay : (1.1 + (S.speed < 17 ? 0.6 : 0)));
+    S.lamp -= dt * (L ? L.lampDecay * TUNE.drain : (1.1 + (S.speed < 17 ? 0.6 : 0))) * (0.6 + 1.1 * nightDepth());
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
     if (S.lamp <= 0) { S.lamp = 0; die(); return; }
@@ -1969,9 +1974,10 @@ function update(dt) {
   // lamp look
   const Lf = S.lamp / 100;
   lampLight.intensity = 0.8 + Lf * 4.0;
+  hemiLight.intensity = 1.0 - 0.42 * nightDepth();
   bike.userData.lampMesh.material.color.setHSL(0.55, 0.15, 0.3 + Lf * 0.65);
   beam.material.opacity = 0.02 + Lf * 0.04;
-  scene.fog.density = 0.035 - Lf * 0.017 + S.forkZoom * 0.003;   // a little thinner so the road reads further ahead
+  scene.fog.density = 0.035 - Lf * 0.017 + S.forkZoom * 0.003 + 0.006 * nightDepth();   // a little thinner so the road reads further ahead
   const lw = Math.round(S.lamp); if (lw !== S.lampLast) { S.lampLast = lw; $('lampfill').style.width = lw + '%'; }
   const danger = 1 - Lf;
   const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = composer ? 0 : vo; }
@@ -2026,7 +2032,7 @@ function update(dt) {
     // collisions at the bike
     const pz = o.pz === undefined ? z : o.pz; o.pz = z;
     if (!o.hit && z > -0.9 && pz < 0.9 && o.lane === S.lane) {
-      if (o.type === 'wisp') { o.hit = true; o.mesh.visible = false; S.lamp = clamp(S.lamp + 2, 0, 100); S.speed = clamp(S.speed + 0.15, BASE, MAXS); chime(true); }
+      if (o.type === 'wisp') { o.hit = true; o.mesh.visible = false; S.lamp = clamp(S.lamp + TUNE.wisp, 0, 100); S.speed = clamp(S.speed + 0.15, BASE, MAXS); chime(true); }
       else if (o.type === 'puddle') { o.hit = true; S.speed = clamp(S.speed - 2, BASE, MAXS); S.stumble = 0.6; }
       else if (o.type === 'obstacle') {
         o.hit = true; S.stumble = 1; flash('#000', 0.6); thump(0.8);
