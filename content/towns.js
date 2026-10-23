@@ -318,7 +318,29 @@ window.TOWNS = [
     obstacles: ['parade float', 'brass band', 'café chair']
   },
   {
-    id: 'amsterdam', name: 'Amsterdam', tier: 12, cefr: 'B1-B2',
+    id: 'nijmegen', name: 'Nijmegen', tier: 12, cefr: 'B1-B2',
+    pos: [0.657, 0.61],
+    blurb: 'The oldest city in the country. Two thousand years, and they still cannot agree with Maastricht about it.',
+    blurbNl: 'De oudste stad van het land. Tweeduizend jaar, en ze zijn het er met Maastricht nog steeds niet over eens.',
+    joke: 'During the Vierdaagse the dead walk fifty kilometres a day. Then they ask where the party is.',
+    jokeNl: 'Tijdens de Vierdaagse lopen de doden vijftig kilometer per dag. Daarna vragen ze waar het feest is.',
+    look: 'A hill city on the Waal, rare in the Netherlands: streets climb from the river, brick and the odd Roman stone, the long arched Waalbrug and the pale De Oversteek bridge, the Stevenskerk tower over the old centre, students everywhere, and the wide river with barges at night.',
+    landmarks: [
+      { name: 'De Waalbrug', look: 'Long steel arch road bridge from 1936 over the Waal, dark green, the arch rising over the river' },
+      { name: 'De Stevenskerk', look: 'Gothic church with a tall square tower topped by an open lantern, the highest point of the old centre' },
+      { name: 'Het Valkhof', look: 'A park on the hill by the river with a small ruined Roman-era chapel, the Barbarossa ruin, and the Sint-Nicolaaskapel' },
+      { name: 'De Oversteek', look: 'Modern pale arch bridge from 2013 downstream of the Waalbrug, its lamps lit one by one each evening for the 48 soldiers of 1944' },
+      { name: 'De Grote Markt en de Waag', look: 'Market square below the church with the 1612 weigh house, stepped gable and arcade' },
+    ],
+    words: [
+      { nl: 'de Waal', en: 'the Waal river' }, { nl: 'de brug', en: 'the bridge' }, { nl: 'de Vierdaagse', en: 'the Four Days Marches' },
+      { nl: 'de wandelaar', en: 'the walker' }, { nl: 'de heuvel', en: 'the hill (rare here)' }, { nl: 'de Romeinen', en: 'the Romans' },
+      { nl: 'de student', en: 'the student' }, { nl: 'het feest', en: 'the party' }, { nl: 'de gladiool', en: 'the gladiolus, handed to finishers' }, { nl: 'de oudste stad', en: 'the oldest city' },
+    ],
+    obstacles: ['walker', 'student', 'barge rope', 'gladiolus stand']
+  },
+  {
+    id: 'amsterdam', name: 'Amsterdam', tier: 13, cefr: 'B1-B2',
     pos: [0.410, 0.420], // 52.373 N, 4.900 E
     blurb: 'Canals, trams, bells and tourists. The tourists were already a bit like this before the mist.',
     blurbNl: 'Grachten, trams, bellen en toeristen. De toeristen waren voor de mist al een beetje zo.',

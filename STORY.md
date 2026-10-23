@@ -67,6 +67,7 @@ Never settled. Each town has its own theory; one rumour per town card, level int
 | Texel | The sheep know. The sheep are not talking. | De schapen weten ervan. De schapen zeggen niks. |
 | Groningen | They asked Groningen what happened. Groningen said: could be worse. | Ze vroegen Groningen wat er gebeurd was. Groningen zei: kon minder. |
 | Maastricht | Someone ordered "patat" in Maastricht. Here it is "friet". Nobody has got over it. | Iemand bestelde patat in Maastricht. Dat heet hier friet. Daar is nog niemand overheen. |
+| Nijmegen | Someone said Maastricht is older. Nijmegen has not slept since. | Iemand zei dat Maastricht ouder is. Nijmegen heeft sindsdien niet meer geslapen. |
 | Amsterdam | The millionth tourist said it sounds like a drunk German. | De miljoenste toerist zei dat het klinkt als een dronken Duitser. |
 
 ## Editor's notes
