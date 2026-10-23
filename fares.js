@@ -62,16 +62,17 @@
     { nl: 'Volgende keer beter.', en: 'Better luck next time.', minTier: 1, maxTier: 3 },
     { nl: 'Ik ben dood, niet doof.', en: "I'm dead, not deaf.", minTier: 1, maxTier: 6 },
     { nl: 'Zo zeg je dat niet.', en: "That's not how you say it.", minTier: 2, maxTier: 99 },
-    { nl: 'Dit klopt niet.', en: "This isn't right.", minTier: 2, maxTier: 99 },
+    { nl: 'Dat klopt niet.', en: "That's not right.", minTier: 2, maxTier: 99 },
     { nl: 'Ik had het zelf beter gezegd.', en: "I'd have said it better myself.", minTier: 4, maxTier: 99 },
     { nl: 'Daar geef ik geen cent voor.', en: "I won't give a cent for that.", minTier: 4, maxTier: 99 },
     { nl: 'Mijn oma sprak beter Nederlands, en die ligt al honderd jaar onder de grond.', en: "My grandmother spoke better Dutch, and she's been in the ground a hundred years.", minTier: 9, maxTier: 99 },
   ];
 
-  // tips: the first of a run is always 'Hou de rest maar.', later ones rotate through the rest
+  // tips: the first of a run is always 'Hou de rest maar.', later ones rotate through the rest.
+  // handOver: the line only means 'keep the change' after the amount handed over, so the toast names fare + the euro
   const TIPS = [
     { nl: 'Hou de rest maar.', en: 'Keep the change.', minTier: 1, first: true },
-    { nl: 'Klopt zo.', en: "That's fine as it is.", minTier: 1 },
+    { nl: 'Klopt zo.', en: 'Keep the change.', minTier: 1, handOver: true },
     { nl: 'Laat maar zitten.', en: 'Keep it.', minTier: 4 },
   ];
 

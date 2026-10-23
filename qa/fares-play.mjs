@@ -136,8 +136,10 @@ check('nachtrit.scores saved the level', JSON.parse(r.scores || '{}')['1'] === f
 check('nachtrit.progress is numbers only', Object.values(JSON.parse(r.progress || '{}')).every(v => typeof v === 'number'), r.progress);
 check('summary money line', /^Fares € \d+,\d\d · tips € \d+,\d\d · Tikkie − € \d+,\d\d · missed € \d+,\d\d/.test(r.money), r.money);
 const paidEvents = ev.filter((e, i) => i > 0 && e.paid > ev[i - 1].paid);
-const p10 = paidEvents.length ? paidEvents[0].programs : programs0;
-check(`no shader compiles across ${paidEvents.length} paid deliveries`, r.programs === p10 && paidEvents.every(e => e.programs === p10), { first: p10, end: r.programs, start: programs0 });
+// the base game (08f4c1a, no fares) compiles one program around the first two deliveries, so the baseline is the third paid one
+const steady = paidEvents.slice(2);
+const p10 = steady.length ? steady[0].programs : programs0;
+check(`no shader compiles across ${steady.length} paid deliveries after the first two`, steady.length > 0 && r.programs === p10 && steady.every(e => e.programs === p10), { base: p10, end: r.programs, start: programs0, trace: paidEvents.map(e => e.programs) });
 
 // ---- run 2: a forced zombie hit with 200 cents in the wallet
 await rideLevel1();
@@ -161,9 +163,22 @@ if (zr) {
   check('cents become 0', zr.after.cents === 0, zr.after.cents);
   check('tikkie 200', zr.after.tikkie - zr.before.tikkie === 200, zr.after.tikkie);
   check("toast stays '€4,50' / 'Tikkie.'", zr.toast === '€4,50Tikkie.', zr.toast);
-  check("walletfx '− € 4,50' red, pill shakes", zr.fx === '− € 4,50' && zr.fxClass === 'lost' && zr.shake, zr);
+  check("walletfx names what was taken, '− € 2,00' red, pill shakes", zr.fx === '− € 2,00' && zr.fxClass === 'lost' && zr.shake, zr);
   check('cleanRow reset by the Tikkie', zr.after.cleanRow === 0, zr.after.cleanRow);
 }
+// tip toasts and an empty-wallet Tikkie, straight on the page's own functions
+const t3 = await page.evaluate(() => {
+  const fx = document.getElementById('walletfx'), pill = document.getElementById('walletpill');
+  fx.textContent = ''; fx.className = ''; pill.classList.remove('shake');
+  const c0 = NR.cents, k0 = NR.tikkie; NR.cents = 0; NRfareFns.payTikkie();
+  const empty = { cents: NR.cents, tikkie: NR.tikkie - k0, fx: fx.textContent, shake: pill.classList.contains('shake') };
+  NR.cents = c0;
+  return { empty, klopt: NRfareFns.paidLine(230, 'Klopt zo.'), hou: NRfareFns.paidLine(230, 'Hou de rest maar.'), plain: NRfareFns.paidLine(230, '') };
+});
+check('an empty wallet Tikkie takes nothing and shows nothing', t3.empty.cents === 0 && t3.empty.tikkie === 0 && t3.empty.fx === '' && !t3.empty.shake, t3.empty);
+check("'Klopt zo.' names the amount handed over", t3.klopt === 'Alsjeblieft. Drie euro dertig. Klopt zo.', t3.klopt);
+check("'Hou de rest maar.' names the fare", t3.hou === 'Alsjeblieft. Twee euro dertig. Hou de rest maar.', t3.hou);
+check('a plain fare line', t3.plain === 'Alsjeblieft. Twee euro dertig.', t3.plain);
 const err = await page.evaluate(() => document.getElementById('err').textContent);
 check('no error text on the page', !err, err);
 check('no console or page errors', errors.length === 0, errors);

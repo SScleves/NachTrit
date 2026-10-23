@@ -75,7 +75,14 @@
   #card .fare .no { color:#ff8b84; }
   .place .lv em { color:var(--dim); font-style:normal; font-size:11px; margin-left:4px; }
   #summary .money { color:var(--dim); font-size:13px; margin:-4px 0 10px; line-height:1.5; }
-  @media (max-width: 520px) { #distpill { display:none; } }
+  @media (max-width: 520px) {
+    #distpill { display:none; }
+    /* phone: keep the pills clear of the sound button, and let the wallet flash sit under the pill so the row never grows */
+    #hud { padding-right:48px; gap:6px; }
+    #hud .pill { padding:6px 7px; }
+    #walletpill { position:relative; }
+    #walletfx { position:absolute; left:0; right:0; top:100%; margin:3px 0 0; text-align:center; text-shadow:0 1px 4px #000; }
+  }
 </style>
 </head>
 <body>
@@ -1099,6 +1106,7 @@ window.NRstep = n => { for (let i = 0; i < (n || 60); i++) update(1 / 60); rende
 window.NRbright = () => { render(); const c = renderer.domElement, t = document.createElement('canvas'); t.width = 64; t.height = 36; const g = t.getContext('2d'); g.drawImage(c, 0, 0, 64, 36); const d = g.getImageData(0, 0, 64, 36).data; let sum = 0; for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2]; return Math.round(sum / (d.length / 4) / 3); };
 window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, calls: renderer.info.render.calls, dpr: DPR, post: !!composer });
 window.NRfare = () => ({ cents: S.cents, missed: S.missed, tips: S.tips, tikkie: S.tikkie, cleanRow: S.cleanRow, score: S.score, paid: S.paid });
+window.NRfareFns = { paidLine, payTikkie };   // qa: the toast line and the Tikkie, called directly
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 buildScenery(THEMES.polder);
 let L = null;                 // current level, null = endless
@@ -1260,7 +1268,7 @@ function showCard(who, en, nlHtml, fareHtml) {
   cardSeq++;
   card.querySelector('.who').textContent = who; card.querySelector('.en').textContent = en; card.querySelector('.nl').innerHTML = nlHtml; card.querySelector('.fare').innerHTML = fareHtml || ''; card.style.opacity = 1;
 }
-function hideCard() { card.style.opacity = 0; card.querySelector('.fare').innerHTML = ''; }
+function hideCard() { card.style.opacity = 0; }   // .fare is left to fade with the rest: showCard always rewrites it
 // the fare line on the card: what the ride is worth, struck through with what is left once a gap went wrong
 function fareRow(fare, wrong, forks) {
   if (!fare) return '';
@@ -1688,10 +1696,9 @@ function openMission(lv) {
   $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
   $('mission').style.display = 'flex';
 }
-// 'Fares here € 2,00 to € 2,90 · best 1284': the passenger fares from the fewest to the most forks on this road
+// 'Fares here € 1,00 to € 2,90 · best 1284': every fare on this road, signposts and look forks included
 function missionFares(lv, tier) {
-  const items = lv.items || []; const rides = items.filter(i => !i.read && !i.look && !i.dehet);
-  const fares = (rides.length ? rides : items).map(i => FARES.fareFor(i, tier)).filter(f => f > 0);
+  const fares = (lv.items || []).map(i => FARES.fareFor(i, tier)).filter(f => f > 0);
   if (!fares.length) return '';
   const lo = Math.min(...fares), hi = Math.max(...fares), best = scores[lv.id];
   return 'Fares here ' + (lo === hi ? FARES.fmtEuro(lo) + ' each' : FARES.fmtEuro(lo) + ' to ' + FARES.fmtEuro(hi)) + (best ? ' · best ' + best : '');
@@ -1778,7 +1785,7 @@ function resolveFork(gate) {
     S.good++; S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
     S.lamp = clamp(S.lamp + 18, 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
-    if (fork.read) { S.souls++; S.delivered++; const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(fork.fare / 100), tip]); }
+    if (fork.read) { S.souls++; S.delivered++; const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
     else {
       fork.st.chosen.push(fork.o[fork.a]);
       const done = fork.idx === fork.st.forks.length - 1;
@@ -1809,8 +1816,10 @@ function resolveFork(gate) {
 }
 // ---------- fares ----------
 const whyLine = (...parts) => parts.filter(Boolean).join(' · ');
+// what the passenger names: the fare, or fare + the tip euro when the tip line is 'Klopt zo.' (said over the amount handed over)
+const handed = (cents, tip) => cents + (tip && FARES.TIPS.some(t => t.handOver && t.nl === tip) ? 100 : 0);
 function paidLine(cents, tip) {   // 'Alsjeblieft. Twee euro dertig.' plus the tip line
-  const w = FARES.euroToWords(cents / 100).replace(/^één/, 'eén');
+  const w = FARES.euroToWords(handed(cents, tip) / 100).replace(/^één/, 'eén');
   return w ? 'Alsjeblieft. ' + w.charAt(0).toUpperCase() + w.slice(1) + '.' + (tip ? ' ' + tip : '') : '';
 }
 // the last fork of a ride settles the money: full or part pay, or a refusal; returns the toast line and what is said
@@ -1822,7 +1831,7 @@ function settleRide(fork) {
   if (pay > 0) {
     S.missed += st.fare - pay;
     const tip = payFare(pay, st.wrong === 0);
-    return { line: paidLine(pay, tip), voice: quiet ? [nl] : [nl, FARES.euroToWords(pay / 100), tip] };
+    return { line: paidLine(pay, tip), voice: quiet ? [nl] : [nl, FARES.euroToWords(handed(pay, tip) / 100), tip] };
   }
   const r = refuse(st);
   return { line: '', voice: quiet ? [nl] : [nl, r] };
@@ -1853,7 +1862,8 @@ function walletFx(text, cls) { const fx = $('walletfx'); fx.textContent = text; 
 // a zombie's Tikkie: up to € 4,50 out of the wallet, never below zero
 function payTikkie() {
   const taken = Math.min(S.cents, 450); S.cents -= taken; S.tikkie += taken; S.cleanRow = 0;
-  walletFx('− € 4,50', 'lost');
+  if (!taken) return;   // an empty wallet loses nothing: the toast still asks for € 4,50, the pill stays put
+  walletFx('− ' + FARES.fmtEuro(taken), 'lost');
   const p = $('walletpill'); p.classList.add('shake'); setTimeout(() => p.classList.remove('shake'), 400);
 }
 
