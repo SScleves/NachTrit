@@ -14,14 +14,13 @@
 // ergens mee helpen, Zullen we snel een keer koffie drinken), meeting-people, friends, small-talk; levels 113 and 114 for the
 // replayed words (de uitnodiging, de kennismaking, het gezelschap, de grap, de gastheer, de optocht); content/towns.js for
 // Nijmegen (de student, het feest, de Romeinen, de Stevenskerk, de wandelaar, the oldest-city rumour).
-// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). gebod, passief, indirect
-// and mening are guarded copies of the existing definitions; the rest are in data.js.
+// New rules: idioom, samen and formeel (guarded, same text in every Nijmegen and Amsterdam file). gebod, passief, indirect,
+// mening and plusq are guarded copies of the existing definitions; the rest are in data.js.
 // New props: none. Only hond, lamp and deur are used (not kerk: de Stevenskerk is a listen item and would read as a right answer).
 (() => {
   window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
   window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
   window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
