@@ -499,4 +499,6 @@
     mist(g, t, 152, 18, 0.2, 6, 6, 'mist3');
   };
   A.scenes.polder = (g, t) => A.scenes.dyke(g, t);
+  // the shared night grade, last: the deepest darks lift into the concept art's blue-grey haze (NRART.grade)
+  { const draw = A.scenes.dyke; A.scenes.dyke = (g, t) => { draw(g, t); A.grade(g); }; }
 })();

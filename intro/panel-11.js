@@ -361,6 +361,7 @@
         mist(g, tm * 4, 60, 70, 0.8 * pass, 2, 'mist4');
         mist(g, -tm * 3, 120, 50, 0.8 * pass, 6, 'mist4');
       }
+      A.grade(g);
     },
   };
 })();

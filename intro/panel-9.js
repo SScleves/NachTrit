@@ -278,6 +278,7 @@
       // ============ 8. the edges: a cheap vignette ============
       A.depth(g, 1);
       A.ditherGradient(g, 0, 0, 10, 180, null, 'night0', 'left'); A.ditherGradient(g, 310, 0, 10, 180, null, 'night0', 'right');
-          },
+      A.grade(g);
+    },
   };
 })();

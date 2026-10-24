@@ -445,6 +445,40 @@
     }
   };
 
+  // ------------------------------------------------------------------ the night grade (shared look)
+  /** The house grade for every intro piece: the deepest darks lift into the cold blue-grey of the
+   *  concept art's haze, so a black never sits on a black. Only darks below `below` luma move, the
+   *  darker the further (up to `lift`), with the same 4x4 Bayer dither as everything else. Lights,
+   *  amber, the hero's orange, eyes, phones, red, cheese and blue are never touched.
+   *  Call it last in a piece's draw. o: { lift: 0.42, color: 'night4', below: 34 } */
+  const gradeCache = new Map();
+  NR.grade = (g, o) => {
+    o = o || {}; const lift = o.lift == null ? 0.42 : o.lift, below = o.below == null ? 34 : o.below, cname = o.color || 'night4';
+    const key = cname + ':' + lift + ':' + below; let M = gradeCache.get(key);
+    if (!M) {
+      // one table for the whole grade: M[(bayer cell << 8) | colour] is the colour after the dithered lift
+      const Q = 6, Ls = levels('mix', cname, 1, Q), V = new Float32Array(256);
+      for (let i = 0; i < PAL_N; i++) {
+        const r = RAMP_OF[i]; if (!r || r === 'amber' || RESERVED.has(r)) continue;
+        const p = PAL_RGB[i], l = 0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2];
+        if (l < below) V[i] = Q * lift * Math.pow(1 - l / below, 0.8);
+      }
+      M = new Uint8Array(16 * 256);
+      for (let b = 0; b < 16; b++) for (let c = 0; c < 256; c++) {
+        const v = V[c]; let q = v | 0; if (v - q > BAYER[b]) q++;
+        M[(b << 8) | c] = q > 0 ? Ls[q > Q ? Q : q][c] : c;
+      }
+      gradeCache.set(key, M);
+    }
+    const buf = g.buf, gw = g.w, gh = g.h;
+    for (let y = 0; y < gh; y++) {
+      const row = y * gw, br = ((y & 3) << 2) << 8, b0 = br, b1 = br | 256, b2 = br | 512, b3 = br | 768;
+      let x = 0;
+      for (; x + 3 < gw; x += 4) { const i = row + x; buf[i] = M[b0 | buf[i]]; buf[i + 1] = M[b1 | buf[i + 1]]; buf[i + 2] = M[b2 | buf[i + 2]]; buf[i + 3] = M[b3 | buf[i + 3]]; }
+      for (; x < gw; x++) { const i = row + x; buf[i] = M[(br | ((x & 3) << 8)) | buf[i]]; }
+    }
+  };
+
   // ------------------------------------------------------------------ sky, stars, moon, rain
   /** Sky in flat bands with dithered seams. stops: colours top to bottom, e.g.
    *  ['night1', 'night2', 'night3', 'night5']. o: { blend: rows of dither at each seam (default 6) } */

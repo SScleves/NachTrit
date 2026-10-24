@@ -570,6 +570,7 @@
       const head = (o) => [rnd(o.x), rnd(o.y - o.h * 0.82) - Math.max(1, rnd(o.h / 9)) - 3];
       if (hs && hs.tau > 2.8 && hs.tau < 5.7) { const [hx, hy] = head(t1); speak(g, hx, hy, 'sorry, English?'); }
       else if (t < 2.6 || (t > 10.2 && t < 12.6)) { const [hx, hy] = head(t2); speak(g, hx, hy, t < 2.6 ? 'omg, same' : 'yeah no, so fine'); }
+      A.grade(g);
     },
   };
 })();

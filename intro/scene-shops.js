@@ -414,4 +414,6 @@
     // ---- the joke: one bubble above the dead man's hat, clear of the lamp
     A.say(g, z.head[0], z.head[1] - 5, 'Tikkie?', { dx: -4 });
   };
+  // the shared night grade, last: the deepest darks lift into the concept art's blue-grey haze (NRART.grade)
+  { const draw = A.scenes.shops; A.scenes.shops = (g, t) => { draw(g, t); A.grade(g); }; }
 })();

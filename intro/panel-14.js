@@ -403,6 +403,7 @@
       // ---- foreground reeds at full speed
       A.reeds(g, scroll(280, V_ROAD * 1.3, t, 440, 40), 181, 44, 22, { t, seed: 4, tone: 'night0', dense: 0.85 });
       A.reeds(g, scroll(10, V_ROAD * 1.3, t, 440, 40), 181, 22, 14, { t, seed: 6, tone: 'night0', dense: 0.8 });
+      A.grade(g);
     },
   };
 })();

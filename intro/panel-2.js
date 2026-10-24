@@ -391,6 +391,7 @@
       if (!bubble) bubble = Math.ceil(A.textWidth('Tikkie: €4,50', 7, true)) + 8;
       const bw = bubble, bh = 12, bx = Math.max(2, Math.min(A.W - bw - 2, w.head[0] - bw / 2 - 12)), by = w.head[1] - 6 - bh;
       A.bubble(g, bx, by, bw, bh, { text: 'Tikkie: €4,50', tail: [w.head[0], w.head[1] - 1] });
+      A.grade(g);
     },
   };
 })();

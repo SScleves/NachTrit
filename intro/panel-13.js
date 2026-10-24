@@ -248,6 +248,7 @@
       A.px(g, cache.lamp.lx + rnd(Math.sin(T * 5) * 6), cache.lamp.ly + 8 + rnd(Math.cos(T * 3) * 5), 'paper6');
       // deadpan: silence, then "nee." held for 4 s; never strobed
       if (tm >= 3 && tm < 7) A.say(g, MAN.x + 1, MAN.y - 41, 'nee.', {});
+      A.grade(g);
     },
   };
 })();

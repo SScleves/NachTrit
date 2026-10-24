@@ -393,6 +393,7 @@
       }
       A.text(228, 142, 'het?', 'red4', 9, true);
       A.text(52, 31, 'HOOFDSTUK 1', 'slate3', 6); A.text(220, 31, 'LIDWOORDEN', 'slate3', 6);
+      A.grade(g);
     },
   };
 })();

@@ -232,6 +232,7 @@
       // ---- 6. speech: two steps
       A.say(g, mx, seat - 28, 'Hoi.', {});
       if (nice) A.say(g, f.head[0], f.head[1], 'Oh, English is fine.', { dx: 14 });
+      A.grade(g);
     },
   };
 })();

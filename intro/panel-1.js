@@ -219,6 +219,7 @@
       A.reeds(g, -14, 182, 30, 40, { t, seed: 2, tone: 'night0', dense: 0.8 });
       A.reeds(g, 292, 182, 36, 38, { t, seed: 5, tone: 'night0', dense: 0.8 });
       A.fingerpost(g, 277, 178, { signs: [['Molen', 'left']], tone: 'wood1' });
+      A.grade(g);
     },
   };
 })();

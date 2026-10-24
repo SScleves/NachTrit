@@ -456,4 +456,6 @@
       }
     }
   }
+  // the shared night grade, last: the deepest darks lift into the concept art's blue-grey haze (NRART.grade)
+  { const draw = A.scenes.street; A.scenes.street = (g, t) => { draw(g, t); A.grade(g); }; }
 })();
