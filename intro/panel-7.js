@@ -91,6 +91,7 @@
   const NR0 = HOUSES.length;
   addRow(1, RFRONT, [4.4, 8.2, 12.2, 16.6, 21.6, 27.6, 35, 45, 59, 79, 109, 150, 230], 29, ['slate2', 'slate3', 'slate2', 'brick1', 'slate3']);
   HOUSES[NR0].gb = 'step'; HOUSES[NR0 + 1].gb = 'neck'; HOUSES[NR0].H = 6.6;
+  HOUSES[0].brick = 'brick2';                                   // the nearest house: warm dark brick, washed by its lamp
   // windows: one list for the whole street, filled while painting the dark pass
   const WIN = [];
   const layoutWindows = (h) => {
@@ -195,23 +196,31 @@
     fglow(g, x, y + 1, wd + 2, len, color, strength * 0.5, 1.4);
     wstreak(g, x, y + 2, len, wd, color, strength, t, seed);
   };
-  // an airy winter-ish tree like the big one in the concept art: thin trunk, forked branches, leaf clumps
-  const bigTree = (g, x, y, ht, seed, tone) => {
-    const c = tone || 'night0';
-    for (let k = 0; k < ht; k++) { const w = ht > 60 ? (k < ht * 0.3 ? 4 : 3) : (k < ht * 0.3 ? 2 : 1); A.rect(g, x - (w >> 1) + (k > ht * 0.5 ? rnd((k - ht * 0.5) * 0.05) : 0), y - k, w, 1, c); }
-    const tips = [];
-    const fork = (bx, by, ang, len, depth) => {
+  // a bare winter tree like the ones in the concept art: a tapering trunk, forks that thin out into a lace of
+  // twigs against the fog, the trunk's edge toward the street lamp warm (lit: +1 right, -1 left, 0 none)
+  const bigTree = (g, x, y, ht, seed, tone, lit) => {
+    const c = A.col(tone || 'night0'), tw = A.step(c, 1), big = ht > 60;
+    for (let k = 0; k < ht * 0.75; k++) {
+      const w = Math.max(1, rnd((big ? 4.5 : 2.4) * (1 - 0.55 * k / ht))), xx = x - (w >> 1) + (k > ht * 0.4 ? rnd((k - ht * 0.4) * 0.04) : 0);
+      A.rect(g, xx, y - k, w, 1, c);
+      if (lit && w > 1 && hash(k >> 1, seed) < 0.8) A.px(g, lit > 0 ? xx + w - 1 : xx, y - k, k < ht * 0.5 ? 'wood1' : 'brick1');
+    }
+    if (big) { A.poly(g, [x - 5, y + 1, x + 6, y + 1, x + 2, y - 6, x - 2, y - 6], c); }   // the root flare
+    const fork = (bx, by, ang, len, depth, th) => {
       const ex = bx + Math.cos(ang) * len, ey = by + Math.sin(ang) * len;
-      A.line(g, bx, by, ex, ey, c, depth > 0 ? 2 : 1);
-      if (depth === 0) { tips.push([ex, ey]); return; }
-      if (depth === 1) tips.push([ex, ey, 1]);
-      fork(ex, ey, ang - 0.5 - hash(seed + depth, 1) * 0.3, len * 0.72, depth - 1);
-      fork(ex, ey, ang + 0.5 + hash(seed + depth, 2) * 0.3, len * 0.72, depth - 1);
+      A.line(g, bx, by, ex, ey, depth > 1 ? c : tw, th);
+      if (depth === 0) {
+        for (const s of [-1, 1]) if (hash(seed + rnd(ex), rnd(ey) + s) < 0.75) A.line(g, ex, ey, ex + Math.cos(ang + s * 0.7) * len * 0.55, ey + Math.sin(ang + s * 0.7) * len * 0.55, tw);
+        return;
+      }
+      const h1 = hash(seed + depth * 7, rnd(bx)), h2 = hash(seed + depth * 5, rnd(by));
+      fork(ex, ey, ang - 0.32 - h1 * 0.35, len * (0.68 + 0.12 * h2), depth - 1, Math.max(1, th - 1));
+      fork(ex, ey, ang + 0.3 + h2 * 0.35, len * (0.66 + 0.12 * h1), depth - 1, Math.max(1, th - 1));
+      if (depth >= 2 && h1 > 0.6) fork(ex, ey, ang + (h2 - 0.5) * 0.3, len * 0.55, depth - 2, 1);
     };
-    const top = y - ht * 0.72;
-    fork(x, top, -Math.PI / 2 - 0.55, ht * 0.34, 3); fork(x, top, -Math.PI / 2 + 0.5, ht * 0.36, 3); fork(x, y - ht * 0.45, -Math.PI + 0.55, ht * 0.3, 2); fork(x, y - ht * 0.5, -0.5, ht * 0.28, 2);
-    const k = ht / 118;
-    tips.forEach((tp, i) => { const tx = tp[0], ty = tp[1]; const r = Math.max(1, rnd((4 + Math.floor(hash(seed + i, 5) * 4)) * k * (tp[2] ? 0.7 : 1))); A.disc(g, tx, ty, r, c); if (hash(seed + i, 6) < 0.6) A.disc(g, tx + rnd(5 * k), ty + rnd(3 * k), Math.max(1, r - 2), c); if (hash(seed + i, 7) < 0.5) A.disc(g, tx - rnd(5 * k), ty + rnd(4 * k), Math.max(1, r - 2), c); });
+    const top = y - ht * 0.72, d = big ? 5 : 4, th = big ? 3 : 2;
+    fork(x, top, -Math.PI / 2 - 0.5, ht * 0.27, d, th); fork(x, top, -Math.PI / 2 + 0.45, ht * 0.29, d, th);
+    fork(x, y - ht * 0.48, -Math.PI + 0.6, ht * 0.24, d - 1, th - 1); fork(x, y - ht * 0.55, -0.55, ht * 0.22, d - 1, th - 1);
   };
   // a puddle on wet ground: a pale sheen with the lamp's colour in it
   const puddle = (g, lat, d, rx) => {
@@ -239,6 +248,7 @@
     if (h >= 26) {
       A.lamp(g, x, y, { style: 'lantern', h, light: false, seed: o.seed });
       const lx = x + 1, ly = y - h - 3;
+      if (o.wash) A.glow(g, lx - 6, ly + 14, o.wash, { ry: o.wash * 1.1, color: 'amber4', strength: 0.3, power: 1.25 });   // the lamp washes the wall behind it
       A.glow(g, lx, ly, Math.max(8, h * 0.28), { color: 'amber6', strength: 0.6, power: 1.5 });
       A.cone(g, lx, ly + 2, Math.PI / 2, 0.4, Math.min(h, 180 - ly) + 4, { color: 'amber5', strength: o.cone || 0.3, width: 4, fade: 0.6, edge: 0.6 });
       A.glow(g, lx, y, h * 0.55, { ry: Math.max(2, h * 0.07), color: 'amber5', strength: 0.42, power: 1 });
@@ -333,9 +343,9 @@
       A.line(g, ...pj(QUAY - 0.05, d0, 0.95), ...pj(QUAY - 0.05, d1, 0.95), 'slate4'); A.line(g, ...pj(QUAY - 0.05, d0, 0.5), ...pj(QUAY - 0.05, d1, 0.5), 'slate3');
       for (let d = d0; d < d1; d += 1.1) A.line(g, ...pj(QUAY - 0.05, d, 0.1), ...pj(QUAY - 0.05, d, 1.0), 'slate4');
     } });
-    [[-KERB - 0.2, 2.4, 1], [KERB + 0.2, 4.9, 2], [-KERB - 0.2, 9.4, 3], [KERB + 0.2, 15.5, 4], [-KERB - 0.2, 26, 5], [KERB + 0.2, 42, 6]].forEach(([lat, d, k]) => items.push({ d, fn: () => lampAt(g, lat, d, { seed: k, cone: k === 1 ? 0.34 : 0.26 }) }));
-    items.push({ d: 1.9, fn: () => bigTree(g, rnd(PX(-5.5, 1.75)), rnd(GY(1.75)) + 6, 118, 7) });
-    items.push({ d: 3.8, fn: () => bigTree(g, rnd(PX(9.7, 3.8)), rnd(GY(3.8)), rnd(7 * F / 3.8), 9, 'night1') });
+    [[-KERB - 0.2, 2.4, 1], [KERB + 0.2, 4.9, 2], [-KERB - 0.2, 9.4, 3], [KERB + 0.2, 15.5, 4], [-KERB - 0.2, 26, 5], [KERB + 0.2, 42, 6]].forEach(([lat, d, k]) => items.push({ d, fn: () => lampAt(g, lat, d, { seed: k, cone: k === 1 ? 0.34 : 0.26, wash: k === 1 ? 64 : k === 2 ? 30 : 0 }) }));
+    items.push({ d: 1.9, fn: () => bigTree(g, rnd(PX(-5.5, 1.75)), rnd(GY(1.75)) + 6, 118, 7, 'night0', 1) });
+    items.push({ d: 3.8, fn: () => bigTree(g, rnd(PX(9.7, 3.8)), rnd(GY(3.8)), rnd(7 * F / 3.8), 9, 'night1', -1) });
 
     items.push({ d: 10, fn: () => { const x0 = rnd(PX(QUAY, 10)), x1 = rnd(PX(BANK, 10)); A.archBridge(g, x0, rnd(PY(-0.5, 10)), x1 - x0, 6, { brick: 'brick2' }); } });
     [1.7, 3.1, 4.6, 6.4, 8.9].forEach(d => items.push({ d, fn: () => { const x = rnd(PX(-KERB + 0.15, d)), y = rnd(GY(d)); A.bollard(g, x, y, { h: Math.max(3, rnd(0.95 * F / d)) }); } }));
@@ -351,6 +361,9 @@
       it.fn();
     }
     while (bi < FOG.length) { fogAt(g, FOG[bi][0], FOG[bi][1]); bi++; }
+    // the night closes in at the top of the frame, hardest over the near roofs on the left
+    A.haze(g, 0, 0, 190, 86, { top: 0.55, bottom: 0, color: 'night0', lights: 0.3 });
+    A.haze(g, 190, 0, 130, 50, { top: 0.35, bottom: 0, color: 'night0', lights: 0.3 });
     // ---- the canal: mirror the far bank, darkened, with broken lines
     const Lm = A.lut('mix', 'mist3', 0.4), Ld = A.lut('mix', 'night2', 0.5), Lg = A.lut('mix', 'night2', 0.72), B = g.buf, gw = g.w;
     for (let y = VY + 1; y < 180; y++) for (let x = VX + 6; x < gw; x++) {
@@ -507,6 +520,8 @@
       }
       // ---- the mill's sails turn the right way (anticlockwise)
       sails(g, HUB[0], HUB[1] - 1, -t * 0.32, 24, 'night4', 'night3');
+      // ---- a band of mist drifts across the far street (one full pass per 16 s loop)
+      A.mist(g, t * 20 / T, 92, 22, { amount: 0.34, speed: 16, color: 'mist4', seed: 5, lights: 0.4 });
       // ---- key light follows the lead word
       const leadI = st[1] ? 1 : st[4] ? 4 : st[0] ? 0 : -1;
       const lk = leadI >= 0 ? { x: PX(st[leadI].lat, st[leadI].d), y: PY(1.0, st[leadI].d) } : { x: VX, y: 100 };
@@ -548,6 +563,8 @@
         fglow(g, cx, cyy, 52 - k * 14, 19 - k * 4, 'mist4', 0.2 + 0.1 * dl + 0.45 * closing, 0.8, 'mix', 5);
       }
       over.forEach(([x, y, w, col, fs]) => A.text(x, y, w, col, fs, true, { align: 'center', shadow: true }));
+      // ---- a fine drizzle, brighter where it falls through the lamp light
+      A.rain(g, t, { n: 70, len: 4, speed: 120, slant: 0.12, color: 'mist4', far: 'mist2', seed: 7 });
       // ---- the one-line story
       const hs = st[0], t1 = TALK[0], t2 = TALK[1];
       const head = (o) => [rnd(o.x), rnd(o.y - o.h * 0.82) - Math.max(1, rnd(o.h / 9)) - 3];
