@@ -2239,38 +2239,62 @@ function chime(good) {
   g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(good ? 0.12 : 0.2, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + (good ? 0.35 : 0.5));
   o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + 0.6);
 }
-let nlVoice = null;
+// ---------- voices: the browser's own, free. Ranked so Edge gets its neural Dutch voices (Fenna, Maarten, Colette), Chrome
+// "Google Nederlands", Apple Xander or Claire; Flemish (nl-BE) only when nothing else speaks Dutch. When the device has two,
+// the passenger's sentence and the dead's answer get different voices. Right-click or long-press the speaker to try the next.
+let nlVoice = null, nlVoice2 = null, voiceList = [];
+const VOICE_MALE = /maarten|xander|frank|ruben|arnaud|daan|bram|willem|guus|male/i;
+const voiceNeural = v => !!v && /natural|neural|premium|enhanced|wavenet|google/i.test(v.name);
+function voiceScore(v) {
+  const n = v.name || '', l = (v.lang || '').replace('_', '-').toLowerCase();
+  let s = l.startsWith('nl-nl') ? 100 : l === 'nl' ? 80 : l.startsWith('nl-be') ? 10 : l.startsWith('nl') ? 40 : -1000;
+  if (/natural|neural|premium|enhanced|wavenet/i.test(n)) s += 40;
+  if (/google/i.test(n)) s += 25;
+  if (/fenna|maarten|colette|xander|claire/i.test(n)) s += 8;
+  if (/compact|eloquence|espeak/i.test(n)) s -= 30;
+  return s;
+}
 function pickVoice() {
   if (!('speechSynthesis' in window)) return;
-  const vs = speechSynthesis.getVoices();
-  nlVoice = vs.find(v => /^nl[-_]NL/i.test(v.lang)) || vs.find(v => /^nl/i.test(v.lang)) || null;
+  voiceList = speechSynthesis.getVoices().filter(v => voiceScore(v) > 0).sort((a, b) => voiceScore(b) - voiceScore(a));
+  let saved = null; try { saved = localStorage.getItem('nachtrit.voiceName'); } catch (e) {}
+  nlVoice = (saved && voiceList.find(v => v.name === saved)) || voiceList[0] || null;
+  const male = v => VOICE_MALE.test(v.name);
+  nlVoice2 = voiceList.find(v => v !== nlVoice && voiceScore(v) >= 100 && male(v) !== male(nlVoice)) || voiceList.find(v => v !== nlVoice && voiceScore(v) >= 100) || nlVoice;
 }
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+// neural voices sound wrong when their pitch is pushed, so they keep it and only slow down a little
+function utter(text, v, rate, pitch, volume) {
+  const u = new SpeechSynthesisUtterance(text); u.lang = v ? v.lang : 'nl-NL'; if (v) u.voice = v;
+  const n = voiceNeural(v); u.rate = n ? Math.max(0.85, rate + 0.05) : rate; u.pitch = n ? 1 - (1 - pitch) * 0.4 : pitch; u.volume = volume; return u;
+}
 function speak(text, whisper = false) {
   if (!S.voice || !('speechSynthesis' in window)) return;
   try {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'nl-NL'; if (nlVoice) u.voice = nlVoice;
-    u.rate = whisper ? 0.85 : 0.9; u.pitch = whisper ? 0.7 : 0.9; u.volume = whisper ? 0.6 : 1;
-    speechSynthesis.speak(u);
+    speechSynthesis.speak(utter(text, nlVoice, whisper ? 0.85 : 0.9, whisper ? 0.7 : 0.9, whisper ? 0.6 : 1));
   } catch (e) {}
 }
-// one cancel, then the sentence and the passenger's lines queued back to back; the dead speak the amount lower
+// one cancel, then the sentence and the passenger's lines queued back to back; the dead answer in the second voice, lower
 function speakSeq(list) {
   if (!S.voice || !('speechSynthesis' in window)) return;
   try {
     speechSynthesis.cancel();
-    list.forEach((text, i) => {
-      if (!text) return;
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'nl-NL'; if (nlVoice) u.voice = nlVoice;
-      u.rate = 0.9; u.pitch = i ? 0.75 : 0.9; u.volume = 1;
-      speechSynthesis.speak(u);
-    });
+    list.forEach((text, i) => { if (text) speechSynthesis.speak(utter(text, i ? nlVoice2 : nlVoice, 0.9, i ? 0.75 : 0.9, 1)); });
   } catch (e) {}
 }
+function nextVoice() {
+  if (performance.now() - (nextVoice.t || 0) < 800) return; nextVoice.t = performance.now();   // a long-press on a phone also fires contextmenu
+  if (!voiceList.length) { say('This browser has no Dutch voice. Edge on Windows has the best free ones.', 'bad', null, 3); return; }
+  nlVoice = voiceList[(voiceList.indexOf(nlVoice) + 1) % voiceList.length];
+  try { localStorage.setItem('nachtrit.voiceName', nlVoice.name); } catch (e) {}
+  pickVoice(); S.voice = true; $('snd').textContent = '🔊';
+  say('Voice: ' + nlVoice.name.replace(/[<>&]/g, ''), 'good', null, 2.2); speak('Goedenavond. Waar moet u naartoe?');
+}
+window.NRvoices = () => voiceList.map(v => `${v === nlVoice ? '* ' : v === nlVoice2 ? '+ ' : '  '}${v.name} | ${v.lang} | ${voiceScore(v)}`);   // debug: the ranked list
 $('snd').onclick = () => { S.voice = !S.voice; $('snd').textContent = S.voice ? '🔊' : '🔇'; };
+$('snd').oncontextmenu = e => { e.preventDefault(); nextVoice(); };
+{ let hold = 0; $('snd').addEventListener('touchstart', () => { hold = setTimeout(() => { hold = 0; nextVoice(); }, 600); }, { passive: true }); $('snd').addEventListener('touchend', e => { if (!hold) e.preventDefault(); clearTimeout(hold); }); }
 
 // ---------- input ----------
 function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir, 0, LANE_X.length - 1); }
