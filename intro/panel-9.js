@@ -62,7 +62,7 @@
   // The dogs are local so that their heads can tilt together: the shared dog cannot do that.
   const COAT = {
     brown: ['fur2', 'fur3', 'fur4', 'fur5', 'fur6'],
-    dark: ['night1', 'slate1', 'slate2', 'slate3', 'slate4'],
+    dark: ['slate1', 'slate2', 'slate3', 'slate4', 'slate5'],
   };
   // eyes toward the man: a pale eye with the pupil pushed up and to the right, the brow up on a tilt
   function eye(P, x, y, tilt) {
@@ -141,14 +141,15 @@
       cfield(g, 'hz2', WX - 4, 88, WW + 8, 22, (i, j) => 0.1 + 0.3 * j / 22, 'mix', 'mist2', 1, 8);
       // the watcher: one hunched woman right at the glass, eyes on the man
       A.depth(g, 0.55);
-      A.zombie(g, 80, 108, { t, seed: 9, variant: 'hat', height: 70, hunch: 0.5, tone: 'night1', glow: 0.9, clogs: true, socks: false });
+      A.zombie(g, 80, 108, { t, seed: 9, variant: 'hat', height: 70, hunch: 0.5, tone: 'night1', glow: 0.45, clogs: true, socks: false });
       A.mist(g, t, 88, 22, { amount: 0.32, speed: 5, seed: 6, color: 'mist3' });
       A.depth(g, 1);
       // a handprint smeared on the glass where he passed, the fingers dragging down
-      A.ditherRect(g, 97, 66, 7, 6, null, 'mist6', 0.6);
-      [[97, 3], [99, 4], [101, 4], [103, 3]].forEach(([fx, fl], k) => A.vline(g, fx, 66 - fl, fl, 'mist5'));
-      A.px(g, 96, 69, 'mist5'); A.px(g, 95, 68, 'mist5'); A.px(g, 95, 67, 'mist4');
-      A.vline(g, 99, 72, 5 + Math.round(pulse * 2), 'mist4'); A.vline(g, 102, 72, 3, 'mist4');
+      const HPX = 104, HPY = 82;
+      A.ditherRect(g, HPX, HPY, 6, 5, null, 'mist6', 0.5);
+      [[0, 3], [2, 4], [4, 4], [5, 2]].forEach(([fx, fl]) => A.vline(g, HPX + fx, HPY - fl, fl, 'mist5'));
+      A.px(g, HPX - 1, HPY + 3, 'mist5'); A.px(g, HPX - 2, HPY + 2, 'mist4');
+      A.vline(g, HPX + 2, HPY + 5, 4 + Math.round(pulse * 2), 'mist4'); A.vline(g, HPX + 4, HPY + 5, 2, 'mist4');
 
       // ============ 2. the wall: flat night3, a sparse stripe, wainscot ============
       const wall = (x, y, w, h) => { A.rect(g, x, y, w, h, 'night3'); for (let xx = x - ((x % 24) + 24) % 24; xx < x + w; xx += 24) if (xx >= x) A.vline(g, xx, y, h, 'night2'); };
@@ -188,9 +189,13 @@
       // the rug: night slate, low
       A.ellipse(g, 196, 158, 92, 14, 'night2'); A.ellipse(g, 196, 158, 86, 11, 'night3'); A.ellipse(g, 196, 158, 66, 7, 'night2');
       A.ditherRect(g, 140, 153, 112, 10, null, 'night4', 0.1);
-      // the window's cold patch on the floor, hard dithered, mullion gap, the watcher cast into the room
-      slab(g, 134, 180, 18, 60, -14, 28, 0.16, 'mist3');
-      slab(g, 134, 180, 67, 113, 35, 81, 0.16, 'mist3');
+      // the window's cold patch on the floor: two soft slabs of moonlight with the mullion between them, the watcher cast into the room
+      const patch = (key, xa0, xb0, xa1, xb1) => cfield(g, key, -20, 134, 160, 46, (i, j) => {
+        const f = j / 46, xa = xa0 + (xa1 - xa0) * f + 20, xb = xb0 + (xb1 - xb0) * f + 20;
+        if (i < xa || i > xb) return 0;
+        return (1 - f * 0.55) * Math.min(1, Math.min(i - xa, xb - i) / 3.5);
+      }, 'add', 'mist5', 0.3, 5);
+      patch('fl1', 18, 60, -14, 28); patch('fl2', 67, 113, 35, 81);
       A.poly(g, [74, 134, 86, 134, 74, 148, 56, 166, 44, 180, 24, 180, 34, 164, 56, 148], 'wood0');   // her long shadow, stretched
       A.disc(g, 36, 174, 3, 'wood0');                                                                  // the head
 
@@ -223,12 +228,13 @@
       }
       A.end(g, 1);
       // the dark dog at his feet, same moment, same tilt
-      dogUp(g, 219, 149, t, tilt, 1);
+      dogUp(g, 219, 149, t, tilt, 2);
 
       // a chewed clog, the dogs' toy: one small yellow note, dimmed
       A.rect(g, 234, 156, 9, 3, 'cheese2'); A.rect(g, 235, 155, 5, 1, 'cheese3'); A.rect(g, 234, 158, 9, 1, 'cheese1'); A.px(g, 242, 157, 'wood1'); A.px(g, 240, 155, 'wood0'); A.px(g, 236, 158, 'wood0');
       // ============ 6. light: the dimmed lamp, then the book ============
       cglow(g, 'lamp', 301, 58, 56, 50, 'amber4', 0.14, 1.4);
+      cglow(g, 'pool', 238, 116, 74, 40, 'amber5', 0.2, 1.2);                     // the lamp's warmth on the three of them
       cfield(g, 'cone', 301 - 40, 56, 81, 72, (i, j) => { const u = j / 71, half = 9 + j * 0.45, v = Math.abs(i - 40); return v > half ? 0 : Math.pow(1 - u, 1) * (v / half < 0.5 ? 1 : (1 - v / half) / 0.5); }, 'add', 'amber4', 0.1);
       for (let i = 0; i < 10; i++) { const ph = (t * 0.1 + H(i, 1)) % 1, dx = 301 + (H(i, 2) - 0.5) * 40 + Math.sin(t * 0.8 + i) * 3, dy = 56 + ph * 70; A.px(g, dx, dy, ph < 0.8 ? 'amber5' : 'amber3'); }
 
@@ -252,7 +258,7 @@
       A.hline(g, bx, by + 1, 42, 'blue2'); A.vline(g, bx, by - 1, 3, 'blue2');
       if (lifted) { A.rect(g, bx + 4, by + 1 - lifted, 36, lifted, 'night0'); }
       A.rect(g, bx + 9, by - 6, 26, 3, 'amber6'); A.hline(g, bx + 9, by - 6, 26, 'amber8'); A.hline(g, bx + 9, by - 4, 26, 'amber4');     // the gold title band
-      for (let k = 0; k < 6; k++) A.px(g, bx + 12 + k * 4, by - 5, 'blue3');                                                         // the letters, unread
+      A.text(bx + 22, by - 3.7, 'GRAMMATICA', 'amber1', 2.6, true, { align: 'center' });                                         // unread
       A.rect(g, bx + 34, by - 3, 5, 4, 'cheese5'); A.px(g, bx + 35, by - 2, 'red4'); A.px(g, bx + 37, by - 2, 'red4'); A.hline(g, bx + 34, by - 3, 5, 'cheese6');   // price sticker, still on
       A.ellipse(g, bx + 14, by - 3, 7, 2, 'blue4');                                                                               // the cup's ring stain, years of it
       A.ditherRect(g, bx + 4, by - 9, 38, 10, null, 'mist5', 0.2);                                                                // dust
