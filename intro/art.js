@@ -1393,8 +1393,8 @@
   // ---------------------------------------------------------------- the friend (before the mist)
   const FRIEND_TOP = [
     '....YYYYYY....',
-    '...YYYYYYYY...',
-    '..YYYYYYYYyY..',
+    '...YYZZYYYY...',
+    '..YYZYYYYYyY..',
     '..YYyyyyyyYY..',
     '..YSSSSSSSSy..',
     '..ySBBSSBBSy..',
@@ -1407,7 +1407,7 @@
     '...uUUccUUu...',
     '.uUUUUccUUUUu.',
   ];
-  const FRIEND_LEG = { Y: C.cheese4, y: C.cheese3, S: C.skin5, s: C.skin4, d: C.skin3, B: C.cheese3, E: C.slate0, m: C.skin2, p: C.paper5,
+  const FRIEND_LEG = { Y: C.cheese4, y: C.cheese3, Z: C.cheese6, S: C.skin5, s: C.skin4, d: C.skin3, B: C.cheese3, E: C.slate0, m: C.skin2, p: C.paper5,
     u: C.blue2, U: C.blue3, c: C.paper4, a: C.blue2, h: C.skin4, J: C.blue1, j: C.night4, K: C.paper4, k: C.paper2 };
   /** friend(g, x, y, o): a Dutch friend from before the mist: a head taller than the man, blond,
    *  blue sweater, white sneakers, smiling because English is fine. Front view, 46 px.
@@ -1420,17 +1420,23 @@
     P.map(-7, top, FRIEND_TOP, FRIEND_LEG);
     if (o.face === 'talk' && Math.sin(t * 12 + seed) > 0) { P.r(-2, top + 9, 4, 1, C.skin1); P.r(-1, top + 10, 2, 1, C.red3); }
     if (blinking(t, seed) || o.face === 'blink') { P.p(-4, top + 6, C.skin4); P.p(3, top + 6, C.skin4); }
-    // sweater, arms, hands
+    // sweater, arms, hands: lit shoulders, a darker underside, a ribbed hem and cuffs
     P.r(-6, top + 14, 12, 14, C.blue3); P.r(-5, top + 26, 10, 2, C.blue2); P.r(-1, top + 14, 2, 4, C.blue2);
-    P.r(-7, top + 14, 2, 12, C.blue2); P.r(5, top + 14, 2, 12, C.blue2); P.r(-7, top + 26, 2, 2, C.skin4);
+    P.r(-5, top + 14, 3, 1, C.blue4); P.r(2, top + 14, 3, 1, C.blue4); P.r(-4, top + 15, 2, 1, C.blue4);    // the shoulders catch the light
+    P.r(-6, top + 22, 12, 1, C.blue2); P.p(-3, top + 20, C.blue2); P.p(2, top + 21, C.blue2);               // folds over the belly
+    for (let k = -5; k < 5; k += 2) P.p(k, top + 27, C.blue1);                                              // the ribbed hem
+    P.r(-7, top + 14, 2, 12, C.blue2); P.r(5, top + 14, 2, 12, C.blue2); P.r(-7, top + 25, 2, 1, C.blue1); P.r(-7, top + 26, 2, 2, C.skin4);
     if (o.arm === 'wave') { const w = Math.sin(t * 8) > 0 ? 0 : 1; P.r(5, top + 14, 2, 12, C.blue3); P.l(6, top + 14, 9 + w, top + 6, C.blue2, 2); P.r(9 + w, top + 3, 2, 3, C.skin5); }
-    else if (o.arm === 'drink') { P.r(5, top + 14, 2, 5, C.blue2); P.l(6, top + 19, 3, top + 19, C.blue2, 2); P.r(2, top + 15, 3, 5, C.cheese4); P.r(2, top + 15, 3, 1, C.paper5); P.r(1, top + 18, 2, 2, C.skin4); }
-    else P.r(5, top + 26, 2, 2, C.skin4);
-    // jeans and sneakers
+    else if (o.arm === 'drink') { P.r(5, top + 14, 2, 5, C.blue2); P.l(6, top + 19, 3, top + 19, C.blue2, 2); P.r(2, top + 15, 3, 5, C.cheese4); P.r(2, top + 15, 3, 1, C.paper5); P.p(4, top + 16, C.cheese5); P.r(1, top + 18, 2, 2, C.skin4); }
+    else { P.r(5, top + 25, 2, 1, C.blue1); P.r(5, top + 26, 2, 2, C.skin4); }
+    // jeans with a seam, a lit knee and a cuff; sneakers with a sole
     P.r(-5, top + 28, 10, 3, C.blue1); P.r(-5, top + 31, 4, 13, C.blue1); P.r(1, top + 31, 4, 13, C.blue1);
     P.r(-2, top + 31, 1, 13, C.night4); P.r(1, top + 31, 1, 13, C.night4); P.r(-1, top + 28, 2, 2, C.night4);
+    P.p(-4, top + 37, C.blue2); P.p(-3, top + 37, C.blue2); P.p(3, top + 37, C.blue2); P.p(4, top + 38, C.blue2);   // the knees
+    P.r(-5, top + 43, 4, 1, C.blue2); P.r(1, top + 43, 4, 1, C.blue2);                                                // the turned-up cuffs
     P.r(-6, top + 44 - bob, 5, 2, C.paper4); P.r(1, top + 44 - bob, 5, 2, C.paper4); P.r(-6, top + 45 - bob, 5, 1, C.paper2); P.r(1, top + 45 - bob, 5, 1, C.paper2);
-    NR.end(g, o.rim);
+    P.p(-6, top + 44 - bob, C.paper5); P.p(1, top + 44 - bob, C.paper5);
+    NR.end(g, o.rim, null, 1);
     return { head: [x, y + top - 2] };
   };
 })();

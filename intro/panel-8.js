@@ -19,11 +19,11 @@
       if (v < 0.3) A.hline(g, xx + 1, y + r, 4, 'slate5'); else if (v < 0.5) A.hline(g, xx + 1, y + r, 3, 'slate4');
     }
   }
-  function pendant(g, x, t, seed) {
-    const sway = Math.round(Math.sin(t * Math.PI * 2 / 4 + seed));
-    A.vline(g, x, 69, 18, 'wood1');
-    A.poly(g, [x - 4 + sway, 94, x + 4 + sway, 94, x + 2 + sway, 88, x - 2 + sway, 88], 'wood3');
-    A.hline(g, x - 3 + sway, 94, 7, 'amber8');
+  function pendant(g, x, t, seed, drop) {
+    const sway = Math.round(Math.sin(t * Math.PI * 2 / 4 + seed)), d = drop == null ? 18 : drop, b = 69 + d + 7;
+    A.vline(g, x, 69, d, 'wood1');
+    A.poly(g, [x - 4 + sway, b, x + 4 + sway, b, x + 2 + sway, b - 6, x - 2 + sway, b - 6], 'wood3');
+    A.hline(g, x - 3 + sway, b, 7, 'amber8');
   }
   // a far-bank house drawn locally: flat facade, a gable, a grid of small windows, no per-window glow
   function house(g, x, by, w, h, gable, brickC, litP, seed) {
@@ -192,7 +192,7 @@
       A.rect(g, 6, 118, 93, 12, 'wood2'); A.hline(g, 6, 118, 93, 'wood4');
       for (let i = 0; i < 4; i++) A.rect(g, 14 + i * 22, 115, 3, 3, 'paper5');
       A.vline(g, 51, 69, 61, 'wood2'); A.vline(g, 52, 69, 61, 'wood1');
-      pendant(g, 28, t, 0); pendant(g, 76, t, 2);
+      pendant(g, 28, t, 0); pendant(g, 83, t, 2, 3);
       // ---- 4. the street: mist behind the people, the lamp, dogs, the two of them at the table
       A.depth(g, 1);
       A.tulips(g, 8, 148, 24, { t });
