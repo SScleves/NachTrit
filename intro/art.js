@@ -280,22 +280,31 @@
 
   // ------------------------------------------------------------------ dither
   const keep = c => c === null || c === undefined || c === -1;
+  // write one pixel that is known to be on the surface (the per-pixel loops below have clipped already)
+  const PI_ = (g, i, xx, yy, c) => { g.buf[i] = c; g.mask[i] = g.sa; if (g.sa) bbox(g, xx, yy, xx, yy); };
   /** Fill a rect with a Bayer mix of two colours: level 0 is all c1, 1 is all c2.
    *  Pass null for either colour to leave those pixels as they are (a screen-door veil). */
   NR.ditherRect = (g, x, y, w, h, c1, c2, level) => {
     const a = keep(c1) ? -1 : col(c1), b = keep(c2) ? -1 : col(c2);
     x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
-    for (let yy = Math.max(0, y); yy < Math.min(g.h, y + h); yy++) for (let xx = Math.max(0, x); xx < Math.min(g.w, x + w); xx++) {
-      const c = level > bayer(xx, yy) ? b : a; if (c >= 0) P(g, xx, yy, c);
+    const x0 = Math.max(0, x), x1 = Math.min(g.w, x + w), y1 = Math.min(g.h, y + h);
+    for (let yy = Math.max(0, y); yy < y1; yy++) {
+      const row = yy * g.w, br = (yy & 3) << 2;
+      for (let xx = x0; xx < x1; xx++) { const c = level > BAYER[br | (xx & 3)] ? b : a; if (c >= 0) PI_(g, row + xx, xx, yy, c); }
     }
   };
   /** A dithered gradient from c1 to c2 across the rect: dir 'down' (default), 'up', 'right', 'left'. */
   NR.ditherGradient = (g, x, y, w, h, c1, c2, dir) => {
     const a = keep(c1) ? -1 : col(c1), b = keep(c2) ? -1 : col(c2); dir = dir || 'down';
     x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
-    for (let yy = Math.max(0, y); yy < Math.min(g.h, y + h); yy++) for (let xx = Math.max(0, x); xx < Math.min(g.w, x + w); xx++) {
-      const f = dir === 'down' ? (yy - y + 0.5) / h : dir === 'up' ? 1 - (yy - y + 0.5) / h : dir === 'right' ? (xx - x + 0.5) / w : 1 - (xx - x + 0.5) / w;
-      const c = f > bayer(xx, yy) ? b : a; if (c >= 0) P(g, xx, yy, c);
+    const vert = dir === 'down' || dir === 'up', flipD = dir === 'up' || dir === 'left';
+    const x0 = Math.max(0, x), x1 = Math.min(g.w, x + w), y1 = Math.min(g.h, y + h);
+    for (let yy = Math.max(0, y); yy < y1; yy++) {
+      const row = yy * g.w, br = (yy & 3) << 2, fy = (yy - y + 0.5) / h;
+      for (let xx = x0; xx < x1; xx++) {
+        let f = vert ? fy : (xx - x + 0.5) / w; if (flipD) f = 1 - f;
+        const c = f > BAYER[br | (xx & 3)] ? b : a; if (c >= 0) PI_(g, row + xx, xx, yy, c);
+      }
     }
   };
   /** A dithered disc of colour c: at `level` coverage, falling off toward the edge when soft > 0
@@ -324,16 +333,29 @@
       if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
     }
   }
+  // Falloff curves tabulated once: FALL(p)[k] = (1 - sqrt(k / 1024)) ^ p over squared distance, POWT(p)[k] = (1 - k / 1024) ^ p
+  // over distance; read with linear interpolation, so the light keeps its shape at a fraction of the cost of Math.pow per pixel.
+  const fallTabs = new Map(), powTabs = new Map();
+  const FALL = p => { let T = fallTabs.get(p); if (!T) { T = new Float32Array(1026); for (let k = 0; k <= 1025; k++) T[k] = Math.pow(Math.max(0, 1 - Math.sqrt(Math.min(1, k / 1024))), p); fallTabs.set(p, T); } return T; };
+  const POWT = p => { let T = powTabs.get(p); if (!T) { T = new Float32Array(1026); for (let k = 0; k <= 1025; k++) T[k] = Math.pow(Math.max(0, 1 - Math.min(1, k / 1024)), p); powTabs.set(p, T); } return T; };
   /** Radial light around (x, y): r is the reach (ry for an ellipse), falling off with `power`.
    *  o: { color: 'amber6', strength: 0.5, mode: 'add' | 'mul' | 'mix', power: 1.5, ry, q: 6 } */
   NR.glow = (g, x, y, r, o) => {
     o = o || {}; const Q = o.q || 6, ry = o.ry || r, pw = o.power == null ? 1.5 : o.power;
+    if (!(r > 0) || !(ry > 0)) return;
     const Ls = levels(o.mode || 'add', o.color || 'amber6', o.strength == null ? 0.5 : o.strength, Q);
-    const cx = x + g.ox, cy = y + g.oy;
-    applyField(g, Math.floor(cx - r), Math.floor(cy - ry), Math.ceil(cx + r), Math.ceil(cy + ry), Ls, Q, (xx, yy) => {
-      const dx = (xx - cx) / r, dy = (yy - cy) / ry, d2 = dx * dx + dy * dy; if (d2 >= 1) return 0;
-      return Math.pow(1 - Math.sqrt(d2), pw);
-    });
+    const cx = x + g.ox, cy = y + g.oy, T = FALL(pw), buf = g.buf, gw = g.w, ir = 1 / r, iry = 1 / ry;
+    const x0 = Math.max(0, Math.floor(cx - r)), x1 = Math.min(gw - 1, Math.ceil(cx + r)), y0 = Math.max(0, Math.floor(cy - ry)), y1 = Math.min(g.h - 1, Math.ceil(cy + ry));
+    for (let yy = y0; yy <= y1; yy++) {
+      const dy = (yy - cy) * iry, dy2 = dy * dy; if (dy2 >= 1) continue;
+      const row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) {
+        const dx = (xx - cx) * ir, d2 = dx * dx + dy2; if (d2 >= 1) continue;
+        const f = d2 * 1024, k = f | 0, lv = T[k] + (T[k + 1] - T[k]) * (f - k); if (lv <= 0) continue;
+        const v = (lv > 1 ? 1 : lv) * Q; let q = v | 0; if (v - q > BAYER[br | (xx & 3)]) q++;
+        if (q > 0) { const i = row + xx; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
+      }
+    }
   };
   /** A light cone from (x, y) along `angle` (radians, 0 = right, PI/2 = down), half-angle
    *  `spread`, reaching `len` pixels, with a dithered falloff along it and across its edges.
@@ -346,19 +368,33 @@
     const ax = x + g.ox, ay = y + g.oy, ca = Math.cos(angle), sa = Math.sin(angle), tn = Math.tan(spread);
     const hw = w0 + len * tn, ex = ax + ca * len, ey = ay + sa * len;
     const xs = [ax - sa * w0, ax + sa * w0, ex - sa * hw, ex + sa * hw], ys = [ay + ca * w0, ay - ca * w0, ey + ca * hw, ey - ca * hw];
-    applyField(g, Math.floor(Math.min(...xs)), Math.floor(Math.min(...ys)), Math.ceil(Math.max(...xs)), Math.ceil(Math.max(...ys)), Ls, Q, (xx, yy) => {
-      const vx = xx + 0.5 - ax, vy = yy + 0.5 - ay, u = vx * ca + vy * sa; if (u < 0 || u > len) return 0;
-      const v = Math.abs(vy * ca - vx * sa), half = w0 + u * tn; if (v > half) return 0;
-      const e = 1 - v / half, ef = e >= edge ? 1 : e / edge;
-      return Math.pow(1 - u / len, fade) * ef;
-    });
+    if (!(len > 0)) return;
+    const T = POWT(fade), il = 1024 / len, buf = g.buf, gw = g.w;
+    const x0 = Math.max(0, Math.floor(Math.min(...xs))), x1 = Math.min(gw - 1, Math.ceil(Math.max(...xs))), y0 = Math.max(0, Math.floor(Math.min(...ys))), y1 = Math.min(g.h - 1, Math.ceil(Math.max(...ys)));
+    for (let yy = y0; yy <= y1; yy++) {
+      const vy = yy + 0.5 - ay, row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) {
+        const vx = xx + 0.5 - ax, u = vx * ca + vy * sa; if (u < 0 || u > len) continue;
+        const v = Math.abs(vy * ca - vx * sa), half = w0 + u * tn; if (v > half) continue;
+        const e = 1 - v / half, ef = e >= edge ? 1 : e / edge, f = u * il, k = f | 0;
+        const lv = (T[k] + (T[k + 1] - T[k]) * (f - k)) * ef; if (!(lv > 0)) continue;
+        const vv = (lv > 1 ? 1 : lv) * Q; let q = vv | 0; if (vv - q > BAYER[br | (xx & 3)]) q++;
+        if (q > 0) { const i = row + xx; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
+      }
+    }
   };
   /** A soft dark contact shadow on the ground under a sprite. */
   NR.shadow = (g, x, y, rx, ry, strength) => NR.glow(g, x, y, rx, { ry: ry || 2, mode: 'mul', color: 'black', strength: strength == null ? 0.55 : strength, power: 0.6, q: 4 });
   /** Light or shade a rectangle evenly (mode 'add' light, 'mul' shade, 'mix' tint), dithered. */
   NR.tint = (g, x, y, w, h, color, amount, mode) => {
-    const Q = 8, Ls = levels(mode || 'mix', color, 1, Q); x = rnd(x) + g.ox; y = rnd(y) + g.oy;
-    applyField(g, x, y, x + rnd(w) - 1, y + rnd(h) - 1, Ls, Q, () => amount);
+    const Q = 8, Ls = levels(mode || 'mix', color, 1, Q); x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
+    if (!(amount > 0)) return;
+    const v = (amount > 1 ? 1 : amount) * Q, q0 = v | 0, fr = v - q0, buf = g.buf, gw = g.w, L0 = Ls[q0 > Q ? Q : q0], L1 = Ls[q0 + 1 > Q ? Q : q0 + 1];
+    const x0 = Math.max(0, x), x1 = Math.min(gw - 1, x + w - 1), y1 = Math.min(g.h - 1, y + h - 1);
+    for (let yy = Math.max(0, y); yy <= y1; yy++) {
+      const row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) { const i = row + xx, L = fr > BAYER[br | (xx & 3)] ? L1 : L0; if (L !== Ls[0]) buf[i] = L[buf[i]]; }
+    }
   };
   /** Atmospheric perspective: pull a region toward the fog colour. amount 0..1, or top/bottom
    *  for a vertical gradient (fog thickest near the ground: top 0.2, bottom 0.6).
@@ -369,23 +405,40 @@
     const Q = 8, Ls = levels('mix', o.color || 'mist3', 1, Q);
     const a0 = o.top == null ? (o.amount == null ? 0.5 : o.amount) : o.top, a1 = o.bottom == null ? a0 : o.bottom;
     x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
-    applyField(g, x, y, x + w - 1, y + h - 1, Ls, Q, (xx, yy) => a0 + (a1 - a0) * (yy - y + 0.5) / h, o.lights == null ? 0.35 : o.lights);
+    const ls = o.lights == null ? 0.35 : o.lights, buf = g.buf, gw = g.w;
+    const x0 = Math.max(0, x), x1 = Math.min(gw - 1, x + w - 1), y1 = Math.min(g.h - 1, y + h - 1);
+    for (let yy = Math.max(0, y); yy <= y1; yy++) {
+      const lv = a0 + (a1 - a0) * (yy - y + 0.5) / h; if (lv <= 0) continue;
+      const v = (lv > 1 ? 1 : lv) * Q, ll = lv * ls, vl = (ll > 1 ? 1 : ll) * Q, row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) {
+        const i = row + xx, c = buf[i], vv = IS_LIGHT[c] ? vl : v; let q = vv | 0; if (vv - q > BAYER[br | (xx & 3)]) q++;
+        if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
+      }
+    }
   };
+  // the mist's two noise curves, tabulated per (period, seed) and read with linear interpolation (wave() is three slow sines)
+  const waveTabs = new Map();
+  const waveTab = (period, seed) => {
+    const key = period + ':' + seed; let T = waveTabs.get(key); if (T) return T;
+    const n = Math.ceil(period); T = new Float32Array(n + 2); for (let i = 0; i <= n + 1; i++) T[i] = wave(i, period, seed);
+    waveTabs.set(key, T); return T;
+  };
+  const waveAt = (T, period, x) => { let u = x % period; if (u < 0) u += period; const k = u | 0; return T[k] + (T[k + 1] - T[k]) * (u - k); };
   /** Drifting mist: a soft band centred h/2 below y that thickens and thins along x and slides
    *  sideways with time. It loops seamlessly. o: { amount: 0.45, speed: 5 (px/s), color: 'mist5', seed } */
   NR.mist = (g, t, y, h, o) => {
     o = o || {}; const amt = o.amount == null ? 0.45 : o.amount, sp = o.speed == null ? 5 : o.speed, seed = o.seed || 0;
     const Q = 8, Ls = levels('mix', o.color || 'mist5', 1, Q), lf = o.lights == null ? 0.3 : o.lights;
-    const buf = g.buf, gw = g.w, cy0 = y + g.oy + h / 2;
+    const buf = g.buf, gw = g.w, cy0 = y + g.oy + h / 2, Ta = waveTab(gw, seed), Tb = waveTab(gw, seed + 3);
     for (let xx = 0; xx < gw; xx++) {
       const sx = xx - g.ox + t * sp;
-      const n = wave(sx, gw, seed), n2 = wave(sx * 0.5 + 40, gw, seed + 3);
-      const th = Math.max(0.5, h * (0.35 + 0.65 * n) / 2), cy = cy0 + (n2 - 0.5) * h * 0.5;
+      const n = waveAt(Ta, gw, sx), n2 = waveAt(Tb, gw, sx * 0.5 + 40);
+      const th = Math.max(0.5, h * (0.35 + 0.65 * n) / 2), cy = cy0 + (n2 - 0.5) * h * 0.5, a = amt * (0.55 + 0.45 * n), ith = 1 / th;
       const r0 = Math.max(0, Math.ceil(cy - th)), r1 = Math.min(g.h - 1, Math.floor(cy + th));
       for (let yy = r0; yy <= r1; yy++) {
-        const d = Math.abs(yy + 0.5 - cy) / th; if (d >= 1) continue;
+        const d = Math.abs(yy + 0.5 - cy) * ith; if (d >= 1) continue;
         const i = yy * gw + xx, c = buf[i];
-        let lv = amt * (0.55 + 0.45 * n) * (1 - d * d); if (IS_LIGHT[c]) lv *= lf;
+        let lv = a * (1 - d * d); if (IS_LIGHT[c]) lv *= lf;
         const v = lv * Q; let q = v | 0; if (v - q > BAYER[((yy & 3) << 2) | (xx & 3)]) q++;
         if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
       }
@@ -1141,7 +1194,7 @@
    *       phone: true (hold a phone up, any variant),
    *       tone: one colour for the whole body (far silhouettes; the eyes still glow),
    *       eyes: true, glow: 0.35 (eye glow strength), rim, shadow }
-   *  Returns { head: [x, y], hand: [x, y] } in screen pixels, for bubbles and props. */
+   *  Returns { head: [x, y], hand: [x, y], shoulder: [x, y] } in screen pixels, for bubbles and props. */
   NR.zombie = (g, x, y, o) => {
     o = o || {}; const t = o.t || 0, seed = o.seed == null ? 5 : o.seed, v = o.variant || 'plain';
     const flip = flipOf(o.facing), P = pen(g, x, y, flip);
@@ -1330,7 +1383,7 @@
       NR.px(g, sxN - g.ox, sy - g.oy, 'eye4'); NR.px(g, sxF - g.ox, sy - g.oy, 'eye2');
     }
     if (phoneUp && tone < 0) NR.glow(g, P.X(handN[0]) - g.ox, P.y + handN[1] - 2 - g.oy, 6, { color: 'phone4', strength: 0.32, power: 1.4, q: 4 });
-    return { head: [P.X(hx0 + (hw >> 1)) - g.ox, P.y + hy0 - 2 - g.oy], hand: [P.X(handN[0]) - g.ox, P.y + handN[1] - g.oy] };
+    return { head: [P.X(hx0 + (hw >> 1)) - g.ox, P.y + hy0 - 2 - g.oy], hand: [P.X(handN[0]) - g.ox, P.y + handN[1] - g.oy], shoulder: [P.X(sh[0]) - g.ox, P.y + sh[1] - g.oy] };
   };
 
   /** tallWoman(g, x, y, o): a changed woman, a head taller than anyone, upright, long coat, hair
