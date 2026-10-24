@@ -18,7 +18,7 @@
   function reach(T) { if (T < 0.6) return 0; if (T < 2.4) return sm((T - 0.6) / 1.8); if (T < 3.4) return 1; if (T < 5.2) return 1 - sm((T - 3.4) / 1.8); return 0; }
   function ping(T) { const a = T % 3; return a < 0.45 ? 1 - a / 0.45 : 0; }
 
-  function outside(g, T) {
+  function outside(g, T, t) {
     A.sky(g, ['night1', 'night2', 'night3', 'mist0', 'mist1'], WY - 4, WY + WH);
     A.glow(g, 36, 30, 34, { color: 'mist3', strength: 0.28, power: 1.6 });
     A.moon(g, 36, 30, 5, { halo: 0.3 });
@@ -30,8 +30,9 @@
     A.haze(g, WX - 4, WY + 30, WW + 8, WH - 30, { top: 0.1, bottom: 0.55, color: 'mist2' });
     // one of the dead in the fog by the canal, watching the glow; its eyes close now and then
     A.zombie(g, 74, base + 1, { tone: 'night2', height: 22, t: T, seed: 9, facing: 'right', eyes: !(T > 4.1 && T < 4.35), glow: 0.4 });
-    A.mist(g, T, base - 22, 16, { amount: 0.55, speed: 5, color: 'mist3', seed: 4 });
-    A.mist(g, T * 0.7, base - 8, 12, { amount: 0.5, speed: 3, color: 'mist2', seed: 9 });
+    // the fog drifts on the running clock, not the 6 s loop, so it never jumps back when the loop restarts
+    A.mist(g, t || 0, base - 22, 16, { amount: 0.55, speed: 5, color: 'mist3', seed: 4 });
+    A.mist(g, (t || 0) * 0.7, base - 8, 12, { amount: 0.5, speed: 3, color: 'mist2', seed: 9 });
   }
 
   function room(g) {
@@ -137,7 +138,7 @@
       const T = ((t % PER) + PER) % PER, pg = ping(T), dx = pg > 0.55 ? (Math.floor(T * 30) % 2 ? 1 : -1) : 0;
       A.key(g, PX + PW / 2, PY + PH / 2, 2);
       if (!plate || plate.length !== g.buf.length) build(g);
-      outside(g, T);
+      outside(g, T, t);
       const buf = g.buf; for (let i = 0; i < buf.length; i++) if (!glass[i]) buf[i] = plate[i];
       g.mask.fill(0);
       if (pg > 0) A.ring(g, PX + PW / 2, PY + PH / 2, Math.round(lerp(64, 40, pg)), pg > 0.5 ? 'phone4' : 'phone3', 1);
