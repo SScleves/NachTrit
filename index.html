@@ -2417,9 +2417,10 @@ function showLevelIntro(lv, then) {
 }
 
 let introI = 0, introT = 0, introRaf = 0;
-// a first run gets the short cut: the mist came, still split the bill, the cheese, never practised, one man one omafiets.
+// a first run gets the cut with every joke: the mist came, still split the bill, the four rumours (cheese, the Flemish poll,
+// the drunk-German tourist, the one-cent Tikkie), never practised, one man one omafiets. The premise is on the start screen.
 // The intro link on the start screen plays all fourteen.
-const INTRO_SHORT = [0, 1, 2, 7, 13];
+const INTRO_SHORT = [0, 1, 2, 3, 4, 5, 7, 13];
 function showIntro(then, panels, full) {
   const NA = window.NRART, nrOk = NA && NA.panels.length >= 14 && NA.panels.slice(0, 14).every(Boolean);
   const all = panels || (nrOk ? NA.panels.slice(0, 14).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
