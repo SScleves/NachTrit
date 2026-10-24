@@ -550,10 +550,13 @@
       const b = lit > 0.7 ? 0 : lit > 0.4 ? -1 : -2;
       NR.rect(g, gx, gy, gw2, gh, step('amber5', b));
       NR.rect(g, gx, gy, gw2, 1, step('amber4', b));
+      if (gw2 >= 3 && gh >= 3) NR.vline(g, gx, gy + 1, gh - 1, step('amber4', b));                  // the reveal: the frame's shadow on the glass
       if (gw2 >= 3 && gh >= 4) NR.ditherRect(g, gx + 1, gy + Math.floor(gh / 2), gw2 - 2, Math.ceil(gh / 2) - 1, null, step('amber6', b), 0.5);
+      if (gw2 >= 5 && gh >= 6) NR.px(g, gx + gw2 - 2, gy + gh - 2, step('amber7', b));              // the lamp inside
     } else {
       NR.rect(g, gx, gy, gw2, gh, 'night2'); NR.px(g, gx + gw2 - 1, gy, 'mist0');
       if (gh > 3) NR.px(g, gx + gw2 - 2, gy + 1, 'night4');
+      if (gw2 >= 4 && gh >= 6) { NR.px(g, gx + gw2 - 3, gy + 2, 'night3'); NR.px(g, gx, gy + gh - 1, 'night1'); }   // the sky in the glass, a dark corner
     }
     const bars = o.bars || (w >= 5 && h >= 6 ? 'cross' : 'none');
     const mx = x + (w >> 1) - ((w & 1) ? 0 : 1), my = y + Math.round(h * 0.4);
@@ -604,19 +607,22 @@
   };
   /** Finish a sprite and add its rim light: pixels whose neighbour toward the key light is not
    *  part of the sprite move k steps up their ramp. rim: undefined (use the piece's key),
-   *  0 / false (none), or a number of steps. rimColor: light the rim with a colour instead. */
-  NR.end = (g, rim, rimColor) => {
+   *  0 / false (none), or a number of steps. rimColor: light the rim with a colour instead.
+   *  shade (optional, steps): the edge on the far side from the key light moves that many steps
+   *  down its ramp, so a sprite turns away from the light (the cast use 1). */
+  NR.end = (g, rim, rimColor, shade) => {
     const id = g.sa, x0 = Math.max(0, g.bx0), y0 = Math.max(0, g.by0), x1 = Math.min(g.w - 1, g.bx1), y1 = Math.min(g.h - 1, g.by1);
-    const k = rim == null || rim === true ? g.rimK : rim === false ? 0 : rim;
-    if (k && x1 >= x0) {
+    const k = rim == null || rim === true ? g.rimK : rim === false ? 0 : rim, sk = shade ? Math.min(3, shade) : 0;
+    if ((k || sk) && x1 >= x0) {
       const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; let dx = g.keyX - cx, dy = g.keyY - cy; const m = Math.hypot(dx, dy) || 1; dx /= m; dy /= m;
       const sx = dx > 0.38 ? 1 : dx < -0.38 ? -1 : 0, sy = dy > 0.38 ? 1 : dy < -0.38 ? -1 : 0;
-      const T = rimColor ? lut('add', rimColor, 0.25 * k) : SHIFT[Math.min(3, k) + 3];
-      const buf = g.buf, mask = g.mask, gw = g.w;
+      const T = k ? (rimColor ? lut('add', rimColor, 0.25 * k) : SHIFT[Math.min(3, k) + 3]) : null, S = SHIFT[3 - sk];
+      const buf = g.buf, mask = g.mask, gw = g.w, gh = g.h;
       for (let yy = y0; yy <= y1; yy++) for (let xx = x0; xx <= x1; xx++) {
         const i = yy * gw + xx; if (mask[i] !== id) continue;
         const nx = xx + sx, ny = yy + sy;
-        if (nx < 0 || ny < 0 || nx >= gw || ny >= g.h || mask[ny * gw + nx] !== id) buf[i] = T[buf[i]];
+        if (k && (nx < 0 || ny < 0 || nx >= gw || ny >= gh || mask[ny * gw + nx] !== id)) { buf[i] = T[buf[i]]; continue; }
+        if (sk) { const fx = xx - sx, fy = yy - sy; if (fx >= 0 && fy >= 0 && fx < gw && fy < gh && mask[fy * gw + fx] !== id) buf[i] = S[buf[i]]; }
       }
     }
     const pr = g.stack.pop() || [0, 1e9, 1e9, -1e9, -1e9];
@@ -711,33 +717,35 @@
   const blinking = (t, seed, every) => { const per = every || 3.7, ph = (t + hash(seed | 0, 91) * per) % per; return ph < 0.13; };
 
   // ---------------------------------------------------------------- the man
-  // Front, side (facing right; left is the mirror) and back. 40 px tall standing. Orange jacket,
-  // no helmet, dark hair, dark jeans. Faces: deadpan (default), worry, smug, talk, shock, side, blink.
+  // Front, side (facing right; left is the mirror) and back. 40 px tall standing. Orange anorak
+  // with a lit yoke, a zip, pockets and cuffs; no helmet; dark hair with a sheen and a fringe;
+  // dark jeans with a knee highlight; white-soled shoes. Faces: deadpan (default), worry, smug,
+  // talk, shock, side, blink. Brows sit a row above the eyes (row 4), eyes on row 6 at dx -2 and 1.
   const MAN_FRONT = [
-    '...HHHHHH...',
-    '..HHHHHHHH..',
-    '..HHHHHHHH..',
-    '..HHHHHSSH..',
-    '..sSSSSSSs..',
+    '...kHHHHk...',
+    '..kHhhHHHk..',
+    '..HhHHHHHH..',
+    '..HHkSSLSH..',
     '..sBBSSBBs..',
-    '.ssSESSESss.',
-    '.ssSSdSSSss.',
-    '...sSSSSs...',
+    '..sSSSSSSs..',
+    '.sSSESSESSs.',
+    '.dSSSSdSSSd.',
+    '..sSSSSSSs..',
     '...sSmmSs...',
-    '....ssss....',
-    '...oOqqOo...',
-    '.oOOOOOOOOo.',
-    'oOOOOOzOOOOo',
+    '....snns....',
+    '...qPnnPq...',
+    '.oPPPOzPPPo.',
+    'oPqPPOzOPqPo',
+    'oPqPOOzOOqPo',
     'oOqOOOzOOqOo',
     'oOqOOOzOOqOo',
     'oOqOOOzOOqOo',
+    'oOqooOzooqOo',
     'oOqOOOzOOqOo',
-    'oOqOOOzOOqOo',
-    'oOqOOOzOOqOo',
-    'oOqOOOzOOqOo',
-    'ooqoooqoooqo',
-    'ooqooozoooqo',
-    'oqqqqqqqqqqo',
+    'ooqoOOzOOqoo',
+    'ooqoooyooqoo',
+    'qqqooozooqqq',
+    'qqqqqqqqqqqq',
     'sSJJJJJJJJSs',
     '.sJJJJJJJJs.',
     '..JJJJJJJJ..',
@@ -745,41 +753,41 @@
     '..JJj..jJJ..',
     '..JJj..jJJ..',
     '..JJj..jJJ..',
+    '..JiJ..JiJ..',
     '..JJj..jJJ..',
     '..JJj..jJJ..',
-    '..JJj..jJJ..',
-    '..JJj..jJJ..',
+    '..jJj..jJj..',
     '..JJj..jJJ..',
     '..JJj..jJJ..',
     '..jjj..jjj..',
-    '.KKKK..KKKK.',
+    '.KKgK..KgKK.',
     '.wwww..wwww.',
   ];
   const MAN_BACK = [
-    '...HHHHHH...',
-    '..HHHHHHHH..',
-    '..HHHHHHHH..',
+    '...kHHHHk...',
+    '..kHhhHHHk..',
+    '..HHhHHHHH..',
     '..HHHHHHHH..',
     '..HHHHhHHH..',
     '..HHHHHHHH..',
     '.sHHHHHHHHs.',
-    '.sHHHHHHHHs.',
-    '...HHHHHH...',
-    '...sHHHHs...',
-    '....ssss....',
-    '...oOOOOo...',
-    '.oOOqqqqOOo.',
-    'oOOOOOOOOOOo',
+    '.dHHHHHHHHd.',
+    '..kHHHHHHk..',
+    '...kHHHHk...',
+    '....snns....',
+    '...oPPPPo...',
+    '.oPPPPPPPPo.',
+    'oPqPPPPPPqPo',
+    'oPqqqqqqqqPo',
     'oOqOOOOOOqOo',
     'oOqOOOOOOqOo',
     'oOqOOOOOOqOo',
     'oOqOOOOOOqOo',
     'oOqOOOOOOqOo',
-    'oOqOOOOOOqOo',
-    'oOqOOOOOOqOo',
-    'ooqoooooooqo',
-    'ooqoooooooqo',
-    'oqqqqqqqqqqo',
+    'ooqoOOOOoqoo',
+    'ooqooooooqoo',
+    'qqqooooooqqq',
+    'qqqqqqqqqqqq',
     'sSJJJJJJJJSs',
     '.sJJJJJJJJs.',
     '..JJJJJJJJ..',
@@ -790,7 +798,7 @@
     '..JJj..jJJ..',
     '..JJj..jJJ..',
     '..JJj..jJJ..',
-    '..JJj..jJJ..',
+    '..jJj..jJj..',
     '..JJj..jJJ..',
     '..JJj..jJJ..',
     '..jjj..jjj..',
@@ -799,54 +807,54 @@
   ];
   // side view, facing right, head and torso only (rows 0-25); arms and legs are drawn live
   const MAN_SIDE = [
-    '....HHHH....',
-    '...HHHHHHH..',
-    '..HHHHHHHHH.',
-    '..HHHHHHHHS.',
-    '..HHHHHHSSS.',
-    '..HHHsdSBBS.',
-    '..HHHssSSES.',
-    '...HHsSSSSSS',
-    '...HsSSSSSS.',
+    '....kHHHk...',
+    '...kHhhHHH..',
+    '..kHhHHHHHH.',
+    '..HHHHHHHkL.',
+    '..HHHHHHkSS.',
+    '..HHHsdSSBS.',
+    '..kHHssSSES.',
+    '...HHsSSSSSL',
+    '...kSSSSSSd.',
     '....sSSSSmS.',
-    '.....ssSSs..',
-    '.....qOOo...',
-    '....oOOOOo..',
+    '.....nsSSs..',
+    '.....qPPo...',
+    '....oPPPOo..',
+    '...oOPPOOOo.',
+    '...oOPOOOOo.',
     '...oOOOOOOo.',
     '...oOOOOOOo.',
-    '...oOOOOOOo.',
-    '...oOOOOOOo.',
-    '...oOOOOOOo.',
-    '...oOOOOOOo.',
-    '...oOOOOOOo.',
+    '...oOOOOqOo.',
+    '...oOOOOOqo.',
     '...ooOOOOOo.',
-    '...ooooooooo',
-    '...ooooooooo',
+    '...ooOOOOoo.',
+    '...ooooooyoo',
+    '...qoooooooq',
     '...qqqqqqqq.',
     '...JJJJJJJ..',
     '...JJJJJJJ..',
   ];
-  const MAN_LEG = { H: C.slate1, h: C.slate3, S: C.skin4, s: C.skin3, d: C.skin2, B: C.slate1, E: C.slate0, m: C.skin1,
-    o: C.orange3, O: C.orange4, q: C.orange2, z: C.orange2, J: C.night5, j: C.night4, K: C.slate1, w: C.paper2 };
+  const MAN_LEG = { H: C.slate1, h: C.slate3, k: C.slate0, S: C.skin4, s: C.skin3, d: C.skin2, n: C.skin2, L: C.skin5, B: C.skin1, E: C.slate0, m: C.skin1,
+    o: C.orange3, O: C.orange4, P: C.orange5, q: C.orange2, z: C.orange2, y: C.orange6, J: C.night5, j: C.night4, i: C.night6, K: C.slate1, g: C.slate3, w: C.paper2 };
 
   function faceFront(P, top, face, t, seed, blink) {
-    // eyes at dx -2 and 1 on row 6, brows row 5, mouth dx -1..0 row 9
-    const E = C.slate0, B = C.slate1, S = C.skin4, s = C.skin3, M = C.skin1;
+    // eyes at dx -2 and 1 on row 6, brows dx -3..-2 and 1..2 on row 4, mouth dx -1..0 on row 9
+    const E = C.slate0, B = C.skin1, S = C.skin4, s = C.skin3, M = C.skin1;
     const y = top;
-    if (face === 'worry') { P.p(-3, y + 5, S); P.p(1, y + 5, S); P.p(-2, y + 4, B); P.p(1, y + 4, B); P.p(-3, y + 5, B); P.p(2, y + 5, B); P.p(-2, y + 5, S); P.p(1, y + 5, S); P.p(-1, y + 9, S); P.p(0, y + 9, M); P.p(0, y + 10, s); }
-    else if (face === 'smug') { P.p(1, y + 5, S); P.p(2, y + 5, S); P.p(1, y + 4, B); P.p(2, y + 4, B); P.p(-1, y + 9, M); P.p(0, y + 9, M); P.p(1, y + 8, M); }
-    else if (face === 'shock') { P.p(-2, y + 5, E); P.p(1, y + 5, E); P.p(-3, y + 4, B); P.p(-2, y + 4, B); P.p(1, y + 4, B); P.p(2, y + 4, B); P.p(-3, y + 5, S); P.p(2, y + 5, S); P.r(-1, y + 9, 2, 2, C.skin0); }
+    if (face === 'worry') { P.p(-3, y + 4, S); P.p(2, y + 4, S); P.p(-3, y + 5, B); P.p(2, y + 5, B); P.p(-1, y + 9, S); P.p(0, y + 9, M); P.p(-1, y + 10, s); }
+    else if (face === 'smug') { P.p(1, y + 4, S); P.p(2, y + 4, S); P.p(1, y + 3, B); P.p(2, y + 3, B); P.p(-1, y + 9, M); P.p(0, y + 9, M); P.p(1, y + 8, M); }
+    else if (face === 'shock') { P.p(-2, y + 5, E); P.p(1, y + 5, E); P.p(-3, y + 4, S); P.p(-2, y + 4, S); P.p(1, y + 4, S); P.p(2, y + 4, S); P.p(-3, y + 3, B); P.p(-2, y + 3, B); P.p(1, y + 3, B); P.p(2, y + 3, B); P.r(-1, y + 9, 2, 2, C.skin0); }
     else if (face === 'talk') { if (Math.sin(t * 13 + seed) > 0) { P.r(-1, y + 9, 2, 1, C.skin0); P.p(-1, y + 10, C.skin1); P.p(0, y + 10, C.skin1); } }
     else if (face === 'side') { P.p(-2, y + 6, S); P.p(1, y + 6, S); P.p(-3, y + 6, E); P.p(0, y + 6, E); }
     if (blink || face === 'blink') { const a = face === 'side' ? [-3, 0] : [-2, 1]; P.p(a[0], y + 6, s); P.p(a[1], y + 6, s); }
   }
   function faceSide(P, top, face, t, seed, blink) {
-    // eye at dx 3 row 6, brow dx 2..3 row 5, mouth dx 3 row 9
-    const E = C.slate0, B = C.slate1, S = C.skin4, M = C.skin1;
+    // eye at dx 3 row 6, brow dx 3 row 5, mouth dx 3 row 9
+    const E = C.slate0, B = C.skin1, S = C.skin4, M = C.skin1;
     const y = top;
-    if (face === 'worry') { P.p(2, y + 5, S); P.p(3, y + 4, B); P.p(2, y + 4, B); P.p(3, y + 9, S); P.p(3, y + 10, M); }
-    else if (face === 'smug') { P.p(2, y + 5, S); P.p(3, y + 5, S); P.p(2, y + 4, B); P.p(3, y + 4, B); P.p(4, y + 8, M); }
-    else if (face === 'shock') { P.p(3, y + 5, E); P.p(2, y + 4, B); P.p(3, y + 4, B); P.p(2, y + 5, S); P.p(3, y + 9, C.skin0); P.p(3, y + 10, C.skin0); }
+    if (face === 'worry') { P.p(3, y + 5, S); P.p(3, y + 4, B); P.p(2, y + 4, B); P.p(3, y + 9, S); P.p(3, y + 10, M); }
+    else if (face === 'smug') { P.p(3, y + 5, S); P.p(2, y + 4, B); P.p(3, y + 4, B); P.p(4, y + 8, M); }
+    else if (face === 'shock') { P.p(3, y + 5, E); P.p(2, y + 4, B); P.p(3, y + 4, B); P.p(3, y + 9, C.skin0); P.p(3, y + 10, C.skin0); }
     else if (face === 'talk') { if (Math.sin(t * 13 + seed) > 0) { P.p(3, y + 9, C.skin0); P.p(4, y + 9, C.skin0); } }
     if (blink || face === 'blink') P.p(3, y + 6, C.skin3);
   }
@@ -903,7 +911,7 @@
         if (o.hold === 'helmet') { P.r(5, -19, 7, 4, C.paper4); P.r(5, -16, 7, 1, C.paper2); P.r(6, -20, 5, 1, C.paper5); P.r(7, -15, 1, 3, C.orange4); }
         if (o.hold === 'book') { P.r(-8, -18, 4, 7, C.red3); P.r(-8, -18, 1, 7, C.red2); P.r(-5, -17, 1, 5, C.paper4); }
       }
-      NR.end(g, o.rim);
+      NR.end(g, o.rim, null, 1);
       return;
     }
     // side views
@@ -920,7 +928,7 @@
       // arm to the handlebar grip
       const sh = [1, -12];
       limb(P, sh, [grip[0] - 1, grip[1]], 14, -1, C.orange4, 2); P.r(grip[0] - 1, grip[1] - 1, 2, 2, C.skin4);
-      NR.end(g, o.rim);
+      NR.end(g, o.rim, null, 1);
       return far;
     }
     if (pose === 'sit') {
@@ -930,7 +938,7 @@
       P.r(-3, -1, 12, 3, C.night5); P.r(-3, 1, 12, 1, C.night4);
       P.r(7, 1, 3, fl - 3, C.night5); P.r(7, fl - 2, 5, 2, C.slate1); P.r(7, fl - 1, 5, 1, C.paper2);
       P.l(1, -11, 6, -3, C.orange4, 2); P.r(6, -3, 2, 2, C.skin4);
-      NR.end(g, o.rim);
+      NR.end(g, o.rim, null, 1);
       return;
     }
     const walk = pose === 'walk', ph = t * 6 + seed, s = walk ? Math.sin(ph) : 0;
@@ -953,68 +961,76 @@
     else if (o.arm === 'point') { P.l(1, -27 + bob, 9, -27 + bob, C.orange4, 2); P.r(9, -28 + bob, 2, 2, C.skin4); P.p(11, -28 + bob, C.skin4); }
     else { P.l(1, -27 + bob, 1 + swing, -17 + bob, C.orange4, 2); P.l(0, -27 + bob, swing, -17 + bob, C.orange3, 1); P.r(swing, -17 + bob, 2, 2, C.skin4); }
     if (o.hold === 'phone') { P.r(1 + swing, -19 + bob, 2, 3, C.slate0); P.p(2 + swing, -19 + bob, C.phone4); }
-    NR.end(g, o.rim);
+    NR.end(g, o.rim, null, 1);
   };
 
   // ---------------------------------------------------------------- the dogs
   const COATS = {
-    brown: ['fur1', 'fur2', 'fur3', 'fur4', 'fur5'], black: ['slate0', 'slate1', 'slate2', 'slate3', 'slate4'],
-    golden: ['skin1', 'skin2', 'skin3', 'skin4', 'skin5'], grey: ['mist0', 'mist1', 'mist2', 'mist3', 'mist4'],
+    brown: ['fur1', 'fur2', 'fur3', 'fur4', 'fur5', 'fur6'], black: ['slate0', 'slate1', 'slate2', 'slate3', 'slate4', 'slate5'],
+    golden: ['skin1', 'skin2', 'skin3', 'skin4', 'skin5', 'skin6'], grey: ['mist0', 'mist1', 'mist2', 'mist3', 'mist4', 'mist5'],
   };
   /** dog(g, x, y, o): a medium mutt with floppy ears, side view, ~20 px long, ~16 px tall.
+   *  Six coat steps: a lit back and skull, a pale chest and muzzle, a dark ear, belly and far legs.
    *  o: { coat: 'brown' | 'black' | 'golden' | 'grey', pose: 'stand' | 'walk' | 'sit' | 'lie',
    *       facing: 'right' | 'left', t, seed, look: 'ahead' | 'up' (sit: looking up at someone),
    *       eyes: true (glint), rim, shadow } */
   NR.dog = (g, x, y, o) => {
     o = o || {}; const t = o.t || 0, seed = o.seed || 2, pose = o.pose || 'stand';
-    const K = (COATS[o.coat] || COATS.brown).map(col), [k0, k1, k2, k3, k4] = K;
+    const K = (COATS[o.coat] || COATS.brown).map(col), [k0, k1, k2, k3, k4, k5] = K;
     const flip = flipOf(o.facing), P = pen(g, x, y, flip);
     const wag = Math.sin(t * (pose === 'walk' ? 9 : 7) + seed);
+    const earFlap = Math.sin(t * 2.3 + seed * 3) > 0.85 ? 1 : 0;
     if (o.shadow !== false) NR.shadow(g, x + (flip ? -1 : 1), y, pose === 'sit' ? 7 : 11, 2);
     NR.begin(g);
     const head = (hx, hy, up) => {
-      // skull, muzzle, nose, eye, the floppy ear
-      P.r(hx, hy, 6, 5, k2); P.r(hx + 1, hy - 1, 4, 1, k2); P.r(hx + 1, hy, 4, 1, k3);
-      P.r(hx + 5, hy + 2, 3, 3, k2); P.r(hx + 5, hy + 2, 3, 1, k3); P.p(hx + 8, hy + 2 - (up ? 1 : 0), C.slate0);
-      P.r(hx + 5, hy + 4, 3, 1, k1); P.p(hx + 7, hy + 4, k0);
-      if (o.eyes !== false) { P.p(hx + 4, hy + 1, C.slate0); if (!blinking(t, seed + 3, 4.3)) P.p(hx + 4, hy + 1, C.slate0); else P.p(hx + 4, hy + 1, k1); }
-      P.r(hx + 1, hy + 1, 2, 4, k1); P.p(hx + 1, hy + 5, k1); P.p(hx + 2, hy + 1, k0);
+      // a round skull lit on top, a tapered muzzle with a pale top, a wet nose, an eye under a brow, the floppy ear
+      const m = up ? -1 : 0;
+      P.r(hx, hy, 6, 5, k2); P.r(hx + 1, hy - 1, 4, 1, k2); P.r(hx + 1, hy - 1, 3, 1, k3); P.r(hx + 2, hy, 3, 1, k3);
+      P.r(hx + 5, hy + 2 + m, 3, 2, k3); P.r(hx + 5, hy + 4 + m, 2, 1, k2); P.p(hx + 7, hy + 4 + m, k1); P.p(hx + 5, hy + 2 + m, k4);
+      P.p(hx + 8, hy + 2 + m, C.slate0); P.p(hx + 8, hy + 3 + m, k1);                                  // the nose
+      P.p(hx + 6, hy + 4 + m, k1);                                                                     // the mouth line
+      P.r(hx + 1, hy + 4, 4, 1, k1);                                                                   // under the jaw
+      if (o.eyes !== false) { if (!blinking(t, seed + 3, 4.3)) { P.p(hx + 4, hy + 1, C.slate0); P.p(hx + 4, hy, k4); } else P.p(hx + 4, hy + 1, k1); }
+      P.r(hx + 1, hy + 1 - earFlap, 2, 4, k1); P.p(hx + 1, hy + 5 - earFlap, k1); P.p(hx + 2, hy + 1 - earFlap, k0); P.p(hx, hy + 2, k0);   // the ear
     };
     if (pose === 'sit') {
-      // haunch on the ground, chest up, front legs straight, tail sweeping the floor
+      // a round haunch on the ground, the chest up and pale, front legs straight, tail sweeping the floor
       const up = o.look === 'up';
-      P.r(-6, -7, 8, 7, k2); P.r(-5, -8, 6, 1, k2); P.r(-6, -7, 2, 7, k1); P.r(-7, -2, 3, 2, k1);
-      P.r(-1, -13, 6, 8, k2); P.r(0, -14, 4, 1, k2); P.r(3, -12, 2, 6, k3);
-      P.r(2, -6, 2, 6, k2); P.r(4, -6, 1, 6, k1); P.r(1, -1, 4, 1, k3);
+      P.r(-6, -7, 8, 7, k2); P.r(-5, -8, 6, 1, k2); P.r(-4, -8, 4, 1, k3); P.r(-6, -7, 2, 7, k1); P.r(-7, -2, 3, 2, k1);
+      P.r(-3, -6, 3, 3, k3); P.r(-5, -1, 6, 1, k1);                                                    // the thigh, lit; under it
+      P.r(-1, -13, 6, 8, k2); P.r(0, -14, 4, 1, k2); P.r(3, -12, 2, 6, k3); P.r(4, -11, 1, 4, k4);       // the chest and its pale blaze
+      P.r(2, -6, 2, 6, k2); P.r(4, -6, 1, 6, k1); P.r(1, -1, 4, 1, k3); P.p(4, -1, k4);                // a front leg and its paw
       P.r(-3, -1, 3, 1, k3);
       head(1, up ? -20 : -19, up);
-      const tx = wag > 0 ? -10 : -9; P.l(-6, -1, tx, -1 - (wag > 0.5 ? 1 : 0), k1, 2);
-      NR.end(g, o.rim); return;
+      const tx = wag > 0 ? -10 : -9; P.l(-6, -1, tx, -1 - (wag > 0.5 ? 1 : 0), k1, 2); P.p(tx, -2 - (wag > 0.5 ? 1 : 0), k3);
+      NR.end(g, o.rim, null, 1); return;
     }
     if (pose === 'lie') {
-      P.r(-9, -5, 16, 5, k2); P.r(-8, -6, 13, 1, k2); P.r(-9, -1, 16, 1, k1); P.r(-6, -5, 6, 1, k3);
-      P.r(5, -2, 6, 2, k2); P.r(9, -2, 2, 1, k3);
+      P.r(-9, -5, 16, 5, k2); P.r(-8, -6, 13, 1, k2); P.r(-7, -6, 10, 1, k3); P.r(-9, -1, 16, 1, k1); P.r(-6, -5, 6, 1, k3);
+      P.r(-9, -4, 4, 3, k3); P.p(-9, -4, k2);                                                          // the haunch, rounded and lit
+      P.r(5, -2, 6, 2, k2); P.r(9, -2, 2, 1, k3); P.p(10, -1, k4); P.r(5, -1, 4, 1, k1);                // paws forward
       head(3, -8, false);
-      P.l(-9, -2, -12 - (wag > 0 ? 1 : 0), -1, k1, 2);
-      NR.end(g, o.rim); return;
+      P.l(-9, -2, -12 - (wag > 0 ? 1 : 0), -1, k1, 2); P.p(-12 - (wag > 0 ? 1 : 0), -2, k3);
+      NR.end(g, o.rim, null, 1); return;
     }
     const walk = pose === 'walk', ph = t * 9 + seed, s = walk ? Math.sin(ph) : 0;
     const bob = walk && Math.abs(s) > 0.7 ? -1 : 0;
     // far legs (darker), then the body, then near legs
-    const leg = (lx, off, c) => { P.r(lx + off, -6 + bob, 2, 6 - bob, c); P.r(lx + off, -1, 3, 1, c); };
-    leg(-6, walk ? rnd(-s * 2) : 1, k0); leg(4, walk ? rnd(s * 2) : -1, k0);
-    // body: back, chest, belly
-    P.r(-9, -12 + bob, 15, 6, k2); P.r(-8, -13 + bob, 12, 1, k2); P.r(-8, -12 + bob, 11, 1, k3);
-    P.r(3, -13 + bob, 4, 7, k2); P.r(-7, -6 + bob, 12, 1, k1); P.r(-9, -11 + bob, 1, 4, k1);
-    P.r(5, -12 + bob, 2, 5, k3);
-    leg(-7, walk ? rnd(s * 2) : 0, k1); leg(3, walk ? rnd(-s * 2) : 0, k1);
+    const leg = (lx, off, c, paw) => { P.r(lx + off, -6 + bob, 2, 6 - bob, c); P.r(lx + off, -1, 3, 1, paw); };
+    leg(-6, walk ? rnd(-s * 2) : 1, k0, k1); leg(4, walk ? rnd(s * 2) : -1, k0, k1);
+    // body: a barrel lit along the back, a pale chest, a dark belly tucked up toward the hind legs
+    P.r(-9, -12 + bob, 15, 6, k2); P.r(-8, -13 + bob, 12, 1, k2); P.r(-7, -13 + bob, 9, 1, k3); P.r(-6, -12 + bob, 7, 1, k3);
+    P.r(3, -13 + bob, 4, 7, k2); P.r(5, -12 + bob, 2, 5, k3); P.p(6, -11 + bob, k4);
+    P.r(-7, -6 + bob, 12, 1, k1); P.r(-5, -7 + bob, 8, 1, k1); P.r(-9, -11 + bob, 1, 4, k1);
+    P.r(-9, -11 + bob, 4, 4, k3); P.p(-9, -11 + bob, k2);                                              // the haunch
+    leg(-7, walk ? rnd(s * 2) : 0, k2, k3); leg(3, walk ? rnd(-s * 2) : 0, k2, k3);
     P.r(-7, -7 + bob, 2, 2, k2); P.r(3, -7 + bob, 2, 2, k2);
     // neck and head
-    P.r(5, -15 + bob, 3, 4, k2);
+    P.r(5, -15 + bob, 3, 4, k2); P.p(7, -14 + bob, k3);
     head(5, -18 + bob, false);
-    // tail: wags
-    const tw = rnd(wag * 2); P.l(-9, -11 + bob, -13, -14 + bob + tw, k2, 2); P.p(-13, -15 + bob + tw, k3);
-    NR.end(g, o.rim);
+    // tail: wags, a pale tip
+    const tw = rnd(wag * 2); P.l(-9, -11 + bob, -13, -14 + bob + tw, k2, 2); P.p(-13, -15 + bob + tw, k4); P.p(-12, -14 + bob + tw, k3);
+    NR.end(g, o.rim, null, 1);
   };
 
   // ---------------------------------------------------------------- the omafiets
@@ -1035,33 +1051,38 @@
     const T = [C.teal1, C.teal2, C.teal3, C.teal4];
     if (o.shadow !== false) NR.shadow(g, x + (flip ? -1 : 1), y, 26, 2, 0.5);
     NR.begin(g);
-    // wheels: tyre, rim, a few spokes that turn, hub
+    // wheels: tyre with a shine along its top, rim, a few spokes that turn, hub
     for (const h of [Rr, Fr]) {
       P.ring(h[0], h[1], 8, C.slate0, 2); P.ring(h[0], h[1], 6, C.steel2, 1);
+      arc(P, h[0], h[1], 8, Math.PI * 1.18, Math.PI * 1.55, C.slate2);
       for (let k = 0; k < 3; k++) { const an = a + k * Math.PI / 3; P.l(h[0] - Math.cos(an) * 5, h[1] - Math.sin(an) * 5, h[0] + Math.cos(an) * 5, h[1] + Math.sin(an) * 5, C.steel1); }
-      P.p(h[0], h[1], C.steel4);
+      P.p(h[0], h[1], C.steel4); P.p(h[0] - 1, h[1] - 1, C.steel3);
     }
-    // mudguards
+    // mudguards, the skirt guard's strings over the back wheel, the rear light
     arc(P, Rr[0], Rr[1], 9, Math.PI * 1.02, Math.PI * 1.98, C.slate1); arc(P, Fr[0], Fr[1], 9, Math.PI * 1.1, Math.PI * 1.9, C.slate1);
+    for (let k = 0; k < 3; k++) P.l(-6 - k * 2, -18, -13 + k * 2, -9, C.steel0);
     P.p(-23, -9, C.red4); P.p(-23, -10, C.red3);
     // rear rack
-    P.l(-6, -19, -21, -19, C.steel3); P.l(-20, -19, -15, -9, C.steel2); P.l(-12, -19, -14, -9, C.steel2);
-    // frame: seat tube, seat stays, twin low tubes, head tube, fork
+    P.l(-6, -19, -21, -19, C.steel3); P.l(-20, -19, -15, -9, C.steel2); P.l(-12, -19, -14, -9, C.steel2); P.l(-7, -20, -20, -20, C.steel1);
+    // frame: seat tube, seat stays, twin low tubes, head tube, fork; the top of each tube catches the light
     P.l(BB[0], BB[1], S[0] + 1, S[1] + 2, T[2], 1); P.l(BB[0] + 1, BB[1], S[0] + 2, S[1] + 2, T[1], 1);
     P.l(S[0] + 1, S[1] + 3, Rr[0], Rr[1], T[2]);
     P.l(11, -21, 3, -12, T[2]); P.l(3, -12, BB[0] + 1, BB[1], T[2]);
     P.l(12, -18, 4, -10, T[3]); P.l(4, -10, BB[0] + 2, BB[1] + 1, T[3]);
     P.l(11, -23, 12, -18, T[3], 2); P.l(12, -18, Fr[0], Fr[1], T[2]); P.l(13, -18, Fr[0] + 1, Fr[1], T[1]);
+    P.l(10, -22, 5, -16, C.teal5); P.p(12, -23, C.teal5);
     // chain case
-    P.poly([-1, -10, -14, -10, -15, -9, -15, -7, -14, -6, -1, -6, 1, -8], C.slate1); P.l(-1, -10, -14, -10, C.slate2);
+    P.poly([-1, -10, -14, -10, -15, -9, -15, -7, -14, -6, -1, -6, 1, -8], C.slate1); P.l(-1, -10, -14, -10, C.slate2); P.l(-3, -7, -13, -7, C.slate0);
     // crank and pedals
     P.disc(0, -8, 2, C.steel3); P.p(0, -8, C.steel5);
     const pd = [[rnd(Math.cos(ca) * 3), -8 + rnd(Math.sin(ca) * 3)], [rnd(-Math.cos(ca) * 3), -8 + rnd(-Math.sin(ca) * 3)]];
     P.l(0, -8, pd[1][0], pd[1][1], C.steel2); P.r(pd[1][0] - 1, pd[1][1], 3, 1, C.slate0);
-    // saddle with springs
-    P.r(S[0] - 3, S[1] - 1, 7, 2, C.wood2); P.r(S[0] - 2, S[1] - 2, 5, 1, C.wood3); P.p(S[0] - 2, S[1] + 1, C.steel3); P.p(S[0] + 2, S[1] + 1, C.steel3);
-    // handlebars swept back, grips
-    P.l(11, -23, 11, -26, C.steel3); P.l(11, -26, 6, -26, C.steel4); P.p(5, -25, C.slate0); P.p(6, -25, C.slate0);
+    // saddle with springs, a lit top
+    P.r(S[0] - 3, S[1] - 1, 7, 2, C.wood2); P.r(S[0] - 2, S[1] - 2, 5, 1, C.wood3); P.r(S[0] - 1, S[1] - 2, 2, 1, C.wood5); P.p(S[0] - 2, S[1] + 1, C.steel3); P.p(S[0] + 2, S[1] + 1, C.steel3);
+    // handlebars swept back, grips, a bell
+    P.l(11, -23, 11, -26, C.steel3); P.l(11, -26, 6, -26, C.steel4); P.p(5, -25, C.slate0); P.p(6, -25, C.slate0); P.p(9, -27, C.steel5);
+    // parked: the kickstand down
+    if (!o.rider && !speed) P.l(-3, -7, -6, -1, C.steel1);
     // basket on the front carrier
     P.l(14, -20, 15, -14, C.steel2);
     P.r(13, -27, 11, 7, C.wood3); P.r(13, -27, 11, 1, C.wood5); P.r(13, -21, 11, 1, C.wood2);
@@ -1107,15 +1128,17 @@
   // ---------------------------------------------------------------- the dead
   const COATS_W = ['brick2', 'night4', 'teal2', 'wood2', 'green2', 'slate3'];
   const SHIRTS = ['zombie3', 'mist1', 'brick3', 'blue1', 'green3', 'night4', 'wood2', 'teal2', 'zombie4'];
-  /** zombie(g, x, y, o): one of the changed. Tall, thin, hunched, small head pushed forward,
-   *  arms that hang past the knees, glowing yellow eyes. Side view, facing right by default.
-   *  (x, y): x the hip line, y the ground. ~50 px tall at the default height.
+  /** zombie(g, x, y, o): one of the changed (concept sheet C). Tall and thin, the back bent into
+   *  a hump, a small head pushed forward on a long neck, arms that dangle to the knees, knees that
+   *  give a little, rags, and two yellow eyes with a halo. Side view, facing right by default.
+   *  (x, y): x the hip line, y the ground. About 0.85 x height tall once hunched.
    *  o: { variant: 'plain' | 'hat' (orange bucket hat) | 'bonnet' (woman in traditional dress)
    *         | 'cheese' (a cheese wheel for a hat) | 'phone' (checking the Tikkie, face lit cyan)
    *         | 'woman' (long coat, hair in a bun),
    *       t, seed, facing: 'right' | 'left', pose: 'stand' (sway) | 'walk' (shamble),
    *       height: 50, hunch: 0..1 (0 upright, 1 almost crawling), carry: 'cheese' (a stack on the back),
-   *       clogs, socks (red-white striped), hair: 'bun' | 'long' | null, shirt, pants (colours),
+   *       clogs, socks (red-white striped), hair: 'bun' | 'long' | null, hairColor, shirt, pants (colours),
+   *       phone: true (hold a phone up, any variant),
    *       tone: one colour for the whole body (far silhouettes; the eyes still glow),
    *       eyes: true, glow: 0.35 (eye glow strength), rim, shadow }
    *  Returns { head: [x, y], hand: [x, y] } in screen pixels, for bubbles and props. */
@@ -1126,118 +1149,187 @@
     const H = o.height || (v === 'bonnet' ? 46 : 50);
     const hunch = o.hunch == null ? (woman ? 0.2 : 0.4) : o.hunch;
     const tone = o.tone != null ? col(o.tone) : -1;
-    const T = c => tone >= 0 ? tone : col(c), D = (c, k) => tone >= 0 ? tone : step(c, k || -1);
-    const sk1 = T('zombie5'), sk0 = T('zombie4'), sk2 = T('zombie6');
+    const T = c => tone >= 0 ? tone : col(c), D = (c, k) => tone >= 0 ? tone : step(c, k || -1), U = (c, k) => tone >= 0 ? tone : step(c, k || 1);
+    const small = H < 26, big = H >= 40, huge = H >= 62;
+    const sk = T('zombie5'), skD = T('zombie4'), skDD = T('zombie3'), skL = T('zombie6');
     const shirt = T(o.shirt || (v === 'bonnet' ? 'slate2' : v === 'woman' ? COATS_W[Math.floor(hash(seed, 13) * COATS_W.length)] : SHIRTS[Math.floor(hash(seed, 11) * SHIRTS.length)]));
-    const shirtD = D(shirt), pants = T(o.pants || (v === 'bonnet' ? 'night2' : hash(seed, 12) < 0.5 ? 'slate2' : 'night3')), pantsD = D(pants);
+    const shirtD = D(shirt), shirtDD = D(shirt, -2), shirtL = U(shirt);
+    const pants = T(o.pants || (v === 'bonnet' ? 'night2' : hash(seed, 12) < 0.5 ? 'slate2' : 'night3')), pantsD = D(pants);
     const clogs = o.clogs == null ? (v === 'hat' || v === 'bonnet' || v === 'cheese') : o.clogs;
     const socks = o.socks == null ? v === 'hat' : o.socks;
     const hair = o.hair !== undefined ? o.hair : v === 'woman' ? 'bun' : null;
-    const walk = o.pose === 'walk', ph = t * 2.6 + seed;
+    const phoneUp = v === 'phone' || !!o.phone;
+    const walk = o.pose === 'walk', ph = t * 2.6 + seed, fA = walk ? Math.sin(ph) : 0;
     const sway = Math.sin(t * 1.3 + seed * 1.7);
-    const legL = rnd(H * 0.42), torsoL = rnd(H * 0.34), hipY = -legL + (walk && Math.abs(Math.sin(ph)) > 0.8 ? 1 : 0);
-    const a = 0.08 + hunch * 0.7 + sway * 0.04;
-    const sh = [rnd(Math.sin(a) * torsoL), hipY - rnd(Math.cos(a) * torsoL)];
-    const hw = Math.max(3, rnd(H / 10)), hh = hw + 1;
-    const hx0 = sh[0] + 1 + rnd(hunch * 2.5), hy0 = sh[1] - hh + 2 + rnd(hunch * 3) + (Math.sin(t * 1.3 + seed * 1.7 - 0.6) > 0.7 ? 1 : 0);
-    const tw = Math.max(3, rnd(H / 9));
+
+    // ---- the skeleton: hip, a spine in two parts (the upper back bends hard forward into a hump),
+    // the shoulder thrown ahead of the hips, a long neck reaching forward, a small head
+    const legL = rnd(H * 0.46), torsoL = H * 0.34, armL = rnd(H * (woman ? 0.45 : 0.5));
+    const hipY = -legL + rnd(H * 0.025 * (0.6 + hunch)) + (walk && Math.abs(fA) > 0.8 ? 1 : 0);
+    const a1 = 0.08 + hunch * 0.45 + sway * 0.03, a2 = a1 + (woman ? 0.2 : 0.45) + hunch * 0.7;
+    const M = [Math.sin(a1) * torsoL * 0.55, hipY - Math.cos(a1) * torsoL * 0.55];
+    const S = [M[0] + Math.sin(a2) * torsoL * 0.5, M[1] - Math.cos(a2) * torsoL * 0.5];
+    const sh = [rnd(S[0]), rnd(S[1])];
+    const an = Math.min(1.5, a2 + 0.25), neckL = Math.max(1, rnd(H * 0.06));
+    const nk = [S[0] + Math.sin(an) * neckL, S[1] - Math.cos(an) * neckL];
+    const hw = Math.max(3, rnd(H * 0.085)), hh = Math.max(4, rnd(H * 0.1));
+    const nod = Math.sin(t * 1.3 + seed * 1.7 - 0.6) > 0.7 ? 1 : 0;
+    const hx0 = rnd(nk[0]) - 1, hy0 = rnd(nk[1]) - hh + 2 + rnd(hunch * 1.5) + nod, front = hx0 + hw - 1;
+    const eyeRow = hy0 + Math.max(1, rnd(hh * 0.36)), mouthRow = hy0 + hh - 2;
+    const w0 = Math.max(2, rnd(H * 0.085)), wm = Math.max(3, rnd(H * 0.1)), w1 = Math.max(3, rnd(H * 0.11)), hump = 0.5 + hunch * H * 0.04;
+    const legT = H >= 64 ? 3 : H >= 26 ? 2 : 1, armT = H >= 26 ? 2 : 1, foreT = H >= 58 ? 2 : 1;
     if (o.shadow !== false && tone < 0) NR.shadow(g, x + (flip ? -2 : 2), y, rnd(H / 5), 2, 0.5);
     NR.begin(g);
-    // far leg and far arm first, a step darker
-    const fA = walk ? Math.sin(ph) : 0, footF = [rnd(-2 + 4 * fA), -1], footN = [rnd(2 - 4 * fA), -1];
+
+    // ---- legs: knees forward a little (they give under the weight), rags at the shin, shoes or clogs
+    const kb = 1 + rnd(hunch * 2) + (H >= 56 ? 1 : 0);
+    const footF = [rnd(-1 + 4 * fA), -1], footN = [rnd(3 - 4 * fA), -1];
     if (walk) { if (Math.cos(ph) > 0.3) footN[1] -= 1; else if (Math.cos(ph) < -0.3) footF[1] -= 1; }
-    const armL = rnd(H * 0.5), swingA = rnd(sway * 1.5 + (walk ? -2 * fA : 0));
-    const handF = [sh[0] + rnd(hunch * 3) - swingA, sh[1] + armL - 2];
-    const leg = (hip, foot, c, cd) => {
-      const k = joint(hip[0], hip[1], foot[0], foot[1], legL + 1, 1);
-      P.l(hip[0], hip[1], k[0], k[1], c, 2); P.l(k[0], k[1], foot[0], foot[1], cd, 2);
-      if (socks && tone < 0) for (let r = 2; r <= 5; r++) { const fx = rnd(foot[0] + (k[0] - foot[0]) * (r - 1) / (legL / 2)); P.r(fx - 1, -r, 2, 1, r & 1 ? C.red4 : C.paper4); }
-      if (clogs) { const cc = tone >= 0 ? tone : C.cheese3; P.r(foot[0] - 2, -2, 5, 2, cc); P.p(foot[0] + 3, -2, tone >= 0 ? tone : C.cheese4); P.r(foot[0] - 2, -2, 4, 1, tone >= 0 ? tone : C.cheese4); P.p(foot[0] - 2, -1, tone >= 0 ? tone : C.cheese2); }
-      else { P.r(foot[0] - 1, -1, 4, 1, T('slate0')); P.r(foot[0] - 1, -2, 3, 1, T('slate1')); }
+    const shoe = foot => {
+      if (clogs) {
+        const cc = T('cheese3'), cl = T('cheese4'), cdk = T('cheese2');
+        P.r(foot[0] - 2, foot[1] - 1, 5, 2, cc); P.r(foot[0] - 2, foot[1] - 1, 4, 1, cl); P.p(foot[0] + 3, foot[1] - 1, cl); P.p(foot[0] + 3, foot[1] - 2, cc); P.p(foot[0] - 2, foot[1], cdk);
+      } else { P.r(foot[0] - 1, foot[1], small ? 3 : 4, 1, T('slate0')); P.r(foot[0] - 1, foot[1] - 1, small ? 2 : 3, 1, T('slate1')); }
     };
-    const arm = (s0, hand, c, sk, bendDir) => {
-      const k = joint(s0[0], s0[1], hand[0], hand[1], armL, bendDir);
-      P.l(s0[0], s0[1], k[0], k[1], c, 2); P.l(k[0], k[1], hand[0], hand[1], sk, 1);
-      P.r(hand[0], hand[1], 2, 2, sk); P.p(hand[0] + 1, hand[1] + 2, sk); P.p(hand[0], hand[1] + 3, D(sk));
+    const leg = (hip, foot, c, cd, skc, lift) => {
+      const knee = [rnd((hip[0] + foot[0]) / 2 + kb + lift), rnd((hip[1] + foot[1]) / 2)];
+      P.l(hip[0], hip[1], knee[0], knee[1], c, legT); P.l(knee[0], knee[1], foot[0], foot[1] - 1, cd, Math.max(1, legT - 1));
+      if (big && tone < 0 && !woman && (v === 'plain' || v === 'phone')) { P.p(foot[0], foot[1] - 2, skc); P.p(foot[0] + 1, foot[1] - 3, skc); }   // torn trousers, a bony ankle
+      if (socks && tone < 0) for (let r = 2; r <= Math.min(6, rnd(legL * 0.3)); r++) { const fx = rnd(foot[0] + (knee[0] - foot[0]) * (r - 1) / (legL / 2)); P.r(fx - (legT >> 1), foot[1] - r, legT, 1, r & 1 ? C.red4 : C.paper4); }
+      shoe(foot);
+      return knee;
     };
-    if (v !== 'bonnet') leg([-1, hipY], footF, pantsD, D(pantsD));
-    else leg([-1, hipY], footF, pantsD, pantsD);
-    arm([sh[0] - 1, sh[1] + 2], handF, D(shirtD), sk0, 1);
-    // skirt or coat under the torso
+    // ---- arms: they hang from shoulders thrown forward, elbows a little back, long fingers
+    const J = [sh[0] - 1, sh[1] + 2];
+    const swingA = rnd(sway * 1.2 + (walk ? -2 * fA : 0));
+    const hand = (hd, c, cd) => {
+      if (small) { P.p(hd[0], hd[1], c); P.p(hd[0], hd[1] + 1, cd); return; }
+      P.r(hd[0], hd[1], 2, 2, c); P.p(hd[0], hd[1] + 2, c); P.p(hd[0] + 1, hd[1] + 2, cd); P.p(hd[0], hd[1] + 3, cd);
+      if (big) { P.p(hd[0] + 1, hd[1] + 3, cd); P.p(hd[0] - 1, hd[1] + 2, cd); }
+      if (huge) { P.p(hd[0] + 1, hd[1] + 4, cd); P.p(hd[0] + 2, hd[1] + 2, c); }
+    };
+    const arm = (s0, hd, sleeve, skc, skd) => {
+      const el = [rnd((s0[0] + hd[0]) / 2 - 1 - hunch), rnd((s0[1] + hd[1]) / 2)];
+      P.l(s0[0], s0[1], el[0], el[1], sleeve, armT);
+      if (big && tone < 0) P.p(el[0], el[1] + 1, D(sleeve));                        // the torn cuff
+      P.l(el[0], el[1], hd[0], hd[1], skc, foreT); hand(hd, skc, skd);
+    };
+
+    // far side first, a step darker
+    if (v === 'bonnet') shoe(footF); else leg([-1, hipY], footF, pantsD, D(pantsD), skD, -1);
+    const handF = [J[0] - 1 + rnd(hunch * 2) - swingA, J[1] + armL - 1];
+    arm([J[0] - 1, J[1]], handF, shirtD, skD, skDD);
+
+    // ---- skirts and coats under the torso
     if (v === 'bonnet') {
-      const hy = hipY - 3, wid = rnd(H / 10);
-      P.poly([-wid + sh[0] * 0.2, hy, wid + 2 + sh[0] * 0.2, hy, wid + 4, -2, -wid - 3, -2], pants);
-      P.poly([1 + sh[0] * 0.2, hy + 2, wid + 1, hy + 2, wid + 2, -4, 2, -4], T('paper2'));         // apron
+      const hy = hipY - 3, wid = Math.max(3, rnd(H / 10)), sx0 = rnd(sh[0] * 0.2);
+      P.poly([-wid + sx0, hy, wid + 2 + sx0, hy, wid + 4, -2, -wid - 3, -2], pants);                          // the long dark skirt
+      P.l(-wid + sx0, hy + 1, -wid - 2, -3, pantsD); P.l(sx0 + 1, hy + 2, 0, -3, pantsD);                      // its folds
+      P.poly([1 + sx0, hy + 2, wid + 1 + sx0, hy + 2, wid + 2, -4, 2, -4], T('paper2'));                     // the apron
+      P.l(wid + 1 + sx0, hy + 3, wid + 2, -5, T('paper1'));
       P.r(-wid - 3, -3, 2 * wid + 7, 1, pantsD);
     } else if (v === 'woman') {
-      const hy = hipY - 2, hem = hipY + rnd(legL * 0.5);
-      P.poly([-3, hy, tw, hy, tw + 1, hem, -4, hem], shirt); P.r(-4, hem - 1, tw + 5, 1, shirtD);
-      P.l(tw - 2, hy + 1, tw - 1, hem - 1, shirtD);
+      const hy = hipY - 1, hem = hipY + rnd(legL * 0.55), hwid = Math.max(2, rnd(w0 * 0.5)) + 1;
+      P.poly([-hwid, hy, hwid + 1, hy, hwid + 3, hem, -hwid - 2, hem], shirt);
+      P.r(-hwid - 2, hem - 1, 2 * hwid + 5, 1, shirtD); P.l(hwid, hy + 1, hwid + 2, hem - 1, shirtD); P.l(0, hy + 2, -1, hem - 2, shirtD);   // hem and folds
+      if (big) P.l(-hwid + 1, hy + 3, -hwid - 1, hem - 2, shirtDD);
     }
-    // torso: hip to shoulder with a hump in the upper back
-    const ca = Math.cos(a), sa = Math.sin(a), mid = [sh[0] * 0.62, hipY + (sh[1] - hipY) * 0.62];
-    const back = [mid[0] - ca * (tw * 0.5 + 1 + hunch * 2), mid[1] - sa * (tw * 0.5 + 1 + hunch * 2) + 0.5];
-    P.poly([-2, hipY + 2, tw - 1, hipY + 2, sh[0] + 3, sh[1] + 3, sh[0] + 1, sh[1] - 1, sh[0] - 2, sh[1] - 1, back[0], back[1], -3, hipY - 1], shirt);
-    P.poly([-2, hipY + 2, 0, hipY + 2, back[0] + 2, back[1] + 1, back[0], back[1], -3, hipY - 1], shirtD);
-    if (v !== 'bonnet' && v !== 'woman' && tone < 0) for (let i = -2; i < tw - 1; i++) {   // the ragged hem
-      const hv = hash(i + seed * 5, 3); if (hv < 0.45) P.p(i, hipY + 2, shirt); if (hv < 0.15) P.p(i, hipY + 3, shirtD);
+
+    // ---- the torso: hip, the bend in the back, the shoulder; the back turns away, rags at the hem
+    const n1 = [Math.cos(a1), Math.sin(a1)], n2 = [Math.cos(a2), Math.sin(a2)];
+    let nm = [n1[0] + n2[0], n1[1] + n2[1]]; { const l = Math.hypot(nm[0], nm[1]) || 1; nm = [nm[0] / l, nm[1] / l]; }
+    const at = (p, n, k) => [p[0] + n[0] * k + 0.5, p[1] + n[1] * k + 0.5];
+    const hipF = at([0, hipY + 1], n1, w0 * 0.5), hipB = at([0, hipY + 1], n1, -w0 * 0.5);
+    const midF = at(M, nm, wm * 0.4), midB = at(M, nm, -(wm * 0.5 + hump));
+    const shF = at([S[0], S[1] + 1], n2, w1 * 0.35), shB = at(S, n2, -w1 * 0.55);
+    const hc = [midB[0] - nm[0] * hump * 0.9, midB[1] - nm[1] * hump * 0.9];                // the hump: the curve is pulled further back
+    const back = []; for (let i = 0; i <= 8; i++) { const s = i / 8, q = 1 - s; back.push([q * q * shB[0] + 2 * q * s * hc[0] + s * s * hipB[0], q * q * shB[1] + 2 * q * s * hc[1] + s * s * hipB[1]]); }
+    const pts = [hipF[0], hipF[1], midF[0], midF[1], shF[0], shF[1], S[0] + 1, S[1] - 0.2];
+    back.forEach(p => pts.push(p[0], p[1]));
+    P.poly(pts, shirt);
+    if (tone < 0) {
+      for (let i = 0; i < 8; i++) P.l(back[i][0] + nm[0] * 0.9 - 0.5, back[i][1] + nm[1] * 0.9 - 0.5, back[i + 1][0] + nm[0] * 0.9 - 0.5, back[i + 1][1] + nm[1] * 0.9 - 0.5, shirtD, big ? 2 : 1);   // the back turns away
+      if (big) {
+        P.l(midF[0] - 1.5, midF[1] - 0.5, hipF[0] - 1.5, hipF[1] - 2.5, shirtD);                          // a fold from the chest down
+        for (let i = 1; i < 4; i++) P.p(rnd(back[i][0] + nm[0] * 0.4 - 0.5), rnd(back[i][1] + nm[1] * 0.4 - 0.5), shirtL);   // the top of the hump catches the sky
+      }
+      if (v !== 'bonnet' && v !== 'woman') for (let i = -2; i < w0 + 1; i++) {                               // the ragged hem
+        const hv = hash(i + seed * 5, 3); if (hv < 0.5) P.p(i, hipY + 2, hv < 0.25 ? shirtD : shirt); if (hv < 0.18) P.p(i, hipY + 3, shirtD);
+      }
     }
-    if (v === 'bonnet') { P.r(sh[0] - 3, sh[1] + 1, 4, 3, T('paper3')); }  // the shawl collar
-    if (v !== 'bonnet') leg([1, hipY], footN, pants, pantsD);
-    else { P.r(footN[0] - 1, -3, 2, 1, sk0); leg([1, -4], footN, pants, pants); }
-    // neck and head
-    P.l(sh[0], sh[1], hx0 + 1, hy0 + hh - 2, sk0, 2);
-    P.r(hx0, hy0, hw, hh, sk1); P.r(hx0 + 1, hy0 - 1, hw - 2, 1, sk1);
-    P.r(hx0, hy0, 1, hh, sk0); P.r(hx0 + 1, hy0 + hh, hw - 2, 1, sk0);           // back of the skull, the slack jaw
-    P.p(hx0 + hw - 1, hy0 + hh - 1, D(sk0)); P.p(hx0 + hw - 2, hy0 + hh, D(sk0)); // open mouth
-    P.r(hx0 + hw - 3, hy0 + 1, 2, 2, D(sk0));                                    // the socket
-    if (tone < 0) P.p(hx0 + hw - 1, hy0 + 2, sk2);                               // the nose catching light
+    if (v === 'bonnet') { P.r(sh[0] - 3, sh[1] + 1, 4, 3, T('paper3')); P.p(sh[0] - 3, sh[1] + 4, T('paper2')); }   // the shawl collar
+    if (v === 'woman' && big) { P.l(sh[0], sh[1] + 2, rnd(hipF[0]) - 1, hipY + 1, shirtD); P.p(rnd(hipF[0]) - 1, hipY - 2, shirtL); P.p(rnd(midF[0]) - 1, rnd(midF[1]), shirtL); }   // lapel and buttons
+
+    // near leg
+    if (v === 'bonnet') shoe(footN);
+    else leg([1, hipY], footN, pants, pantsD, sk, 0);
+
+    // ---- neck and head: a small skull hung forward, slack jaw, sunken sockets, a nose that catches the light
+    P.l(sh[0], sh[1], rnd(nk[0]), rnd(nk[1]) + 1, skD, big ? 2 : 1);
+    P.r(hx0, hy0 + 1, hw, hh - 1, sk); P.r(hx0 + 1, hy0, hw - 2, 1, sk);
+    P.r(hx0, hy0 + 1, 1, hh - 2, skD);                                                       // the back of the skull
+    P.r(hx0 + 1, hy0 + hh - 1, hw - 2, 1, skD);                                              // the jaw's underside
+    if (tone < 0) {
+      P.r(hx0 + 1, hy0, Math.max(1, hw - 3), 1, skL);                                        // the crown
+      P.r(Math.max(hx0 + 1, front - 2), eyeRow, Math.min(3, hw - 1), 1, skDD);               // the sockets
+      if (hw >= 4) { P.p(front + 1, eyeRow + 1, sk); P.p(front, eyeRow - 1, skL); }          // a nose, a brow
+      P.p(front, mouthRow, skDD); if (big) { P.p(front - 1, mouthRow + 1, skDD); P.p(front, mouthRow + 1, skD); }   // the open mouth
+      if (big) { P.p(hx0 + 1, eyeRow + 1, skD); P.p(front - 1, eyeRow + 1, skD); }           // an ear, the hollow cheek
+      if (huge) P.p(front - 1, mouthRow, T('paper2'));                                       // one tooth
+    } else if (hw >= 4) P.p(front + 1, eyeRow + 1, sk);
     // hair and hats
     if (v === 'hat') {
-      const hc = T('orange1'), hcl = T('orange2');
-      P.r(hx0 - 2, hy0, hw + 4, 1, hc); P.r(hx0 - 1, hy0 - 3, hw + 1, 3, hcl); P.r(hx0, hy0 - 4, hw - 1, 1, hcl); P.p(hx0 - 2, hy0 + 1, hc);
+      const hc0 = T('orange1'), hcl = T('orange2');
+      P.r(hx0 - 2, hy0, hw + 4, 1, hc0); P.r(hx0 - 1, hy0 - 3, hw + 1, 3, hcl); P.r(hx0, hy0 - 4, hw - 1, 1, hcl); P.p(hx0 - 2, hy0 + 1, hc0);
+      if (big && tone < 0) { P.r(hx0, hy0 - 3, hw - 1, 1, T('orange3')); P.p(hx0 + hw + 1, hy0 + 1, hc0); }
     } else if (v === 'bonnet') {
       const b = T('paper5'), b2 = T('paper3');
       P.r(hx0 - 1, hy0 - 1, hw, hh - 1, b); P.r(hx0 - 1, hy0 + hh - 2, hw - 1, 1, b2);
       P.p(hx0 - 2, hy0 - 2, b); P.p(hx0 - 3, hy0 - 3, b); P.p(hx0 - 2, hy0 - 3, b2); P.p(hx0 + hw - 2, hy0 - 2, b); P.p(hx0 + hw - 1, hy0 - 3, b);
       P.r(hx0 + hw - 2, hy0 + 1, 1, hh - 2, b2);
+      if (big && tone < 0) { P.p(hx0 - 4, hy0 - 4, b2); P.r(hx0, hy0, hw - 2, 1, T('paper6')); }
     } else if (v === 'cheese') {
       const cx = hx0 + (hw >> 1);
       P.r(cx - hw - 1, hy0 - 3, 2 * hw + 3, 3, T('cheese3')); P.r(cx - hw, hy0 - 4, 2 * hw + 1, 1, T('cheese5'));
       P.r(cx - hw - 1, hy0 - 1, 2 * hw + 3, 1, T('cheese2')); P.r(cx + 1, hy0 - 4, 3, 2, T('cheese6')); P.p(cx + 1, hy0 - 2, T('cheese4'));
     } else if (hair === 'bun') {
-      const hc = T(o.hairColor || (hash(seed, 21) < 0.5 ? 'wood2' : 'slate1'));
-      P.r(hx0 - 1, hy0 - 1, hw - 1, 3, hc); P.r(hx0 - 1, hy0 + 2, 2, hh - 3, hc); P.disc(hx0 - 2, hy0 - 1, 1, hc); P.p(hx0 - 2, hy0 - 2, tone >= 0 ? tone : step(hc, 1));
+      const hcl = T(o.hairColor || (hash(seed, 21) < 0.5 ? 'wood2' : 'slate1'));
+      P.r(hx0 - 1, hy0 - 1, hw - 1, 3, hcl); P.r(hx0 - 1, hy0 + 2, 2, hh - 3, hcl); P.disc(hx0 - 2, hy0 - 1, 1, hcl); P.p(hx0 - 2, hy0 - 2, tone >= 0 ? tone : step(hcl, 1));
+      if (big && tone < 0) { P.p(hx0, hy0 - 1, step(hcl, 1)); P.p(hx0 + 1, hy0 - 1, step(hcl, 1)); P.p(hx0 - 3, hy0, step(hcl, -1)); }
     } else if (hair === 'long') {
-      const hc = T(o.hairColor || 'wood2'); P.r(hx0 - 1, hy0 - 1, hw - 1, 2, hc); P.r(hx0 - 2, hy0 + 1, 2, hh + 4, hc);
-    } else if (tone < 0) { for (let i = 0; i < hw - 1; i++) if (hash(i, seed + 4) < 0.55) P.p(hx0 + i, hy0 - 1, C.slate1); }
+      const hcl = T(o.hairColor || 'wood2'); P.r(hx0 - 1, hy0 - 1, hw - 1, 2, hcl); P.r(hx0 - 2, hy0 + 1, 2, hh + 4, hcl);
+    } else if (tone < 0) {
+      for (let i = 0; i < hw - 1; i++) if (hash(i, seed + 4) < 0.55) P.p(hx0 + i, hy0 - 1, C.slate1);
+      if (big) { P.p(hx0 - 1, hy0 + 1, C.slate1); P.p(hx0 - 1, hy0 + 2, C.slate0); if (hash(seed, 6) < 0.5) P.p(hx0 - 2, hy0 + 3, C.slate1); }   // a few long strands
+    }
     // carry a stack of cheese on the back
     if (o.carry === 'cheese') {
-      const bx = back[0] - 6, by = back[1] - 2;
-      for (let k = 0; k < 3; k++) { P.r(bx, by - k * 3, 7, 2, T('cheese3')); P.r(bx, by - k * 3, 7, 1, T('cheese4')); }
-      P.l(bx + 6, by + 3, sh[0], sh[1] + 2, T('wood2'));
+      let top = back[0]; for (const p of back) if (p[1] < top[1]) top = p;               // the highest point of the back
+      const bx = rnd(top[0]) - 4, by = rnd(top[1]) - 3;
+      for (let k = 0; k < 3; k++) { P.r(bx, by - k * 3, 7, 2, T('cheese3')); P.r(bx, by - k * 3, 7, 1, T('cheese4')); P.p(bx + 6, by - k * 3 + 1, T('cheese2')); }
+      P.l(bx + 6, by + 1, sh[0], sh[1] + 2, T('wood2')); P.l(bx, by + 1, rnd(midB[0]), rnd(midB[1]) + 2, T('wood1'));
     }
-    // the near arm: hanging, or holding up the phone
+    // ---- the near arm: dangling, or up with the phone at the face
     let handN;
-    if (v === 'phone' || o.phone) {
-      handN = [hx0 + hw + 2, hy0 + hh + 1];
+    if (phoneUp) {
+      handN = [front + 2, hy0 + hh + 1];
       const el = [sh[0] + 2, sh[1] + rnd(H * 0.16)];
-      P.l(sh[0] + 1, sh[1] + 1, el[0], el[1], shirt, 2); P.l(el[0], el[1], handN[0], handN[1] + 1, sk1, 2);
+      P.l(J[0] + 1, J[1], el[0], el[1], shirt, armT); P.l(el[0], el[1], handN[0], handN[1] + 1, sk, armT);
       P.r(handN[0], handN[1] - 3, 2, 4, T('slate0')); P.p(handN[0], handN[1] - 2, tone >= 0 ? tone : C.phone4); P.p(handN[0], handN[1] - 1, tone >= 0 ? tone : C.phone3);
-      P.r(handN[0] - 1, handN[1], 2, 2, sk1);
+      P.r(handN[0] - 1, handN[1], 2, 2, sk);
     } else {
-      handN = [sh[0] + 2 + rnd(hunch * 3) + swingA, sh[1] + armL - 2];
-      arm([sh[0] + 1, sh[1] + 1], handN, shirt, sk1, 1);
+      handN = [J[0] + 1 + rnd(hunch * 3) + swingA, J[1] + armL - 1];
+      arm([J[0] + 1, J[1]], handN, big ? shirtL : shirt, sk, skD);
     }
-    NR.end(g, o.rim);
-    // eyes glow on top of everything, after the rim light
-    const ex = hx0 + hw - 1, ey = hy0 + 2;
-    const sxN = P.X(ex), sxF = P.X(ex - 2), sy = P.y + ey;
+    NR.end(g, o.rim, null, tone < 0 && H >= 30 ? 1 : 0);
+    // eyes glow on top of everything, after the rim light: the near one bright, the far one dimmer
+    const exN = hw >= 5 ? front - 1 : front, exF = exN - 2;
+    const sxN = P.X(exN), sxF = P.X(exF), sy = P.y + eyeRow;
     if (o.eyes !== false && !blinking(t, seed + 17, 4.1)) {
-      if (o.glow !== 0) NR.glow(g, (sxN + sxF) / 2 + 0.5, sy + 0.5, H >= 36 ? 5 : 3, { color: 'eye3', strength: o.glow == null ? 0.35 : o.glow, power: 1.4, q: 4 });
+      if (o.glow !== 0) NR.glow(g, (sxN + sxF) / 2 + 0.5, sy + 0.5, huge ? 7 : H >= 36 ? 5 : 3, { color: 'eye3', strength: o.glow == null ? 0.35 : o.glow, power: 1.4, q: 4 });
       NR.px(g, sxN - g.ox, sy - g.oy, 'eye4'); NR.px(g, sxF - g.ox, sy - g.oy, 'eye2');
     }
-    if ((v === 'phone' || o.phone) && tone < 0) NR.glow(g, P.X(handN[0]) - g.ox, P.y + handN[1] - 2 - g.oy, 6, { color: 'phone4', strength: 0.32, power: 1.4, q: 4 });
+    if (phoneUp && tone < 0) NR.glow(g, P.X(handN[0]) - g.ox, P.y + handN[1] - 2 - g.oy, 6, { color: 'phone4', strength: 0.32, power: 1.4, q: 4 });
     return { head: [P.X(hx0 + (hw >> 1)) - g.ox, P.y + hy0 - 2 - g.oy], hand: [P.X(handN[0]) - g.ox, P.y + handN[1] - g.oy] };
   };
 
@@ -1313,60 +1405,88 @@
 
   // ---------------------------------------------------------------- windmill
   /** windmill(g, x, y, scale, angle, o): a stellingmolen, seen from the front. (x, y): the
-   *  centre of the base on the ground. scale 1 is ~50 px of tower, 32 px sails.
+   *  centre of the base on the ground. scale 1 is ~50 px of tower, 34 px sails.
    *  angle: sail rotation in radians. Real Dutch mills turn anticlockwise seen from the front,
    *  so animate angle = -t * speed; a positive speed (clockwise on screen) is the wrong way.
+   *  Every colour is a step of tone or sail (so a far mill can be repainted as one fogged shape),
+   *  except the amber windows. The facet toward the key light is lighter, the thatch runs in
+   *  vertical strokes, the cap is a rounded hood, the gallery throws a shadow band on the tower.
    *  o: { tone: 'night3' (the tower), sail: colour of the sail lattice, cloth: 0..1 (sail cloth
    *       coverage), stage: true (the gallery), lit: 0..1 (window lights), t, seed, rim } */
   NR.windmill = (g, x, y, scale, angle, o) => {
     o = o || {}; const s = scale || 1, t = o.t || 0, seed = o.seed || 1;
     const base = col(o.tone || 'night3'), dk = step(base, -1), dk2 = step(base, -2), lt = step(base, 1);
     const bh = rnd(50 * s), b0 = Math.max(3, rnd(11 * s)), b1 = Math.max(2, rnd(5.5 * s)), top = y - bh;
-    NR.begin(g);
-    // tower: tapered octagon in three facets, the side facing the key light lighter
+    const keyRight = g.keyX > x, near = keyRight ? lt : dk, far = keyRight ? dk : lt;
+    const sid = NR.begin(g);
+    // tower: a tapered octagon in three facets
     NR.poly(g, [x - b0, y, x + b0 + 1, y, x + b1 + 1, top, x - b1, top], base);
-    NR.poly(g, [x - b0, y, x - rnd(b0 * 0.4), y, x - rnd(b1 * 0.4), top, x - b1, top], dk);
-    const keyRight = g.keyX > x;
-    if (keyRight) NR.poly(g, [x + rnd(b0 * 0.45), y, x + b0 + 1, y, x + b1 + 1, top, x + rnd(b1 * 0.45), top], lt);
-    if (s >= 0.7) for (let yy = top + 2; yy < y; yy += 3) for (let xx = x - b0; xx <= x + b0; xx += 2) if (hash(xx, yy + seed) < 0.3) NR.px(g, xx, yy, dk2); // thatch
-    // the gallery (stelling) at a third of the height, with struts
+    NR.poly(g, [x - b0, y, x - rnd(b0 * 0.42), y, x - rnd(b1 * 0.42), top, x - b1, top], far);
+    NR.poly(g, [x + rnd(b0 * 0.45), y, x + b0 + 1, y, x + b1 + 1, top, x + rnd(b1 * 0.45), top], near);
+    // thatch: broken vertical strokes, one step darker than whatever facet they cross
+    if (s >= 0.55) {
+      const buf = g.buf, mask = g.mask, gw = g.w, n = Math.max(4, rnd(7 * s));
+      for (let k = -n; k <= n; k++) {
+        const f = (k + 0.5) / (n + 1);
+        for (let yy = top + 2; yy < y - 1; yy++) {
+          if (hash(k * 31 + seed, (yy / (2 + (k & 1))) | 0) < 0.42) continue;
+          const xx = rnd(x + f * (b1 + (b0 - b1) * (yy - top) / bh)) + g.ox, sy = yy + g.oy;
+          if (xx < 0 || sy < 0 || xx >= gw || sy >= g.h) continue;
+          const i = sy * gw + xx; if (mask[i] === sid) buf[i] = step(buf[i], -1);
+        }
+      }
+    }
+    // the gallery (stelling) at a third of the height, with a railing, struts and its shadow on the tower
     if (o.stage !== false && s >= 0.35) {
-      const sy = y - rnd(bh * 0.33), hwS = rnd(b0 + 9 * s);
+      const sy = y - rnd(bh * 0.33), hwS = rnd(b0 + 9 * s), rh = rnd(4 * s);
+      if (s >= 0.6) for (let yy = sy + 1; yy < sy + 1 + rnd(3 * s); yy++) { const hwT = rnd(b1 + (b0 - b1) * (yy - top) / bh); NR.hline(g, x - hwT, yy, 2 * hwT + 2, dk2); }
       NR.rect(g, x - hwS, sy, 2 * hwS + 1, Math.max(1, rnd(1.5 * s)), dk2);
-      if (s >= 0.6) { NR.hline(g, x - hwS, sy - rnd(4 * s), 2 * hwS + 1, dk); for (let xx = x - hwS; xx <= x + hwS; xx += Math.max(2, rnd(4 * s))) NR.vline(g, xx, sy - rnd(4 * s), rnd(4 * s), dk); }
+      if (s >= 0.6) {
+        NR.hline(g, x - hwS, sy - rh, 2 * hwS + 1, dk); NR.hline(g, x - hwS, sy - 1, 2 * hwS + 1, dk);
+        for (let xx = x - hwS; xx <= x + hwS; xx += Math.max(2, rnd(4 * s))) NR.vline(g, xx, sy - rh, rh, dk);
+        NR.hline(g, keyRight ? x : x - hwS, sy, hwS + 1, lt);                                              // the deck edge catches the light
+      }
       NR.line(g, x - hwS, sy + 1, x - b0 + 1, y - 1, dk2); NR.line(g, x + hwS, sy + 1, x + b0 - 1, y - 1, dk2);
       NR.line(g, x - rnd(hwS * 0.6), sy + 1, x - rnd(b0 * 0.7), y - 1, dk2); NR.line(g, x + rnd(hwS * 0.6), sy + 1, x + rnd(b0 * 0.7), y - 1, dk2);
     }
-    // door and windows
+    // an arched door and windows with a frame; the lit ones flicker now and then
     if (s >= 0.4) {
-      NR.rect(g, x - rnd(2 * s), y - rnd(7 * s), Math.max(2, rnd(4 * s)), rnd(7 * s), dk2);
+      const dw = Math.max(2, rnd(4 * s)), dh = rnd(7 * s), dx0 = x - rnd(2 * s);
+      NR.rect(g, dx0, y - dh, dw, dh, dk2); NR.hline(g, dx0 + 1, y - dh - 1, Math.max(1, dw - 2), dk2);
+      if (s >= 0.8) NR.vline(g, dx0 + (dw >> 1), y - dh + 1, dh - 1, dk);
       const lit = o.lit == null ? 0.5 : o.lit;
       [[0, 0.55], [-0.3, 0.75], [0.25, 0.42]].forEach(([fx, fy], k) => {
         const wx = x + rnd(fx * b0), wy = y - rnd(bh * fy), on = hash(k, seed + 31) < lit;
-        const fl = on && hash(Math.floor(t * 3) + k, seed) < 0.08;
-        NR.rect(g, wx, wy, Math.max(1, rnd(2 * s)), Math.max(1, rnd(3 * s)), on ? (fl ? 'amber4' : 'amber6') : dk2);
+        const fl = on && hash(Math.floor(t * 3) + k, seed) < 0.08, ww = Math.max(1, rnd(2 * s)), wh = Math.max(1, rnd(3 * s));
+        if (s >= 0.8) NR.rect(g, wx - 1, wy - 1, ww + 2, wh + 2, dk2);
+        NR.rect(g, wx, wy, ww, wh, on ? (fl ? 'amber4' : 'amber6') : dk2);
+        if (on && ww >= 2 && wh >= 3) { NR.px(g, wx, wy, fl ? 'amber3' : 'amber5'); NR.px(g, wx + ww - 1, wy + wh - 1, 'amber7'); }
         if (on) NR.glow(g, wx + 1, wy + 1, rnd(6 * s) + 2, { color: 'amber5', strength: 0.25, q: 3 });
       });
     }
-    // cap
+    // the cap: a rounded hood a little wider than the tower top, lit along its crown
     const cw = b1 + Math.max(1, rnd(2.5 * s)), ch = Math.max(2, rnd(6 * s));
-    NR.poly(g, [x - cw, top + 1, x + cw + 1, top + 1, x + b1 + 1, top - ch + 1, x - b1 + 1, top - ch, x - b1, top - ch + 1], dk);
+    NR.poly(g, [x - cw, top + 1, x + cw + 1, top + 1, x + cw + 1, top - rnd(ch * 0.35), x + rnd(cw * 0.55) + 1, top - ch + 1, x - rnd(cw * 0.55), top - ch + 1, x - cw, top - rnd(ch * 0.35)], dk);
     NR.hline(g, x - cw, top, 2 * cw + 1, dk2);
+    if (s >= 0.6) NR.hline(g, keyRight ? x : x - rnd(cw * 0.55), top - ch + 1, rnd(cw * 0.55) + 1, base);
     NR.end(g, o.rim);
-    // sails: four stocks with lattice frames
+    // sails: four stocks with lattice frames on the trailing side, cloth where furled out
     NR.begin(g);
-    const hx = x + 0.5, hy = top - ch * 0.5, L = 34 * s, sw = Math.max(2, 6 * s), sc = col(o.sail || step(base, -1)), sl = step(sc, 1);
-    const cloth = o.cloth || 0;
+    const hx = x + 0.5, hy = top - ch * 0.5, L = 34 * s, sw = Math.max(2, 6 * s), sc = col(o.sail || dk), sl = step(sc, 1);
+    const cloth = o.cloth || 0, thick = s >= 0.8 ? 2 : 1, gap = Math.max(2.5, 3.2 * s);
     for (let k = 0; k < 4; k++) {
       const an = angle + k * Math.PI / 2, ca = Math.cos(an), sa = Math.sin(an), px = -sa, py = ca;
-      const a0 = 0.2 * L;
+      const a0 = 0.18 * L;
       const q = [hx + ca * a0, hy + sa * a0, hx + ca * L, hy + sa * L, hx + ca * L + px * sw, hy + sa * L + py * sw, hx + ca * a0 + px * sw, hy + sa * a0 + py * sw];
-      if (cloth > 0) { NR.poly(g, q, sl); }
-      NR.line(g, hx - ca * 2 * s, hy - sa * 2 * s, hx + ca * L, hy + sa * L, sc, s >= 1.4 ? 2 : 1);
+      if (cloth > 0) { const c0 = a0 + (L - a0) * (1 - Math.min(1, cloth)); NR.poly(g, [hx + ca * c0, hy + sa * c0, q[2], q[3], q[4], q[5], hx + ca * c0 + px * sw, hy + sa * c0 + py * sw], sl); }
+      else if (s < 0.45) NR.poly(g, q, sc);
+      NR.line(g, hx - ca * 2 * s, hy - sa * 2 * s, hx + ca * L, hy + sa * L, sc, thick);
       NR.line(g, q[2], q[3], q[4], q[5], sc); NR.line(g, q[4], q[5], q[6], q[7], sc); NR.line(g, q[6], q[7], q[0], q[1], sc);
-      if (s >= 0.45) { const n = Math.max(2, rnd((L - a0) / Math.max(2.5, 3.5 * s))); for (let i = 1; i < n; i++) { const f = a0 + (L - a0) * i / n; NR.line(g, hx + ca * f, hy + sa * f, hx + ca * f + px * sw, hy + sa * f + py * sw, sc); } }
+      if (s >= 0.45) { const nb = Math.max(2, rnd((L - a0) / gap)); for (let i = 1; i < nb; i++) { const f = a0 + (L - a0) * i / nb; NR.line(g, hx + ca * f, hy + sa * f, hx + ca * f + px * sw, hy + sa * f + py * sw, sc); } }
+      if (s >= 0.6) NR.line(g, hx + ca * a0 - px, hy + sa * a0 - py, hx + ca * L * 0.9 - px, hy + sa * L * 0.9 - py, sc);   // the leading board
     }
     NR.disc(g, hx - 0.5, hy, Math.max(1, rnd(1.6 * s)), dk2);
+    if (s >= 0.6) NR.px(g, hx - 0.5 + (keyRight ? 1 : -1), hy - 1, base);
     NR.end(g, o.rim);
   };
 
@@ -1385,7 +1505,7 @@
     x = rnd(x); y = rnd(y); w = rnd(w); h = rnd(h);
     const gh = gable === 'roof' ? rnd(Math.min(h * 0.4, w * 0.6)) : rnd(Math.min(h * 0.4, w * 1.0));
     const by = y - h + gh, cx = x + w / 2;
-    NR.begin(g);
+    const sid = NR.begin(g);
     NR.rect(g, x, by, w, y - by, base);
     if (gable === 'step') {
       const n = w >= 22 ? 3 : 2, sw = Math.max(2, Math.floor(w / (2 * (n + 1)))), sh = gh / (n + 1);
@@ -1421,6 +1541,16 @@
     }
     // brick texture on the facade (only the base colour, so trims and windows stay clean)
     NR.brick(g, x, by - gh - 8, w, y - by + gh + 8, { base, only: base, seed, bw: w >= 20 ? 4 : 3 });
+    // the facade darkens toward the street, where the shade and the fog lie (dithered, one step)
+    if (o.shade !== false) {
+      const buf = g.buf, mask = g.mask, gw = g.w, ys0 = rnd(by + (y - by) * 0.42), ys1 = y - 3;
+      for (let yy = Math.max(0, ys0 + g.oy); yy < Math.min(g.h, ys1 + g.oy); yy++) {
+        const lv = 0.8 * (yy - g.oy - ys0) / Math.max(1, ys1 - ys0), row = yy * gw;
+        for (let xx = Math.max(0, x + g.ox); xx < Math.min(gw, x + w + g.ox); xx++) { const i = row + xx; if (mask[i] === sid && lv > NR.bayer(xx, yy)) buf[i] = step(buf[i], -1); }
+      }
+    }
+    // iron wall anchors between the floors
+    if (w >= 18 && y - by >= 30) for (let ay = by + 8; ay < y - 16; ay += 10) for (const ax of [x + 1, x + w - 2]) { NR.vline(g, ax, ay - 1, 3, dk2); NR.px(g, ax + (ax > cx ? -1 : 1), ay, dk2); }
     // cornice under the gable, a darker plinth, the hoisting beam
     if (gable !== 'roof') NR.hline(g, x, by, w, trim);
     NR.rect(g, x, y - 3, w, 3, dk2);
@@ -1459,10 +1589,16 @@
     P.r(0, -h, 2, h, C.slate1); P.r(-1, -4, 4, 4, C.slate1); P.r(-1, -5, 4, 1, C.slate2);
     let lx, ly;
     if (st === 'lantern') {
-      P.r(-1, -h + 1, 4, 1, C.slate2);
-      P.r(-2, -h - 6, 6, 6, on ? (on < 1 ? C.amber4 : C.amber7) : C.slate2); P.r(-2, -h - 6, 6, 1, C.slate1); P.r(0, -h - 5, 2, 5, C.slate1);
-      if (on) { P.r(-1, -h - 5, 1, 4, on < 1 ? C.amber5 : C.amber8); P.r(2, -h - 5, 1, 4, on < 1 ? C.amber5 : C.amber8); }
-      P.poly([-3, -h - 6, 5, -h - 6, 3, -h - 8, -1, -h - 8], C.slate1); P.r(0, -h - 10, 2, 2, C.slate1);
+      P.r(-2, -2, 6, 2, C.slate1); P.r(-1, -rnd(h * 0.36), 4, 1, C.slate2);                         // a flared foot, a ring
+      P.r(-1, -h + 1, 4, 1, C.slate2); P.r(-2, -h, 6, 1, C.slate1);                                 // the collar under the head
+      // the head: two panes either side of a dark centre bar, brightest in the middle, a warm sill
+      P.r(-2, -h - 6, 6, 6, on ? (on < 1 ? C.amber4 : C.amber7) : C.slate2);
+      if (on) { P.r(-1, -h - 5, 1, 4, on < 1 ? C.amber5 : C.amber8); P.r(2, -h - 5, 1, 4, on < 1 ? C.amber5 : C.amber8); P.r(-2, -h - 2, 6, 1, on < 1 ? C.amber3 : C.amber6); }
+      else { P.p(-1, -h - 5, C.slate3); P.p(2, -h - 5, C.slate3); }
+      P.r(-2, -h - 6, 6, 1, C.slate1); P.r(0, -h - 5, 2, 5, C.slate1); P.r(-2, -h - 1, 6, 1, C.slate1); P.p(-3, -h - 1, C.slate1); P.p(4, -h - 1, C.slate1);
+      // the cap: a pyramid with a lip, and a finial
+      P.poly([-4, -h - 6, 6, -h - 6, 3, -h - 9, -1, -h - 9], C.slate1); P.r(-4, -h - 7, 10, 1, C.slate2);
+      P.r(0, -h - 11, 2, 2, C.slate1); P.p(0, -h - 12, C.slate1);
       lx = P.X(0) + (flip ? 0 : 1) - g.ox; ly = y - h - 3;
     } else {
       P.r(0, -h - 1, 9, 2, C.slate1); P.r(6, -h - 1, 6, 2, C.slate2); P.r(6, -h + 1, 6, 1, on ? C.paper6 : C.slate0);
