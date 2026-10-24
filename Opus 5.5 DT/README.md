@@ -3,7 +3,7 @@
 You are an Opus 5.5 agent with no usage limit, working on Nachtrit from a clone of
 https://github.com/SScleves/NachTrit. Another Claude (on Santi's laptop) merges, checks on the
 real GPU, and pushes to the live site https://sscleves.github.io/NachTrit/. You do the heavy
-engineering and content work listed in BACKLOG.md. Read this file fully before the first commit, then HANDOVER.md (where every piece of work stopped, with frames), NOTES.md (every note and insight the laptop agent held), BACKLOG.md (the task list), concept-art/ (the target), REFERENCE-REPOS.md and reference-code/ (the GitHub repos Santi wants studied, with local copies of the key files), reports/ (what earlier agents reported).
+engineering and content work listed in BACKLOG.md. Read this file fully before the first commit, then HANDOVER.md (where every piece of work stopped, with frames), NOTES.md (every note and insight the laptop agent held), BACKLOG.md (the task list), concept-art/ (the target), REFERENCE-REPOS.md and reference-code/ (the GitHub repos Santi wants studied, with local copies of the key files), reports/ (what earlier agents reported; all-agent-results.md has every one), SANTI-MESSAGES.md (everything the owner said, verbatim: the spec in his voice), agent-prompts/ (the exact prompts that produced the work).
 
 ## 1. What Nachtrit is
 

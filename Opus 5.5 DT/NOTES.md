@@ -76,3 +76,29 @@ Push Nachtrit updates to https://github.com/SScleves/NachTrit after every verifi
 2. Writing mode.
 3. All thirteen towns with content, then the vocabulary book and a save that travels.
 4. Voice (needs his Azure key), audio, ending, phone polish.
+
+## How Santi likes to be reported to (from his general preference notes)
+
+- Absolute paths and the GitHub URL for every file you mention to him.
+- Plain explaining sentences, no taglines, no exclamation marks, dry.
+- He reads a short answer first and the detail after; lead with what changed and what he can
+  see or play, then the open points.
+- He tests from his phone and other devices through https://sscleves.github.io/NachTrit/, so a
+  change is "done" for him when it is on that link and works there.
+- He switches models himself and watches credits; he asked for efficiency: decisive iterations,
+  no polishing loops without a measurable target.
+
+## Where the rest of the written knowledge lives (all in this repo)
+
+- `ROADMAP.md` (root): the full plan with design detail for writing mode, moves, saves, voice.
+- `STORY.md`: premise, the fourteen intro panels in Dutch and English, the rumour per town, the
+  editor's notes on every Dutch line.
+- `CONTENT-BRIEF.md`: binding content rules, item kinds, tier fences for towns 7 to 13.
+- `MAP.md`, `LEVELS.md`, `CONCEPT.md`, `IDEAS.md` (DORP-sheet ideas), `FARES-SPEC.md`,
+  `FARES-BRIEF.md`, `ART-BIBLE.md` (intro art rules), `intro/` (the paintings in code),
+  `reference/CONCEPT-ART.md`.
+- `SANTI-MESSAGES.md` (this folder): everything he said, verbatim, including the pasted
+  El Taxico transcript, his Duolingo content-engine prompts and his art feedback rounds.
+- `agent-prompts/`: the exact scripts and prompts that produced the content and art.
+- `reports/all-agent-results.md`: every agent's return value, including the fares designer's
+  spec, the vocab writers' fixes, the intro director's checks and the atmosphere artist's method.
