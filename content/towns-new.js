@@ -1992,6 +1992,1160 @@
     ] }]);
 })();
 
+// ---- content/new/L115.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 115 Thuis. A narrow brick house on a steep street in the Benedenstad, the
+// Valkhof above it, the Waal at the bottom of the road and the dark green arch of the Waalbrug over the roofs. A student
+// house next door, a letter from the council about the Vierdaagse, a Roman coin under the floor, and the dogs.
+// New at tier 12 and drilled here: modal particles with their fixed places (doe je even de deur open, ik doe het wel,
+// ik pak wel even, je bent toch niet ziek, toch? as a tag, zo zijn ze nou eenmaal, dat zullen ... wel zijn): after the verb,
+// behind a small pronoun, before niet, never after the last verb or prefix; idioms (op zijn kop zetten, twee linkerhanden,
+// het regent pijpenstelen, Doe maar gewoon, dan doe je al gek genoeg, de kat uit de boom kijken in a read); compound nouns
+// (the last part decides the article, the -en- in hondenmand); the formal register (Geachte bewoner, uw, Hoogachtend,
+// Komt u binnen en gaat u zitten); the Vierdaagse in July.
+// Review: V2 after a fronted phrase and after a toen-clause, dus without a verb at the end, the passive with zijn
+// (is afgesloten), indirect speech with of, die and dat, the comparative, 't kofschip, a separable verb in a main clause,
+// niet against geen, the adjective -e after het.
+// Still inside the fence: 16 words max, nothing from tier 13 (no builds with three forks, no prices, no tourist register).
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar (Doe je even de deur open, Ik pak wel even een
+// biertje voor je, Kom maar even langs hoor, Mooi weertje toch), de vs het, V2 word order, bijzin - werkwoord naar het
+// einde, die vs dat, 't kofschip, scheidbare werkwoorden; MOC Gevoel & uitdrukkingen (op zijn kop); _site/situations/
+// neighbours and polite-phrases; levels 107 and 113 for the replayed words (de koelkast, het plafond, de afwas, de buurvrouw);
+// content/towns.js for Nijmegen (de Waal, de Waalbrug, het Valkhof, de heuvel, de Romeinen, de student, de Vierdaagse,
+// de wandelaar, the oldest-city rumour).
+// New rules: idioom, samen, formeel, datum (defined and guarded below, with the same text in every Nijmegen and Amsterdam
+// file). soft, v2, neg, adj, sep, kof, diedat and bijzin are in data.js; passief, indirect, vergelijk and zullen are guarded
+// copies of the existing definitions.
+// New props: none. Only hond, fiets and lamp are used (not huis or deur: het studentenhuis, de voordeur and de deurbel are in
+// the word pool and could be taken for those props; not brug: de Waalbrug is a listen item).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 115, act: 12, name: 'Thuis', town: 'nijmegen', place: 'thuis', theme: 'street', ...P,
+    intro: 'Nijmegen has a hill, two thousand years of history and a student house next door. Only the student house keeps you awake.',
+    introNl: 'Nijmegen heeft een heuvel, tweeduizend jaar geschiedenis en hiernaast een studentenhuis. Alleen het studentenhuis houdt je wakker.',
+    mission: {
+      where: 'A narrow brick house on a steep street in the Benedenstad, the Valkhof above it, the Waal at the bottom of the road and the dark green arch of the Waalbrug over the roofs. Next door a student house that has not slept since someone said Maastricht is older. From the attic down to the front door, then out to the Waalkade, because the dogs need a walk. The dogs always need a walk.',
+      carry: 'Two leads, the key of the front door, a letter from the council that starts with Geachte bewoner, the energy bill split to the cent with the students next door, and the grammar book, still never opened. No helmet. Nijmegen has a hill, and you are going down it.',
+      want: 'Since the mist everyone who spoke Dutch has changed, but in Nijmegen they kept the small words. The dead in this house say little, and they say it softly: even, wel, maar, toch, nou eenmaal. Doe je even de deur open? Ik doe het wel. The council writes to you with u and uw, the house is held together by compound words, de voordeur, het dakraam, de hondenmand, and in July the walkers come past at six in the morning and ask where the party is. Paola, still taller than you, says that is just how it is here. Het is nou eenmaal zo.' },
+    items: [
+      // ---- builds: modal particles and where they go
+      { en: 'Could you just open the door?', parts: ['Doe je', FK(['even de deur open', 'de deur open even', 'even open de deur'], 0, 'soft',
+        'even sits in the middle and makes the request light. The prefix open stays at the very end, and nothing comes after it.'), '?'] },
+      { en: "Leave it, I'll do it.", parts: ['Laat maar, ik', FK(['doe het wel', 'doe wel het'], 0, 'soft',
+        'A small pronoun like het comes before wel: ik doe het wel. Here wel means do not worry, I will.'), '.'] },
+      { en: "Come on in, the dogs don't bite.", parts: [FK(['Kom maar binnen', 'Kom binnen maar'], 0, 'soft',
+        'maar makes the command friendly and comes straight after the verb, before binnen.'), ', de honden bijten', FK(['niet', 'geen'], 0, 'neg',
+        'No noun follows bijten, so niet. geen always needs a noun after it.'), '.'] },
+      { en: "You've already walked the dogs, haven't you?", parts: ['Je hebt de honden al uitgelaten,', FK(['toch', 'hoor', 'maar'], 0, 'soft',
+        'toch at the end asks for a yes, like right? hoor reassures and maar softens a command, so neither of them asks anything.'), '?'] },
+      { en: 'The dogs need to go out again. That is just how they are.', parts: ['De honden moeten alweer uit. Zo zijn ze', FK(['nou eenmaal', 'nou eenmalig', 'nu eenmaals'], 0, 'soft',
+        'nou eenmaal means that is how it is and nothing can be done about it. eenmalig means one-off, and eenmaals is not a word.'), '.'] },
+      { en: "I'll just get you a beer.", parts: ['Ik pak', FK(['wel even', 'even wel'], 0, 'soft',
+        'Two small words in a row keep a fixed order: wel before even. Together they say I will gladly do it, quickly.'), 'een biertje voor je.'] },
+      { en: 'Just act normal, that is crazy enough already.', parts: ['Doe maar gewoon,', FK(['dan doe je', 'dan je doet'], 0, 'v2',
+        'dan takes slot 1 of the second half, so the verb comes right after it: dan doe je.'), 'al', FK(['gek genoeg', 'genoeg gek'], 0, 'idioom',
+        'A saying every Dutch person knows. genoeg comes after an adjective: gek genoeg, groot genoeg.'), '.'] },
+      { en: "You look so pale. You're not ill, are you?", parts: ['Je ziet zo bleek. Je bent', FK(['toch niet', 'niet toch'], 0, 'soft',
+        'toch comes before niet. In a question toch niet hopes for a no: surely you are not ill.'), 'ziek?'] },
+      { en: 'That will be the students again, no doubt.', parts: ['Dat', FK(['zullen', 'zal'], 0, 'zullen',
+        'In dat zijn followed by a plural the verb agrees with the plural: dat zijn de studenten, so dat zullen de studenten wel zijn. wel makes it probably.'), 'de studenten wel weer zijn.'] },
+
+      // ---- builds: compound nouns, the last part decides
+      { en: 'The front door and the skylight are open.', parts: [FK(['De', 'Het'], 0, 'samen',
+        'A compound takes the article of its last part: voor + deur, and deur is de, so de voordeur.'), 'voordeur en', FK(['het', 'de'], 0, 'samen',
+        'dak + raam: raam is het, so het dakraam.'), 'dakraam staan open.'] },
+      { en: 'The dog basket is next to the washing machine.', parts: [FK(['De', 'Het'], 0, 'samen',
+        'honden + mand: mand is de, so de hondenmand. The first part never decides.'), FK(['hondenmand', 'hondmand', 'hondsmand'], 0, 'samen',
+        'This compound is glued with -en-: de hondenmand, like de hondenriem and het hondenvoer.'), 'staat naast de wasmachine.'] },
+      { en: 'Six students live in the student house next door.', parts: ['In', FK(['het', 'de'], 0, 'samen',
+        'studenten + huis: huis is het, so het studentenhuis.'), 'studentenhuis hiernaast', FK(['wonen zes studenten', 'zes studenten wonen'], 0, 'v2',
+        'In het studentenhuis hiernaast fills slot 1, so the verb comes second, before the subject.'), '.'] },
+
+      // ---- builds: the formal register
+      { en: 'Dear resident, during the Vierdaagse your street is closed in the mornings.', parts: [FK(['Geachte', 'Geacht'], 0, 'formeel',
+        'bewoner is a de-word, so the adjective takes -e: Geachte bewoner. It is the standard way to open a formal letter.'), 'bewoner, tijdens de Vierdaagse is', FK(['uw', 'u'], 0, 'formeel',
+        'u is the person, uw is what belongs to u: uw straat.'), "straat 's ochtends afgesloten."] },
+      { en: 'We thank you for your understanding. Yours faithfully, the municipality of Nijmegen.', parts: ['Wij danken u voor', FK(['uw', 'u'], 0, 'formeel',
+        'The possessive of u is uw: uw begrip. u alone is never a possessive.'), 'begrip.', FK(['Hoogachtend', 'Geachte'], 0, 'formeel',
+        'Hoogachtend closes a formal letter. Geachte is how one opens.'), ', de gemeente Nijmegen.'] },
+      { en: 'Please come in and sit down.', parts: [FK(['Komt u', 'Kom u'], 0, 'formeel',
+        'With u the verb takes -t, even when u comes after it: komt u. Only jij loses the -t there.'), 'binnen en', FK(['gaat u', 'ga u'], 0, 'formeel',
+        'Same rule: gaat u zitten is the polite way to say sit down.'), 'zitten.'] },
+
+      // ---- builds: idioms
+      { en: 'The dogs have turned the whole house upside down.', parts: ['De honden hebben het', FK(['hele', 'heel'], 0, 'adj',
+        'huis is a het-word, but after the article het the adjective still takes -e: het hele huis.'), 'huis', FK(['op zijn kop', 'op zijn hoofd'], 0, 'idioom',
+        'Fixed phrase: iets op zijn kop zetten, to turn it upside down. In this phrase it is always kop.'), 'gezet.'] },
+      { en: 'My neighbour is hopeless at DIY, so I hang the lamp up myself.', parts: ['Mijn buurman heeft', FK(['twee linkerhanden', 'twee rechterhanden'], 0, 'idioom',
+        'Someone who is clumsy with tools has twee linkerhanden, two left hands. Two right hands is not a Dutch saying.'), ', dus', FK(['ik hang de lamp zelf op', 'ik de lamp zelf ophang'], 0, 'bijzin',
+        'dus does not send the verb to the end. The sentence goes on as a main clause: ik hang ... op.'), '.'] },
+      { en: "It is raining cats and dogs, so the dogs don't want to go out.", parts: ['Het regent', FK(['pijpenstelen', 'katten en honden', 'pijpen'], 0, 'idioom',
+        'In Dutch it rains pipe stems: het regent pijpenstelen. Cats and dogs is the English saying.'), ', dus de honden', FK(['willen niet', 'niet willen'], 0, 'v2',
+        'dus never sends the verb to the end. You say dus de honden willen niet, or dus willen de honden niet.'), 'naar buiten.'] },
+
+      // ---- builds: the Vierdaagse in July
+      { en: 'In July the walkers pass our door at six in the morning.', parts: [FK(['In juli', 'Op juli', 'In de juli'], 0, 'datum',
+        'Months take in and no article: in juli. Days take op: op dinsdag.'), FK(['lopen de wandelaars', 'de wandelaars lopen'], 0, 'v2',
+        'In juli fills slot 1, so the verb comes second, then the subject.'), "om zes uur 's ochtends langs onze deur."] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'Our street has been closed since yesterday because of the Vierdaagse.', parts: ['Onze straat', FK(['is', 'heeft'], 0, 'passief',
+        'A state that results from being closed takes zijn plus the participle: is afgesloten. A street does not close anything itself.'), 'sinds gisteren', FK(['afgesloten', 'afgesluit', 'geafsloten'], 0, 'sep',
+        'afsluiten is separable and irregular: af + gesloten, one word, with the ge in the middle.'), 'vanwege de Vierdaagse.'] },
+      { en: 'The neighbour asked whether the students could be a bit quieter.', parts: ['De buurvrouw vroeg', FK(['of', 'om'], 0, 'indirect',
+        'A reported yes-or-no question starts with of. om goes with a noun, as in vragen om rust, and cannot open a clause.'), 'de studenten wat', FK(['zachter konden doen', 'konden zachter doen'], 0, 'bijzin',
+        'of sends the verbs to the end of the clause, after zachter: zachter konden doen.'), '.'] },
+      { en: 'The house we rent is older than it looks.', parts: ['Het huis', FK(['dat', 'die'], 0, 'diedat',
+        'huis is a het-word, so the relative pronoun is dat.'), 'we huren is', FK(['ouder', 'oudste', 'meer oud'], 0, 'vergelijk',
+        'Comparing two things with dan takes the comparative: ouder dan. meer oud is not Dutch.'), 'dan het lijkt.'] },
+      { en: 'When we came to live in Nijmegen, nobody had warned us about the hill.', parts: ['Toen we in Nijmegen kwamen wonen,', FK(['had niemand ons', 'niemand had ons'], 0, 'v2',
+        'After a toen-clause the main clause starts with its verb: had niemand.'), 'voor de heuvel', FK(['gewaarschuwd', 'gewaarschuwt', 'gewaarschuwen'], 0, 'kof',
+        'waarschuw ends in w, not a ketchup letter, so -d: gewaarschuwd.'), '.'] },
+
+      // ---- words: the house, the street, the council, with Nijmegen colour and four replayed words
+      { w: 'the front door', nl: 'de voordeur' }, { w: 'the skylight', nl: 'het dakraam', wrong: 'de dakraam' },
+      { w: 'the attic', nl: 'de zolder' }, { w: 'the doorbell', nl: 'de deurbel' },
+      { w: 'the washing machine', nl: 'de wasmachine' }, { w: 'the dog basket', nl: 'de hondenmand' },
+      { w: 'the student house', nl: 'het studentenhuis', wrong: 'de studentenhuis' }, { w: 'the landlord', nl: 'de huisbaas' },
+      { w: 'the rent', nl: 'de huur' }, { w: 'the resident', nl: 'de bewoner' },
+      { w: 'the council, the municipality', nl: 'de gemeente' }, { w: 'the bunch of keys', nl: 'de sleutelbos' },
+      { w: 'the rubbish bag', nl: 'de vuilniszak' }, { w: 'the coin', nl: 'de munt' },
+      { w: 'the fridge', nl: 'de koelkast' }, { w: 'the ceiling', nl: 'het plafond', wrong: 'de plafond' },
+      { w: 'the washing-up', nl: 'de afwas' }, { w: 'the neighbour (woman)', nl: 'de buurvrouw' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Ik doe de afwas wel.', o: ['I will do the washing-up, do not worry.', 'I am doing the washing-up well.', 'I have already done the washing-up.'], a: 0, r: 'soft',
+        w: 'wel here means leave it to me. Doing it well would be goed, and already done would be al gedaan.' },
+      { read: true, nl: 'De huisbaas kijkt de kat uit de boom.', o: ['The landlord is waiting to see what happens.', 'The landlord is looking at a cat in a tree.', 'The landlord is getting the cat out of the tree.'], a: 0, r: 'idioom',
+        w: 'de kat uit de boom kijken is a fixed phrase: wait and see before you act. There is no cat.' },
+      { read: true, nl: 'Wij verzoeken u de vuilniszak pas op dinsdag buiten te zetten.', o: ['We ask you not to put the rubbish bag out before Tuesday.', 'We ask you to put the rubbish bag out before Tuesday.', 'We will pick up your rubbish bag on Tuesday.'], a: 0, r: 'formeel',
+        w: 'pas op dinsdag means not until Tuesday. verzoeken is the formal word for asking, and u is the reader.' },
+      { read: true, nl: 'Kom maar eens langs, hoor.', o: ['Do drop by some time.', 'Come by right now.', 'Do not drop by again.'], a: 0, r: 'soft',
+        w: 'maar and eens make it an open invitation for some time, and hoor makes it warm. Right now would be nu meteen.' },
+      { read: true, nl: 'Oost west, thuis best.', en: 'East, west, home is best.' },
+      { read: true, nl: 'Bij de verbouwing vonden we een Romeinse munt onder de vloer.', en: 'During the renovation we found a Roman coin under the floor.' },
+
+      // ---- listens: the lower town, the bridge, a letter ending, a windowsill
+      { listen: true, nl: 'de Benedenstad', en: 'the old lower town by the Waal' }, { listen: true, nl: 'de Waalbrug', en: 'the bridge over the Waal' },
+      { listen: true, nl: 'hoogachtend', en: 'yours faithfully' }, { listen: true, nl: 'de vensterbank', en: 'the windowsill' },
+
+      // ---- looks: the dog, the bike by the door, the street lamp
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
+
+      // ---- de of het
+      { dehet: true, nl: 'trappenhuis', art: 'het', en: 'the stairwell', w: 'The last part decides: het huis, so het trappenhuis.' },
+      { dehet: true, nl: 'deurmat', art: 'de', en: 'the doormat', w: 'The last part decides: de mat, so de deurmat.' },
+    ] }]);
+})();
+
+// ---- content/new/L116.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 116 De winkels. The Lange Hezelstraat, called the oldest shopping street in the
+// country, then up the hill to the Grote Markt and the Waag of 1612: a shoe shop full of walking shoes before the Vierdaagse,
+// the chemist with the blister plasters, the bakery, the bike repairer, the bookshop. Paying, sizes, receipts, a complaint by
+// letter, and the shop assistants who still say u.
+// New at tier 12 and drilled here: modal particles in the shop (Zegt u het maar, Kijkt u maar even rond, ik kijk alleen even rond,
+// U verkoopt toch ook ..., de drogist is wel open), with the fixed order maar even and the small pronoun before maar; idioms about
+// money (voor een appel en een ei, een rib uit je lijf, een kat in de zak kopen, als een trein lopen and de deur uit vliegen in the
+// reads); compound nouns (het stadscentrum with its linking s, de sportwinkel, het winkelcentrum); the formal register (zegt u, kijkt
+// u, volgt u, Geachte heer, mevrouw, In afwachting van uw antwoord, met vriendelijke groet); the Vierdaagse date (the third
+// Tuesday of July) and breaking in new shoes before it.
+// Review: the passive with worden, indirect speech with zei dat and zou, the plusquamperfectum with V2 after a toen-clause, die and
+// dat, the comparative, er zijn, niet against geen, the adjective -e, a modal with an infinitive and a separable verb (inlopen),
+// 't kofschip, het bonnetje as a diminutive, erbij.
+// Still inside the fence: 16 words max, nothing from tier 13 (no builds with three forks, no tourist register).
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar, modale werkwoorden, scheidbare werkwoorden, die vs dat,
+// 't kofschip, de vs het; _site/situations/supermarket (Wilt u een tasje erbij, Spaart u zegels), polite-phrases (Kunt u mij helpen,
+// Mag ik u iets vragen); level 108 for the replayed words (de kassabon, de korting, het pashokje, de garantie) and 114 (de
+// boekhandel); content/towns.js for Nijmegen (de Waag, de Grote Markt, de Vierdaagse, de wandelaar, the rivalry with Maastricht).
+// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). passief, indirect,
+// vergelijk, verklein, pronadv and er are guarded copies of the existing definitions; the rest are in data.js.
+// New props: none. Only hond, fiets and nummer are used (not winkel: de sportwinkel, de winkelstraat and de boekhandel would read
+// as right answers for a shop front).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 116, act: 12, name: 'De winkels', town: 'nijmegen', place: 'winkels', theme: 'shops', ...P,
+    intro: 'The Lange Hezelstraat is called the oldest shopping street in the country. Maastricht disagrees, and has not bought anything here since.',
+    introNl: 'De Lange Hezelstraat heet de oudste winkelstraat van het land. Maastricht is het daar niet mee eens en koopt hier sindsdien niks meer.',
+    mission: {
+      where: 'The Lange Hezelstraat, the oldest shopping street in the country, then up the hill to the Grote Markt and the Waag of 1612, past the shoe shop, the chemist, the bike repairer and the bookshop. In June every shop window is full of walking shoes and blister plasters, because in July the whole town walks.',
+      carry: "Paola's list, two dogs on leads, a gift voucher for a shop that closed in the mist, a receipt split to the cent with the neighbours, and the grammar book, still never opened. No helmet. The cobbles of the Benedenstad were here long before helmets.",
+      want: 'Since the mist the dead stand behind every counter, and they are as polite as ever. Zegt u het maar. Kijkt u maar even rond. Mag het iets meer zijn? They speak to you with u, they sell compound words by the metre, de wandelschoen, de blarenpleister, de cadeaubon, and they still know a bargain when they see one: voor een appel en een ei. The women in the queue are still taller than you, and here, south of the Waal, it is friet.' },
+    items: [
+      // ---- builds: particles and the polite shop assistant
+      { en: 'What can I get you?', parts: [FK(['Zegt u het maar', 'Zeg u het maar', 'Zegt u maar het'], 0, 'formeel',
+        'With u the verb keeps its -t, even when it comes first: zegt u. And the small pronoun het comes before maar.'), '.'] },
+      { en: "No thanks, I'm just looking.", parts: ['Nee hoor, ik kijk alleen', FK(['even rond', 'rond even'], 0, 'soft',
+        'even sits in the middle, and the prefix of rondkijken goes to the very end: ik kijk even rond.'), '.'] },
+      { en: 'Just have a look around, sir.', parts: [FK(['Kijkt u', 'Kijk u'], 0, 'formeel',
+        'With u the verb takes -t, also in a polite request: kijkt u.'), FK(['maar even', 'even maar'], 0, 'soft',
+        'Two small words keep a fixed order: maar before even. The other order is not Dutch.'), 'rond, meneer.'] },
+      { en: 'It is a little over. Is that all right?', parts: ['Het is iets meer geworden. Mag het', FK(['iets meer zijn', 'meer iets zijn', 'iets meer is'], 0, 'modal',
+        'After mag the verb zijn stays an infinitive at the end, and iets meer comes before it. The shop assistant asks this when the slice came out big.'), '?'] },
+      { en: 'Just follow me, the fitting rooms are at the back.', parts: [FK(['Volgt u mij maar', 'Volg u mij maar'], 0, 'formeel',
+        'With u the verb keeps its -t: volgt u. Without the -t it is not Dutch.'), ', de paskamers zijn achterin.'] },
+      { en: "You also sell blister plasters, don't you?", parts: ['U verkoopt', FK(['toch', 'hoor'], 0, 'soft',
+        'toch in the middle of a question expects a yes: surely you sell them. hoor only comes at the end of a statement.'), 'ook blarenpleisters?'] },
+      { en: 'The bakery is closed, but the chemist is open.', parts: ['De bakker is dicht, maar de drogist is', FK(['wel', 'geen'], 0, 'soft',
+        'wel stresses the contrast: this one is open. geen needs a noun after it.'), 'open.'] },
+
+      // ---- builds: idioms about money
+      { en: 'I bought these walking socks for next to nothing.', parts: ['Ik heb deze wandelsokken voor', FK(['een appel en een ei', 'een peer en een ei', 'een appel en een peer'], 0, 'idioom',
+        'voor een appel en een ei means very cheap. The words of the saying never change.'), FK(['gekocht', 'gekoopt'], 0, 'perf',
+        'kopen is irregular: gekocht.'), '.'] },
+      { en: 'Those new walking shoes cost an arm and a leg.', parts: ['Die nieuwe wandelschoenen kosten', FK(['een rib uit je lijf', 'een arm en een been', 'een rib uit je been'], 0, 'idioom',
+        'In Dutch something very expensive costs a rib out of your body: een rib uit je lijf. An arm and a leg is English.'), '.'] },
+      { en: "Don't buy a pig in a poke: try the shoes on first.", parts: ['Koop', FK(['geen', 'niet'], 0, 'neg',
+        'kat is a noun without an article here, so geen.'), FK(['kat in de zak', 'hond in de zak', 'kat in de tas'], 0, 'idioom',
+        'een kat in de zak kopen is a fixed phrase: to buy something without checking it. Only a cat, only a zak.'), ', pas de schoenen eerst even.'] },
+
+      // ---- builds: compound nouns and a diminutive
+      { en: 'The sports shop is in the city centre, next to the bookshop.', parts: [FK(['De', 'Het'], 0, 'samen',
+        'sport + winkel: winkel is de, so de sportwinkel.'), 'sportwinkel zit in', FK(['het stadscentrum', 'de stadscentrum', 'het stadcentrum'], 0, 'samen',
+        'stad + s + centrum, glued with an s, and centrum is het, so het stadscentrum.'), ', naast de boekhandel.'] },
+      { en: 'Would you like the receipt with it?', parts: ['Wilt u', FK(['het', 'de'], 0, 'verklein',
+        'Every -je word is het: het bonnetje, even though de bon is a de-word.'), 'bonnetje', FK(['erbij', 'ermee'], 0, 'pronadv',
+        'iets erbij willen means to want it along with your shopping. ermee does not fit here.'), '?'] },
+
+      // ---- builds: a complaint by letter
+      { en: 'Dear Sir or Madam, the shoes I ordered were too small.', parts: ['Geachte heer, mevrouw, de schoenen', FK(['die', 'dat'], 0, 'diedat',
+        'schoenen is a plural, and every plural takes die.'), 'ik', FK(['bestelde', 'besteldde', 'bestelte'], 0, 'kof',
+        'bestel ends in l, not a ketchup letter: bestelde with one d.'), 'waren te klein.'] },
+      { en: 'Awaiting your reply, kind regards, Santi Sanchez.', parts: [FK(['In afwachting van', 'In wachting van', 'In verwachting van'], 0, 'formeel',
+        'In afwachting van uw antwoord is the fixed line for awaiting your reply. In verwachting means pregnant.'), 'uw antwoord, met', FK(['vriendelijke', 'vriendelijk'], 0, 'adj',
+        'groet is a de-word, so the adjective takes -e: met vriendelijke groet.'), 'groet, Santi Sanchez.'] },
+
+      // ---- builds: the Vierdaagse
+      { en: 'You have to break in new walking shoes before the Vierdaagse.', parts: [FK(['Nieuwe', 'Nieuw'], 0, 'adj',
+        'wandelschoenen is a plural, and before a plural the adjective takes -e.'), 'wandelschoenen moet je voor de Vierdaagse eerst', FK(['inlopen', 'in te lopen', 'lopen in'], 0, 'modal',
+        'After moet the infinitive goes to the end in one piece: inlopen. No te after a modal.'), '.'] },
+      { en: 'The Vierdaagse always starts on the third Tuesday of July.', parts: ['De Vierdaagse begint altijd', FK(['op de derde dinsdag', 'in de derde dinsdag', 'op de drie dinsdag'], 0, 'datum',
+        'Days take op, and the third is derde: op de derde dinsdag.'), 'van juli.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'The new walking shoes are delivered tomorrow.', parts: ['De nieuwe wandelschoenen', FK(['worden', 'wordt'], 0, 'passief',
+        'Shoes are plural, so worden: worden geleverd.'), 'morgen', FK(['geleverd', 'gelevert', 'geleverdt'], 0, 'kof',
+        'lever ends in r, not a ketchup letter, so -d: geleverd.'), '.'] },
+      { en: 'The salesman said that the shoes would still stretch.', parts: ['De verkoper zei', FK(['dat', 'of'], 0, 'indirect',
+        'zei dat reports a statement. of belongs to a reported question.'), 'de schoenen', FK(['nog wel zouden uitrekken', 'zouden nog wel uitrekken'], 0, 'bijzin',
+        'In a sub-clause the verbs stand together at the end, and nog wel comes before them.'), '.'] },
+      { en: 'The shoes I bought here are cheaper than in Maastricht.', parts: ['De schoenen', FK(['die', 'dat'], 0, 'diedat',
+        'A plural takes die.'), 'ik hier kocht, zijn', FK(['goedkoper', 'goedkoopste', 'meer goedkoop'], 0, 'vergelijk',
+        'With dan you need the comparative: goedkoper dan.'), 'dan in Maastricht.'] },
+      { en: 'When I got to the baker, the walkers had already bought up all the rolls.', parts: ['Toen ik bij de bakker kwam,', FK(['hadden de wandelaars', 'de wandelaars hadden'], 0, 'v2',
+        'After a toen-clause the main clause starts with its verb: hadden de wandelaars.'), 'alle broodjes al', FK(['opgekocht', 'geopkocht', 'opgekoopt'], 0, 'sep',
+        'The ge goes in the middle of a separable verb: op + gekocht.'), '.'] },
+      { en: 'There are no walking socks left in my size.', parts: [FK(['Er zijn', 'Er is'], 0, 'er',
+        'wandelsokken is plural, so er zijn.'), FK(['geen', 'niet'], 0, 'neg',
+        'A noun without an article takes geen.'), 'wandelsokken meer in mijn maat.'] },
+
+      // ---- words: shops, paying, sizes, the walk ahead, five replayed from Maastricht
+      { w: 'the walking shoe', nl: 'de wandelschoen' }, { w: 'the walking sock', nl: 'de wandelsok' },
+      { w: 'the blister plaster', nl: 'de blarenpleister' }, { w: 'the gift voucher', nl: 'de cadeaubon' },
+      { w: 'the loyalty card', nl: 'de klantenkaart' }, { w: 'the shop window', nl: 'de etalage' },
+      { w: 'the shopping street', nl: 'de winkelstraat' }, { w: 'the city centre', nl: 'het stadscentrum', wrong: 'de stadscentrum' },
+      { w: 'the chemist (for plasters and shampoo)', nl: 'de drogist' }, { w: 'the bike repairer', nl: 'de fietsenmaker' },
+      { w: 'the small change', nl: 'het kleingeld', wrong: 'de kleingeld' }, { w: 'the shoe size', nl: 'de schoenmaat' },
+      { w: 'the queue', nl: 'de rij' }, { w: 'the weigh house on the Grote Markt', nl: 'de Waag' },
+      { w: 'the bookshop', nl: 'de boekhandel' }, { w: 'the receipt', nl: 'de kassabon' },
+      { w: 'the discount', nl: 'de korting' }, { w: 'the fitting room', nl: 'het pashokje', wrong: 'de pashokje' },
+      { w: 'the warranty', nl: 'de garantie' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Dat is wel duur, hè?', o: ["That is quite expensive, isn't it?", 'That is not expensive at all.', "That is cheap, isn't it?"], a: 0, r: 'soft',
+        w: 'wel here makes duur a little stronger, and hè asks you to agree. Nothing in it says cheap.' },
+      { read: true, nl: 'Kunt u mij vertellen waar de paskamers zijn?', o: ['Could you tell me where the fitting rooms are?', 'Could you take me to the fitting rooms?', 'Can I tell you where the fitting rooms are?'], a: 0, r: 'formeel',
+        w: 'u is the one you ask and mij is you: can you tell me. vertellen is tell, not take.' },
+      { read: true, nl: 'De verkoop van wandelschoenen loopt als een trein.', o: ['Walking shoes are selling extremely well.', 'Walking shoes are sold at the station.', 'Walking shoes sell as slowly as a train.'], a: 0, r: 'idioom',
+        w: 'als een trein lopen is a fixed phrase: it goes smoothly and fast. Nobody takes a train.' },
+      { read: true, nl: 'In de uitverkoop vlogen de schoenen de deur uit.', o: ['In the sale the shoes sold very fast.', 'In the sale the shoes were thrown out of the shop.', 'In the sale the door was left open.'], a: 0, r: 'idioom',
+        w: 'de deur uit vliegen means selling very fast. Nothing actually flies.' },
+      { read: true, nl: 'De Lange Hezelstraat heet de oudste winkelstraat van Nederland.', en: 'The Lange Hezelstraat is called the oldest shopping street in the Netherlands.' },
+      { read: true, nl: 'In juni liggen er in elke etalage wandelschoenen.', en: 'In June there are walking shoes in every shop window.' },
+
+      // ---- listens: a street, a square, a price and a sale, by ear
+      { listen: true, nl: 'de Lange Hezelstraat', en: 'the old shopping street' }, { listen: true, nl: 'de Grote Markt', en: 'the main square' },
+      { listen: true, nl: 'vijftien euro vijfennegentig', en: '€ 15,95' }, { listen: true, nl: 'de uitverkoop', en: 'the clearance sale' },
+
+      // ---- looks: the dog, a bike at the repairer, a house number
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'nummer', value: 12, nl: 'twaalf', en: '12' },
+
+      // ---- de of het
+      { dehet: true, nl: 'winkelcentrum', art: 'het', en: 'the shopping centre', w: 'The last part decides: het centrum, so het winkelcentrum.' },
+      { dehet: true, nl: 'prijskaartje', art: 'het', en: 'the price tag', w: 'Every -je word is het: het prijskaartje.' },
+    ] }]);
+})();
+
+// ---- content/new/L117.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 117 Eten en drinken. The Waalkade at night, a row of terraces along the river
+// under the lit arch of the Waalbrug, then up to the Grote Markt, a brown café in the Benedenstad and a chip stall on the corner.
+// Ordering, the bill, the soup, the bitterballen, the Vierdaagse week when the whole quay is one long party.
+// New at tier 12 and drilled here: modal particles at the table (Doe mij maar, Neem er nog maar een, Probeer ... eens, ik haal hem
+// wel even, hoor at the end of a warning); food idioms (geen kaas van gegeten, mosterd na de maaltijd, water bij de wijn doen,
+// andere koek, een fluitje van een cent in a read); compound nouns (de erwtensoep with the -en- of 1995, het bierviltje, het
+// wijnglas); the formal register of the waiter (Wat mag het zijn, Bent u klaar om te bestellen, Zou u ons de rekening willen
+// brengen); the Vierdaagse and its week of parties.
+// Review: V2 after a fronted phrase, the passive with worden, the plusquamperfectum, indirect speech with of, om ... te, zou plus
+// infinitive, the superlative, the adjective -e (het bruine café, Gelderse rookworst), 't kofschip, quantitative er.
+// Still inside the fence: 16 words max, nothing from tier 13 (no builds with three forks, no prices to calculate).
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar, V2 word order, 't kofschip, de vs het; _site/situations/
+// pub (Doe mij maar een biertje van de tap, Proost), restaurant (Is alles naar wens, Wat kunt u aanraden, Zitten daar noten in,
+// Kunnen we apart betalen); level 109 for the replayed words (de ober, de fooi, het terras, de menukaart, de reservering);
+// content/towns.js for Nijmegen (de Waal, de Waalbrug, de Vierdaagse, de wandelaar, het feest, the joke that the walkers ask
+// where the party is). Friet, not patat: Nijmegen lies just south of the Waal.
+// New rules: idioom, samen, formeel (guarded, same text in every Nijmegen and Amsterdam file). omte, er, zou, plusq, indirect and
+// vergelijk are guarded copies of the existing definitions; the rest are in data.js and levels.js.
+// New props: none. Only hond, brug and lamp are used (no word, read or listen item here is a bridge or a lamp).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
+  window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 117, act: 12, name: 'Eten en drinken', town: 'nijmegen', place: 'eten', theme: 'square', ...P,
+    intro: 'During the Vierdaagse the dead walk fifty kilometres a day. Then they ask where the party is, and they still split the bill.',
+    introNl: 'Tijdens de Vierdaagse lopen de doden vijftig kilometer per dag. Daarna vragen ze waar het feest is, en de rekening delen ze nog steeds.',
+    mission: {
+      where: 'The Waalkade at night, a row of terraces along the river with the Waalbrug lit up above them, then up to the Grote Markt, a brown café in the Benedenstad and a chip stall on the corner. In July the whole quay is one long party, and the walkers arrive with blisters and an appetite.',
+      carry: 'Two leads, a stack of beer mats, a bill split to the cent with the neighbours, a cone of friet with mayonnaise, because south of the Waal it is friet, and the grammar book, still never opened. No helmet. The waiter does not ask.',
+      want: 'Since the mist the dead fill every terrace, and they order the old way: Doe mij maar een biertje van de tap. The waiter still says u, the menu is one long compound noun, erwtensoep, kaasplank, bierviltje, and the old sayings come free with the bill: daar heb ik geen kaas van gegeten. Paola, still taller than you, says the bitterballen on the Waalkade are the best in the country. Maastricht says otherwise, about everything.' },
+    items: [
+      // ---- builds: ordering with particles
+      { en: "I'll have a draught beer.", parts: [FK(['Doe mij maar', 'Doe maar mij'], 0, 'soft',
+        'The fixed way to order: doe mij maar. The pronoun comes first, then maar.'), 'een biertje van de tap.'] },
+      { en: 'Have another one, my treat.', parts: [FK(['Neem er nog maar een', 'Neem nog maar een er'], 0, 'er',
+        'er stands for the beer you mean and comes early, right after the verb: neem er nog maar een. It does not go at the end.'), ', ik trakteer.'] },
+      { en: 'Try the smoked sausage, it is really good here.', parts: ['Probeer de rookworst', FK(['eens', 'een'], 0, 'soft',
+        'eens makes it a friendly suggestion: probeer eens. een is only the article a.'), ', die is hier echt goed.'] },
+      { en: "The bill? Stay seated, I'll get it.", parts: ['De rekening? Blijf zitten, ik', FK(['haal hem wel even', 'haal wel even hem'], 0, 'soft',
+        'A small pronoun like hem comes before the particles: ik haal hem wel even.'), '.'] },
+      { en: 'Careful, the soup is hot.', parts: ['Pas op, de soep is heet,', FK(['hoor', 'maar'], 0, 'soft',
+        'hoor at the end of a statement makes a warning friendly. maar cannot end a sentence.'), '.'] },
+
+      // ---- builds: the waiter's formal register
+      { en: 'Good evening, what will it be?', parts: ['Goedenavond, wat', FK(['mag', 'mogen'], 0, 'formeel',
+        'The waiter asks wat mag het zijn? het is singular, so mag.'), 'het zijn?'] },
+      { en: 'Are you ready to order?', parts: [FK(['Bent u', 'Is u'], 0, 'formeel',
+        'u takes bent, just like jij: bent u. is belongs to hij and zij.'), 'klaar', FK(['om te bestellen', 'te bestellen om'], 0, 'omte',
+        'om comes first and te goes right before the verb: om te bestellen.'), '?'] },
+      { en: 'Could you bring us the bill?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
+        'u takes the singular verb: zou u. zouden is for wij, jullie and zij.'), 'ons de rekening', FK(['willen brengen', 'wil brengen', 'te brengen'], 0, 'zou',
+        'zou takes infinitives at the end, without te: zou u ... willen brengen.'), '?'] },
+
+      // ---- builds: food idioms
+      { en: 'I know nothing about wine.', parts: ['Van wijn', FK(['heb ik', 'ik heb'], 0, 'v2',
+        'Van wijn fills slot 1, so the verb comes second: heb ik.'), FK(['geen kaas', 'geen brood', 'geen vlees'], 0, 'idioom',
+        'ergens geen kaas van gegeten hebben means to know nothing about it. Only kaas works in this saying.'), 'gegeten.'] },
+      { en: 'Saying sorry only now is too little, too late.', parts: ['Nu pas sorry zeggen is', FK(['mosterd', 'mayonaise', 'ketchup'], 0, 'idioom',
+        'mosterd na de maaltijd is help that comes when it is no longer needed. The saying only knows mustard.'), 'na de maaltijd.'] },
+      { en: 'We both gave a little: we split the bill.', parts: ['We hebben allebei', FK(['water bij de wijn', 'wijn bij het water', 'water bij het bier'], 0, 'idioom',
+        'water bij de wijn doen means to meet each other halfway. The words of the saying are fixed.'), 'gedaan: we delen de rekening.'] },
+      { en: 'Ordinary sausage is nice, but smoked sausage from Gelderland is another story.', parts: ['Gewone worst is lekker, maar', FK(['Gelderse', 'Gelders'], 0, 'adj',
+        'rookworst is a de-word, so the adjective takes -e: Gelderse rookworst.'), 'rookworst is', FK(['andere koek', 'ander brood', 'andere taart'], 0, 'idioom',
+        'Dat is andere koek: that is something else entirely. Only koek works in this saying.'), '.'] },
+
+      // ---- builds: compound nouns
+      { en: 'The pea soup in the brown café is the best in town.', parts: ['De', FK(['erwtensoep', 'erwtesoep', 'erwtsoep'], 0, 'samen',
+        'Since the spelling of 1995 the glue is -en- here: erwtensoep, like pannenkoek.'), 'in het', FK(['bruine', 'bruin'], 0, 'adj',
+        'After het the adjective takes -e: het bruine café.'), 'café is de beste van de stad.'] },
+      { en: 'The beer mat is under the wine glass.', parts: [FK(['Het', 'De'], 0, 'samen',
+        'A compound takes the article of its last part, and het viltje is het: het bierviltje.'), 'bierviltje ligt onder', FK(['het', 'de'], 0, 'samen',
+        'wijn + glas: glas is het, so het wijnglas.'), 'wijnglas.'] },
+
+      // ---- builds: the Vierdaagse
+      { en: 'After fifty kilometres the walkers still want to go to the party.', parts: ['Na', FK(['vijftig', 'vijftien'], 0, 'getal',
+        'Fifty is vijftig, with -tig for the tens. vijftien is 15.'), 'kilometer', FK(['willen de wandelaars', 'de wandelaars willen'], 0, 'v2',
+        'Na vijftig kilometer fills slot 1, so the verb comes second: willen de wandelaars.'), 'nog steeds naar het feest.'] },
+      { en: 'In the week of the Vierdaagse there is a party in town every evening.', parts: ['In de week van de Vierdaagse', FK(['is er', 'er is'], 0, 'v2',
+        'The time phrase fills slot 1, so the verb comes second and er follows it: is er.'), 'elke avond feest in de stad.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'On the Waalkade the bitterballen are fried fresh.', parts: ['Op de Waalkade', FK(['worden de bitterballen', 'de bitterballen worden'], 0, 'v2',
+        'Op de Waalkade fills slot 1, so the verb comes second: worden de bitterballen.'), 'vers', FK(['gefrituurd', 'gefrituurt', 'gefrituren'], 0, 'kof',
+        'frituur ends in r, not a ketchup letter, so -d: gefrituurd. With worden it is the passive.'), '.'] },
+      { en: 'We had booked a table, but nobody had written it down.', parts: ['We', FK(['hadden', 'waren'], 0, 'plusq',
+        'reserveren takes hebben, so the plusquamperfectum is hadden plus the participle.'), 'een tafel', FK(['gereserveerd', 'gereserveert'], 0, 'kof',
+        'reserveer ends in r, so -d: gereserveerd.'), ', maar niemand had het opgeschreven.'] },
+      { en: 'Paola asked whether there were nuts in the sauce.', parts: ['Paola vroeg', FK(['of', 'dat'], 0, 'indirect',
+        'A reported yes-or-no question starts with of.'), 'er noten', FK(['in de saus zaten', 'zaten in de saus'], 0, 'bijzin',
+        'of sends the verb to the very end: in de saus zaten.'), '.'] },
+      { en: 'According to Nijmegen the bitterballen on the Waalkade are the tastiest in the country.', parts: ['Volgens Nijmegen', FK(['zijn de bitterballen', 'de bitterballen zijn'], 0, 'v2',
+        'Volgens Nijmegen fills slot 1, so the verb comes second.'), 'aan de Waalkade', FK(['de lekkerste', 'de lekkerst', 'de lekkerder'], 0, 'vergelijk',
+        'After de the superlative takes -e: de lekkerste. lekkerder is the comparative.'), 'van het land.'] },
+
+      // ---- words: the menu, the café, the quay, five replayed from Maastricht
+      { w: 'the bitterbal (a fried ragout ball)', nl: 'de bitterbal' }, { w: 'the beer mat', nl: 'het bierviltje', wrong: 'de bierviltje' },
+      { w: 'the smoked sausage', nl: 'de rookworst' }, { w: 'the pea soup', nl: 'de erwtensoep' },
+      { w: 'the cheese board', nl: 'de kaasplank' }, { w: 'the wine glass', nl: 'het wijnglas', wrong: 'de wijnglas' },
+      { w: 'the dish of the day', nl: 'de dagschotel' }, { w: 'the regular customer', nl: 'de stamgast' },
+      { w: 'the brown café (an old pub with dark wood)', nl: 'het bruine café', wrong: 'de bruine café' }, { w: 'the chip stall', nl: 'de frietkraam' },
+      { w: 'the sunset', nl: 'de zonsondergang' }, { w: 'the quay along the Waal', nl: 'de Waalkade' },
+      { w: 'the mustard', nl: 'de mosterd' }, { w: 'the waiter', nl: 'de ober' },
+      { w: 'the tip', nl: 'de fooi' }, { w: 'the terrace', nl: 'het terras', wrong: 'de terras' },
+      { w: 'the menu card', nl: 'de menukaart' }, { w: 'the reservation', nl: 'de reservering' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Vijftig kilometer lopen? Een fluitje van een cent.', o: ['Walking fifty kilometres? Easy.', 'Walking fifty kilometres? It costs one cent.', 'Walking fifty kilometres? Bring a whistle.'], a: 0, r: 'idioom',
+        w: 'een fluitje van een cent is a fixed phrase for something very easy. Nobody pays anything.' },
+      { read: true, nl: 'Lekker, hè? Neem er gerust nog een.', o: ['Tasty, right? Feel free to have another.', 'Tasty, right? You have had enough now.', 'Is it tasty? Have one later.'], a: 0, r: 'soft',
+        w: 'hè asks you to agree, and gerust means feel free. Nobody says enough.' },
+      { read: true, nl: 'Wij verzoeken u vriendelijk niet op het terras te roken.', o: ['We kindly ask you not to smoke on the terrace.', 'We kindly ask you to smoke only on the terrace.', 'Smoking on the terrace is allowed after ten.'], a: 0, r: 'formeel',
+        w: 'niet goes with te roken: do not smoke. verzoeken is the formal word for asking.' },
+      { read: true, nl: 'De ober zei dat de keuken om negen uur al dicht was gegaan.', o: ['The waiter said the kitchen had already closed at nine.', 'The waiter said the kitchen would close at nine.', 'The waiter asked whether the kitchen closed at nine.'], a: 0, r: 'plusq',
+        w: 'was gegaan is the plusquamperfectum: it had already happened. zei dat reports a statement, it does not ask.' },
+      { read: true, nl: 'Onder de rivieren zeggen ze friet, en Nijmegen ligt op de zuidoever van de Waal.', en: 'Below the rivers they say friet, and Nijmegen lies on the south bank of the Waal.' },
+      { read: true, nl: 'Tijdens de Vierdaagsefeesten komen er meer dan een miljoen bezoekers naar de stad.', en: 'During the Vierdaagse festival more than a million visitors come to the city.' },
+
+      // ---- listens: the festival, a price, two things you say at the table
+      { listen: true, nl: 'de Vierdaagsefeesten', en: 'the festival week of the Vierdaagse' }, { listen: true, nl: 'acht euro vijftig', en: '€ 8,50' },
+      { listen: true, nl: 'eet smakelijk', en: 'enjoy your meal' }, { listen: true, nl: 'proost', en: 'cheers' },
+
+      // ---- looks: the dog, the lit bridge over the Waal, a lamp on the quay
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
+      { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
+
+      // ---- de of het
+      { dehet: true, nl: 'pilsje', art: 'het', en: 'the small lager', w: 'Every -je word is het: het pilsje, het biertje.' },
+      { dehet: true, nl: 'koffiekopje', art: 'het', en: 'the coffee cup', w: 'The last part decides, and a -je word is always het: het koffiekopje.' },
+    ] }]);
+})();
+
+// ---- content/new/L118.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 118 Het station. Nijmegen station at the foot of the hill: the platforms, the
+// departures board, the bike shed, the ticket machines and the bus station on the square, trains to Arnhem, Venlo and Den Bosch,
+// the Snelbinder cycle bridge hanging from the railway bridge over the Waal, and the long climb to the Stevenskerk and the
+// Valkhof. Travel and getting around: the train, the bus, the bike, directions, the time, tickets, delays, a complaint by letter.
+// Rewritten from the unaudited draft in content/pending/L118.js: kept its setting and most of its forks, removed the distractors
+// that differed only by a space or by spelling (Ja hoort, tog, een maal, Hoog achtend), replaced zal u (a possible form) with
+// zouden u, de weg weg with de weg verdwaald, the kaartjesautomaat with the kaartautomaat, and the Oversteek line moved to 122.
+// New at tier 12 and drilled here: modal particles (Loop maar rechtdoor, Kijk eens, toch? as a tag, de bus rijdt wel, nou eenmaal,
+// mag ik er even langs), idioms (op het nippertje, tussen wal en schip vallen, de weg kwijt zijn, denkt van niet, lang en breed in a
+// read), compound nouns (de kaartautomaat, het stationsplein with its linking s, het vervoersbewijs), the formal register (uw
+// vervoersbewijs, Geachte mevrouw, Bij voorbaat dank, Zou u mij kunnen zeggen), the Vierdaagse: since 1909, the hundredth in 2016,
+// the gladioli on the Friday.
+// Review: V2 after a fronted phrase and after an als-clause, the passive with worden, the perfectum of lopen, the plural gladiolen,
+// the superlative and the comparative, indirect speech with dat and the verbs at the end, an indirect question, the time.
+// Still inside the fence: 16 words max, nothing from tier 13.
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar, bijzin - werkwoord naar het einde, V2 word order,
+// perfectum, de vs het; _site/situations/directions (rechtdoor, de weg vragen, oversteken), polite-phrases (Pardon, mag ik er even
+// langs, Kunt u mij helpen, ik zoek het station); _site/maps/H15 In de trein, MOC Tijd, dagen & maanden; level 110 for the replayed
+// words (het perron, de vertraging, de overstap, de OV-chipkaart); content/towns.js for Nijmegen (de Waal, de Stevenskerk, het
+// Valkhof, de gladiool, de wandelaar, de oudste stad, the rumour about Maastricht).
+// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). zou, passief, meervoud,
+// vergelijk, indirect and klok are guarded copies of the existing definitions; the rest are in data.js and levels.js.
+// New props: none. Only hond, brug and nummer are used (de Snelbinder is only in a read, so no word in the pool is a bridge).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.meervoud = window.RULES.meervoud || { name: 'Plurals: -en, -s', note: 'meervoud-plurals' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 118, act: 12, name: 'Het station', town: 'nijmegen', place: 'station', theme: 'square', ...P,
+    intro: 'In the oldest city in the country the trains are late the old-fashioned way. The mist changed nothing about that.',
+    introNl: 'In de oudste stad van het land zijn de treinen ouderwets te laat. De mist heeft daar niets aan veranderd.',
+    mission: {
+      where: 'Nijmegen station, from the platforms through the bike shed to the station square, then the long climb up to the Stevenskerk with the Waal and the Waalbrug lying below. Nijmegen is one of the few towns in the country with a hill, so the dead take the stairs slowly and the bikes go round by the road.',
+      carry: 'Two leads, an OV-chipkaart with one euro ten on it, a gladiolus left over from last July, a ticket split to the cent with the neighbours, and the grammar book, still never opened. No helmet. On the climb to the Stevenskerk you walk anyway.',
+      want: 'Since the mist the dead stand on every platform and ask which train, which stop and what time. Some still hold gladioli from the Vierdaagse and ask where the party is. The conductor writes letters about the delays and signs them Hoogachtend. Maastricht claims its station is older, and Nijmegen has not slept since. The women on the platform, still taller than you, say hoor and maar, and you have to know where those words go. The dogs always need a walk, even on a platform.' },
+    items: [
+      // ---- builds: modal particles
+      { en: "Sure, it's close by. Just walk straight on.", parts: ['Ja hoor, het is hier vlakbij.', FK(['Loop maar rechtdoor', 'Loop rechtdoor maar'], 0, 'soft',
+        'maar softens a command and comes right after the verb: loop maar rechtdoor.'), '.'] },
+      { en: 'Take a look at the departures board.', parts: ['Kijk', FK(['eens', 'een'], 0, 'soft',
+        'eens makes a command friendly: kijk eens. een is only the article a.'), 'op het vertrekbord.'] },
+      { en: "It's platform four, isn't it?", parts: ['Het is spoor vier,', FK(['toch', 'maar'], 0, 'soft',
+        'toch at the end of a statement asks for a yes, like right? maar cannot end a question.'), '?'] },
+      { en: 'The train is not running, but the bus is.', parts: ['De trein rijdt niet, maar de bus rijdt', FK(['wel', 'geen'], 0, 'soft',
+        'wel answers a niet and says: this one does. geen needs a noun right after it.'), '.'] },
+      { en: "That's just how it is: in mist the trains are late.", parts: ['Het is', FK(['nou eenmaal', 'nou eenmalig'], 0, 'soft',
+        'nou eenmaal means that is how it is, and nothing can be done. eenmalig means one-off.'), 'zo: bij mist', FK(['zijn de treinen', 'de treinen zijn'], 0, 'v2',
+        'Bij mist fills slot 1, so the verb comes second: zijn de treinen.'), 'te laat.'] },
+      { en: 'Excuse me, may I get past for a moment?', parts: ['Pardon, mag ik', FK(['er even langs', 'er langs even'], 0, 'soft',
+        'The little word er comes first, then even softens the request, and langs closes it: er even langs. Nothing comes after langs.'), '?'] },
+
+      // ---- builds: idioms
+      { en: 'We caught the train just in time.', parts: ['We haalden de trein', FK(['op het nippertje', 'bij het nippertje'], 0, 'idioom',
+        'Fixed phrase: op het nippertje means just in time. The preposition cannot be swapped.'), '.'] },
+      { en: 'If you miss the connection, nobody helps you: you fall between two stools.', parts: ['Als je de overstap mist,', FK(['dan val je', 'dan je valt', 'dan valt je'], 0, 'bijzin',
+        'After an als-clause the main clause may start with dan, and then the verb comes right after it: dan val je. With je after it, the verb loses its -t.'), FK(['tussen wal en schip', 'tussen wal en boot', 'tussen kade en schip'], 0, 'idioom',
+        'Fixed phrase from a river country: tussen wal en schip vallen, to fall between the quay and the ship.'), '.'] },
+      { en: "Excuse me, I'm lost. Could you help me?", parts: ['Pardon, ik ben de weg', FK(['kwijt', 'verdwaald'], 0, 'idioom',
+        'de weg kwijt zijn is the fixed way to say you are lost. verdwaald takes no object: ik ben verdwaald.'), '. Zou u mij kunnen helpen?'] },
+      { en: 'Nijmegen is the oldest city in the Netherlands, but Maastricht thinks otherwise.', parts: ['Nijmegen is de', FK(['oudste', 'oudst', 'meest oud'], 0, 'vergelijk',
+        'After de the superlative takes -ste: de oudste stad.'), 'stad van Nederland, maar Maastricht', FK(['denkt van niet', 'denkt niet van', 'denkt geen'], 0, 'idioom',
+        'denkt van niet is the fixed way to say thinks otherwise, with van before niet.'), '.'] },
+
+      // ---- builds: compound nouns
+      { en: 'At the ticket machine on the station square the queue is long.', parts: ['Bij', FK(['de', 'het'], 0, 'samen',
+        'kaart + automaat: automaat is de, so de kaartautomaat.'), 'kaartautomaat op', FK(['het stationsplein', 'het stationplein', 'de stationsplein'], 0, 'samen',
+        'station + s + plein: the linking s stays in, and plein is het, so het stationsplein.'), 'is de rij lang.'] },
+
+      // ---- builds: the formal register
+      { en: 'Good afternoon, may I see your ticket?', parts: ['Goedemiddag, mag ik', FK(['uw', 'u'], 0, 'formeel',
+        'With u the possessive is uw: uw vervoersbewijs. u alone is the person, not what belongs to them.'), 'vervoersbewijs zien?'] },
+      { en: 'Dear Ms De Vries, I am writing to you about my delayed train.', parts: [FK(['Geachte', 'Geacht'], 0, 'formeel',
+        'mevrouw is a person and a de-word, so the adjective takes -e: Geachte mevrouw.'), 'mevrouw De Vries, ik schrijf u over mijn', FK(['vertraagde', 'vertraagd', 'vertraagt'], 0, 'adj',
+        'After mijn the adjective always takes -e: mijn vertraagde trein.'), 'trein.'] },
+      { en: 'Thank you in advance for your reply. Kind regards, Santi Sanchez.', parts: [FK(['Bij voorbaat', 'Bij vooruit', 'Op voorbaat'], 0, 'formeel',
+        'Bij voorbaat dank is the fixed formal line for thanks in advance.'), 'dank voor uw antwoord. Met vriendelijke groet, Santi Sanchez.'] },
+      { en: 'Could you tell me how I get to the Valkhof?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
+        'u takes the singular verb, like jij: zou u. zouden is plural.'), 'mij kunnen zeggen', FK(['hoe ik bij het Valkhof kom', 'hoe kom ik bij het Valkhof'], 0, 'bijzin',
+        'A question inside a question becomes a sub-clause, so the verb goes to the end: hoe ik ... kom.'), '?'] },
+
+      // ---- builds: the Vierdaagse
+      { en: 'The Vierdaagse has been walked since 1909.', parts: ['De Vierdaagse', FK(['wordt', 'worden'], 0, 'passief',
+        'De Vierdaagse is one event, so wordt. The participle comes at the end.'), 'al sinds 1909', FK(['gelopen', 'geloopt', 'gelopt'], 0, 'perf',
+        'lopen is irregular: gelopen.'), '.'] },
+      { en: 'The first Vierdaagse was in 1909, the hundredth in 2016.', parts: ['De', FK(['eerste', 'één'], 0, 'datum',
+        'The first is eerste. één counts, it does not put things in order.'), 'Vierdaagse was in 1909, de', FK(['honderdste', 'honderd', 'honderdtste'], 0, 'datum',
+        'Most ordinals end in -ste after a round number: de honderdste, de twintigste.'), 'in 2016.'] },
+      { en: 'On Friday the walkers get gladioli along the Via Gladiola.', parts: ['Op vrijdag', FK(['krijgen de wandelaars', 'de wandelaars krijgen'], 0, 'v2',
+        'Op vrijdag fills slot 1, so the verb comes second: krijgen de wandelaars.'), FK(['gladiolen', 'gladioolen', 'gladiolens'], 0, 'meervoud',
+        'de gladiool becomes gladiolen: the syllable is open, so one o is enough.'), 'langs de Via Gladiola.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'The road to the Stevenskerk is steeper than you think.', parts: ['De weg naar de Stevenskerk is', FK(['steiler', 'steilder', 'meer steil'], 0, 'vergelijk',
+        'A short adjective takes -er: steil becomes steiler. -der only comes after an r.'), 'dan je denkt.'] },
+      { en: 'Paola said that she had missed the bus.', parts: ['Paola zei', FK(['dat', 'of'], 0, 'indirect',
+        'zei dat reports a statement. of belongs to a reported question.'), FK(['ze de bus gemist had', 'ze had de bus gemist', 'had ze de bus gemist'], 0, 'bijzin',
+        'After dat the verbs go to the end: ze de bus gemist had.'), '.'] },
+      { en: 'The last train to Arnhem leaves at 11:45.', parts: ['De laatste trein naar Arnhem vertrekt om', FK(['kwart voor twaalf', 'kwart over twaalf', 'kwart voor elf'], 0, 'klok',
+        'Eleven forty-five is a quarter before twelve: kwart voor twaalf.'), '.'] },
+
+      // ---- words: the station, the bus, the bike, four replayed from Maastricht
+      { w: 'the platform', nl: 'het perron', wrong: 'de perron' }, { w: 'the delay', nl: 'de vertraging' },
+      { w: 'the connection, the change of trains', nl: 'de overstap' }, { w: 'the public transport card', nl: 'de OV-chipkaart' },
+      { w: 'the departures board', nl: 'het vertrekbord', wrong: 'de vertrekbord' }, { w: 'the waiting room', nl: 'de wachtkamer' },
+      { w: 'the stopping train', nl: 'de sprinter' }, { w: 'the escalator', nl: 'de roltrap' },
+      { w: 'the bus station', nl: 'het busstation', wrong: 'de busstation' }, { w: 'the bus driver', nl: 'de buschauffeur' },
+      { w: 'the diversion', nl: 'de omleiding' }, { w: 'the engineering works', nl: 'de werkzaamheden' },
+      { w: 'the single ticket', nl: 'het enkeltje', wrong: 'de enkeltje' }, { w: 'the cycle path', nl: 'het fietspad', wrong: 'de fietspad' },
+      { w: 'the ticket machine', nl: 'de kaartautomaat' }, { w: 'the ticket (formal)', nl: 'het vervoersbewijs', wrong: 'de vervoersbewijs' },
+      { w: 'the bike shed', nl: 'de fietsenstalling' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Neem maar gewoon de volgende trein, hoor.', o: ['Just take the next train, it is fine.', 'Do not take the next train.', 'Listen to the next train.'], a: 0, r: 'soft',
+        w: 'maar and gewoon soften the advice, and hoor reassures. Nothing is forbidden, and nobody has to listen.' },
+      { read: true, nl: 'Die trein is al lang en breed vertrokken.', o: ['That train left ages ago.', 'That train is long and wide.', 'That train leaves in a long while.'], a: 0, r: 'idioom',
+        w: 'lang en breed is a fixed phrase: well and truly, long ago. It says nothing about the size of the train.' },
+      { read: true, nl: 'Geachte reizigers, wij verzoeken u de trein te verlaten.', o: ['Dear passengers, we ask you to leave the train.', 'Dear passengers, we ask you to board the train.', 'Dear passengers, we thank you for travelling with us.'], a: 0, r: 'formeel',
+        w: 'verlaten means to leave. Boarding would be instappen, and verzoeken is the formal word for asking.' },
+      { read: true, nl: 'Je kunt de trein nog wel halen, als je even doorloopt.', o: ['You can still catch the train if you hurry a bit.', 'You cannot catch the train any more, even if you run.', 'You can still walk through the train.'], a: 0, r: 'soft',
+        w: 'nog wel says it is still possible, and even doorlopen means walk on a bit faster.' },
+      { read: true, nl: 'Tijdens de Vierdaagse zitten de treinen vol en loopt half Nijmegen op straat.', en: 'During the Vierdaagse the trains are full and half of Nijmegen is out in the street.' },
+      { read: true, nl: 'De Snelbinder is een fietsbrug die aan de spoorbrug over de Waal hangt.', en: 'The Snelbinder is a cycle bridge that hangs from the railway bridge over the Waal.' },
+
+      // ---- listens: two Vierdaagse words, the time, the square
+      { listen: true, nl: 'de gladiool', en: 'the gladiolus' }, { listen: true, nl: 'de wandelaar', en: 'the walker' },
+      { listen: true, nl: 'kwart voor negen', en: '8:45' }, { listen: true, nl: 'het stationsplein', en: 'the station square' },
+
+      // ---- looks: the dog, the bridge over the Waal, the platform number
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
+      { look: true, prop: 'nummer', value: 7, nl: 'zeven', en: '7' },
+
+      // ---- de of het
+      { dehet: true, nl: 'treinstation', art: 'het', en: 'the railway station', w: 'The last part decides: het station, so het treinstation.' },
+      { dehet: true, nl: 'vertrektijd', art: 'de', en: 'the departure time', w: 'The last part decides: de tijd, so de vertrektijd.' },
+    ] }]);
+})();
+
+// ---- content/new/L119.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 119 Het werk. A desk in the old Honig soup factory on the Waal, now full of
+// start-ups, with the river and the barges outside the window. The standup where nobody stands, a dashboard, an incident, a
+// formal email to a client, the coffee machines, and the third week of July when half the office walks the Vierdaagse.
+// New at tier 12 and drilled here: modal particles at work (mag ik je even storen, ik stuur het je wel even, kun je er even naar
+// kijken), with the small pronoun before the particle; work idioms (op rolletjes lopen, op de lange baan schuiven, de spijker op de
+// kop slaan, er met de pet naar gooien, in het water vallen in a read); compound nouns (de koffieautomaat against het
+// koffieapparaat, het wachtwoord, de thuiswerkdag); the formal register of an email (Geachte heer, naar aanleiding van, Mocht u
+// nog vragen hebben); dates (van dinsdag 21 tot en met vrijdag 24 juli, the third week of July).
+// Review: V2 after a fronted phrase and after a toen-clause, the passive with worden, the plusquamperfectum with a separable
+// participle, indirect speech with of, hoewel, die and dat, the adjective -e, 't kofschip.
+// Still inside the fence: 16 words max, nothing from tier 13.
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar, scheidbare werkwoorden, bijzin - werkwoord naar het
+// einde, V2 word order, de vs het; _site/situations/office (Heb je even, ik heb een korte vraag, Ik zit zo in een meeting, kan het
+// straks, Werk ze nog); 04 - Phrases & Scenarios/De standup - tech talk, Koffiepraatje op kantoor; level 111 for the replayed words
+// (het ticket, de back-up, de melding, de vrijmibo, de loonstrook, de stagiair); content/towns.js for Nijmegen (de Waal, de
+// Vierdaagse, de wandelaar, het feest); the Honig soup factory on the Waal, now the Honigcomplex.
+// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). passief, indirect and
+// hoewel are guarded copies of the existing definitions; the rest are in data.js and levels.js.
+// New props: none. Only hond, fiets and lamp are used (no word, listen or look answer here is a bike or a lamp).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 119, act: 12, name: 'Het werk', town: 'nijmegen', place: 'werk', theme: 'street', ...P,
+    intro: 'In the old soup factory on the Waal the dead now run start-ups. The standup still takes forty minutes, and nobody stands.',
+    introNl: 'In de oude soepfabriek aan de Waal runnen de doden nu start-ups. De standup duurt nog steeds veertig minuten, en niemand staat.',
+    mission: {
+      where: 'A desk in the old Honig soup factory on the Waal, now full of start-ups, with a window on the river and the barges going past. The dogs have a basket under the desk, and at lunch they need a walk along the Waalkade. They always need a walk.',
+      carry: 'A laptop at nine percent, two leads, a cake for a colleague split to the cent among the team, an email that starts with Geachte heer and never seems to end, and the grammar book, still never opened. No helmet, not even in the bike shed.',
+      want: 'Since the mist the dead still come to work, and they still hold a standup where nobody stands. They ask for things with small words: mag ik je even storen, kun je er even naar kijken, ik stuur het je wel even. They write to clients with u, uw and naar aanleiding van, and they build the whole day out of compound words: de werkplek, het wachtwoord, de thuiswerkdag. In the third week of July half the office walks the Vierdaagse and the other half is at the party. The women in the meeting are still taller than you.' },
+    items: [
+      // ---- builds: particles at work, the small pronoun first
+      { en: 'Can I bother you for a second?', parts: [FK(['Mag ik je even storen', 'Mag ik even je storen'], 0, 'soft',
+        'A small pronoun like je comes before even: mag ik je even storen.'), '?'] },
+      { en: "I'll just send it to you.", parts: ['Ik', FK(['stuur het je wel even', 'stuur wel even het je'], 0, 'soft',
+        'Small pronouns come first, het before je, and then the particles: ik stuur het je wel even.'), '.'] },
+      { en: 'Could you have a quick look at it?', parts: ['Kun je', FK(['er even naar kijken', 'er even kijken naar'], 0, 'soft',
+        'er goes early, even follows it, and naar stays right before the verb at the end: er even naar kijken. The preposition never trails behind the verb as in English.'), '?'] },
+      { en: "Got a minute? I've got a quick question.", parts: ['Heb je even? Ik heb een', FK(['korte', 'kort'], 0, 'adj',
+        'vraag is a de-word, so the adjective takes -e, also after een: een korte vraag.'), 'vraag.'] },
+
+      // ---- builds: work idioms
+      { en: 'Since the fix everything has been running like clockwork.', parts: ['Sinds de fix', FK(['loopt alles', 'alles loopt'], 0, 'v2',
+        'Sinds de fix fills slot 1, so the verb comes second: loopt alles.'), FK(['op rolletjes', 'op wieltjes'], 0, 'idioom',
+        'op rolletjes lopen means to go smoothly. The saying only knows rolletjes.'), '.'] },
+      { en: 'After the outage we put the release on the back burner.', parts: ['Na de storing schuiven we de release', FK(['op de lange baan', 'op de lange weg', 'in de lange baan'], 0, 'idioom',
+        'iets op de lange baan schuiven means to put it off, maybe for good. Only op and only baan.'), '.'] },
+      { en: "You've hit the nail on the head.", parts: ['Je slaat', FK(['de spijker op de kop', 'de spijker op het hoofd', 'de nagel op de kop'], 0, 'idioom',
+        'de spijker op de kop slaan: a spijker is a nail you hammer, a nagel is on your finger, and a nail has a kop, not a hoofd.'), '.'] },
+      { en: 'The intern did a sloppy job on that dashboard.', parts: ['Bij dat dashboard heeft de stagiair er', FK(['met de pet naar gegooid', 'met de hoed naar gegooid'], 0, 'idioom',
+        'er met de pet naar gooien means to do something carelessly. Only the cap, never the hat.'), '.'] },
+
+      // ---- builds: compound nouns
+      { en: 'The coffee vending machine is broken, but the coffee maker still works.', parts: [FK(['De', 'Het'], 0, 'samen',
+        'koffie + automaat: automaat is de, so de koffieautomaat.'), 'koffieautomaat is kapot, maar', FK(['het', 'de'], 0, 'samen',
+        'koffie + apparaat: apparaat is het, so het koffieapparaat. Same coffee, different last part.'), 'koffieapparaat doet het nog.'] },
+      { en: 'I have forgotten the password again.', parts: ['Ik ben', FK(['het wachtwoord', 'de wachtwoord', 'het wachtswoord'], 0, 'samen',
+        'wacht + woord: woord is het, so het wachtwoord, with no s in between.'), 'weer vergeten.'] },
+      { en: 'On Tuesday I work at home, that is my working-from-home day.', parts: ['Op dinsdag werk ik thuis, dat is mijn', FK(['thuiswerkdag', 'thuiswerksdag', 'werkthuisdag'], 0, 'samen',
+        'thuiswerken + dag, in that order and without a linking s: de thuiswerkdag.'), '.'] },
+
+      // ---- builds: a formal email
+      { en: 'Dear Mr Jansen, further to our conversation I am sending you the quote.', parts: ['Geachte heer Jansen,', FK(['naar aanleiding van', 'door aanleiding van', 'na aanleiding van'], 0, 'formeel',
+        'naar aanleiding van is the fixed formal way to say following or further to.'), 'ons gesprek', FK(['stuur ik u', 'ik stuur u'], 0, 'v2',
+        'The whole phrase naar aanleiding van ons gesprek fills slot 1, so the verb comes second: stuur ik.'), 'de offerte.'] },
+      { en: 'Should you have any questions, I would be glad to hear from you.', parts: [FK(['Mocht u', 'Mag u'], 0, 'formeel',
+        'Mocht u ... hebben is a formal if, should you have. mag u means you are allowed to.'), 'nog vragen hebben,', FK(['dan hoor ik het graag', 'dan ik hoor het graag'], 0, 'v2',
+        'dan takes slot 1 of the main clause, so the verb comes right after it: dan hoor ik.'), '.'] },
+
+      // ---- builds: the Vierdaagse week
+      { en: 'In the third week of July half the office takes time off.', parts: ['In de derde week van juli', FK(['neemt het halve kantoor', 'neemt het half kantoor', 'het halve kantoor neemt'], 0, 'v2',
+        'The time phrase fills slot 1, so the verb comes second. And after het the adjective takes -e: het halve kantoor.'), 'vrij.'] },
+      { en: 'I am off from Tuesday the 21st up to and including Friday the 24th of July.', parts: ['Ik ben vrij van dinsdag 21', FK(['tot en met', 'tot met', 'tot en'], 0, 'datum',
+        'tot en met means up to and including: the Friday counts too. It is always the three words together.'), 'vrijdag 24 juli.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'The release is postponed until after the Vierdaagse.', parts: ['De release', FK(['wordt', 'worden'], 0, 'passief',
+        'One release, so wordt plus the participle at the end.'), 'tot na de Vierdaagse', FK(['uitgesteld', 'uitgestelt', 'geuitsteld'], 0, 'kof',
+        'uit + gesteld: stel ends in l, not a ketchup letter, so -d, and the ge sits in the middle.'), '.'] },
+      { en: 'When I logged in, my colleague had already solved the incident.', parts: ['Toen ik inlogde,', FK(['had mijn collega', 'mijn collega had'], 0, 'v2',
+        'After a toen-clause the main clause starts with its verb: had mijn collega.'), 'het incident al', FK(['opgelost', 'geopgelost', 'opgelossen'], 0, 'sep',
+        'The ge goes in the middle of a separable verb: op + gelost.'), '.'] },
+      { en: 'My manager asked whether I had a moment.', parts: ['Mijn manager vroeg', FK(['of', 'dat'], 0, 'indirect',
+        'A reported yes-or-no question starts with of.'), 'ik', FK(['even tijd had', 'had even tijd'], 0, 'bijzin',
+        'of sends the verb to the end of its clause: even tijd had.'), '.'] },
+      { en: 'Although I am off, I still read my email.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
+        'hoewel opens a clause with its own verb: hoewel ik vrij ben. ondanks needs a noun.'), 'ik vrij ben,', FK(['lees ik', 'ik lees'], 0, 'v2',
+        'The sub-clause fills slot 1, so the main clause starts with its verb: lees ik.'), 'toch mijn mail.'] },
+      { en: 'The dashboard I built last week is now used by the whole team.', parts: ['Het dashboard', FK(['dat', 'die'], 0, 'diedat',
+        'dashboard is a het-word, so the relative pronoun is dat.'), 'ik vorige week bouwde,', FK(['wordt', 'worden'], 0, 'passief',
+        'One dashboard, so wordt: wordt gebruikt.'), 'nu door het hele team gebruikt.'] },
+
+      // ---- words: the desk, the email, the factory, five replayed from Maastricht
+      { w: 'the workplace, the desk', nl: 'de werkplek' }, { w: 'the password', nl: 'het wachtwoord', wrong: 'de wachtwoord' },
+      { w: 'the error message', nl: 'de foutmelding' }, { w: 'the quote (for a client)', nl: 'de offerte' },
+      { w: 'the client', nl: 'de klant' }, { w: 'the team meeting', nl: 'het teamoverleg', wrong: 'de teamoverleg' },
+      { w: 'the coffee vending machine', nl: 'de koffieautomaat' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
+      { w: 'the working-from-home day', nl: 'de thuiswerkdag' }, { w: 'the leave, the time off', nl: 'het verlof', wrong: 'de verlof' },
+      { w: 'the start-up', nl: 'de start-up' }, { w: 'the soup factory', nl: 'de soepfabriek' },
+      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket', wrong: 'de ticket' },
+      { w: 'the backup', nl: 'de back-up' }, { w: 'the alert', nl: 'de melding' },
+      { w: 'the Friday drinks', nl: 'de vrijmibo' }, { w: 'the payslip', nl: 'de loonstrook' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Ik zit zo in een meeting, kan het straks?', o: ['I am about to go into a meeting, can it wait?', 'I am sitting in a meeting like this, can it be done now?', 'I was in a meeting, can you do it later?'], a: 0, r: 'woord',
+        w: 'zo here means very soon, not like this, and straks means later today.' },
+      { read: true, nl: 'Het voorstel viel in het water.', o: ['The proposal fell through.', 'The proposal fell into the river.', 'The proposal was soaked.'], a: 0, r: 'idioom',
+        w: 'in het water vallen means a plan does not go ahead. Nothing got wet, not even in Nijmegen.' },
+      { read: true, nl: 'Mocht u verhinderd zijn, dan verzoeken wij u dit tijdig te melden.', o: ['If you cannot come, please let us know in good time.', 'If you can come, please tell us in good time.', 'You may not come late, please be on time.'], a: 0, r: 'formeel',
+        w: 'Mocht u ... zijn is a formal if, and verhinderd means unable to come. tijdig means in good time.' },
+      { read: true, nl: 'Dat is wel even wat anders.', o: ['That is really something else.', 'That is the same thing for a moment.', 'That will change in a minute.'], a: 0, r: 'soft',
+        w: 'wel even does not mean a moment here: it stresses how different it is.' },
+      { read: true, nl: 'Tot morgen, werk ze nog.', en: 'See you tomorrow, good luck with the rest of the work (a fixed goodbye between colleagues).' },
+      { read: true, nl: 'In de oude soepfabriek van Honig aan de Waal zitten nu start-ups.', en: 'The old Honig soup factory on the Waal is now full of start-ups.' },
+
+      // ---- listens: the factory, a deadline, a letter line, the dashboard
+      { listen: true, nl: 'het Honigcomplex', en: 'the old soup factory on the Waal' }, { listen: true, nl: 'de deadline', en: 'the deadline' },
+      { listen: true, nl: 'bij voorbaat dank', en: 'thanks in advance' }, { listen: true, nl: 'het dashboard', en: 'the dashboard' },
+
+      // ---- looks: the dog under the desk, the bike outside, the desk lamp
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
+
+      // ---- de of het
+      { dehet: true, nl: 'inlogscherm', art: 'het', en: 'the login screen', w: 'The last part decides: het scherm, so het inlogscherm.' },
+      { dehet: true, nl: 'werkweek', art: 'de', en: 'the working week', w: 'The last part decides: de week, so de werkweek.' },
+    ] }]);
+})();
+
+// ---- content/new/L120.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 120 De sport. The dyke along the Waal into the Ooijpolder, cows on one side and
+// barges on the other, then south to the Zevenheuvelenweg towards Groesbeek, the Goffert stadium of NEC, and the training for
+// the Vierdaagse that never really stops. Walking, cycling, running, a match, a race in November, being tired in several idioms.
+// New at tier 12 and drilled here: modal particles of the coach on the dyke (zet nog even door, doe maar rustig aan, je kunt het
+// wel, je gaat toch wel mee), idioms of effort and fatigue (op je tandvlees lopen, de handdoek in de ring gooien, een tandje
+// bijzetten, zo fris als een hoentje, de benen uit het lijf lopen and meevallen in the reads), compound nouns (het doelpunt, het
+// Goffertstadion and het Goffertpark, de hardloopschoen), the formal register of a race letter (Geachte deelnemer, Neemt u gerust),
+// the Vierdaagse (the third day over the seven hills, the start at four in the morning) and the Zevenheuvelenloop in November.
+// Review: V2 after a fronted phrase and after a toen-clause, anders with the verb first, the passive with werd, 't kofschip
+// (afgelast, gewacht), indirect speech with of and an infinitive after wilde, the comparative zwaarder, om ... te, a modal with
+// a separable infinitive.
+// Still inside the fence: 16 words max, nothing from tier 13.
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar, scheidbare werkwoorden, V2 word order, 't kofschip;
+// _site/words (de spierpijn, wandelen, fietsen); MOC Vrije tijd, H14 In de sportschool; 04 - Phrases & Scenarios/Op de golfbaan;
+// _site/situations/office (Valt mee); level 112 for the replayed words (de heuvel, de afdaling, de klim, de blessure, het
+// parcours); content/towns.js for Nijmegen (de heuvel, de Vierdaagse, de wandelaar, de gladiool, de Waal).
+// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). omte, passief, indirect
+// and vergelijk are guarded copies of the existing definitions; the rest are in data.js and levels.js.
+// New props: none. Only hond, fiets and boom are used (no word here is a bike or a tree; the polder has no mill in the word pool).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 120, act: 12, name: 'De sport', town: 'nijmegen', place: 'sport', theme: 'dyke', ...P,
+    intro: 'Nijmegen trains all year for four days in July. The dead train too. They have more time.',
+    introNl: 'Nijmegen traint het hele jaar voor vier dagen in juli. De doden trainen ook. Die hebben meer tijd.',
+    mission: {
+      where: 'The dyke along the Waal into the Ooijpolder, cows on one side and barges on the other, then south to the Zevenheuvelenweg, seven hills in a row, which is six more than most of the country has. A golf course in the hills towards Groesbeek and the Goffert stadium on the way back.',
+      carry: 'Walking shoes, a water bottle, a box of blister plasters, the green fee split to the cent with the neighbours, two dogs on leads and the grammar book, still never opened, as training weight. No helmet. On the way down the seventh hill you will wish you had one.',
+      want: 'Since the mist the dead train every day for the Vierdaagse. They have the time. They cheer you on with small words, zet nog even door, doe maar rustig aan, je kunt het wel, and they know every saying about being tired: op je tandvlees lopen, de handdoek in de ring gooien. The forms for the start come in the formal register. Paola, still taller than you, walks the forty kilometres. You walk the thirty and say it was fifty.' },
+    items: [
+      // ---- builds: particles from the side of the road
+      { en: 'Come on, just keep going a bit longer.', parts: ['Kom op,', FK(['zet nog even door', 'zet door nog even'], 0, 'soft',
+        'nog even sits in the middle, and the prefix of doorzetten goes to the very end: zet nog even door.'), '.'] },
+      { en: 'Just take it easy, it is still a long way.', parts: ['Doe', FK(['maar rustig aan', 'rustig aan maar'], 0, 'soft',
+        'maar comes straight after the verb, and aan closes the phrase: doe maar rustig aan.'), ', het is nog ver.'] },
+      { en: 'Ten more kilometres. You can do it, really.', parts: ['Nog tien kilometer. Je', FK(['kunt het wel', 'kunt wel het'], 0, 'soft',
+        'The small pronoun het comes before wel: je kunt het wel.'), '.'] },
+      { en: "You are coming along, aren't you?", parts: ['Je gaat', FK(['toch wel', 'wel toch'], 0, 'soft',
+        'toch comes before wel. Together they expect a yes: you are coming, surely.'), 'mee?'] },
+
+      // ---- builds: idioms of effort and fatigue
+      { en: 'After forty kilometres I am running on empty.', parts: ['Na veertig kilometer', FK(['loop ik', 'ik loop'], 0, 'v2',
+        'Na veertig kilometer fills slot 1, so the verb comes second: loop ik.'), 'op mijn', FK(['tandvlees', 'tanden'], 0, 'idioom',
+        'op je tandvlees lopen means to go on with nothing left. The saying is about your gums, not your teeth.'), '.'] },
+      { en: 'On the third hill he threw in the towel.', parts: ['Op de derde heuvel gooide hij', FK(['de handdoek in de ring', 'de handdoek op de grond', 'de handdoek in het water'], 0, 'idioom',
+        'de handdoek in de ring gooien means to give up, from boxing. Only in de ring.'), '.'] },
+      { en: 'We have to step it up, or we will not make the finish.', parts: ['We moeten', FK(['een tandje bijzetten', 'een tandje bijleggen'], 0, 'idioom',
+        'een tandje bijzetten means to go a gear faster. bijleggen means to settle a quarrel.'), ', anders', FK(['halen we', 'we halen'], 0, 'v2',
+        'anders takes slot 1, so the verb comes right after it: anders halen we.'), 'de finish niet.'] },
+      { en: "After a night's sleep I am as fresh as a daisy again.", parts: ['Na een nacht slapen ben ik weer zo fris als', FK(['een hoentje', 'een kippetje'], 0, 'idioom',
+        'The saying is zo fris als een hoentje. A hoentje is an old word for a young hen, and only that word works.'), '.'] },
+
+      // ---- builds: compound nouns
+      { en: 'The goal came in the last minute.', parts: [FK(['Het', 'De'], 0, 'samen',
+        'doel + punt: punt is het, so het doelpunt.'), 'doelpunt viel in de laatste minuut.'] },
+      { en: 'NEC plays in the Goffert stadium, on the edge of the Goffert park.', parts: ['NEC speelt in', FK(['het', 'de'], 0, 'samen',
+        'The last part decides: het stadion, so het Goffertstadion.'), 'Goffertstadion, aan de rand van', FK(['het', 'de'], 0, 'samen',
+        'The last part decides again: het park, so het Goffertpark.'), 'Goffertpark.'] },
+      { en: 'For the Zevenheuvelenloop I am buying new running shoes.', parts: ['Voor de Zevenheuvelenloop koop ik nieuwe', FK(['hardloopschoenen', 'hardloopsschoenen', 'hardlopenschoenen'], 0, 'samen',
+        'The stem hardloop + schoenen, with nothing in between: hardloopschoenen.'), '.'] },
+
+      // ---- builds: the formal register of the race
+      { en: 'Dear participant, would you bring your start card to the start?', parts: ['Geachte deelnemer, wilt u uw startbewijs', FK(['meenemen', 'mee te nemen'], 0, 'modal',
+        'After wilt the infinitive goes to the end without te: wilt u ... meenemen.'), 'naar de start?'] },
+      { en: 'Do bring a bottle of water.', parts: [FK(['Neemt u', 'Neem u'], 0, 'formeel',
+        'With u the verb takes -t, also in a polite command: neemt u.'), 'gerust een flesje water mee.'] },
+
+      // ---- builds: the Vierdaagse and the race in November
+      { en: 'The Zevenheuvelenloop is held every year in November.', parts: ['De Zevenheuvelenloop is elk jaar', FK(['in november', 'op november', 'in de november'], 0, 'datum',
+        'Months take in and no article: in november.'), '.'] },
+      { en: 'On the third day the walkers go over the seven hills to Groesbeek.', parts: ['Op de derde dag', FK(['lopen de wandelaars', 'de wandelaars lopen'], 0, 'v2',
+        'Op de derde dag fills slot 1, so the verb comes second: lopen de wandelaars.'), 'over de zeven heuvels naar Groesbeek.'] },
+      { en: 'I get up at four to walk the fifty kilometres.', parts: ['Ik sta om vier uur op', FK(['om de vijftig kilometer te lopen', 'om te lopen de vijftig kilometer'], 0, 'omte',
+        'om goes first, then everything else, and te plus the verb close it: om de vijftig kilometer te lopen.'), '.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'Yesterday the match was called off because of the rain.', parts: ['De wedstrijd', FK(['werd', 'wordt'], 0, 'passief',
+        'gisteren is the past, so werd: werd afgelast.'), 'gisteren door de regen', FK(['afgelast', 'afgelasd', 'geafgelast'], 0, 'kof',
+        'las ends in s, a ketchup letter: af + gelast with a t.'), '.'] },
+      { en: 'When I got to the finish, Paola had already been waiting for an hour.', parts: ['Toen ik bij de finish kwam,', FK(['had Paola', 'Paola had'], 0, 'v2',
+        'After a toen-clause the main clause starts with its verb: had Paola.'), 'al een uur', FK(['gewacht', 'gewachtd', 'gewachten'], 0, 'kof',
+        'wacht already ends in t, so nothing is added: gewacht.'), '.'] },
+      { en: 'The coach asked whether I wanted to walk the Vierdaagse.', parts: ['De trainer vroeg', FK(['of', 'dat'], 0, 'indirect',
+        'A reported yes-or-no question starts with of.'), 'ik de Vierdaagse', FK(['wilde lopen', 'wilde te lopen'], 0, 'modal',
+        'After wilde the infinitive comes without te: wilde lopen.'), '.'] },
+      { en: 'The seventh hill is harder than the first.', parts: ['De zevende heuvel is', FK(['zwaarder', 'zwaarer', 'meer zwaar'], 0, 'vergelijk',
+        'After an r the comparative takes -der: zwaarder.'), 'dan de eerste.'] },
+
+      // ---- words: the dyke, the hills, the race, five replayed from Maastricht
+      { w: 'the floodplain along the river', nl: 'de uiterwaard' }, { w: 'the racing cyclist', nl: 'de wielrenner' },
+      { w: "the cyclist's water bottle", nl: 'de bidon' }, { w: 'the blister', nl: 'de blaar' },
+      { w: 'the sore muscles', nl: 'de spierpijn' }, { w: 'the goal (the score)', nl: 'het doelpunt', wrong: 'de doelpunt' },
+      { w: 'the referee', nl: 'de scheidsrechter' }, { w: 'the supporter', nl: 'de supporter' },
+      { w: 'the changing room', nl: 'de kleedkamer' }, { w: 'the start card', nl: 'het startbewijs', wrong: 'de startbewijs' },
+      { w: 'the running shoe', nl: 'de hardloopschoen' }, { w: 'the junction in the cycle network', nl: 'het knooppunt', wrong: 'de knooppunt' },
+      { w: 'the hill', nl: 'de heuvel' }, { w: 'the descent', nl: 'de afdaling' },
+      { w: 'the climb', nl: 'de klim' }, { w: 'the injury', nl: 'de blessure' },
+      { w: 'the course of a race', nl: 'het parcours', wrong: 'de parcours' }, { w: 'the finish', nl: 'de finish' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'We liepen ons de benen uit het lijf.', o: ['We walked ourselves off our feet.', 'Our legs fell off on the way.', 'We walked very slowly.'], a: 0, r: 'idioom',
+        w: 'zich de benen uit het lijf lopen is a fixed phrase for walking or running yourself into the ground. The legs stay on.' },
+      { read: true, nl: 'Rustig aan, hoor. Het is geen wedstrijd.', o: ['Take it easy, it is not a race.', 'Hurry up, it is a race.', 'Listen, the race is quiet.'], a: 0, r: 'soft',
+        w: 'rustig aan means slow down, and hoor makes it friendly. It has nothing to do with listening.' },
+      { read: true, nl: 'Deelnemers worden verzocht hun startbewijs zichtbaar te dragen.', o: ['Participants are asked to wear their start card where it can be seen.', 'Participants are asked to hide their start card.', 'Participants have to hand in their start card at the end.'], a: 0, r: 'formeel',
+        w: 'worden verzocht is the formal passive for are asked, and zichtbaar means visible.' },
+      { read: true, nl: 'Die heuvels vallen best mee.', o: ['Those hills are not as bad as I feared.', 'Those hills are falling down.', 'Those hills are even worse than I feared.'], a: 0, r: 'idioom',
+        w: 'meevallen means to turn out better than feared, and best makes it stronger. Worse would be tegenvallen.' },
+      { read: true, nl: 'De Zevenheuvelenweg heeft zeven heuvels, en dat is veel voor Nederland.', en: 'The Zevenheuvelenweg has seven hills, and that is a lot for the Netherlands.' },
+      { read: true, nl: 'In de Ooijpolder fiets je over de dijk, met koeien aan de ene kant en schepen aan de andere.', en: 'In the Ooijpolder you cycle along the dyke, with cows on one side and ships on the other.' },
+
+      // ---- listens: a race, a polder, a stadium, a distance
+      { listen: true, nl: 'de Zevenheuvelenloop', en: 'the seven hills road race' }, { listen: true, nl: 'de Ooijpolder', en: 'the polder along the Waal east of the city' },
+      { listen: true, nl: 'de Goffert', en: 'the park and the stadium of NEC' }, { listen: true, nl: 'veertig kilometer', en: '40 kilometres' },
+
+      // ---- looks: the dog, the bike on the dyke, a tree in the polder
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
+      { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
+
+      // ---- de of het
+      { dehet: true, nl: 'zwembad', art: 'het', en: 'the swimming pool', w: 'The last part decides: het bad, so het zwembad.' },
+      { dehet: true, nl: 'eindsprint', art: 'de', en: 'the final sprint', w: 'The last part decides: de sprint, so de eindsprint.' },
+    ] }]);
+})();
+
+// ---- content/new/L121.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 121 De mensen. The Grote Markt under the Stevenskerk, a street party in the
+// Benedenstad, the student houses up the hill, the Waalkade at the end of the night. Neighbours, housemates, an invitation,
+// u or je, the walkers in July, Roze Woensdag, and carnaval, when Nijmegen is called Knotsenburg.
+// New at tier 12 and drilled here: the formal and the informal register side by side (Zeg maar je, Hoe maakt u het, u bent van
+// harte welkom, Mag ik u voorstellen), modal particles among people (Jij bent toch de nieuwe buurman, Leuk je weer eens te zien,
+// Kom maar even binnen, ik ga maar eens in a read), idioms about people (iemand in de maling nemen, met de deur in huis vallen,
+// een appeltje te schillen hebben, een oogje in het zeil houden, de oren van het hoofd praten in a read), compound nouns
+// (het buurtfeest, de buurtapp, het verjaardagsfeest with its s, de huisgenoten), and the Vierdaagse week (the pink Wednesday).
+// Review: V2 after a fronted phrase, the passive with worden and door, the plusquamperfectum after voordat, indirect speech with
+// of, die and dat, the adjective -e, an opinion with ik vind dat, 't kofschip, the imperative.
+// Still inside the fence: 16 words max, nothing from tier 13.
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar, V2 word order, bijzin - werkwoord naar het einde, die vs
+// dat, de vs het; 04 - Phrases & Scenarios/De nieuwe buren ontmoeten, Borrel met vrienden; _site/situations/neighbours (Kan ik u
+// ergens mee helpen, Zullen we snel een keer koffie drinken), meeting-people, friends, small-talk; levels 113 and 114 for the
+// replayed words (de uitnodiging, de kennismaking, het gezelschap, de grap, de gastheer, de optocht); content/towns.js for
+// Nijmegen (de student, het feest, de Romeinen, de Stevenskerk, de wandelaar, the oldest-city rumour).
+// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). gebod, passief, indirect
+// and mening are guarded copies of the existing definitions; the rest are in data.js.
+// New props: none. Only hond, lamp and deur are used (not kerk: de Stevenskerk is a listen item and would read as a right answer).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.mening = window.RULES.mening || { name: 'Opinions: ik vind dat, volgens mij', note: 'ik-vind' };
+  window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 121, act: 12, name: 'De mensen', town: 'nijmegen', place: 'mensen', theme: 'square', ...P,
+    intro: 'Nijmegen is friendly to everyone, the dead included. Only about Maastricht you had better not start.',
+    introNl: 'Nijmegen is vriendelijk tegen iedereen, de doden ook. Alleen over Maastricht kun je beter niet beginnen.',
+    mission: {
+      where: 'The Grote Markt under the Stevenskerk, a street party in the Benedenstad, the student houses up the hill and the Waalkade at the end of the night. In July the whole town comes out for the walkers, and on the Wednesday everything turns pink.',
+      carry: 'Two dogs on leads, a bunch of gladioli for the neighbours, a round of drinks split to the cent, and the grammar book, still never opened. No helmet. Nobody at the party asks.',
+      want: 'Since the mist the dead of Nijmegen are still friendly, maybe friendlier. They ask whether they may say je to you, zeg maar je, they tease you with old sayings, iemand in de maling nemen, met de deur in huis vallen, and they invite you formally to everything: u bent van harte welkom. At carnaval the town is called Knotsenburg and nobody can tell the living from the dead. Paola, still taller than you, knows every neighbour by name. You know their dogs.' },
+    items: [
+      // ---- builds: u or je
+      { en: 'No need for u, just say je.', parts: [FK(['Zeg maar je', 'Zegt maar je'], 0, 'gebod',
+        'A command to jij is the bare stem, without -t: zeg maar je. Only with u would it be zegt u.'), ', hoor.'] },
+      { en: 'How do you do?', parts: ['Hoe', FK(['maakt u het', 'maak u het'], 0, 'formeel',
+        'With u the verb takes -t, also when u comes after it: hoe maakt u het.'), '?'] },
+      { en: 'May I introduce you to my wife, Paola?', parts: ['Mag ik', FK(['u', 'uw'], 0, 'formeel',
+        'Here you introduce the person, so the object is u. uw would need a noun after it.'), 'voorstellen aan mijn vrouw, Paola?'] },
+      { en: 'Dear residents, you are very welcome at our borrel.', parts: ['Geachte buurtbewoners,', FK(['u bent', 'u is'], 0, 'formeel',
+        'u takes bent, like jij: u bent. is belongs to hij and zij.'), 'van harte', FK(['welkom', 'welkomen'], 0, 'woord',
+        'After zijn the adjective welkom gets no ending: u bent van harte welkom. welkomen is not a Dutch word.'), 'op onze borrel.'] },
+
+      // ---- builds: particles among people
+      { en: "You're the new neighbour, aren't you?", parts: ['Jij bent', FK(['toch', 'hoor'], 0, 'soft',
+        'toch in a question expects a yes: you are, surely. hoor only closes a statement.'), 'de nieuwe buurman?'] },
+      { en: 'Nice to see you again.', parts: ['Leuk je', FK(['weer eens', 'eens weer'], 0, 'soft',
+        'The fixed order is weer eens: leuk je weer eens te zien.'), 'te zien.'] },
+      { en: 'Just come in for a moment.', parts: ['Kom', FK(['maar even', 'even maar'], 0, 'soft',
+        'maar comes before even: kom maar even binnen. The other order is not Dutch.'), 'binnen.'] },
+
+      // ---- builds: idioms about people
+      { en: "You're pulling my leg.", parts: ['Je neemt me', FK(['in de maling', 'in de molen', 'op de maling'], 0, 'idioom',
+        'iemand in de maling nemen means to tease or fool someone. Only in de maling.'), '.'] },
+      { en: 'Sorry to come straight to the point, but may I borrow your ladder?', parts: ['Sorry dat ik', FK(['met de deur in huis val', 'met de deur in het huis val', 'met het raam in huis val'], 0, 'idioom',
+        'met de deur in huis vallen means to start without any warm-up. The words of the saying never change.'), ', maar mag ik uw ladder lenen?'] },
+      { en: 'I still have a bone to pick with him.', parts: ['Ik heb nog', FK(['een appeltje', 'een peertje', 'een appel'], 0, 'idioom',
+        'een appeltje te schillen hebben met iemand means to have something to settle with him. Only the small apple.'), 'met hem te schillen.'] },
+      { en: 'Will you keep an eye on things while we are away?', parts: ['Wil jij', FK(['een oogje in het zeil', 'een oogje op het zeil'], 0, 'idioom',
+        'een oogje in het zeil houden means to keep an eye on things. It is in het zeil, from the sailing ships.'), 'houden als wij weg zijn?'] },
+
+      // ---- builds: compound nouns
+      { en: 'The street party has been in the neighbourhood app for weeks.', parts: [FK(['Het', 'De'], 0, 'samen',
+        'buurt + feest: feest is het, so het buurtfeest.'), 'buurtfeest staat al weken in', FK(['de', 'het'], 0, 'samen',
+        'buurt + app: app is de, so de buurtapp.'), 'buurtapp.'] },
+      { en: "Tomorrow is the neighbour's birthday party.", parts: ['Morgen is het', FK(['verjaardagsfeest', 'verjaardagfeest', 'verjaardagenfeest'], 0, 'samen',
+        'verjaardag + s + feest: this compound is glued with an s, like verjaardagstaart.'), 'van de buurvrouw.'] },
+      { en: "The neighbours' son lives in student rooms with five housemates.", parts: ['De zoon van de buren woont met vijf', FK(['huisgenoten', 'huisgenooten', 'huizengenoten'], 0, 'samen',
+        'de huisgenoot becomes huisgenoten: the first part stays huis, and the open syllable needs only one o.'), 'op kamers.'] },
+
+      // ---- builds: the Vierdaagse week and carnaval
+      { en: 'On the Wednesday of the Vierdaagse the whole town turns pink.', parts: ['Op de woensdag van de Vierdaagse', FK(['kleurt de hele stad', 'de hele stad kleurt'], 0, 'v2',
+        'The time phrase fills slot 1, so the verb comes second: kleurt de hele stad.'), 'roze.'] },
+      { en: 'At carnival Nijmegen is called Knotsenburg.', parts: ['Met carnaval', FK(['heet Nijmegen', 'Nijmegen heet'], 0, 'v2',
+        'Met carnaval fills slot 1, so the verb comes second: heet Nijmegen.'), 'Knotsenburg.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'The old neighbour is helped by the whole street.', parts: ['De oude buurvrouw', FK(['wordt', 'worden'], 0, 'passief',
+        'One neighbour, so wordt: wordt geholpen, with door for the helpers.'), 'door de hele straat', FK(['geholpen', 'gehelpt', 'geholpt'], 0, 'perf',
+        'helpen is irregular: geholpen.'), '.'] },
+      { en: 'Before we came to live here, we had never heard of the Vierdaagse.', parts: ['Voordat we hier kwamen wonen,', FK(['hadden we', 'we hadden'], 0, 'v2',
+        'The voordat-clause fills slot 1, so the main clause starts with its verb: hadden we.'), 'nog nooit van de Vierdaagse', FK(['gehoord', 'gehoort', 'gehoren'], 0, 'kof',
+        'hoor ends in r, not a ketchup letter, so -d: gehoord.'), '.'] },
+      { en: 'The neighbour asked whether we felt like walking along.', parts: ['De buurman vroeg', FK(['of', 'dat'], 0, 'indirect',
+        'A reported yes-or-no question starts with of.'), 'we', FK(['zin hadden', 'hadden zin'], 0, 'bijzin',
+        'of sends the verb to the end of its clause: zin hadden, then om mee te lopen.'), 'om mee te lopen.'] },
+      { en: 'The student who lives above us plays the guitar every night.', parts: ['De student', FK(['die', 'dat'], 0, 'diedat',
+        'student is a de-word, so the relative pronoun is die.'), 'boven ons woont, speelt', FK(['elke', 'elk'], 0, 'adj',
+        'nacht is a de-word, so elke: elke nacht. elk goes with het-words.'), 'nacht gitaar.'] },
+      { en: 'I think the people here are friendlier than in the Randstad.', parts: ['Ik vind', FK(['dat', 'of'], 0, 'mening',
+        'ik vind dat opens an opinion. of would turn it into a question.'), 'de mensen hier', FK(['aardiger zijn', 'zijn aardiger'], 0, 'bijzin',
+        'dat sends the verb to the end: aardiger zijn, then dan in de Randstad.'), 'dan in de Randstad.'] },
+
+      // ---- words: people, the street, the party, six replayed from Maastricht
+      { w: 'the person from Nijmegen', nl: 'de Nijmegenaar' }, { w: 'the local resident', nl: 'de buurtbewoner' },
+      { w: 'the street party', nl: 'het buurtfeest', wrong: 'de buurtfeest' }, { w: 'the neighbourhood app group', nl: 'de buurtapp' },
+      { w: 'the housemate', nl: 'de huisgenoot' }, { w: 'the birthday party', nl: 'het verjaardagsfeest', wrong: 'de verjaardagsfeest' },
+      { w: 'the upstairs neighbour', nl: 'de bovenbuurman' }, { w: 'the mother-in-law', nl: 'de schoonmoeder' },
+      { w: 'the piece of gossip', nl: 'de roddel' }, { w: 'the student', nl: 'de student' },
+      { w: 'the party', nl: 'het feest', wrong: 'de feest' }, { w: 'the Roman', nl: 'de Romein' },
+      { w: 'the invitation', nl: 'de uitnodiging' }, { w: 'the first meeting', nl: 'de kennismaking' },
+      { w: 'the company (people around you)', nl: 'het gezelschap', wrong: 'de gezelschap' }, { w: 'the joke', nl: 'de grap' },
+      { w: 'the host', nl: 'de gastheer' }, { w: 'the parade', nl: 'de optocht' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Hij praat je de oren van het hoofd.', o: ['He talks your ears off.', 'He pulls your ears.', 'He never listens to you.'], a: 0, r: 'idioom',
+        w: 'iemand de oren van het hoofd praten means to talk without stopping. Nobody touches your ears.' },
+      { read: true, nl: 'Nou, ik ga maar eens.', o: ['Well, I had better be off.', 'Well, I am going only once.', 'Well, I will go later.'], a: 0, r: 'soft',
+        w: 'ik ga maar eens is the soft Dutch way to say it is time to leave. eens does not count anything here.' },
+      { read: true, nl: 'U bent van harte uitgenodigd voor de nieuwjaarsborrel.', o: ['You are warmly invited to the New Year drinks.', 'You have invited us to the New Year drinks.', 'You are invited, but not warmly.'], a: 0, r: 'formeel',
+        w: 'bent uitgenodigd: you are the one who is invited. van harte means warmly.' },
+      { read: true, nl: 'De buurvrouw zei dat ze de Vierdaagse al twintig keer had gelopen.', o: ['The neighbour said she had walked the Vierdaagse twenty times already.', 'The neighbour said she would walk the Vierdaagse twenty times.', 'The neighbour asked whether I had walked the Vierdaagse twenty times.'], a: 0, r: 'plusq',
+        w: 'had gelopen is the plusquamperfectum: it was done before she said it. zei dat reports, it does not ask.' },
+      { read: true, nl: 'Nijmegenaren zeggen dat hun stad de oudste van Nederland is.', en: 'People from Nijmegen say their city is the oldest in the Netherlands.' },
+      { read: true, nl: 'Tijdens de Vierdaagse staan de mensen langs de route en delen ze snoep uit aan de wandelaars.', en: 'During the Vierdaagse people line the route and hand out sweets to the walkers.' },
+
+      // ---- listens: the church, carnaval, a welcome, the neighbours upstairs
+      { listen: true, nl: 'de Stevenskerk', en: 'the big church above the Grote Markt' }, { listen: true, nl: 'Knotsenburg', en: 'what Nijmegen is called at carnival' },
+      { listen: true, nl: 'van harte welkom', en: 'very welcome' }, { listen: true, nl: 'de bovenburen', en: 'the upstairs neighbours' },
+
+      // ---- looks: the dog, the lamp at the party, the front door
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
+      { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
+
+      // ---- de of het
+      { dehet: true, nl: 'praatje', art: 'het', en: 'the chat', w: 'Every -je word is het: het praatje.' },
+      { dehet: true, nl: 'gewoonte', art: 'de', en: 'the habit', w: 'Nouns ending in -te like this one are mostly de: de gewoonte.' },
+    ] }]);
+})();
+
+// ---- content/new/L122.js
+// Nachtrit, Nijmegen (tier 12, B1 to B2): level 122 De Vierdaagse, the town's own place. The four days in one night: from the
+// Wedren over the Waalbrug into the Betuwe, through Wijchen on the pink Wednesday, over the seven hills to Groesbeek, across the
+// army's pontoon bridge over the Maas at Cuijk, and back into town along the Via Gladiola for the gladioli and the cross. Since
+// 1909, the third week of July, thirty, forty or fifty kilometres a day, tens of thousands of walkers. The lamps of De Oversteek
+// and 1944 are told once, plainly, in a read, and without a joke.
+// Rewritten from the unaudited draft in content/pending/L122.js (named De Waalbrug there; CONTENT-BRIEF.md names Nijmegen's own
+// place De Vierdaagse): kept its particle, compound, formal and Roman forks, dropped the space-only distractor Waal brug, the
+// mixed jouw option and the 1944 build, and grounded the rest in the route of the four days.
+// New at tier 12 and drilled here: modal particles (zal wel moe zijn, even before the participle, het komt wel goed, kom eens
+// kijken, Paola komt wel in a read), compound nouns (het Vierdaagsekruis, de Waalbrug, de stadsmuur with its s), the formal
+// register (Geachte heer of mevrouw, ik schrijf u, Uw inschrijving is in goede orde ontvangen, Zou u mij kunnen vertellen),
+// idioms (Zeg dat wel, op van de zenuwen, Nou breekt mijn klomp, Zet hem op and tegenvallen in the reads), the Vierdaagse with
+// its distances, its days and its years.
+// Review: V2 after a fronted phrase, the passive with worden and zijn, indirect speech with dat, an indirect question, hoewel,
+// the comparative, 't kofschip, a separable participle (toegejuicht), hun before a noun, numbers, a relative clause in a read.
+// Still inside the fence: 16 words max, nothing from tier 13.
+// Sources: dutch-lessons vault, 02 - Grammar/zachtmakers - wel even maar (Mooi weertje toch, Ik pak wel even een biertje), V2 word
+// order, bijzin - werkwoord naar het einde, imperfectum, 't kofschip, scheidbare werkwoorden, de vs het; MOC Lidwoorden &
+// voornaamwoorden (hun, uw), MOC Getallen; _site/words (de spierpijn, het publiek, het feest, zeg dat wel, hoewel); levels 112,
+// 116, 120 and 121 for the replayed words (de rugzak, de wandelschoen, de blaar, de spierpijn, de finish, het feest);
+// content/towns.js for Nijmegen (de Vierdaagse, de wandelaar, de gladiool, de Waalbrug, het Valkhof, De Oversteek, de Romeinen,
+// de oudste stad, the rumour about Maastricht); the Vierdaagse facts checked against the organisers and NOS, October 2026.
+// New rules: idioom, samen, formeel, datum (guarded, same text in every Nijmegen and Amsterdam file). passief, zou, bezit,
+// hoewel, indirect and vergelijk are guarded copies of the existing definitions; the rest are in data.js and levels.js.
+// New props: none. Only hond, lamp and boom are used (not brug: de pontonbrug is a word item and the Waalbrug is in the builds).
+(() => {
+  window.RULES.idioom = window.RULES.idioom || { name: 'Idioms: fixed phrases', note: 'MOC Gevoel & uitdrukkingen' };
+  window.RULES.samen = window.RULES.samen || { name: 'Compound nouns: one word, the last part decides', note: 'de vs het' };
+  window.RULES.formeel = window.RULES.formeel || { name: 'Formal register: u, uw, Geachte, Hoogachtend', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.datum = window.RULES.datum || { name: 'Dates: op dinsdag, in juli, sinds 1909', note: 'MOC Tijd, dagen & maanden' };
+  window.RULES.passief = window.RULES.passief || { name: 'The passive: wordt / werd / is + participle', note: 'worden' };
+  window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
+  window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
+  window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
+  const P = window.TIER_PRESET[12];
+  const FK = (o, a, r, w) => ({ o, a, r, w });
+
+  window.defineLevels([{ id: 122, act: 12, name: 'De Vierdaagse', town: 'nijmegen', place: 'eigen', theme: 'dyke', ...P,
+    intro: 'Since 1909 people have walked four days in July around Nijmegen for one small cross and a bunch of gladioli. The dead understand that completely.',
+    introNl: 'Sinds 1909 lopen mensen in juli vier dagen rond Nijmegen voor één kruisje en een bos gladiolen. De doden begrijpen dat helemaal.',
+    mission: {
+      where: 'The four days of the Vierdaagse in one night: from the Wedren over the Waalbrug into the Betuwe, where Elst is painted blue, through Wijchen on the pink Wednesday, over the seven hills to Groesbeek, across the pontoon bridge over the Maas at Cuijk, and back into town along the Via Gladiola. Downstream the lamps of De Oversteek come on one by one.',
+      carry: 'A start card, a box of blister plasters, two dogs who walk the forty every year and have never been given a cross, a bunch of gladioli split to the cent with the neighbours, and the grammar book, still never opened. No helmet. You are walking.',
+      want: 'Since the mist the dead walk the Vierdaagse every night, tens of thousands of them, and they still ask where the party is. Along the route they talk in small words, het komt wel goed, kom eens kijken, in compound words, het Vierdaagsekruis, de stadsmuur, and in sayings, zeg dat wel. The letter with your registration comes in the formal register. Paola, still taller than you, gets her gladioli first. On the Friday you get yours, and the language gives you one more word back.' },
+    items: [
+      // ---- builds: modal particles along the route
+      { en: 'He will probably be tired after forty kilometres.', parts: ['Hij zal na veertig kilometer', FK(['wel moe zijn', 'moe wel zijn', 'moe zijn wel'], 0, 'soft',
+        'wel goes right before moe zijn, and the infinitive zijn closes the sentence. With zal, wel means probably.'), '.'] },
+      { en: 'I have quickly cleaned the walking shoes.', parts: ['Ik heb de wandelschoenen', FK(['even schoongemaakt', 'schoongemaakt even', 'schoon even gemaakt'], 0, 'soft',
+        'even goes before the participle that closes the clause, never after it, and schoongemaakt stays one word.'), '.'] },
+      { en: "Don't worry, it will be fine.", parts: ['Maak je', FK(['geen', 'niet'], 0, 'neg',
+        'zorgen is a noun, so geen: geen zorgen.'), 'zorgen, het komt', FK(['wel goed', 'goed wel'], 0, 'soft',
+        'wel comes right after the verb and turns it into a reassurance: het komt wel goed.'), '.'] },
+      { en: 'Come and look, the view from the Valkhof is beautiful.', parts: ['Kom', FK(['eens', 'een'], 0, 'soft',
+        'eens turns it into a friendly invitation: kom eens kijken. een is only the article a.'), 'kijken, het uitzicht vanaf het Valkhof is prachtig.'] },
+
+      // ---- builds: compound nouns
+      { en: 'You only get the Vierdaagse cross after four days.', parts: [FK(['Het', 'De'], 0, 'samen',
+        'Vierdaagse + kruis: kruis is het, so het Vierdaagsekruis.'), 'Vierdaagsekruis krijg je pas na vier dagen.'] },
+      { en: 'On Tuesday the walkers go over the Waalbrug to Elst.', parts: ['Op dinsdag', FK(['lopen de wandelaars', 'de wandelaars lopen'], 0, 'v2',
+        'Op dinsdag fills slot 1, so the verb comes second: lopen de wandelaars.'), 'over', FK(['de', 'het'], 0, 'samen',
+        'Waal + brug: brug is de, so de Waalbrug.'), 'Waalbrug naar Elst.'] },
+      { en: 'Parts of the old city wall still stand in the Kronenburgerpark.', parts: ['Delen van de oude', FK(['stadsmuur', 'stadmuur', 'stedenmuur'], 0, 'samen',
+        'Many compounds glue their parts with an s: stad + s + muur. Not all of them: it is stadhuis. Learn them one by one.'), 'staan nog in het Kronenburgerpark.'] },
+
+      // ---- builds: the formal register of the registration
+      { en: 'Dear Sir or Madam, I am writing to you about my registration.', parts: [FK(['Geachte', 'Hoogachtend', 'Gegroet'], 0, 'formeel',
+        'A formal letter opens with Geachte. Hoogachtend is how it closes.'), 'heer of mevrouw, ik schrijf', FK(['u', 'uw'], 0, 'formeel',
+        'You write to the person, so the object is u. uw needs a noun after it.'), 'over mijn inschrijving.'] },
+      { en: 'Your registration has been duly received.', parts: ['Uw inschrijving', FK(['is', 'heeft'], 0, 'passief',
+        'A finished passive takes zijn: is ontvangen. A registration does not receive anything itself.'), FK(['in goede orde', 'in goed orde', 'op goede orde'], 0, 'formeel',
+        'in goede orde ontvangen is the fixed formal phrase for duly received. orde is a de-word, so goede.'), 'ontvangen.'] },
+      { en: 'Could you tell me where the Wedren is?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
+        'u takes the singular verb, like jij: zou u.'), 'mij kunnen vertellen', FK(['waar de Wedren is', 'waar is de Wedren'], 0, 'bijzin',
+        'A question inside a question becomes a sub-clause, so the verb goes to the end.'), '?'] },
+
+      // ---- builds: idioms
+      { en: 'What a long day. You can say that again.', parts: ['Wat een lange dag.', FK(['Zeg dat wel', 'Zeg dat goed'], 0, 'idioom',
+        'Fixed reply: zeg dat wel means I agree completely.'), '.'] },
+      { en: 'The evening before the start I am a nervous wreck.', parts: ['De avond voor de start ben ik', FK(['op van de zenuwen', 'op van de nerven', 'uit van de zenuwen'], 0, 'idioom',
+        'op zijn van de zenuwen means to be worn out by nerves. Only op, and only zenuwen.'), '.'] },
+      { en: 'Well I never: Paola is walking the fifty.', parts: ['Nou', FK(['breekt mijn klomp', 'breekt mijn schoen', 'breekt mijn kom'], 0, 'idioom',
+        'Nou breekt mijn klomp says you are amazed. It is always the clog.'), ': Paola loopt de vijftig.'] },
+
+      // ---- builds: the Vierdaagse, its numbers and its years
+      { en: 'The walkers walk thirty, forty or fifty kilometres a day, depending on their age.', parts: ['De wandelaars lopen elke dag', FK(['dertig', 'dertien'], 0, 'getal',
+        'The tens end in -tig: dertig is 30. dertien is 13.'), ', veertig of vijftig kilometer, afhankelijk van', FK(['hun', 'hen', 'zij'], 0, 'bezit',
+        'Before a noun the word for their is hun: hun leeftijd. hen and zij are never possessives.'), 'leeftijd.'] },
+      { en: 'In 2020 and 2021 the Vierdaagse did not go ahead.', parts: [FK(['In', 'Op'], 0, 'datum',
+        'Years take in: in 2020.'), '2020 en 2021', FK(['ging de Vierdaagse', 'de Vierdaagse ging'], 0, 'v2',
+        'The years fill slot 1, so the verb comes second: ging de Vierdaagse niet door.'), 'niet door.'] },
+      { en: 'After four days we had walked a hundred and sixty kilometres.', parts: ['Na vier dagen', FK(['hadden we', 'we hadden'], 0, 'v2',
+        'Na vier dagen fills slot 1, so the verb comes second: hadden we.'), 'honderdzestig kilometer', FK(['gelopen', 'geloopt', 'gelopt'], 0, 'perf',
+        'lopen is irregular: gelopen.'), '.'] },
+
+      // ---- builds: review of earlier tiers
+      { en: 'On Friday the walkers are cheered on along the Via Gladiola.', parts: ['Op vrijdag', FK(['worden de wandelaars', 'de wandelaars worden'], 0, 'v2',
+        'Op vrijdag fills slot 1, so the verb comes second: worden de wandelaars.'), 'langs de Via Gladiola', FK(['toegejuicht', 'toegejuichd', 'getoejuicht'], 0, 'sep',
+        'toejuichen is separable: toe + gejuicht, and juich ends in ch, a ketchup letter, so -t.'), '.'] },
+      { en: 'Although it is raining, the walkers keep going.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
+        'hoewel opens a clause with its own verb: hoewel het regent. ondanks needs a noun.'), 'het regent,', FK(['lopen de wandelaars', 'de wandelaars lopen'], 0, 'v2',
+        'After a sub-clause the main clause starts with its verb: lopen de wandelaars.'), 'door.'] },
+      { en: 'Nijmegen says that it is older than Maastricht.', parts: ['Nijmegen zegt', FK(['dat', 'of'], 0, 'indirect',
+        'zeggen reports a statement with dat. of belongs to questions.'), 'het', FK(['ouder', 'oudst', 'oud'], 0, 'vergelijk',
+        'Comparing two things takes the comparative: ouder dan. oudst is for the top of a list.'), 'is dan Maastricht.'] },
+      { en: 'The Romans lived here two thousand years ago.', parts: ['De Romeinen', FK(['woonden', 'woondden', 'woonde'], 0, 'kof',
+        'woon ends in n, not a ketchup letter, so -de, and the plural takes -den: woonden.'), 'hier', FK(['tweeduizend', 'tweehonderd', 'tweeduizenden'], 0, 'getal',
+        'Two thousand is tweeduizend, written as one word. tweehonderd is 200.'), 'jaar geleden.'] },
+
+      // ---- words: the walk, the route, the city, six replayed from earlier places
+      { w: 'the walker', nl: 'de wandelaar' }, { w: 'the gladiolus, handed to the finishers', nl: 'de gladiool' },
+      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the pontoon bridge', nl: 'de pontonbrug' },
+      { w: 'the field where the walk starts and ends', nl: 'de Wedren' }, { w: 'the crowd', nl: 'het publiek', wrong: 'de publiek' },
+      { w: 'the soldier', nl: 'de militair' }, { w: 'the rest stop', nl: 'de rustpost' },
+      { w: 'the Roman', nl: 'de Romein' }, { w: 'the oldest city', nl: 'de oudste stad' },
+      { w: 'the Valkhof (the park on the hill by the river)', nl: 'het Valkhof', wrong: 'de Valkhof' }, { w: 'the rucksack', nl: 'de rugzak' },
+      { w: 'the walking shoe', nl: 'de wandelschoen' }, { w: 'the blister', nl: 'de blaar' },
+      { w: 'the sore muscles', nl: 'de spierpijn' }, { w: 'the finish', nl: 'de finish' },
+      { w: 'the party', nl: 'het feest', wrong: 'de feest' }, { w: 'the route', nl: 'de route' },
+
+      // ---- reads: four traps with their own options, two plain lines
+      { read: true, nl: 'Paola komt wel.', o: ['Paola is coming, no doubt about it.', 'Paola is not coming.', 'Paola is coming as well.'], a: 0, r: 'soft',
+        w: 'wel stresses that it will happen. As well would be ook.' },
+      { read: true, nl: 'Zet hem op.', o: ['Go for it.', 'Put it on.', 'Put him down.'], a: 0, r: 'idioom',
+        w: 'Zet hem op is what the crowd calls to the walkers: go for it. Nothing is put anywhere.' },
+      { read: true, nl: 'Nou, dat valt tegen.', o: ['Well, that is disappointing.', 'Well, that is a lovely surprise.', 'Well, that falls over.'], a: 0, r: 'idioom',
+        w: 'tegenvallen means to turn out worse than hoped. A nice surprise would be meevallen.' },
+      { read: true, nl: 'Deelnemers die de finish niet halen, krijgen geen Vierdaagsekruis.', o: ['Walkers who do not reach the finish do not get a cross.', 'Walkers who do not get a cross do not reach the finish.', 'Walkers reach the finish without a cross.'], a: 0, r: 'diedat',
+        w: 'die de finish niet halen describes the walkers: only the ones who finish get the cross.' },
+      { read: true, nl: 'Op De Oversteek gaan elke avond de lampen een voor een aan, ter herinnering aan de soldaten van 1944.', en: 'Every evening the lamps on De Oversteek come on one by one, in memory of the soldiers of 1944.' },
+      { read: true, nl: 'Op de laatste dag lopen de wandelaars bij Cuijk over een pontonbrug die het leger over de Maas legt.', en: 'On the last day the walkers cross the Maas at Cuijk on a pontoon bridge laid by the army.' },
+
+      // ---- listens: the last stretch, the crowd of walkers, the flowers, the river land
+      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'tienduizenden wandelaars', en: 'tens of thousands of walkers' },
+      { listen: true, nl: 'de gladiolen', en: 'the gladioli' }, { listen: true, nl: 'de Betuwe', en: 'the river land north of the Waal' },
+
+      // ---- looks: the dog, a lamp on the dyke, a tree on the route
+      { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
+      { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
+
+      // ---- de of het
+      { dehet: true, nl: 'kruisje', art: 'het', en: 'the small cross', w: 'Every -je word is het: het kruisje.' },
+      { dehet: true, nl: 'wandeltocht', art: 'de', en: 'the long walk', w: 'The last part decides: de tocht, so de wandeltocht.' },
+    ] }]);
+})();
+
 // ---- content/new/L51.js
 // Nachtrit, Zeeland (tier 4, A2 entry), level 51 Thuis: a small house behind the sea dyke, the rooms and the
 // furniture, the family, the dogs, the wife, the evening routine, and a storm outside.
