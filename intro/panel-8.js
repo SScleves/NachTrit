@@ -1,6 +1,6 @@
 // Panel 5: two years here and he never practised; everyone was so nice about it.
 // Before the mist: a café terrace on a wet, mild evening, the warmest panel of the intro. Right third opens onto a canal.
-// Beat: 0..1.1 "Hoi!" alone; 1.1..1.4 blink; 1.4+ "Oh, English is fine!" and the whole café beams.
+// Beat: 0..1.1 "Hoi." alone; 1.1..1.4 blink; 1.4+ "Oh, English is fine." and the whole café beams.
 // Loops: pendant sway, candle flicker, steam, far mill sails (anticlockwise), mist, blinks and talk, a waving patron.
 (function () {
   const A = window.NRART;
@@ -161,7 +161,7 @@
     text: 'Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.',
     nl: 'Twee jaar hier en nooit geoefend. Iedereen sprak Engels. Iedereen deed er zo aardig over.',
     draw(g, t) {
-      const T1 = 1.1, T2 = 1.4, nice = t >= T2;                 // 'Hoi!' alone, then the deflation
+      const T1 = 1.1, T2 = 1.4, nice = t >= T2;                 // 'Hoi.' alone, then the deflation
       A.camera(g, t, { x: 5, period: 8 }); A.key(g, 60, 100, 1);
       // ---- 1. the vista: cached sky, far town, bank and bridge; then what moves (stars, mill, mist, water, a moored sloep)
       const kA = offs(g, [0.25, 0.5]);
@@ -230,8 +230,8 @@
       A.streak(g, 166, 166, 8, { t, seed: 9, width: 2, strength: 0.8 });
       A.px(g, 150 + Math.round(Math.sin(t * 1.5) * 3), 174, 'mist5'); A.px(g, 182 - Math.round(Math.sin(t * 1.5) * 3), 170, 'mist4');
       // ---- 6. speech: two steps
-      A.say(g, mx, seat - 28, 'Hoi!', {});
-      if (nice) A.say(g, f.head[0], f.head[1], 'Oh, English is fine!', { dx: 14 });
+      A.say(g, mx, seat - 28, 'Hoi.', {});
+      if (nice) A.say(g, f.head[0], f.head[1], 'Oh, English is fine.', { dx: 14 });
     },
   };
 })();

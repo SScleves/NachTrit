@@ -385,7 +385,7 @@
         for (let k = 0; k < 2; k++) A.line(g, Math.round(rx), 150 + k, Math.round(rx + 11), 149 + k * 2, k ? 'red3' : 'red4');
         A.line(g, Math.round(rx + 2), 148, Math.round(rx + 10), 152, 'red3');
       }
-      A.text(228, 142, 'het?!', 'red4', 9, true);
+      A.text(228, 142, 'het?', 'red4', 9, true);
       A.text(52, 31, 'HOOFDSTUK 1', 'slate3', 6); A.text(220, 31, 'LIDWOORDEN', 'slate3', 6);
     },
   };
