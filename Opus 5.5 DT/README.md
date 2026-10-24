@@ -98,7 +98,7 @@ the reference PNGs (`pip install pillow`).
   folder under `reports/<branch>.md`: what changed, what you measured, what you left open, and
   anything the laptop agent must verify on the GPU.
 - Commit small and often; the laptop pulls your branches and may merge partway.
-- Models: you are the heavy lifter. If you can spawn subagents, use cheaper ones for bulk writing
+- Models: you are the heavy lifter. If you can spawn subagents for bulk writing
   and audits and keep the engineering for yourself; the pattern that worked for content was one
   writer per level, one native-teacher auditor per level, one independent spot-check of six random
   items per file that reports an error rate (Rotterdam, Urk, Texel, Groningen, Maastricht were done
