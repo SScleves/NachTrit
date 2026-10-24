@@ -36,6 +36,16 @@
   .btn { pointer-events:auto; display:inline-block; background:#e8e4d8; color:#090b12; border:0; border-radius:10px; padding:12px 26px; font-size:17px; font-weight:700; cursor:pointer; margin:6px; }
   .btn.ghost { background:transparent; color:var(--ink); border:1px solid rgba(255,255,255,.25); }
   .hint { color:var(--dim); font-size:13px; margin-top:14px; }
+  /* the start screen is the cover: the first intro painting, live, behind the title in the sky */
+  #start { background:#05070b; align-items:flex-start; padding-top:max(6vh, calc(12px + env(safe-area-inset-top))); }
+  #startpix { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:76% 50%; image-rendering:pixelated; image-rendering:crisp-edges; z-index:0; }   /* portrait phones keep the big mill and the moon */
+  #start .box { position:relative; z-index:1; padding:18px 30px 16px; border-radius:18px; background:radial-gradient(ellipse at center, rgba(4,6,11,.7) 0%, rgba(4,6,11,.42) 62%, rgba(4,6,11,0) 100%); }
+  #start .premise { color:#c9cfd8; font-size:15px; line-height:1.45; max-width:430px; margin:-12px auto 20px; }
+  #start .hint { text-shadow:0 1px 3px #000; }
+  .link { pointer-events:auto; background:none; border:0; color:#b8c0cc; text-decoration:underline; font-size:14px; cursor:pointer; margin-top:2px; padding:6px; }
+  @media (max-height: 560px), (max-width: 480px) { #start .hint { display:none; } }
+  #pixframe { transition:opacity .26s ease; }
+  #pixtext, #pixnl { transition:opacity .22s ease; }
   #summary { display:none; }
   #map .box::-webkit-scrollbar { display:none; }
   .place { pointer-events:auto; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:8px; cursor:pointer; text-align:left; font-size:13px; }
@@ -115,17 +125,20 @@
   <div id="err"></div>
 
   <div class="overlay" id="start">
+    <canvas id="startpix" width="320" height="180"></canvas>
     <div class="box">
       <h1>NACHTRIT</h1>
       <div class="sub">Cycle home. Understand the dead before dawn.</div>
-      <button class="btn" id="go">Start</button> <button class="btn ghost" id="replay">Intro</button>
+      <div class="premise">The mist took the language. Every word said right brings a piece back.</div>
+      <button class="btn" id="go">Start</button>
+      <div><button class="link" id="replay">Watch the intro again</button></div>
       <div class="hint">Left / right: arrow keys, A / D, or swipe and tap.<br>Ride through the right sign. Every mistake dims the lamp.</div>
     </div>
   </div>
 
   <div class="overlay" id="intro" style="display:none;background:#000">
     <div class="box" style="max-width:860px">
-      <div style="position:relative;width:min(92vw,860px);aspect-ratio:16/9;margin:0 auto;border:1px solid #1a1d24">
+      <div id="pixframe" style="position:relative;width:min(92vw,860px);aspect-ratio:16/9;margin:0 auto;border:1px solid #1a1d24">
         <canvas id="pix" width="320" height="180" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges"></canvas>
         <canvas id="pixhi" width="1280" height="720" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
       </div>
@@ -2403,34 +2416,49 @@ function showLevelIntro(lv, then) {
   showIntro(then, panels);
 }
 
-let introI = 0, introT = 0, introRaf = 0, introTyped = 0;
-function showIntro(then, panels) {
+let introI = 0, introT = 0, introRaf = 0;
+// a first run gets the short cut: the mist came, still split the bill, the cheese, never practised, one man one omafiets.
+// The intro link on the start screen plays all fourteen.
+const INTRO_SHORT = [0, 1, 2, 7, 13];
+function showIntro(then, panels, full) {
   const NA = window.NRART, nrOk = NA && NA.panels.length >= 14 && NA.panels.slice(0, 14).every(Boolean);
-  const PANELS_ = panels || (nrOk ? NA.panels.slice(0, 14).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
-  introI = 0; introTyped = 0; introT = 0; $('intro').style.display = 'flex';
+  const all = panels || (nrOk ? NA.panels.slice(0, 14).map(p => ({ text: p.text, nl: p.nl, draw: p.draw, nr: true })) : PANELS);
+  const short = !panels && !full && nrOk, PANELS_ = short ? INTRO_SHORT.map(i => all[i]) : all;
+  introI = 0; introT = 0; $('intro').style.display = 'flex';
   const cv = $('pix'), g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const hg = $('pixhi').getContext('2d');
-  const txt = $('pixtext'), nlEl = $('pixnl'); PANELS_.forEach(p => { p._nlShown = false; });
-  let last = performance.now();
+  const txt = $('pixtext'), nlEl = $('pixnl'), frameEl = $('pixframe'); PANELS_.forEach(p => { p._nlShown = false; });
+  // captions appear whole with a fade, the Dutch a beat later and spoken; a panel holds for its reading time (and the
+  // spoken Dutch), then moves on by itself; tap, space or enter moves on sooner
+  const hold = p => Math.max(3.2, 0.055 * p.text.length + 0.035 * (p.nl || '').length);
+  let shown = -1, leaving = false, last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
     const p = PANELS_[introI], hc = $('pixhi');
+    if (!p) return;
     hg.clearRect(0, 0, hc.width, hc.height);
     if (p.nr) { NA.labels.length = 0; NA.paint(g, p.draw, introT); NA.drawLabels(hg, NA.labels, hc.width / cv.width); }
     else {   // legacy 192x108 drawings, scaled up to the canvas
       pxLabels = []; g.setTransform(cv.width / 192, 0, 0, cv.height / 108, 0, 0); p.draw(g, introT); g.setTransform(1, 0, 0, 1, 0, 0);
       const k = hc.width / 192; for (const l of pxLabels) { hg.font = `${l.bold ? 'bold ' : ''}${l.size * k}px "Segoe UI", system-ui, sans-serif`; hg.fillStyle = l.color; hg.fillText(l.str, l.x * k, l.y * k); }
     }
-    introTyped = Math.min(p.text.length, introTyped + dt * 28); txt.textContent = p.text.slice(0, Math.floor(introTyped));
-    if (introTyped >= p.text.length && !p._nlShown) { p._nlShown = true; nlEl.textContent = p.nl || ''; if (p.nl && p.nl !== '...') speak(p.nl); } else if (introTyped < p.text.length) { nlEl.textContent = ''; }
+    if (shown !== introI) { shown = introI; txt.textContent = p.text; nlEl.textContent = ''; nlEl.style.opacity = 0; txt.style.opacity = 1; frameEl.style.opacity = 1; }
+    if (introT > 0.6 && !p._nlShown) { p._nlShown = true; nlEl.textContent = p.nl || ''; nlEl.style.opacity = 1; if (p.nl && p.nl !== '...') speak(p.nl); }
+    const talking = S.voice && 'speechSynthesis' in window && speechSynthesis.speaking;
+    if (!leaving && introT > hold(p) && (!talking || introT > hold(p) + 6)) next();
     introRaf = requestAnimationFrame(frame);
   };
   introRaf = requestAnimationFrame(frame);
+  // a short cross-fade between panels: picture and captions go down together, the next comes up
   const next = () => {
-    if (introTyped < PANELS_[introI].text.length) { introTyped = PANELS_[introI].text.length; return; }
-    introI++; introTyped = 0; introT = 0; nlEl.textContent = '';
-    if (introI >= PANELS_.length) finish();
+    if (leaving) return; leaving = true;
+    frameEl.style.opacity = 0; txt.style.opacity = 0; nlEl.style.opacity = 0;
+    setTimeout(() => { leaving = false; introI++; introT = 0; if (introI >= PANELS_.length) finish(); }, 260);
   };
-  const finish = () => { cancelAnimationFrame(introRaf); $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null; if (!panels) { try { localStorage.setItem('nachtrit.intro', '1'); } catch (e) {} } then(); };
+  const finish = () => {
+    cancelAnimationFrame(introRaf); frameEl.style.opacity = 1; txt.style.opacity = 1; $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null;
+    if (!panels) { try { localStorage.setItem('nachtrit.intro', short ? 'short' : 'full'); } catch (e) {} }
+    then();
+  };
   $('intro').onclick = (e) => { if (e.target.id === 'skip') finish(); else next(); };
   onKey = (e) => { if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') next(); else if (e.key === 'Escape') finish(); };
 }
@@ -2438,6 +2466,16 @@ let onKey = null;
 addEventListener('keydown', e => { if (onKey && $('intro').style.display !== 'none') { onKey(e); e.preventDefault(); } });
 let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'); } catch (e) {}
 if (new URLSearchParams(location.search).has('intro')) introSeen = false;
+// the start screen: the first intro painting, live behind the title, so the first second already says mist, mills and night.
+// While it is up the 3D scene is hidden under it, so the loop skips that render.
+const startArt = (() => {
+  const cv = $('startpix'), g = cv.getContext('2d'), NA = window.NRART, p = NA && NA.panels && NA.panels[0];
+  let raf = 0; const t0 = performance.now();
+  const frame = now => { if ($('start').style.display === 'none') { raf = 0; return; } NA.labels.length = 0; NA.paint(g, p.draw, (now - t0) / 1000); raf = requestAnimationFrame(frame); };
+  return { on() { if (p && !raf) { g.imageSmoothingEnabled = false; raf = requestAnimationFrame(frame); } }, get live() { return !!raf; } };
+})();
+$('replay').style.display = introSeen ? '' : 'none';   // the first run plays the intro after Start; the link is for the second time
+startArt.on();
 
 // ---------- the world map ----------
 const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen'], ['eigen', 'Alleen hier']];
@@ -2670,7 +2708,7 @@ function showSummary(won) {
 }
 function levelDone() { S.mode = 'dying'; S.dieT = 10; showSummary(true); }
 $('go').onclick = () => { initAudio(); if (!introSeen) { introSeen = true; $('start').style.display = 'none'; showIntro(openMap); } else openMap(); };
-$('replay').onclick = () => { $('start').style.display = 'none'; showIntro(openMap); }; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
+$('replay').onclick = () => { $('start').style.display = 'none'; showIntro(openMap, null, true); }; $('tomap').onclick = openMap; $('endless').onclick = () => start(null);
 $('m_go').onclick = () => { const lv = pendingLevel; $('mission').style.display = 'none'; showLevelIntro(lv, () => start(lv)); }; $('m_back').onclick = openMap;
 $('again').onclick = () => {
   if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon && L.id < 1000 && unlocked(next)) return openMission(next); return openMap(); }
@@ -2978,7 +3016,7 @@ function loop() {
     for (const w of wieven) w.position.x += Math.sin(S.t += dt * 0.01) * 0.002;
     camera.position.y = 22 + Math.sin(performance.now() / 2000) * 0.4;
   }
-  render();
+  if (!startArt.live) render();   // under the live start painting the 3D scene cannot be seen
 }
 const q = new URLSearchParams(location.search);
 if (q.has('map')) { introSeen = true; openMap(); if (q.get('map') !== '1') { const t = towns().find(x => x.id === q.get('map')); if (t) openTown(t); } }
