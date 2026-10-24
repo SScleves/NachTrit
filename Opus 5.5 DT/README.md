@@ -98,9 +98,9 @@ the reference PNGs (`pip install pillow`).
   folder under `reports/<branch>.md`: what changed, what you measured, what you left open, and
   anything the laptop agent must verify on the GPU.
 - Commit small and often; the laptop pulls your branches and may merge partway.
-- Models: you are the heavy lifter. If you can spawn subagents for bulk writing
-  and audits and keep the engineering for yourself; the pattern that worked for content was one
-  writer per level, one native-teacher auditor per level, one independent spot-check of six random
-  items per file that reports an error rate (Rotterdam, Urk, Texel, Groningen, Maastricht were done
-  this way with 0 to 7 errors per 48 sampled items, then fixed).
+- Models: you are the heavy lifter and you do the work yourself. For content, the pattern that
+  worked was three separate passes per level: write it, audit it as a native Netherlands-Dutch
+  teacher, then spot-check six random items per file and report an error rate (Rotterdam, Urk,
+  Texel, Groningen and Maastricht were done this way, with 0 to 7 errors per 48 sampled items,
+  then fixed). Do the same three passes in sequence, with a fresh eye on each.
 - When a brief and the code disagree, the code on `main` wins; say so in the report.
