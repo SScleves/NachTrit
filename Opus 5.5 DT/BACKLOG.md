@@ -15,6 +15,12 @@ merges, checks on the GPU and pushes.
 
 ---
 
+## A0. The first five minutes. Branch `dt/first-five-minutes`. High priority, player-facing.
+See FIRST-FIVE-MINUTES.md: eight points from a first-time play-through, each with narrative,
+technical and player suggestions and an acceptance list. Points 1, 2, 4, 5, 6 and 8 touch
+index.html and fit before the code split if done as one branch; point 3 is the map task
+(HANDOVER section 4); point 7 is backlog B2.
+
 ## A. Engine (heaviest, one branch at a time in index.html)
 
 ### A1. The code split, with JSDoc types. Branch `dt/split`. DO THIS FIRST.
