@@ -22,7 +22,8 @@ const base = process.env.NR_GALLERY || 'http://localhost:8768/intro/gallery.html
 if (!/^(all|cast|props|panel-[1-9]\d*|scene-[a-z]+)$/.test(name)) { console.error('usage: node intro/shoot.mjs <panel-N|scene-NAME|cast|props|all> [t ...] [--bench] [--scale=4]'); process.exit(2); }
 fs.mkdirSync(outDir, { recursive: true });
 
-const browser = await chromium.launch({ headless: true });
+// NR_CHANNEL=chrome (or msedge) uses an installed browser where Playwright's own Chromium cannot be downloaded
+const browser = await chromium.launch({ headless: true, ...(process.env.NR_CHANNEL ? { channel: process.env.NR_CHANNEL } : {}) });
 const page = await browser.newPage({ viewport: { width: name === 'all' ? 2000 : Math.max(1000, 340 * (+scaleArg || 3)), height: 900 } });
 const errors = [];
 page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
