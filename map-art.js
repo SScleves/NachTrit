@@ -525,9 +525,17 @@
       if (on && L.r() < 0.5) L.lights.push([wx + u * 0.18, y - h * 0.55, u * 1.7, L.hot ? 0.28 : 0.14]);
     }
   }
-  function canal(c, x0, x1, y, h, L) {   // a strip of water with the lights of the row above in it
-    c.fillStyle = WATER; c.fillRect(x0, y, x1 - x0, h); c.fillStyle = 'rgba(120,150,180,.12)'; c.fillRect(x0, y, x1 - x0, 1);
-    for (let x = x0 + 2; x < x1 - 2; x += 3 + L.r() * 5) if (L.r() < L.lit) { c.fillStyle = `rgba(255,${170 + (L.r() * 40) | 0},80,${0.18 + L.r() * 0.25})`; for (let k = 0; k < 3; k++) c.fillRect(x + (L.r() - 0.5) * 1.5, y + 1.5 + k * h * 0.28, Math.max(1, 2.2 - k * 0.6), Math.max(1, h * 0.14)); }
+  function canal(c, x0, x1, y, h, L) {   // a strip of water with the lights of the row above in it, as short horizontal streaks
+    c.fillStyle = WATER; c.fillRect(x0, y, x1 - x0, h); c.fillStyle = 'rgba(120,150,180,.14)'; c.fillRect(x0, y, x1 - x0, 1);
+    const rows = Math.max(2, Math.min(5, Math.round(h / 3)));
+    for (let k = 0; k < rows; k++) {
+      const yy = y + 2 + k * (h - 3) / rows, a = 0.42 * (1 - k / rows);
+      for (let x = x0 + L.r() * 6; x < x1 - 3; x += 4 + L.r() * 9) {
+        if (L.r() > L.lit * 0.9) continue;
+        const w = Math.max(1.5, (h * 0.35 + L.r() * h * 0.5) * (1 - k / (rows + 1)));
+        c.fillStyle = `rgba(255,${(168 + L.r() * 40) | 0},80,${(a * (0.5 + L.r() * 0.5)).toFixed(2)})`; c.fillRect(x, yy, Math.min(w, x1 - x), 1);
+      }
+    }
   }
 
 
@@ -570,11 +578,12 @@
       c.fillStyle = '#ff6a50'; c.fillRect(bx - u * 0.12, y - (h + 1.2) * u, u * 0.24, u * 0.24); L.lights.push([bx, y - (h + 1.1) * u, u * 1.5, 0.4, '255,90,70']);
     }
   }
-  function kotter(c, x, y, u, L, flip) {   // a fishing cutter with its booms up
-    const d = flip ? -1 : 1; c.fillStyle = '#10161d';
+  function kotter(c, x, y, u, L, flip) {   // a fishing cutter with its booms up, a shade lighter than the water it lies in
+    const d = flip ? -1 : 1, hull = '#222b36'; c.fillStyle = hull;
     c.beginPath(); c.moveTo(x - u * 1.6 * d, y - u * 0.75); c.lineTo(x + u * 1.75 * d, y - u * 0.95); c.lineTo(x + u * 1.3 * d, y); c.lineTo(x - u * 1.3 * d, y); c.fill();
-    c.fillRect(x - u * 0.2 * d - u * 0.45, y - u * 1.55, u * 0.9, u * 0.8); win(c, x - u * 0.2 * d - u * 0.25, y - u * 1.4, u * 0.22, u * 0.22, L, L.lit > 0.3); win(c, x - u * 0.2 * d + u * 0.05, y - u * 1.4, u * 0.22, u * 0.22, L);
-    c.strokeStyle = '#10161d'; c.lineWidth = Math.max(0.6, u * 0.1); c.beginPath(); c.moveTo(x + u * 0.5 * d, y - u * 0.8); c.lineTo(x + u * 0.5 * d, y - u * 4); c.moveTo(x + u * 0.5 * d, y - u * 1.1); c.lineTo(x + u * 2.3 * d, y - u * 3.4); c.moveTo(x + u * 0.5 * d, y - u * 1.1); c.lineTo(x - u * 1.4 * d, y - u * 3.3); c.stroke();
+    c.fillStyle = 'rgba(190,205,220,.22)'; c.fillRect(Math.min(x - u * 1.6 * d, x + u * 1.75 * d), y - u * 0.82, u * 3.35, Math.max(1, u * 0.08));
+    c.fillStyle = hull; c.fillRect(x - u * 0.2 * d - u * 0.45, y - u * 1.55, u * 0.9, u * 0.8); win(c, x - u * 0.2 * d - u * 0.25, y - u * 1.4, u * 0.22, u * 0.22, L, L.lit > 0.3); win(c, x - u * 0.2 * d + u * 0.05, y - u * 1.4, u * 0.22, u * 0.22, L);
+    c.strokeStyle = '#2a3440'; c.lineWidth = Math.max(0.6, u * 0.1); c.beginPath(); c.moveTo(x + u * 0.5 * d, y - u * 0.8); c.lineTo(x + u * 0.5 * d, y - u * 4); c.moveTo(x + u * 0.5 * d, y - u * 1.1); c.lineTo(x + u * 2.3 * d, y - u * 3.4); c.moveTo(x + u * 0.5 * d, y - u * 1.1); c.lineTo(x - u * 1.4 * d, y - u * 3.3); c.stroke();
     c.fillStyle = '#ffe2a0'; c.fillRect(x + u * 0.42 * d, y - u * 4.15, u * 0.18, u * 0.18); L.lights.push([x + u * 0.5 * d, y - u * 4.05, u * 1.4, 0.4], [x, y - u * 1.2, u * 2.2, 0.2]);
   }
   function ferry(c, x, y, u, L) {   // the Texel ferry, all windows lit
@@ -618,8 +627,9 @@
   function cubes(c, x, y, u, L) {   // the tilted cube houses
     for (let i = 0; i < 3; i++) { const cx = x + (i - 1) * u * 1.25, cy = y - u * 1.5; c.fillStyle = BLD2; c.fillRect(cx - u * 0.1, cy, u * 0.2, u * 1.5); c.fillStyle = i % 2 ? '#5c4a20' : '#4c3e1c'; c.beginPath(); c.moveTo(cx, cy - u * 1.15); c.lineTo(cx + u * 0.62, cy - u * 0.58); c.lineTo(cx, cy); c.lineTo(cx - u * 0.62, cy - u * 0.58); c.fill(); win(c, cx - u * 0.12, cy - u * 0.7, u * 0.24, u * 0.24, L); }
   }
-  function blocks(c, x0, x1, y, u, L, hmin, hmax) {   // a modern skyline of lit towers
-    let x = x0; while (x < x1 - u * 0.4) { const w = u * (0.9 + L.r() * 0.9), h = u * (hmin + L.r() * (hmax - hmin)); c.fillStyle = L.r() < 0.5 ? BLD : BLD2; c.fillRect(x, y - h, w, h); grid(c, x + u * 0.08, y - h + u * 0.2, w - u * 0.16, h - u * 0.4, u, L, Math.max(1, Math.round(w / (u * 0.45))), Math.max(2, Math.round(h / (u * 0.7)))); x += w + u * 0.15; }
+  function blocks(c, x0, x1, y, u, L, hmin, hmax) {   // a modern skyline of towers, offices mostly dark at night
+    const L2 = { ...L, lit: L.lit * 0.55 };
+    let x = x0; while (x < x1 - u * 0.4) { const w = u * (0.9 + L.r() * 0.9), h = u * (hmin + L.r() * (hmax - hmin)); c.fillStyle = L.r() < 0.5 ? BLD : BLD2; c.fillRect(x, y - h, w, h); grid(c, x + u * 0.08, y - h + u * 0.2, w - u * 0.16, h - u * 0.4, u, L2, Math.max(1, Math.round(w / (u * 0.5))), Math.max(2, Math.round(h / (u * 0.8)))); x += w + u * 0.15; }
   }
   function gatehouse(c, x, y, u, L) {   // the Helpoort: a gate between two round towers
     c.fillStyle = BLD2; c.fillRect(x - u * 1.2, y - u * 2.4, u * 2.4, u * 2.4); c.fillStyle = '#05080b'; c.beginPath(); c.moveTo(x - u * 0.45, y); c.lineTo(x - u * 0.45, y - u * 1.1); c.arc(x, y - u * 1.1, u * 0.45, Math.PI, 0); c.lineTo(x + u * 0.45, y); c.fill();
@@ -648,6 +658,10 @@
       canal(c, x - 8.2 * u, x - 3.4 * u, y - 0.3 * u, 1.5 * u, L);
       c.fillStyle = '#1b232c'; c.beginPath(); c.moveTo(x - 3.6 * u, y + 0.3 * u); c.lineTo(x - 2.8 * u, y - 1.0 * u); c.lineTo(x + 7.6 * u, y - 1.0 * u); c.lineTo(x + 8.2 * u, y + 0.3 * u); c.fill();
       c.strokeStyle = SIL; c.lineWidth = Math.max(0.8, u * 0.18); c.beginPath(); c.moveTo(x - 7.4 * u, y - 0.2 * u); c.lineTo(x - 7.4 * u, y - 5.2 * u); c.moveTo(x - 4.6 * u, y - 0.2 * u); c.lineTo(x - 4.6 * u, y - 5.2 * u); c.moveTo(x - 7.9 * u, y - 5.2 * u); c.lineTo(x - 4.1 * u, y - 5.2 * u); c.stroke();
+      // a ship on the slipway under the gantry: the yard on the Noord
+      c.fillStyle = '#232c37'; c.beginPath(); c.moveTo(x - 7.8 * u, y - 2.6 * u); c.lineTo(x - 4.0 * u, y - 2.9 * u); c.lineTo(x - 4.5 * u, y - 0.6 * u); c.lineTo(x - 7.3 * u, y - 0.6 * u); c.closePath(); c.fill();
+      c.fillRect(x - 6.0 * u, y - 3.7 * u, 1.3 * u, 0.9 * u); c.fillStyle = 'rgba(190,205,220,.2)'; c.fillRect(x - 7.8 * u, y - 2.75 * u, 3.8 * u, Math.max(1, u * 0.08));
+      for (let k = 0; k < 4; k++) win(c, x - 7.0 * u + k * 0.6 * u, y - 1.9 * u, 0.2 * u, 0.2 * u, L);
       c.fillStyle = BLD2; c.fillRect(x - 6.4 * u, y - 4.9 * u, 0.9 * u, 0.7 * u); c.fillStyle = '#ff6a50'; c.fillRect(x - 7.5 * u, y - 5.6 * u, 0.22 * u, 0.22 * u); L.lights.push([x - 7.4 * u, y - 5.5 * u, 1.4 * u, 0.35, '255,90,70']);
       row(c, x - 2.6 * u, x + 1.7 * u, y - 1.0 * u, u, L, { h: 1.5, hv: 0.6, w: 1.15, kinds: [0, 0, 1, 3] });
       tower(c, x + 2.7 * u, y - 1.0 * u, 1.2 * u, 7.2 * u, 'spire', u, L);
@@ -663,9 +677,9 @@
       c.fillStyle = '#ffe2a0'; c.beginPath(); c.arc(x + 5.6 * u, y - 6.4 * u, 0.42 * u, 0, TAU); c.fill(); L.lights.push([x + 5.6 * u, y - 6.4 * u, 1.6 * u, 0.3]);
       nave(c, x + 6.8 * u, x + 8.4 * u, y - 1.4 * u, 1.6 * u, u, L);
       c.fillStyle = WATER; c.beginPath(); c.moveTo(x - 8 * u, y + 0.5 * u); c.lineTo(x - 7 * u, y - 0.4 * u); c.lineTo(x + 4.2 * u, y - 1.6 * u); c.lineTo(x + 4.6 * u, y - 1.2 * u); c.lineTo(x - 5.5 * u, y + 0.6 * u); c.fill();
-      const ms = [[-6.2, -0.1, 4.2, 0.2], [-3.2, -0.6, 3.7, 0.9], [-0.4, -1.0, 3.2, 0.5], [2.0, -1.4, 2.7, 1.2], [3.9, -1.7, 2.2, 0.3]];
+      const ms = [[-6.0, -0.1, 3.3, 0.2], [-3.3, -0.6, 3.0, 0.9], [-0.8, -1.0, 2.7, 0.5], [1.5, -1.4, 2.3, 1.2], [3.5, -1.7, 1.9, 0.3]];
       for (let i = ms.length - 1; i >= 0; i--) { const [mx, my, s, a] = ms[i]; mill(c, x + mx * u, y + my * u, s * u, a, L.r() < L.lit + 0.2, L.lights); }
-      for (const [mx, my] of [[-6.2, -0.1], [-3.2, -0.6], [-0.4, -1.0]]) { c.fillStyle = 'rgba(255,170,70,.18)'; c.fillRect(x + mx * u - 0.1 * u, y + my * u + 0.35 * u, 0.2 * u, 0.9 * u); }
+      for (const [mx, my] of [[-6.0, -0.1], [-3.3, -0.6], [-0.8, -1.0]]) { c.fillStyle = 'rgba(255,170,70,.22)'; c.fillRect(x + mx * u - 0.5 * u, y + my * u + 0.45 * u, 1.0 * u, 1); c.fillRect(x + mx * u - 0.3 * u, y + my * u + 0.75 * u, 0.6 * u, 1); }
     },
     gouda(c, x, y, u, L) {   // the town hall alone on the square, the Sint-Jan, the Waag, cheese
       nave(c, x + 3.6 * u, x + 7.6 * u, y - 1.3 * u, 2.2 * u, u, L); tower(c, x + 3.4 * u, y - 1.3 * u, 1.3 * u, 5.4 * u, 'spire', u, L);
@@ -931,7 +945,15 @@
       boat(l, x, y, s * (0.9 + r() * 0.4), r, lights, r() < 0.5); nb++;
     }
 
-    BASE = { key: baseKey, sea: seaCv, land: Lc, lights, items: items.length, isLand, isRiver, busy };
+    // glints for the shimmer: on open water near a coast, and on the lake
+    const glints = [];
+    for (let i = 0; i < 3000 && glints.length < 70; i++) {
+      const x = box.x - f * 4 + r() * (box.w + f * 8), y = box.y + r() * box.h;
+      if (isLand(x, y) || isRiver(x, y) || busy(x, y)) continue;
+      if (!inLake(x, y) && ![[-1, 0], [1, 0], [0, -1], [0.7, 0.7]].some(([dx, dy]) => isLand(x + dx * f * 2.5, y + dy * f * 2.5))) continue;
+      glints.push({ x, y, l: 2 + r() * f * 0.5, w: 0.6 + r() * 1.4, ph: r() * TAU });
+    }
+    BASE = { key: baseKey, sea: seaCv, land: Lc, lights, items: items.length, isLand, isRiver, busy, glints };
     }
     const { isLand, isRiver, busy } = BASE, r = mulberry(7), lights = BASE.lights.slice(), beams = [];
     canvas.width = cw; canvas.height = ch;
@@ -1007,7 +1029,7 @@
     c.restore();
 
     const glows = nodes.map((p, i) => { const st = states[i], vw = lay.vw[i]; return { x: lay.vx[i], y: p[1] - f * 1.25 - vw * 0.22, rx: vw * 0.8, ry: vw * 0.45, a: st === 'saved' ? 0.3 : st === 'open' ? 0.18 : 0.06, spr: st === 'locked' ? 'cold' : 'warm', w: 1.1 + r() * 0.9, ph: r() * TAU }; });
-    FX = { cw, ch, dpr, f, glows, lamps, beams: beams.filter(b => b[3] !== 'locked'), sprites: sprs, nodes: nodes.map(p => p.slice()) };
+    FX = { cw, ch, dpr, f, glows, lamps, glints: BASE.glints, beams: beams.filter(b => b[3] !== 'locked'), sprites: sprs, nodes: nodes.map(p => p.slice()) };
     lay.fx = FX;
     NRMAP.ms = { paint: Math.round(performance.now() - t0), lights: lights.length, lamps: lamps.length, items: BASE.items };
   };
@@ -1045,7 +1067,9 @@
     const F = lay && lay.fx; if (!F) return; const SP = sprites(), f = F.f;
     if (canvas.width !== F.cw || canvas.height !== F.ch) { canvas.width = F.cw; canvas.height = F.ch; }
     const c = canvas.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, F.cw, F.ch); c.setTransform(F.dpr, 0, 0, F.dpr, 0, 0);
-    c.globalCompositeOperation = 'lighter';
+    c.fillStyle = '#a8c0d8';
+    for (const g of F.glints) { const a = Math.sin(t * g.w + g.ph); if (a > 0.35) { c.globalAlpha = (a - 0.35) * 0.5; c.fillRect(g.x, g.y, g.l, 1); } }
+    c.globalAlpha = 1; c.globalCompositeOperation = 'lighter';
     for (const g of F.glows) { c.globalAlpha = Math.max(0, Math.min(1, g.a * (0.76 + 0.24 * Math.sin(t * g.w + g.ph)))); c.drawImage(SP[g.spr], g.x - g.rx, g.y - g.ry, g.rx * 2, g.ry * 2); }
     if (bike && !bike.moving && F.nodes[bike.cur]) { const p = F.nodes[bike.cur]; c.globalAlpha = 0.4 + 0.18 * Math.sin(t * 2.2); c.drawImage(SP.green, p[0] - f * 3.2, p[1] - f * 3.2, f * 6.4, f * 6.4); }
     for (const p of F.lamps) {
