@@ -23,24 +23,25 @@
   };
   const helmetBody = (g, x, y) => {
     A.shadow(g, x + 1, y, 17, 3, 0.75);
-    // outline first (night1), then the shell, shaded from a bright crown to a dim lower shell
+    // outline first (night1), then the shell: lit along the crown toward the lantern (upper right), turning away below
     for (let dx = -16; dx <= 11; dx++) { const h = shell(dx) || 1; A.vline(g, x + dx, y - 3 - h, h + 2, 'night1'); }
     for (let dx = -15; dx <= 10; dx++) {
       const h = shell(dx) - 1; if (h < 1) continue;
       for (let r = 0; r < h; r++) {             // r = 0 is the shell bottom, h-1 the crown
-        const f = r / Math.max(1, h - 1);
-        A.px(g, x + dx, y - 3 - r, f > 0.82 ? 'paper6' : f > 0.55 ? 'paper5' : f > 0.25 ? 'paper4' : 'paper3');
+        const f = r / Math.max(1, h - 1) + (dx + 2) * 0.012;
+        A.px(g, x + dx, y - 3 - r, f > 0.86 ? 'paper6' : f > 0.62 ? 'paper5' : f > 0.36 ? 'paper4' : f > 0.14 ? 'paper3' : 'paper2');
       }
     }
     // the rim underneath: dark padding showing at the front, so it reads as hollow
     A.hline(g, x - 14, y - 3, 24, 'night1'); A.hline(g, x - 9, y - 2, 18, 'night1'); A.hline(g, x + 1, y - 3, 8, 'slate4');
-    // shell stripe hugging the rim (the "enthusiasm")
-    for (let dx = -12; dx <= 9; dx++) A.px(g, x + dx, y - 4, (dx & 3) === 3 ? 'red3' : 'red4');
-    // four vent slots down the dome: dark slits, a pixel of shade beside each
-    [-9, -4, 1, 6].forEach(dx => {
-      const h = shell(dx) - 1, top = y - 3 - rnd(h * 0.9), bot = y - 3 - rnd(h * 0.38);
-      A.vline(g, x + dx, top, bot - top + 1, 'night1'); A.vline(g, x + dx + 1, top + 1, bot - top, 'night3'); A.px(g, x + dx, top - 1, 'paper3');
-    });
+    // shell stripe hugging the rim (the "enthusiasm"): a red band with a highlight
+    for (let dx = -12; dx <= 9; dx++) { A.px(g, x + dx, y - 4, 'red4'); A.px(g, x + dx, y - 5, dx > -4 ? 'red5' : 'red4'); }
+    // vents run front to back, so in profile they are slots along the dome: two rows of dark dashes, a lit lip above each
+    for (const [fr, x0, x1] of [[0.74, -10, 6], [0.44, -13, 8]]) for (let dx = x0; dx <= x1; dx++) {
+      if (((dx - x0) % 6) > 3) continue;
+      const yy = y - 3 - rnd((shell(dx) - 1) * fr);
+      A.px(g, x + dx, yy, 'night2'); A.px(g, x + dx, yy - 1, fr > 0.6 ? 'paper6' : 'paper5');
+    }
     // visor lip at the front: a dark, glossy peak
     A.rect(g, x + 8, y - 7, 8, 2, 'night1'); A.hline(g, x + 9, y - 8, 5, 'night1'); A.hline(g, x + 9, y - 7, 6, 'steel1'); A.hline(g, x + 12, y - 7, 3, 'steel3');
     A.px(g, x + 16, y - 6, 'night1');
