@@ -792,7 +792,7 @@
     cacheKey = key; const t0 = performance.now();
     const layer = () => { const cv = document.createElement('canvas'); cv.width = cw; cv.height = ch; const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); return [cv, x]; };
     const D = Math.max(5, Math.min(15, f * 0.9)), DL = Math.max(3, D * 0.5);
-    const segLit = k => k + 1 < states.length && states[k + 1] !== 'locked';
+    const segLit = k => k + 1 < states.length && states[k] !== 'locked' && states[k + 1] !== 'locked';   // a road lights when both its towns are open
     // the sea, the land and its dressing depend only on the layout: painted once per size, kept across progress
     if (!BASE || BASE.key !== baseKey) {
     const r = mulberry(1953), lights = [];
