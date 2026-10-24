@@ -216,15 +216,24 @@
   NRMAP.label = t => (t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name).toUpperCase();
   function textW(s, px, weight, track) { mctx.font = `${weight} ${px}px "Segoe UI",system-ui,-apple-system,sans-serif`; return mctx.measureText(s).width + s.length * px * track; }
 
-  // a smooth field that moves the land along with the towns pushed apart, so every town keeps its ground
+  // a smooth field that moves the land along with the towns pushed apart, so every town keeps its ground:
+  // Gaussian radial basis functions, solved so each town's own spot moves exactly as far as the town
   function makeField(src, dst, sig) {
-    const d = src.map((p, i) => [dst[i][0] - p[0], dst[i][1] - p[1]]);
+    const n = src.length, d = src.map((p, i) => [dst[i][0] - p[0], dst[i][1] - p[1]]);
     if (!d.some(v => Math.abs(v[0]) + Math.abs(v[1]) > 0.5)) return (x, y) => [x, y];
-    const k = -1 / (2 * sig * sig);
+    const k = -1 / (2 * sig * sig), K = src.map((p, i) => src.map((q, j) => Math.exp(((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2) * k) + (i === j ? 0.04 : 0)));
+    const A = K.map((row, i) => [...row, d[i][0], d[i][1]]);   // Gauss-Jordan with partial pivoting
+    for (let c = 0; c < n; c++) {
+      let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(A[r][c]) > Math.abs(A[piv][c])) piv = r;
+      [A[c], A[piv]] = [A[piv], A[c]]; const v = A[c][c] || 1e-9;
+      for (let j = c; j < n + 2; j++) A[c][j] /= v;
+      for (let r = 0; r < n; r++) if (r !== c && A[r][c]) { const m = A[r][c]; for (let j = c; j < n + 2; j++) A[r][j] -= m * A[c][j]; }
+    }
+    const cx = A.map(r => r[n]), cy = A.map(r => r[n + 1]);
     return (x, y) => {
-      let sw = 0, dx = 0, dy = 0;
-      for (let i = 0; i < src.length; i++) { const ex = x - src[i][0], ey = y - src[i][1], w = Math.exp((ex * ex + ey * ey) * k); sw += w; dx += w * d[i][0]; dy += w * d[i][1]; }
-      const n = 1 / (sw + 0.15); return [x + dx * n, y + dy * n];
+      let dx = 0, dy = 0;
+      for (let i = 0; i < n; i++) { const ex = x - src[i][0], ey = y - src[i][1], w = Math.exp((ex * ex + ey * ey) * k); dx += w * cx[i]; dy += w * cy[i]; }
+      return [x + dx, y + dy];
     };
   }
   // centripetal Catmull-Rom through the control points, sampled about every `step` px
@@ -255,18 +264,19 @@
 
   // ---------------------------------------------------------------- layout
   NRMAP.layout = function (W, H, box, towns, f) {
+    const VROOM = NRMAP.vroom != null ? NRMAP.vroom : 2.6;   // vignette height reserved above each badge, in f
     const bw = BX1 - BX0, bh0 = BY1 - BY0;
     // the country fits inside the box less the room the labels hang below the south and the towns rise above the north
     const fit = { x: box.x + f * 0.5, y: box.y + f * 2.6, w: box.w - f, h: box.h - f * 2.6 - f * 3.4 };
-    // portrait screens stretch the country a little taller, landscape ones tilt it like a table top
-    const ky = Math.max(0.78, Math.min(1.22, (fit.h / fit.w) / (bh0 / bw)));
+    // portrait screens stretch the country a little taller, landscape ones tilt it like a table top seen from the south
+    const ky = Math.max(0.68, Math.min(1.22, (fit.h / fit.w) / (bh0 / bw)));
     const sc = Math.min(fit.w / bw, fit.h / (bh0 * ky));
     const ox = fit.x + (fit.w - bw * sc) / 2 - BX0 * sc, oy = fit.y + (fit.h - bh0 * ky * sc) / 2 - BY0 * ky * sc;
     const S0 = p => [ox + p[0] * sc, oy + p[1] * ky * sc];
     const n = towns.length, raw = towns.map(t => S0(world(...lonlat(t)))), nodes = raw.map(p => p.slice());
-    // label blocks: badge and chip above the spot, name and CEFR band below it
-    const blk = towns.map(t => ({ w: Math.max(textW(NRMAP.label(t), f, 600, 0.14), textW(t.cefr + ' · ★24', f * 0.88, 500, 0.06), f * 3.9) + f * 0.5, top: f * 2.45, bot: f * 4.5 }));
-    const pad = f * 0.7, mx = f * 0.2;
+    // label blocks: badge and chip above the spot, name and CEFR band below it, and room for a vignette above the badge
+    const blk = towns.map(t => ({ w: Math.max(textW(NRMAP.label(t), f, 600, 0.14), textW(t.cefr + ' · ★24', f * 0.88, 500, 0.06), f * 3.9) + f * 0.5, top: f * 2.45 + f * VROOM, bot: f * 4.5 }));
+    const pad = f * 1.0, mx = f * 0.2, side = Math.max(0.6, Math.min(3, 1.6 * (box.h / box.w) / 0.75));   // wide screens push towns sideways, tall ones up and down
     for (let it = 0; it < 500; it++) {
       let moved = false;
       for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
@@ -275,7 +285,7 @@
         const oy_ = (dy >= 0 ? blk[i].bot + blk[j].top : blk[j].bot + blk[i].top) + pad - Math.abs(dy);
         if (ox_ <= 0 || oy_ <= 0) continue;
         moved = true;
-        if (oy_ < ox_ * 1.6) { const s = (dy >= 0 ? 1 : -1) * Math.min(oy_ / 2 + 0.5, f * 0.5); a[1] -= s; b[1] += s; }
+        if (oy_ < ox_ * side) { const s = (dy >= 0 ? 1 : -1) * Math.min(oy_ / 2 + 0.5, f * 0.5); a[1] -= s; b[1] += s; }
         else { const s = (dx >= 0 ? 1 : -1) * Math.min(ox_ / 2 + 0.5, f * 0.5); a[0] -= s; b[0] += s; }
       }
       for (let i = 0; i < n; i++) {
@@ -298,23 +308,38 @@
     for (const p of [...geo.land, geo.flevo]) if (area(p) < 0) p.reverse();
     if (area(geo.lake) < 0) geo.lake.reverse();
     const onLand = (x, y) => (geo.land.some(p => inPoly(p, x, y)) && !inPoly(geo.lake, x, y)) || inPoly(geo.flevo, x, y);
-    // a town that still stands in the water steps onto the nearest land
-    nodes.forEach(p => {
-      if (onLand(p[0], p[1])) return;
-      for (let r = 2; r < f * 5; r += 2) { let hit = null; for (let a = 0; a < 24 && !hit; a++) { const x = p[0] + Math.cos(a * TAU / 24) * r, y = p[1] + Math.sin(a * TAU / 24) * r; if (onLand(x, y)) hit = [x, y]; } if (hit) { p[0] = hit[0]; p[1] = hit[1]; return; } }
+    // a town that still stands in the water steps onto the nearest land, but never out of the box its label needs
+    let snapped = 0;
+    nodes.forEach((p, i) => {
+      if (onLand(p[0], p[1])) return; snapped++;
+      const B = blk[i], ok = (x, y) => x >= box.x + B.w / 2 + mx && x <= box.x + box.w - B.w / 2 - mx && y >= box.y + B.top + f * 1.6 && y <= box.y + box.h - B.bot;
+      for (let r = 2; r < f * 5; r += 2) { let hit = null; for (let a = 0; a < 24 && !hit; a++) { const x = p[0] + Math.cos(a * TAU / 24) * r, y = p[1] + Math.sin(a * TAU / 24) * r; if (ok(x, y) && onLand(x, y)) hit = [x, y]; } if (hit) { p[0] = hit[0]; p[1] = hit[1]; return; } }
     });
-    // vignette width per town: as wide as the neighbours and the title above allow
-    const vw = nodes.map((p, i) => {
-      let w = f * 11;
-      for (; w > f * 4.4; w -= f * 0.25) {
-        const x0 = p[0] - w / 2, x1 = p[0] + w / 2, y1 = p[1] - f * 1.2, y0 = y1 - w * 0.62;
-        if (y0 < box.y - f * 0.5) continue;
-        if (!nodes.some((q, j) => j !== i && q[0] + blk[j].w * 0.38 > x0 && q[0] - blk[j].w * 0.38 < x1 && q[1] + f * 1.4 > y0 && q[1] - f * 2.6 < y1)) break;
-      }
-      return w;
-    });
-    const lay = { W, H, box, sc, ky, f, P, S, nodes, raw, blk, vw, geo, onLand };
+    // the vignette of each town: as large as the room allows, above its badge or slid to one side of it,
+    // never over another town's badge, label or vignette, never into the title
+    const vx = nodes.map(p => p[0]), vw = nodes.map(() => f * 4.4), placed = [];
+    const order = nodes.map((p, i) => i).sort((a, b) => (raw[a][1] - raw[b][1]));
+    const hits = (i, cx, w) => {
+      const x0 = cx - w / 2, x1 = cx + w / 2, y1 = nodes[i][1] - f * 1.2, y0 = y1 - w * 0.62;
+      if (y0 < box.y - f * 0.5 || x0 < box.x - f * 2 || x1 > box.x + box.w + f * 2) return true;
+      for (let j = 0; j < n; j++) if (j !== i) { const q = nodes[j]; if (q[0] + blk[j].w * 0.46 > x0 && q[0] - blk[j].w * 0.46 < x1 && q[1] + blk[j].bot > y0 && q[1] - f * 2.6 < y1) return true; }
+      for (const o of placed) { const ox = Math.min(x1, o.x1) - Math.max(x0, o.x0), oy = Math.min(y1, o.y1) - Math.max(y0, o.y0); if (ox > 0 && oy > 0 && ox * oy > 0.12 * Math.min((x1 - x0) * (y1 - y0), (o.x1 - o.x0) * (o.y1 - o.y0))) return true; }
+      return false;
+    };
+    for (const i of order) {
+      let best = null;
+      for (let w = f * 10; w >= f * 4.4 && !best; w -= f * 0.25)
+        for (const k of [0, -0.18, 0.18, -0.32, 0.32, -0.45, 0.45]) { const cx = nodes[i][0] + k * w; if (!hits(i, cx, w)) { best = [cx, w]; break; } }
+      if (!best) best = [nodes[i][0], f * 4.4];
+      vx[i] = best[0]; vw[i] = best[1];
+      const y1 = nodes[i][1] - f * 1.2; placed.push({ x0: vx[i] - vw[i] / 2, x1: vx[i] + vw[i] / 2, y0: y1 - vw[i] * 0.62, y1 });
+    }
+    const lay = { W, H, box, sc, ky, f, P, S, nodes, raw, blk, vw, vx, geo, onLand };
+    // label blocks that still overlap after the push and the snap (the test reads this; it should be 0)
+    lay.overlaps = 0;
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const dx = Math.abs(nodes[j][0] - nodes[i][0]), dy = nodes[j][1] - nodes[i][1]; if (dx < (blk[i].w + blk[j].w) / 2 && Math.abs(dy) < (dy >= 0 ? blk[i].bot + blk[j].top : blk[j].bot + blk[i].top)) lay.overlaps++; }
     lay.route = buildRoute(lay, towns);
+    NRMAP.last = { overlaps: lay.overlaps, snapped, f, ky: +ky.toFixed(2) };
     return lay;
   };
 
@@ -334,8 +359,14 @@
         }
         ctrl = [a, best, b];
       }
-      // drop waypoints that crowd a town's badge
-      ctrl = ctrl.filter((q, k) => k === 0 || k === ctrl.length - 1 || !nodes.some(m => Math.hypot(m[0] - q[0], m[1] - q[1]) < f * 2.2));
+      // drop waypoints that crowd a town's badge, or that the push moved behind the road's own start or past its end
+      const L2 = (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2 || 1; let tPrev = -0.12;
+      ctrl = ctrl.filter((q, k) => {
+        if (k === 0 || k === ctrl.length - 1) return true;
+        if (nodes.some(m => Math.hypot(m[0] - q[0], m[1] - q[1]) < f * 2.2)) return false;
+        const t = ((q[0] - a[0]) * (b[0] - a[0]) + (q[1] - a[1]) * (b[1] - a[1])) / L2;
+        if (t < tPrev || t > 1.12) return false; tPrev = t; return true;
+      });
       segs.push(spline(ctrl, Math.max(2, f * 0.25)));
     }
     const pts = [], cum = [], nodeS = [0], idx = [0]; let s = 0;
@@ -764,7 +795,7 @@
     const md = m.getImageData(0, 0, mw, mh).data;
     const Bc = document.createElement('canvas'); Bc.width = mw; Bc.height = mh; const bm = Bc.getContext('2d', { willReadFrequently: true }); bm.setTransform(ms, 0, 0, ms, 0, 0);
     bm.fillStyle = bm.strokeStyle = '#fff';
-    nodes.forEach((p, i) => { const vw = lay.vw[i]; bm.fillRect(p[0] - vw * 0.48, p[1] - f * 1.2 - vw * 0.6, vw * 0.96, vw * 0.6 + f * 0.9); bm.beginPath(); bm.arc(p[0], p[1], f * 1.7, 0, TAU); bm.fill(); bm.fillRect(p[0] - lay.blk[i].w * 0.36, p[1] + f * 1.7, lay.blk[i].w * 0.72, f * 2.4); });
+    nodes.forEach((p, i) => { const vw = lay.vw[i]; bm.fillRect(lay.vx[i] - vw * 0.48, p[1] - f * 1.2 - vw * 0.6, vw * 0.96, vw * 0.6 + f * 0.9); bm.beginPath(); bm.arc(p[0], p[1], f * 1.7, 0, TAU); bm.fill(); bm.fillRect(p[0] - lay.blk[i].w * 0.36, p[1] + f * 1.7, lay.blk[i].w * 0.72, f * 2.4); });
     bm.lineWidth = f * 0.8; bm.lineCap = bm.lineJoin = 'round'; if (R.pts.length > 1) { bm.beginPath(); line(bm, R.pts); bm.stroke(); }
     const bd = bm.getImageData(0, 0, mw, mh).data;
     const cell = (x, y) => { const xi = (x * ms) | 0, yi = (y * ms) | 0; return xi < 0 || yi < 0 || xi >= mw || yi >= mh ? -1 : (yi * mw + xi) * 4; };
@@ -930,7 +961,7 @@
       for (let q = 0; q <= n; q++) {
         const sp = n ? s0 + (s1 - s0) * q / n : (s0 + s1) / 2; if (s1 < s0) break;
         const p = NRMAP.at(R, sp);
-        if (nodes.some((m_, j) => { const vw = lay.vw[j], B = lay.blk[j], dx = Math.abs(p.x - m_[0]), dy = p.y - m_[1]; return Math.hypot(dx, dy) < f * 2.3 || (dx < B.w * 0.42 && dy > f * 1.6 && dy < f * 4.3) || (dx < vw * 0.4 && dy > -f * 1.25 - vw * 0.5 && dy < -f * 1.25); })) continue;
+        if (nodes.some((m_, j) => { const vw = lay.vw[j], B = lay.blk[j], dx = Math.abs(p.x - m_[0]), dy = p.y - m_[1], dv = Math.abs(p.x - lay.vx[j]); return Math.hypot(dx, dy) < f * 2.3 || (dx < B.w * 0.42 && dy > f * 1.6 && dy < f * 4.3) || (dv < vw * 0.4 && dy > -f * 1.25 - vw * 0.5 && dy < -f * 1.25); })) continue;
         const water = !isLand(p.x, p.y) && !isRiver(p.x, p.y);
         if (on) lamps.push({ x: p.x, y: p.y, r: f * 1.25, c: Math.max(0.9, f * 0.17), w: 1.5 + r() * 2.5, ph: r() * TAU, water });
         else { l.fillStyle = 'rgba(122,112,92,.75)'; l.beginPath(); l.arc(p.x, p.y, Math.max(0.8, f * 0.13), 0, TAU); l.fill(); }
@@ -940,7 +971,7 @@
     // ---- the towns, back to front; each is also kept as a sprite so the cyclist can pass behind it
     const order = nodes.map((p, i) => i).sort((a, b) => nodes[a][1] - nodes[b][1]), sprs = [];
     for (const i of order) {
-      const t = towns[i], nx = nodes[i][0], ny = nodes[i][1], vw = lay.vw[i], u = vw / 16, gy = ny - f * 1.25, st = states[i];
+      const t = towns[i], nx = lay.vx[i], ny = nodes[i][1], vw = lay.vw[i], u = vw / 16, gy = ny - f * 1.25, st = states[i];
       const x0 = nx - vw * 0.62, x1 = nx + vw * 0.62, y0 = gy - vw * 0.88, y1 = ny + f * 0.9;
       const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.ceil((x1 - x0) * dpr)); cv.height = Math.max(1, Math.ceil((y1 - y0) * dpr));
       const v = cv.getContext('2d'); v.setTransform(dpr, 0, 0, dpr, -x0 * dpr, -y0 * dpr);
@@ -948,7 +979,7 @@
       const sh = v.createRadialGradient(nx, gy, 0, nx, gy, vw * 0.55); sh.addColorStop(0, 'rgba(6,9,13,.42)'); sh.addColorStop(1, 'rgba(6,9,13,0)');
       v.save(); v.translate(0, gy * 0.6); v.scale(1, 0.4); v.fillStyle = sh; v.fillRect(nx - vw * 0.6, gy - vw * 0.6, vw * 1.2, vw * 1.2); v.restore();
       (V[t.id] || genericTown)(v, nx, gy, u, L);
-      if (st === 'locked') { v.globalCompositeOperation = 'source-atop'; v.fillStyle = 'rgba(88,102,118,.46)'; v.fillRect(x0, y0, x1 - x0, y1 - y0); v.globalCompositeOperation = 'source-over'; }
+      if (st === 'locked') { v.globalCompositeOperation = 'source-atop'; v.fillStyle = 'rgba(52,62,74,.42)'; v.fillRect(x0, y0, x1 - x0, y1 - y0); v.globalCompositeOperation = 'source-over'; }
       for (const q of tl) lights.push(st === 'locked' ? [q[0], q[1], q[2], q[3] * 0.3, q[4], q[5]] : q);
       l.drawImage(cv, x0, y0, x1 - x0, y1 - y0);
       sprs.push({ cv, x: x0, y: y0, w: x1 - x0, h: y1 - y0, gy, i });
@@ -972,10 +1003,10 @@
       for (let k = 0; k < 6; k++) { const xb = box.x + r() * box.w, rx = box.w * (0.08 + r() * 0.12), ry = Math.max(5, box.h * 0.026); c.save(); c.translate(xb, yb + (r() - 0.5) * ry * 2); c.scale(1, ry / rx); const gr = c.createRadialGradient(0, 0, 0, 0, 0, rx); gr.addColorStop(0, 'rgba(118,138,158,.06)'); gr.addColorStop(1, 'rgba(118,138,158,0)'); c.fillStyle = gr; c.fillRect(-rx, -rx, rx * 2, rx * 2); c.restore(); }
     }
     c.restore(); c.save();
-    nodes.forEach((p, i) => { if (states[i] !== 'locked') return; const vw = lay.vw[i]; c.save(); c.translate(p[0], p[1] - f * 1.25 - vw * 0.25); c.scale(1, 0.6); const gr = c.createRadialGradient(0, 0, 0, 0, 0, vw * 0.8); gr.addColorStop(0, 'rgba(112,128,146,.16)'); gr.addColorStop(1, 'rgba(112,128,146,0)'); c.fillStyle = gr; c.fillRect(-vw, -vw, vw * 2, vw * 2); c.restore(); });
+    nodes.forEach((p, i) => { if (states[i] !== 'locked') return; const vw = lay.vw[i]; c.save(); c.translate(lay.vx[i], p[1] - f * 1.25 - vw * 0.25); c.scale(1, 0.6); const gr = c.createRadialGradient(0, 0, 0, 0, 0, vw * 0.8); gr.addColorStop(0, 'rgba(112,128,146,.16)'); gr.addColorStop(1, 'rgba(112,128,146,0)'); c.fillStyle = gr; c.fillRect(-vw, -vw, vw * 2, vw * 2); c.restore(); });
     c.restore();
 
-    const glows = nodes.map((p, i) => { const st = states[i], vw = lay.vw[i]; return { x: p[0], y: p[1] - f * 1.25 - vw * 0.22, rx: vw * 0.8, ry: vw * 0.45, a: st === 'saved' ? 0.3 : st === 'open' ? 0.18 : 0.06, spr: st === 'locked' ? 'cold' : 'warm', w: 1.1 + r() * 0.9, ph: r() * TAU }; });
+    const glows = nodes.map((p, i) => { const st = states[i], vw = lay.vw[i]; return { x: lay.vx[i], y: p[1] - f * 1.25 - vw * 0.22, rx: vw * 0.8, ry: vw * 0.45, a: st === 'saved' ? 0.3 : st === 'open' ? 0.18 : 0.06, spr: st === 'locked' ? 'cold' : 'warm', w: 1.1 + r() * 0.9, ph: r() * TAU }; });
     FX = { cw, ch, dpr, f, glows, lamps, beams: beams.filter(b => b[3] !== 'locked'), sprites: sprs, nodes: nodes.map(p => p.slice()) };
     lay.fx = FX;
     NRMAP.ms = { paint: Math.round(performance.now() - t0), lights: lights.length, lamps: lamps.length, items: BASE.items };
