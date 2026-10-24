@@ -1126,74 +1126,115 @@
     let lx = 1e9, ly = 1e9;
     for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, px = rnd(cx + Math.cos(a) * r), py = rnd(cy + Math.sin(a) * r); if (px !== lx || py !== ly) { P.p(px, py, c); lx = px; ly = py; } }
   }
-  /** omafiets(g, x, y, o): the black Dutch granny bike, side view, ~46 px long, with a front
-   *  basket and a dynamo lamp. (x, y): x is the pedal crank, y the ground.
+  // a quadratic curve from p0 through the pull of c to p2, as joined pixel lines, shifted by (dx, dy); s0..s1 draws a part
+  function qcurve(P, p0, c, p2, col, dx, dy, s0, s1) {
+    const n = 10, a = s0 || 0, b = s1 == null ? 1 : s1, at = s => { const q = 1 - s; return [q * q * p0[0] + 2 * q * s * c[0] + s * s * p2[0] + dx, q * q * p0[1] + 2 * q * s * c[1] + s * s * p2[1] + dy]; };
+    let pr = at(a);
+    for (let i = 1; i <= n; i++) { const pt = at(a + (b - a) * i / n); P.l(pr[0], pr[1], pt[0], pt[1], col); pr = pt; }
+  }
+  // frame colours per variant, dark to light: shade, body, lit, the thin cool line along the top tube
+  const BIKE = {
+    black: ['slate0', 'slate1', 'slate3', 'mist3'], orange: ['orange1', 'orange3', 'orange4', 'orange6'],
+    blue: ['blue0', 'blue1', 'blue2', 'blue4'], cream: ['paper1', 'paper3', 'paper4', 'paper6'], teal: ['teal1', 'teal2', 'teal3', 'teal5'],
+  };
+  /** omafiets(g, x, y, o): the hero's Dutch granny bike, retro future (Santi's concept G): a black
+   *  step-through frame with two swooping tubes and a thin cool line along the top one, a brown
+   *  leather saddle on coil springs, brown grips on upright bars, a round headlamp with a warm amber
+   *  lens, warm neon strips (chain guard, fork, pedals, under the saddle, the front carrier), a red
+   *  light bar standing on the rear rack. Side view, ~48 px long. (x, y): x the pedal crank, y the ground.
+   *  The wheels, spokes and pedals turn exactly as before.
    *  o: { facing, t, rider: false | true (the man) | function (g, saddleX, saddleY, grip, pedals, flip),
-   *       speed: 1 when ridden (wheels and pedals turn), beam: false | length (the lamp's light cone),
-   *       basket: null | 'book' | 'dog' | 'cheese', face (the rider's), lamp: true, rim, shadow } */
+   *       speed: 1 when ridden (wheels and pedals turn), color: 'black' | 'orange' | 'blue' | 'cream' | 'teal',
+   *       beam: undefined (a soft amber cone ahead when ridden) | false | true | length,
+   *       lights: true (neon, lamp and rear bar lit; false: a dark parked bike),
+   *       basket: null (none) | 'crate' | 'book' | 'dog' | 'cheese' (a crate on the front carrier),
+   *       face (the rider's), lamp: true, rim, shadow } */
   NR.omafiets = (g, x, y, o) => {
     o = o || {}; const t = o.t || 0, flip = flipOf(o.facing), P = pen(g, x, y, flip);
     const speed = o.speed == null ? (o.rider ? 1 : 0) : o.speed, a = t * speed * 7, ca = t * speed * 4.2;
     const Rr = [-14, -8], Fr = [15, -8], BB = [0, -8], S = [-5, -23];
-    const T = [C.teal1, C.teal2, C.teal3, C.teal4];
+    const [fS, fB, fL, fH] = (BIKE[o.color] || BIKE.black).map(col), lit = o.lights !== false;
+    const crate = !!o.basket, N0 = lit ? C.amber6 : fS, N1 = lit ? C.amber7 : fS, N2 = lit ? C.amber8 : fB;   // neon: ends, core, the hottest pixel
     if (o.shadow !== false) NR.shadow(g, x + (flip ? -1 : 1), y, 26, 2, 0.5);
     NR.begin(g);
-    // wheels: tyre with a shine along its top, rim, a few spokes that turn, hub
+    // wheels: tyre with a shine along its top, rim, a few spokes that turn, hub (unchanged: they spin the way they spin)
     for (const h of [Rr, Fr]) {
       P.ring(h[0], h[1], 8, C.slate0, 2); P.ring(h[0], h[1], 6, C.steel2, 1);
       arc(P, h[0], h[1], 8, Math.PI * 1.18, Math.PI * 1.55, C.slate2);
       for (let k = 0; k < 3; k++) { const an = a + k * Math.PI / 3; P.l(h[0] - Math.cos(an) * 5, h[1] - Math.sin(an) * 5, h[0] + Math.cos(an) * 5, h[1] + Math.sin(an) * 5, C.steel1); }
       P.p(h[0], h[1], C.steel4); P.p(h[0] - 1, h[1] - 1, C.steel3);
     }
-    // mudguards, the skirt guard's strings over the back wheel, the rear light
-    arc(P, Rr[0], Rr[1], 9, Math.PI * 1.02, Math.PI * 1.98, C.slate1); arc(P, Fr[0], Fr[1], 9, Math.PI * 1.1, Math.PI * 1.9, C.slate1);
-    for (let k = 0; k < 3; k++) P.l(-6 - k * 2, -18, -13 + k * 2, -9, C.steel0);
-    P.p(-23, -9, C.red4); P.p(-23, -10, C.red3);
-    // rear rack
-    P.l(-6, -19, -21, -19, C.steel3); P.l(-20, -19, -15, -9, C.steel2); P.l(-12, -19, -14, -9, C.steel2); P.l(-7, -20, -20, -20, C.steel1);
-    // frame: seat tube, seat stays, twin low tubes, head tube, fork; the top of each tube catches the light
-    P.l(BB[0], BB[1], S[0] + 1, S[1] + 2, T[2], 1); P.l(BB[0] + 1, BB[1], S[0] + 2, S[1] + 2, T[1], 1);
-    P.l(S[0] + 1, S[1] + 3, Rr[0], Rr[1], T[2]);
-    P.l(11, -21, 3, -12, T[2]); P.l(3, -12, BB[0] + 1, BB[1], T[2]);
-    P.l(12, -18, 4, -10, T[3]); P.l(4, -10, BB[0] + 2, BB[1] + 1, T[3]);
-    P.l(11, -23, 12, -18, T[3], 2); P.l(12, -18, Fr[0], Fr[1], T[2]); P.l(13, -18, Fr[0] + 1, Fr[1], T[1]);
-    P.l(10, -22, 5, -16, C.teal5); P.p(12, -23, C.teal5);
-    // chain case
-    P.poly([-1, -10, -14, -10, -15, -9, -15, -7, -14, -6, -1, -6, 1, -8], C.slate1); P.l(-1, -10, -14, -10, C.slate2); P.l(-3, -7, -13, -7, C.slate0);
-    // crank and pedals
+    // mudguards in the frame colour, a lit edge along their crown
+    arc(P, Rr[0], Rr[1], 9, Math.PI * 1.02, Math.PI * 1.98, fB); arc(P, Fr[0], Fr[1], 9, Math.PI * 1.1, Math.PI * 1.9, fB);
+    arc(P, Rr[0], Rr[1], 10, Math.PI * 1.3, Math.PI * 1.7, fL); arc(P, Fr[0], Fr[1], 10, Math.PI * 1.35, Math.PI * 1.65, fL);
+    // the rear rack: a top rail and a side rail, struts to the axle, and the red light bar standing at its end
+    P.l(-6, -19, -21, -19, fL); P.l(-8, -18, -20, -18, fB); P.l(-20, -18, -15, -9, fB); P.l(-12, -18, -14, -9, fB);
+    P.r(-24, -23, 3, 8, C.slate0);
+    P.r(-23, -22, 1, 6, lit ? C.red6 : C.red2); P.p(-22, -22, lit ? C.red5 : C.red1); P.r(-22, -21, 1, 5, lit ? C.red5 : C.red1);
+    // the frame: seat stays, the seat tube, two swooping step-through tubes, the head tube, the fork
+    P.l(-4, -19, Rr[0], Rr[1], fB);
+    P.l(BB[0], BB[1], S[0] + 1, S[1] + 2, fB); P.l(BB[0] + 1, BB[1] - 1, S[0] + 2, S[1] + 2, fL);
+    qcurve(P, [12, -19], [7, -10], [1, -8], fS, -1, 1); qcurve(P, [12, -19], [7, -10], [1, -8], fB, 0, 0);
+    qcurve(P, [11, -21], [6, -11], [-2, -13], fB, -1, 1); qcurve(P, [11, -21], [6, -11], [-2, -13], fH, 0, 0, 0, 0.62); qcurve(P, [11, -21], [6, -11], [-2, -13], fL, 0, 0, 0.62, 1);
+    P.l(11, -23, 12, -18, fB, 2); P.p(12, -23, fH); P.p(12, -22, fL); P.r(11, -18, 3, 1, fS);
+    P.l(13, -18, Fr[0] + 1, Fr[1], fS); P.l(12, -18, Fr[0], Fr[1], fB);
+    P.l(13, -15, 14, -11, N1); P.p(13, -14, N2); P.p(14, -11, N0);                                        // neon down the fork
+    // the closed chain guard, a long neon strip along it
+    P.poly([-1, -10, -14, -10, -15, -9, -15, -7, -14, -6, -1, -6, 1, -8], fB); P.l(-1, -10, -14, -10, fL); P.l(-3, -6, -13, -6, fS);
+    P.l(-13, -8, -3, -8, N1); P.p(-13, -8, N0); P.p(-3, -8, N0); P.l(-10, -8, -6, -8, N2);
+    // crank and the far pedal
     P.disc(0, -8, 2, C.steel3); P.p(0, -8, C.steel5);
     const pd = [[rnd(Math.cos(ca) * 3), -8 + rnd(Math.sin(ca) * 3)], [rnd(-Math.cos(ca) * 3), -8 + rnd(-Math.sin(ca) * 3)]];
-    P.l(0, -8, pd[1][0], pd[1][1], C.steel2); P.r(pd[1][0] - 1, pd[1][1], 3, 1, C.slate0);
-    // saddle with springs, a lit top
-    P.r(S[0] - 3, S[1] - 1, 7, 2, C.wood2); P.r(S[0] - 2, S[1] - 2, 5, 1, C.wood3); P.r(S[0] - 1, S[1] - 2, 2, 1, C.wood5); P.p(S[0] - 2, S[1] + 1, C.steel3); P.p(S[0] + 2, S[1] + 1, C.steel3);
-    // handlebars swept back, grips, a bell
-    P.l(11, -23, 11, -26, C.steel3); P.l(11, -26, 6, -26, C.steel4); P.p(5, -25, C.slate0); P.p(6, -25, C.slate0); P.p(9, -27, C.steel5);
+    P.l(0, -8, pd[1][0], pd[1][1], C.steel2); P.r(pd[1][0] - 1, pd[1][1], 3, 1, C.slate0); P.p(pd[1][0], pd[1][1], lit ? C.amber5 : fS);
+    // the leather saddle on two coil springs, the seat post, a short neon strip under the nose
+    P.l(S[0] + 1, S[1] + 2, S[0] + 1, S[1], C.steel2);
+    for (const sx of [S[0] - 4, S[0] - 1]) { P.r(sx, S[1] + 1, 2, 1, C.steel4); P.r(sx, S[1] + 2, 2, 1, C.steel1); P.r(sx, S[1] + 3, 2, 1, C.steel3); }
+    P.r(S[0] - 4, S[1] - 1, 9, 1, C.brick4); P.r(S[0] - 4, S[1] - 2, 6, 1, C.brick5); P.r(S[0] - 3, S[1] - 2, 3, 1, C.brick6);
+    P.r(S[0] - 4, S[1], 5, 1, C.brick2); P.p(S[0] + 4, S[1] - 1, C.brick3); P.p(S[0] - 4, S[1] - 2, C.brick4);
+    P.l(S[0] + 2, S[1] + 1, S[0] + 4, S[1] + 1, N1);
+    // upright bars swept back, brown grips
+    P.l(11, -23, 11, -27, C.steel3); P.l(11, -27, 8, -27, C.steel4); P.p(7, -26, C.steel3);
+    P.r(3, -25, 4, 1, C.brick4); P.r(3, -26, 3, 1, C.brick5); P.p(3, -25, C.brick2);
     // parked: the kickstand down
     if (!o.rider && !speed) P.l(-3, -7, -6, -1, C.steel1);
-    // basket on the front carrier
-    P.l(14, -20, 15, -14, C.steel2);
-    P.r(13, -27, 11, 7, C.wood3); P.r(13, -27, 11, 1, C.wood5); P.r(13, -21, 11, 1, C.wood2);
-    for (let i = 0; i < 11; i += 2) P.r(13 + i, -26, 1, 5, C.wood2);
-    for (let j = -25; j < -21; j += 2) for (let i = 0; i < 11; i += 2) P.p(14 + i, j, C.wood4);
-    if (o.basket === 'book') { P.r(15, -29, 6, 2, C.red3); P.r(15, -29, 6, 1, C.red4); P.r(15, -28, 1, 1, C.paper4); }
-    else if (o.basket === 'cheese') { P.r(15, -30, 7, 3, C.cheese4); P.r(15, -30, 7, 1, C.cheese5); P.p(21, -29, C.cheese3); }
-    else if (o.basket === 'dog') { P.r(16, -31, 5, 4, C.fur3); P.r(19, -30, 4, 2, C.fur2); P.p(22, -30, C.slate0); P.p(18, -30, C.slate0); P.r(16, -31, 2, 3, C.fur1); }
-    // lamp
-    if (o.lamp !== false) { P.r(23, -20, 2, 3, C.steel2); P.p(24, -19, o.beam ? C.paper6 : C.paper3); }
+    // the front carrier over the wheel (a crate on it, or a neon strip along its rail)
+    P.l(12, -21, 22, -21, fL); P.l(13, -20, 21, -20, fB); P.l(21, -20, 16, -9, fB);
+    if (crate) {
+      P.r(13, -27, 11, 7, C.wood3); P.r(13, -27, 11, 1, C.wood5); P.r(13, -21, 11, 1, C.wood2);
+      for (let i = 0; i < 11; i += 2) P.r(13 + i, -26, 1, 5, C.wood2);
+      for (let j = -25; j < -21; j += 2) for (let i = 0; i < 11; i += 2) P.p(14 + i, j, C.wood4);
+      if (o.basket === 'book') { P.r(15, -29, 6, 2, C.red3); P.r(15, -29, 6, 1, C.red4); P.r(15, -28, 1, 1, C.paper4); }
+      else if (o.basket === 'cheese') { P.r(15, -30, 7, 3, C.cheese4); P.r(15, -30, 7, 1, C.cheese5); P.p(21, -29, C.cheese3); }
+      else if (o.basket === 'dog') { P.r(16, -31, 5, 4, C.fur3); P.r(19, -30, 4, 2, C.fur2); P.p(22, -30, C.slate0); P.p(18, -30, C.slate0); P.r(16, -31, 2, 3, C.fur1); }
+    } else { P.l(15, -21, 19, -21, N1); P.p(17, -21, N2); }
+    // the round headlamp under the front of the carrier: a dark housing, a warm round lens facing ahead
+    if (o.lamp !== false) {
+      P.disc(22, -19, 2, C.slate1); P.r(21, -21, 2, 1, C.slate2); P.p(20, -19, C.slate0);
+      P.r(23, -20, 2, 3, lit ? C.amber6 : C.slate2); P.p(25, -19, lit ? C.amber6 : C.slate2); P.p(24, -19, lit ? C.amber8 : C.paper3); P.p(23, -19, lit ? C.amber7 : C.paper2);
+    }
     // the rider
     if (o.rider) {
       const sx = S[0], sy = S[1] - 1, grip = [6 - sx, -25 - sy], pedals = [[pd[0][0] - sx, pd[0][1] - sy], [pd[1][0] - sx, pd[1][1] - sy]];
       if (typeof o.rider === 'function') o.rider(g, x + (flip ? -sx - 1 : sx), y + sy, grip, pedals, flip);
       else NR.man(g, x + (flip ? -sx - 1 : sx), y + sy, { pose: 'ride', facing: flip ? 'left' : 'right', t, grip, pedals, face: o.face, seed: o.seed, rim: o.rim });
     }
-    // near crank arm and pedal over the rider's foot
-    P.l(0, -8, pd[0][0], pd[0][1], C.steel4); P.r(pd[0][0] - 1, pd[0][1], 3, 1, C.slate1);
+    // near crank arm and pedal over the rider's foot, a neon strip on the pedal
+    P.l(0, -8, pd[0][0], pd[0][1], C.steel4); P.r(pd[0][0] - 1, pd[0][1], 4, 1, C.slate1); P.r(pd[0][0], pd[0][1], 2, 1, N1);
     NR.end(g, o.rim);
-    if (o.beam) {
-      const len = o.beam === true ? 90 : o.beam, lx = x + (flip ? -25 : 25), ly = y - 19;
-      NR.glow(g, lx, ly, 6, { color: 'paper6', strength: 0.6 });
-      NR.cone(g, lx, ly, flip ? Math.PI - 0.06 : 0.06, 0.2, len, { color: 'paper5', strength: 0.42, width: 3, fade: 1.2 });
-    }
+    if (!lit) return;
+    // the light: a small dithered glow round every strip, the lamp's bloom and, when ridden, a soft amber cone ahead
+    const gx = dx => P.X(dx) - g.ox, gy = dy => P.y - g.oy + dy;
+    NR.glow(g, gx(-8), gy(-8), 8, { ry: 2, color: 'amber6', strength: 0.24, power: 1.4, q: 4 });
+    NR.glow(g, gx(13.5), gy(-13), 2, { ry: 4, color: 'amber6', strength: 0.22, power: 1.2, q: 4 });
+    NR.glow(g, gx(pd[0][0] + 0.5), gy(pd[0][1]), 3, { ry: 2, color: 'amber6', strength: 0.22, power: 1.2, q: 4 });
+    NR.glow(g, gx(S[0] + 3), gy(S[1] + 1), 3, { ry: 2, color: 'amber6', strength: 0.2, power: 1.2, q: 4 });
+    if (!crate) NR.glow(g, gx(17), gy(-21), 4, { ry: 2, color: 'amber6', strength: 0.2, power: 1.2, q: 4 });
+    NR.glow(g, gx(-22.5), gy(-19), 3, { ry: 5, color: 'red5', strength: 0.3, power: 1.2, q: 4 });
+    if (o.lamp === false) return;
+    const ridden = !!o.rider || speed > 0, len = o.beam === true ? 90 : typeof o.beam === 'number' ? o.beam : o.beam === false || !ridden ? 0 : 56;
+    const lx = x + (flip ? -25 : 25), ly = y - 19;
+    NR.glow(g, gx(24), gy(-19), 5, { color: 'amber7', strength: 0.4, power: 1.5, q: 4 });
+    if (len > 0) NR.cone(g, lx, ly, flip ? Math.PI - 0.06 : 0.06, 0.2, len, { color: 'amber6', strength: 0.26, width: 3, fade: 1.2, q: 5 });
   };
 })();
 

@@ -188,7 +188,7 @@
       A.rect(g, 14, sy, w, 6, 'wood2'); A.hline(g, 14, sy, w, 'wood3');
       A.vline(g, 14 + w, sy + 1, 4, 'wood2'); A.vline(g, 15 + w, sy + 2, 2, 'wood2');
     }
-    A.omafiets(g, 44, GROUND, { rider: false, speed: 0, shadow: false, rim: 1 });
+    A.omafiets(g, 44, GROUND, { rider: false, speed: 0, shadow: false, rim: 1, lights: false });
     {   // the parked bike, in the dark: one step down its own ramps (not a fog over it), so it stays a crisp shape
       const id = g.sn, B = g.buf, M = g.mask, gw = g.w;
       for (let y = 120; y < GROUND + 1; y++) for (let x = 10; x < 80; x++) { const i = y * gw + x; if (M[i] === id) B[i] = A.step(B[i], -1); }
@@ -273,7 +273,7 @@
       }
 
       // ---- the cast
-      A.omafiets(g, 112, GROUND, { t, rider: true, speed: 0, face: T < 1.6 ? 'talk' : 'deadpan', basket: 'book' });
+      A.omafiets(g, 112, GROUND, { t, rider: true, speed: 0, beam: false, lights: wake > 0.3, face: T < 1.6 ? 'talk' : 'deadpan', basket: 'book' });   // his neon catches with the window
       A.book(g, 131, GROUND - 22, { open: true, w: 10, h: 5, t, dust: false });          // the book he never opened, open at last
       glow(g, 131, GROUND - 24, 10, 'amber5', 0.12 + 0.3 * L, { power: 1.5 });
       A.dog(g, 143, GROUND + 1, { coat: 'brown', pose: 'sit', look: 'up', t });

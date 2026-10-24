@@ -375,21 +375,21 @@
       // mist for the beam to cut into
       fog(g, t, 132, 22, 0.34, 7, 7, 'mist3');
 
-      // the lamp's glare on the wet road: one hard streak, under the man and the dog
-            [['paper5', 0, 34], ['paper4', 34, 62], ['paper3', 62, 84]].forEach(([c, a0, a1]) => A.hline(g, LX + 8 + a0, 156, a1 - a0, c));
-      for (let i = 84; i < 116; i++) if (1 - (i - 84) / 32 > A.bayer(LX + 8 + i, 156)) A.px(g, LX + 8 + i, 156, 'paper3');
-      A.hline(g, LX + 8, 157, 30, 'paper3');
+      // the lamp's warm glare on the wet road: one hard streak, under the man and the dog
+      [['amber7', 0, 34], ['amber6', 34, 62], ['amber5', 62, 84]].forEach(([c, a0, a1]) => A.hline(g, LX + 8 + a0, 156, a1 - a0, c));
+      for (let i = 84; i < 116; i++) if (1 - (i - 84) / 32 > A.bayer(LX + 8 + i, 156)) A.px(g, LX + 8 + i, 156, 'amber4');
+      A.hline(g, LX + 8, 157, 30, 'amber4');
 
       // ---- the one man and his one lamp
-      A.omafiets(g, BX, BY, { t, rider: true, beam: 2, speed: V_ROAD / 56, basket: null, face: 'deadpan' });
+      A.omafiets(g, BX, BY, { t, rider: true, beam: false, speed: V_ROAD / 56, basket: 'crate', face: 'deadpan' });
       dogHead(g, BX, BY, t);
       A.book(g, BX - 13, BY - 19, { w: 12, h: 4, t, dust: true });
       A.dog(g, BX + 36, BY + 5, { coat: 'golden', pose: 'walk', t, seed: 4, facing: 'right' });
 
-      // the beam: a tight bright core, a hard-edged shaft that thins out into the black, one hard glare on the wet road
-      A.glow(g, LX + 1, LY, 5, { color: 'paper6', strength: 0.7, power: 1.2, q: 4 });
-      shaft(g, LX, LY, 0.05, 0.055, 150, 3, 'paper5', 0.45, 1.1, 0.3);
-      shaft(g, LX, LY, 0.05, 0.02, 44, 3, 'paper6', 0.4, 0.7, 0.35);
+      // the beam: the omafiets' warm amber lamp, a tight bright core, a shaft that thins out into the black
+      A.glow(g, LX + 1, LY, 5, { color: 'amber8', strength: 0.6, power: 1.2, q: 4 });
+      shaft(g, LX, LY, 0.05, 0.055, 150, 3, 'amber6', 0.42, 1.1, 0.3);
+      shaft(g, LX, LY, 0.05, 0.02, 44, 3, 'amber7', 0.36, 0.7, 0.35);
 
 
       // ---- quay and canal in front, with the bike, the beam and the lantern mirrored in it
@@ -397,7 +397,7 @@
       blit(g, [quayStrip()], FP, offRoad, 156, 168, null);
       A.water(g, 0, 169, 320, 11, { t, amp: 0.6, dark: 0.4, color: 'night2', gaps: 0.3, glints: 6 });
       A.streak(g, lampX, 170, 10, { t, seed: 8, color: 'amber5', strength: 0.5, width: 2 });
-      A.streak(g, LX + 6, 170, 9, { t, seed: 5, color: 'paper6', strength: 0.45, width: 2 });
+      A.streak(g, LX + 6, 170, 9, { t, seed: 5, color: 'amber7', strength: 0.45, width: 2 });
       blit(g, [bargeStrip()], FP, offRoad, 160, 180, null);
 
       // ---- foreground reeds at full speed

@@ -240,7 +240,7 @@
     LAMPS.forEach(([x, seed]) => A.lamp(s, x, 153, { style: 'lantern', h: 46, seed, light: false }));
     A.tulips(s, 6, 147, 14, { t: 0 }); A.tulips(s, 302, 147, 14, { t: 0, seed: 5 });
     A.bollard(s, 78, 153); A.bollard(s, 238, 153);
-    A.omafiets(s, 272, 153, { facing: 'left', rim: 1 });
+    A.omafiets(s, 272, 153, { facing: 'left', rim: 1, lights: false });
     const bid = s.sn, DK = A.lut('mix', 'night0', 0.55);   // a parked bike in the dark: a shape, not a prize
     for (let y = 120; y < 156; y++) for (let x = 240 + PAD; x < 300 + PAD; x++) { const i = y * LW + x; if (s.mask[i] === bid) s.buf[i] = DK[s.buf[i]]; }
   }
