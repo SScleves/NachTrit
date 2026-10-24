@@ -5,4 +5,6 @@ start /home/santi/dutch-arcade 8765
 [ -d /home/santi/dutch-arcade-wt/fares ] && start /home/santi/dutch-arcade-wt/fares 8767
 [ -d /home/santi/dutch-arcade-wt/look ] && start /home/santi/dutch-arcade-wt/look 8768
 [ -d /home/santi/dutch-arcade-wt/vocab ] && start /home/santi/dutch-arcade-wt/vocab 8769
+[ -d /home/santi/dutch-arcade-wt/world ] && start /home/santi/dutch-arcade-wt/world 8770
+[ -d /home/santi/dutch-arcade-wt/map ] && start /home/santi/dutch-arcade-wt/map 8771
 sleep 1; ss -ltn | grep -E ':876[5-9] ' | awk '{print $4}'
