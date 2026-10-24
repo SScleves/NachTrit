@@ -42,14 +42,23 @@
   .place.locked { opacity:.35; cursor:default; }
   .place .st { color:#ffd27a; font-size:11px; letter-spacing:.1em; }
   .place .lv { display:inline-block; margin:3px 4px 0 0; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; font-size:12px; }
-  #nl .town { cursor:pointer; }
-  #nl .town text { font: 600 2.6px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; letter-spacing:.04em; paint-order:stroke; stroke:#0b0f14; stroke-width:0.9px; }
-  #nl .town text.num { font: 800 3.4px "Segoe UI", system-ui, sans-serif; fill:#e8e4d8; }
-  #nl .town text.badge { font: 700 2.1px "Segoe UI", system-ui, sans-serif; letter-spacing:.08em; }
-  #nl .town.locked text { fill:#5a6170; }
-  #nl { border:1px solid rgba(255,255,255,.12); border-radius:6px; }
-  #nl .town.locked text { fill:#5a6170; }
-  #nl .town.locked circle { fill:#2a2f3a; stroke:#4a5160; }
+  #nl .town { cursor:pointer; pointer-events:auto; }
+  #nl text { font-family:"Segoe UI",system-ui,-apple-system,sans-serif; }
+  #nl text.nm { font-weight:600; fill:#f0f1f3; letter-spacing:.14em; paint-order:stroke; stroke:rgba(8,11,16,.85); stroke-width:3px; stroke-linejoin:round; }
+  #nl text.band { font-weight:500; fill:#b8c2cf; letter-spacing:.06em; paint-order:stroke; stroke:rgba(8,11,16,.85); stroke-width:3px; }
+  #nl text.num { font-weight:700; fill:#fff; }
+  #nl .town.locked text.nm { fill:#d4d9e0; }
+  #nl .nrdash { animation: nrdash 1.6s linear infinite; }
+  @keyframes nrdash { to { stroke-dashoffset: var(--dash, -20); } }
+  #map h1.maptitle { font-size:clamp(28px,5vw,48px); letter-spacing:.34em; padding-left:.34em; font-weight:600; color:#eef0f3; text-shadow:0 2px 18px rgba(0,0,0,.6); margin:0; }
+  #map .mapsub { color:#aab5c3; font-size:clamp(12px,1.7vw,17px); margin-top:6px; text-shadow:0 1px 6px #000; }
+  #map .maplegend { color:#b4bdca; font-size:clamp(9.5px,1.15vw,13px); letter-spacing:.14em; text-shadow:0 1px 6px #000; }
+  #map .maplegend i { font-style:normal; padding:0 .9em; opacity:.7; }
+  #map .mapline { width:110px; height:2px; margin:9px auto 7px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent); }
+  #map #endless { font-size:clamp(14px,1.5vw,17px); font-weight:500; padding:10px 26px; background:rgba(10,14,20,.55); border:1px solid rgba(255,255,255,.28); border-radius:6px; margin:0; }
+  #mapnorth { position:absolute; z-index:1; left:clamp(12px,4.5vw,60px); top:calc(70px + env(safe-area-inset-top)); width:20px; height:60px; pointer-events:none; }
+  #mapnorth text { font:600 11px "Segoe UI",system-ui,sans-serif; fill:#c9d0da; }
+  @media (max-aspect-ratio: 3/4) { #mapnorth { top:calc(96px + env(safe-area-inset-top)); width:14px; height:42px; } }
   #grain { position:fixed; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:overlay; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"); }
   #shade { position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%); }
   #summary .stats { display:flex; gap:10px; justify-content:center; margin:12px 0; }
@@ -124,14 +133,20 @@
       <div class="hint">Tap or press space to continue · <span id="skip" style="pointer-events:auto;cursor:pointer;text-decoration:underline">skip</span></div>
     </div>
   </div>
-  <div class="overlay" id="map" style="display:none;align-items:stretch;padding:0">
+  <div class="overlay" id="map" style="display:none;align-items:stretch;padding:0;background:#0a0e14">
     <div id="world" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
-      <div style="text-align:center;padding:calc(10px + env(safe-area-inset-top)) 12px 0">
-        <h1 style="font-size:clamp(26px,5vw,38px)">NEDERLAND</h1>
-        <div class="sub" style="margin:4px 0 0">Thirteen towns, A1 to B2. Ride to a town, go in, pick a place.</div>
+      <div id="mapwrap" style="position:absolute;inset:0;z-index:0"><canvas id="nlart" style="position:absolute;inset:0;width:100%;height:100%"></canvas><svg id="nl" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></svg></div>
+      <div id="maphead" style="position:relative;z-index:1;text-align:center;padding:calc(14px + env(safe-area-inset-top)) 12px 0;pointer-events:none">
+        <h1 class="maptitle">NEDERLAND</h1>
+        <div class="mapsub">Thirteen towns, A1 to B2. Ride to a town, go in, pick a place.</div>
       </div>
-      <div id="mapwrap" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px"><svg id="nl" viewBox="0 0 100 110" style="height:100%;max-height:78vh;aspect-ratio:100/110;pointer-events:auto"></svg></div>
-      <div style="text-align:center;padding:0 0 14px"><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
+      <svg id="mapnorth" viewBox="0 0 20 60" aria-hidden="true"><text x="10" y="12" text-anchor="middle">N</text><path d="M10,17 L15,30 L10,27 L5,30 Z" fill="#c9d0da"/><path d="M10,28 V58" stroke="#c9d0da" stroke-width="1" opacity=".5"/></svg>
+      <div style="flex:1"></div>
+      <div id="mapfoot" style="position:relative;z-index:1;text-align:center;padding:0 12px calc(12px + env(safe-area-inset-bottom));pointer-events:none">
+        <div class="maplegend">LEFT / RIGHT: RIDE <i>·</i> ENTER or TAP: GO IN <i>·</i> GREEN EASY, RED HARD</div>
+        <div class="mapline"></div>
+        <button class="btn ghost" id="endless">Endless night (everything, hard)</button>
+      </div>
       <div id="town" style="position:absolute;z-index:3;left:50%;bottom:0;transform:translate(-50%,105%);transition:transform .3s;width:min(96vw,760px);background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));pointer-events:auto">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div><div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="t_tier"></div><h1 style="font-size:28px;margin:0" id="t_name"></h1></div><button class="ico" id="t_close">✕</button></div>
         <div id="t_blurb" style="color:#d8d4c8;margin:6px 0 2px;font-size:14px"></div>
@@ -185,6 +200,7 @@
 <script src="content/towns.js"></script>
 <script src="content/towns-new.js"></script>
 <script src="fares.js"></script>
+<script src="map-art.js"></script>
 <script src="content/extra.js"></script>
 <script src="intro/art.js"></script>
 <script src="intro/panel-1.js"></script>
@@ -2274,99 +2290,74 @@ function towns() { return (window.TOWNS && window.TOWNS.length ? window.TOWNS : 
 function townLevels(t) { return LEVELS.filter(l => (l.town || TOWN_OF(l.id)) === t.id); }
 function townStars(t) { return townLevels(t).reduce((n, l) => n + (progress[l.id] || 0), 0); }
 function townOpen(t) { if (t.tier === 1) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
-// the Netherlands as lon/lat, hand drawn
-const NL_OUTLINE = [[3.38, 51.38], [3.52, 51.29], [3.9, 51.21], [4.24, 51.36], [4.42, 51.46], [4.56, 51.43], [4.76, 51.5], [4.84, 51.42], [5.03, 51.47], [5.1, 51.35], [5.24, 51.26], [5.56, 51.22], [5.74, 51.18], [5.87, 51.05], [5.78, 50.95], [5.7, 50.78], [5.99, 50.75], [6.02, 50.98], [5.87, 51.1], [6.08, 51.18], [6.22, 51.36], [6.07, 51.6], [6.1, 51.85], [6.4, 51.84], [6.72, 51.9], [6.68, 52.05], [7.04, 52.24], [7.06, 52.4], [6.69, 52.55], [7.05, 52.65], [7.2, 53.0], [7.2, 53.22], [6.95, 53.33], [6.73, 53.46], [6.18, 53.42], [5.9, 53.39], [5.45, 53.3], [5.1, 53.05], [5.06, 52.93], [4.76, 52.96], [4.62, 52.75], [4.58, 52.48], [4.42, 52.2], [4.15, 52.05], [4.0, 51.95], [3.9, 51.8], [3.68, 51.72], [3.45, 51.6], [3.55, 51.47]];
-const NL_IJSSELMEER = [[5.06, 52.93], [5.4, 52.87], [5.72, 52.82], [5.85, 52.6], [5.62, 52.3], [5.2, 52.3], [5.05, 52.45], [5.0, 52.7]];
-const NL_FLEVOLAND = [[5.2, 52.7], [5.6, 52.7], [5.85, 52.55], [5.9, 52.45], [5.6, 52.32], [5.3, 52.38], [5.2, 52.5]];
-const NL_ISLANDS = [[4.8, 53.08, 2.2, 0.9], [5.3, 53.38, 2.0, 0.5], [5.9, 53.47, 1.6, 0.4], [6.3, 53.5, 1.1, 0.35]];
-const NL_RIVERS = [[[6.05, 51.86], [5.4, 51.88], [4.9, 51.82], [4.66, 51.86], [4.3, 51.9], [4.05, 51.96]], [[5.7, 50.8], [5.85, 51.2], [6.0, 51.6], [5.6, 51.75], [5.0, 51.75], [4.7, 51.79]]];
-function mapXY([lon, lat]) { const [x, y] = LL(lon, lat); return [x * 100, y * 100 + 4]; }
-const GLYPH = {   // small ink icons per town, drawn around 0,0 in map units
-  alblasserdam: 'M-2.2,0.6 L0,-1.6 L2.2,0.6 M-1.6,0.6 L-1.6,2.4 L1.6,2.4 L1.6,0.6 M0.3,1.1 h0.9 v1.3 h-0.9 z',
-  kinderdijk: 'M-1,2.4 L-0.6,-0.6 L0.6,-0.6 L1,2.4 z M0,-0.8 L-2,-2.6 M0,-0.8 L2,-2.6 M0,-0.8 L-2,1 M0,-0.8 L2,1',
-  gouda: 'M1.8,0 A1.8,1.8 0 1 1 0,-1.8 L0,0 z M-0.4,0.6 a0.25,0.25 0 1 0 0.5,0 a0.25,0.25 0 1 0 -0.5,0',
-  utrecht: 'M-1,2.4 L-1,-0.6 L1,-0.6 L1,2.4 z M-0.7,-0.6 L0,-2.8 L0.7,-0.6 M-1.4,2.4 h2.8',
-  rotterdam: 'M-2.4,1.6 L2.4,1.6 M0.6,1.6 L0.2,-2.4 M0.6,1.6 L-1.6,-1 M0.6,1.6 L-0.8,-1.8 M0.6,1.6 L1.4,-1.2',
-  amsterdam: 'M-1.6,2.4 L-1.6,0 L-1,0 L-1,-0.8 L-0.4,-0.8 L-0.4,-1.6 L0.4,-1.6 L0.4,-0.8 L1,-0.8 L1,0 L1.6,0 L1.6,2.4 z M-0.4,0.4 h0.8 v0.9 h-0.8 z M-0.4,2.4 v-0.8 h0.8 v0.8',
-  zeeland: 'M-2.6,1.8 L2.6,1.8 M-2,1.8 L-2,-1.6 M-0.7,1.8 L-0.7,-1.6 M0.7,1.8 L0.7,-1.6 M2,1.8 L2,-1.6 M-2.6,-1.6 L2.6,-1.6 M-2.6,0.6 q0.6,-0.5 1.3,0 t1.3,0 t1.3,0 t1.3,0',
-  denhaag: 'M-0.9,2.4 L-0.9,-1.2 L0.9,-1.2 L0.9,2.4 z M-0.9,-1.2 L0,-2.6 L0.9,-1.2 M0,-2.6 L0,-3.2 L1.4,-2.8 L0,-2.4 M-2.2,2.4 h4.4',
-  urk: 'M-0.9,2.4 L-0.6,-1.4 L0.6,-1.4 L0.9,2.4 z M-0.9,-1.4 h1.8 M-0.6,-2.4 h1.2 M-1.8,-2 L-0.6,-1.9 M1.8,-2 L0.6,-1.9 M-1,2.4 q1,-0.6 2,0',
-  texel: 'M-2.4,1.2 L-1.6,2.4 L1.6,2.4 L2.4,1.2 z M0,1.2 L0,-2.4 M0,-2.4 L1.8,-1 L0,-0.6 M-1.6,-0.2 a0.9,0.9 0 1 0 0.01,0',
-  groningen: 'M-0.8,2.4 L-0.8,-1.6 L0.8,-1.6 L0.8,2.4 z M-0.5,-1.6 L-0.5,-2.6 L0.5,-2.6 L0.5,-1.6 M0,-2.6 L0,-3.4 M-1.6,2.4 h3.2 M-0.3,0 h0.6 v0.8 h-0.6 z',
-  maastricht: 'M-2.6,1.6 h5.2 M-2.4,1.6 a1.2,1.2 0 0 1 2.4,0 M0,1.6 a1.2,1.2 0 0 1 2.4,0 M-1.2,0.4 L-1.2,-1.8 M0,-2.6 L-1.2,-1.8 M1.2,0.4 L1.2,-1.8 L0,-2.6',
-  nijmegen: 'M-2.6,1.8 h5.2 M-2.4,1.8 a2.4,2.4 0 0 1 4.8,0 M-1.4,1.8 L-1.4,0.4 M1.4,1.8 L1.4,0.4 M-0.4,-0.4 L0,-2.4 L0.4,-0.4 z',
-};
-// the route board: towns in tier order along a winding road over a faint Netherlands
+// the route board: towns in tier order along a winding road over the country, painted by map-art.js (window.NRMAP)
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
-let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null;
-function nodePositions(n) {   // real geography, stretched to fill the board and pushed apart so nothing overlaps
-  const T = towns(); let pts = T.map(t => [t.pos[0] * 100, t.pos[1] * 100]);
-  // the Randstad is a quarter of the country holding half the towns: stretch that corner, squeeze the rest
-  const warp = v => v < 0.5 ? v * 1.5 : 0.75 + (v - 0.5) * 0.5;
-  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  pts = pts.map(([x, y]) => { const u = (x - x0) / Math.max(1, x1 - x0), v = (y - y0) / Math.max(1, y1 - y0); const vy = v < 0.45 ? v * 0.8 : v > 0.7 ? 0.36 + 0.4 + (v - 0.7) * 0.8 : 0.36 + (v - 0.45) * 1.6; return [12 + warp(u) * 76, 14 + vy * 80]; });
-  const minD = 12;
-  for (let it = 0; it < 200; it++) { let moved = false; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const dx = pts[j][0] - pts[i][0], dy = pts[j][1] - pts[i][1]; const d = Math.hypot(dx, dy) || 0.01; if (d < minD) { const push = (minD - d) / 2 + 0.2; const ux = dx / d, uy = dy / d; pts[i][0] -= ux * push; pts[i][1] -= uy * push; pts[j][0] += ux * push; pts[j][1] += uy * push; moved = true; } } for (const p of pts) { p[0] = Math.min(90, Math.max(10, p[0])); p[1] = Math.min(94, Math.max(12, p[1])); } if (!moved) break; }
-  return pts;
+let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null, mapLay = null, mapBadges = [], bikeX = null, bikeFlip = false;
+function mapF() { const W = $('world').clientWidth || innerWidth, H = $('world').clientHeight || innerHeight; return Math.max(8.5, Math.min(13, Math.min(W * 1.1, H) / 64)); }
+function nodePositions(n) {   // real geography (lon/lat), a fisheye on the Randstad, then pushed apart so nothing overlaps
+  const W = $('world').clientWidth || innerWidth, H = $('world').clientHeight || innerHeight, wb = $('world').getBoundingClientRect();
+  const top = $('maphead').getBoundingClientRect().bottom - wb.top + 4, bot = $('mapfoot').getBoundingClientRect().top - wb.top - 2;
+  const f = mapF(), box = { x: Math.max(8, W * 0.02), y: top, w: W - 2 * Math.max(8, W * 0.02), h: Math.max(120, bot - top) };
+  mapLay = NRMAP.layout(W, H, box, towns().slice(0, n), f); return mapLay.nodes;
 }
+function townState(t) { return !townOpen(t) ? 'locked' : townStars(t) >= DISTRICT_NEED ? 'saved' : 'open'; }
 function drawWorld() {
-  const svg = $('nl'); svg.innerHTML = '';
+  const svg = $('nl'); const W = $('world').clientWidth || innerWidth, H = $('world').clientHeight || innerHeight;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.innerHTML = '';
   const NS = 'http://www.w3.org/2000/svg';
   const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
-  const path = (pts, close = true) => pts.map((p, i) => (i ? 'L' : 'M') + mapXY(p).map(v => v.toFixed(2)).join(',')).join(' ') + (close ? ' Z' : '');
-  const defs = el('defs', {}); defs.innerHTML = `
-    <pattern id="sea" width="2.4" height="2.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0,1.2 H2.4" stroke="#1c2430" stroke-width="0.25"/></pattern>
-    <filter id="fog" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter>
-    <radialGradient id="glow"><stop offset="0" stop-color="#e8e4d8" stop-opacity="0.3"/><stop offset="1" stop-color="#e8e4d8" stop-opacity="0"/></radialGradient>`;
-  svg.appendChild(defs);
-  svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: '#0b0f14' }));
-  svg.appendChild(el('rect', { x: 0, y: 0, width: 100, height: 110, fill: 'url(#sea)' }));
-  // the country, faint, as a backdrop
-  const back = el('g', { opacity: 0.18, transform: 'translate(6 0) scale(0.9)' });
-  back.appendChild(el('path', { d: path(NL_OUTLINE), fill: '#1b2230', stroke: '#6f7f96', 'stroke-width': 0.5, 'stroke-linejoin': 'round' }));
-  back.appendChild(el('path', { d: path(NL_IJSSELMEER), fill: '#0b0f14', stroke: '#6f7f96', 'stroke-width': 0.3 }));
-  back.appendChild(el('path', { d: path(NL_FLEVOLAND), fill: '#1b2230', stroke: '#6f7f96', 'stroke-width': 0.3 }));
-  svg.appendChild(back);
-  const T = towns(); const pts = nodePositions(T.length); mapNodes = pts;
-  // the road: a smooth curve through the nodes
-  let d = `M${pts[0][0]},${pts[0][1]}`;
-  for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)]; const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0]},${p2[1]}`; }
-  svg.appendChild(el('path', { d, fill: 'none', stroke: '#2a3340', 'stroke-width': 2.2, 'stroke-linecap': 'round' }));
-  mapPath = el('path', { d, fill: 'none', stroke: '#e8e4d8', 'stroke-width': 0.35, 'stroke-dasharray': '0.9 1.5', 'stroke-linecap': 'round', opacity: 0.8 }); svg.appendChild(mapPath);
+  const T = towns(); const pts = nodePositions(T.length); mapNodes = pts; const f = mapLay.f;
+  const states = T.map(townState);
+  NRMAP.paint($('nlart'), mapLay, T, states);
+  const openIdx = T.map((t, i) => townOpen(t) ? i : -1).filter(i => i >= 0); if (!openIdx.includes(mapAt)) mapAt = openIdx[openIdx.length - 1] || 0;
+  const lastOpen = openIdx[openIdx.length - 1] || 0;
+  const defs = el('defs', {}); defs.innerHTML = NRMAP.defs; svg.appendChild(defs);
+  // the road: a smooth curve through the nodes, lit as far as the towns are open
+  const curve = P => { let d = `M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`; for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)]; const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`; } return d; };
+  const d = curve(pts), dl = curve(pts.slice(0, lastOpen + 1)), dash = `${(f * 0.6).toFixed(1)} ${(f * 0.7).toFixed(1)}`;
+  svg.appendChild(el('path', { d, fill: 'none', stroke: '#ffb347', 'stroke-width': f * 0.5, opacity: 0.12, filter: 'url(#nrblur)' }));
+  mapPath = el('path', { d, fill: 'none', stroke: '#e8c890', 'stroke-width': f * 0.15, 'stroke-dasharray': dash, 'stroke-linecap': 'round', opacity: 0.4 }); svg.appendChild(mapPath);
+  if (lastOpen > 0) {
+    svg.appendChild(el('path', { d: dl, fill: 'none', stroke: '#ffb347', 'stroke-width': f * 0.7, opacity: 0.35, filter: 'url(#nrblur)' }));
+    const lit = el('path', { d: dl, fill: 'none', stroke: '#ffe0a0', 'stroke-width': f * 0.22, 'stroke-dasharray': dash, 'stroke-linecap': 'round', class: 'nrdash', style: `--dash:-${(f * 1.3).toFixed(1)}` }); svg.appendChild(lit);
+  }
+  // little lamps along the road
+  const Lt = mapPath.getTotalLength(), stepL = f * 7, lampsG = el('g', {});
+  for (let l = stepL * 0.5; l < Lt; l += stepL) { const p = mapPath.getPointAtLength(l); if (pts.some(q => Math.hypot(q[0] - p.x, q[1] - p.y) < f * 2.4)) continue; const on = l <= segLenOf(lastOpen, pts, Lt); lampsG.appendChild(el('circle', { cx: p.x, cy: p.y, r: f * (on ? 1.1 : 0.7), fill: 'url(#nrdot)', opacity: on ? 1 : 0.5 })); lampsG.appendChild(el('circle', { cx: p.x, cy: p.y, r: f * 0.2, fill: on ? '#fff0c8' : '#a89878' })); }
+  svg.appendChild(lampsG);
+  mapBadges = [];
   T.forEach((t, i) => {
-    const [x, y] = pts[i]; const open = townOpen(t); const stars = townStars(t); const col = CEFR_COL[t.cefr] || '#e8e4d8';
-    const g = el('g', { class: 'town' + (open ? '' : ' locked') });
-    if (open) g.appendChild(el('circle', { cx: x, cy: y, r: 5.5, fill: 'url(#glow)' }));
-    g.appendChild(el('circle', { cx: x, cy: y, r: 3.3, fill: '#0b0f14', stroke: open ? col : '#4a5160', 'stroke-width': 0.5 }));
-    g.appendChild(el('path', { d: GLYPH[t.id] || GLYPH.alblasserdam, fill: 'none', stroke: open ? '#e8e4d8' : '#4a5160', 'stroke-width': 0.45, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', transform: `translate(${x} ${y}) scale(0.8)` }));
-    if (!open) { g.appendChild(el('circle', { cx: x, cy: y, r: 4.8, fill: '#1e2634', opacity: 0.7, filter: 'url(#fog)' })); g.appendChild(el('path', { d: `M${x - 1},${y + 0.3} h2 v1.7 h-2 z M${x - 0.6},${y + 0.3} v-0.8 a0.6,0.6 0 0 1 1.2,0 v0.8`, fill: '#4a5160', stroke: '#9aa6b8', 'stroke-width': 0.2 })); }
-    const num = el('text', { x: x - 4.6, y: y - 3.4, class: 'num' }); num.textContent = t.tier; g.appendChild(num);
-    const label = el('text', { x: x, y: y + 6.4, 'text-anchor': 'middle' }); label.textContent = t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name; g.appendChild(label);
-    const badge = el('text', { x: x, y: y + 9.0, 'text-anchor': 'middle', class: 'badge', fill: open ? col : '#4a5160' }); badge.textContent = t.cefr + (open && stars ? ' · ★' + stars : ''); g.appendChild(badge);
+    const [x, y] = pts[i]; const st = states[i]; const stars = townStars(t); const col = CEFR_COL[t.cefr] || '#e8e4d8';
+    const g = el('g', { class: 'town' + (st === 'locked' ? ' locked' : ''), transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` });
+    g.appendChild(el('circle', { r: f * 2.6, fill: 'transparent' }));
+    const b = el('g', {}); g.appendChild(b); mapBadges.push({ b, t, st, col });
+    const label = el('text', { y: f * 2.75, 'text-anchor': 'middle', class: 'nm', style: `font-size:${f}px` }); label.textContent = (t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name).toUpperCase(); g.appendChild(label);
+    const band = el('text', { y: f * 3.95, 'text-anchor': 'middle', class: 'band', style: `font-size:${(f * 0.88).toFixed(1)}px;fill:${st === 'locked' ? '#aab4c2' : col}` }); band.textContent = t.cefr + (st !== 'locked' && stars ? ' · ★' + stars : ''); g.appendChild(band);
     g.onclick = () => rideTo(i);
     svg.appendChild(g);
   });
-  // the bike
-  const bikeG = el('g', { id: 'mapbike' }); bikeG.innerHTML = `<path d="M-1.6,0.7 a1,1 0 1 0 0.01,0 M1.6,0.7 a1,1 0 1 0 0.01,0 M-1.6,0.7 L-0.3,-1.1 L1.6,0.7 M-0.3,-1.1 L0.4,-1.1 L1,0.3 M-0.3,-1.1 L-0.1,-2 M-0.1,-2 L0.5,-2" fill="none" stroke="#d9792a" stroke-width="0.45" stroke-linecap="round"/><circle cx="0" cy="-2.6" r="0.55" fill="#d9b48c"/>`;
-  svg.appendChild(bikeG);
-  // legend
-  const leg = el('g', {}); leg.innerHTML = `<text x="4" y="106" style="font:600 2.4px 'Segoe UI',system-ui,sans-serif;fill:#9fb0cc;letter-spacing:.08em">LEFT / RIGHT: ride · ENTER or TAP: go in · green easy, red hard</text>`; svg.appendChild(leg);
-  const openIdx = T.map((t, i) => townOpen(t) ? i : -1).filter(i => i >= 0); if (!openIdx.includes(mapAt)) mapAt = openIdx[openIdx.length - 1] || 0;
-  placeBike(mapAt);
+  const bikeG = el('g', { id: 'mapbike' }); bikeG.innerHTML = NRMAP.cyclist(f); svg.appendChild(bikeG);
+  for (const k in _segCache) delete _segCache[k];
+  bikeX = null; placeBike(mapAt);
 }
+function markCurrent(cur) { mapBadges.forEach(({ b, t, st, col }, i) => { b.innerHTML = NRMAP.badge(t, i, st, i === cur, mapLay.f, col); }); }
+function segLenOf(i, pts, L) { if (i <= 0) return 0; if (i >= pts.length - 1) return L; return segLen(i); }
 function placeBike(i, u) {   // u: fraction along the road from node i to i+1
   const g = $('mapbike'); if (!g || !mapNodes.length) return;
-  let x, y;
-  if (u == null) { [x, y] = mapNodes[i]; }
-  else { const L = mapPath.getTotalLength(); const segs = mapNodes.length - 1; const a = segLen(i), b = segLen(i + 1); const p = mapPath.getPointAtLength(a + (b - a) * u); x = p.x; y = p.y; }
-  g.setAttribute('transform', `translate(${x} ${y - 4}) scale(0.8)`);
+  let x, y; const f = mapLay ? mapLay.f : 10;
+  if (u == null) { [x, y] = mapNodes[i]; markCurrent(i); }
+  else { const a = segLen(i), b = segLen(i + 1); const p = mapPath.getPointAtLength(a + (b - a) * u); x = p.x; y = p.y; }
+  if (bikeX != null && Math.abs(x - bikeX) > 0.3) bikeFlip = x < bikeX; bikeX = x;
+  g.setAttribute('transform', `translate(${(x + f * 0.4).toFixed(1)} ${(y - f * 1.45).toFixed(1)})${bikeFlip ? ' scale(-1 1)' : ''}`);
 }
 const _segCache = {};
 function segLen(i) {   // road length from the start to node i, found by sampling the path
   if (_segCache[i] != null) return _segCache[i]; const L = mapPath.getTotalLength(); if (i <= 0) return 0; if (i >= mapNodes.length - 1) return L;
-  let best = 0, bd = 1e9; for (let k = 0; k <= 600; k++) { const p = mapPath.getPointAtLength(L * k / 600); const d = Math.hypot(p.x - mapNodes[i][0], p.y - mapNodes[i][1]); if (d < bd) { bd = d; best = L * k / 600; } }
+  let best = 0, bd = 1e9; for (let k = 0; k <= 800; k++) { const p = mapPath.getPointAtLength(L * k / 800); const d = Math.hypot(p.x - mapNodes[i][0], p.y - mapNodes[i][1]); if (d < bd) { bd = d; best = L * k / 800; } }
   _segCache[i] = best; return best;
 }
+let _mapResize = 0;
+addEventListener('resize', () => { clearTimeout(_mapResize); _mapResize = setTimeout(() => { if ($('map').style.display !== 'none' && !mapAnim) drawWorld(); }, 150); });
 function rideTo(target) {
   const T = towns(); if (!townOpen(T[target])) { openTown(T[target]); return; }
   if (mapAnim) return;
@@ -2428,8 +2419,8 @@ $('t_close').onclick = () => { $('town').style.transform = 'translate(-50%,105%)
 function openMap() {
   warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   for (const id of ['start', 'summary', 'mission']) $(id).style.display = 'none';
-  drawWorld(); $('town').style.transform = 'translate(-50%,105%)';
-  $('map').style.display = 'flex'; S.mode = 'start';
+  $('map').style.display = 'flex'; drawWorld(); $('town').style.transform = 'translate(-50%,105%)';
+  S.mode = 'start';
 }
 let pendingLevel = null;
 function openMission(lv) {
