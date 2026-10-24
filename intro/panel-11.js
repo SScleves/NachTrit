@@ -130,14 +130,22 @@
     A.line(g, 100, 142, 340, 127, 'slate3');
     for (let i = 0; i < 7; i++) { const bx = 112 + i * 34; A.bollard(g, bx, 142 - (bx - 100) * 0.0625); }
 
-    // near: the dark row of houses, silhouettes with a rim from the key light, no window wallpaper
+    // near: the dark row of houses, the sky still catching their upper facades, the shade pooling at the street
     A.depth(g, 0.85);
-    A.canalHouse(g, -8, 146, 62, 126, { gable: 'roof', lit: 0, seed: 51, brick: 'night2', trim: 'night3', door: false });
-    A.canalHouse(g, 54, 146, 56, 110, { gable: 'bell', lit: 0, seed: 52, brick: 'night2', trim: 'night3', door: false });
-    A.canalHouse(g, 110, 146, 44, 96, { gable: 'step', lit: 0, seed: 53, brick: 'night2', trim: 'night3', door: false });
-    A.tint(g, -10, 57, 66, 90, 'night0', 0.8, 'mix');
-    A.tint(g, 54, 80, 56, 67, 'night0', 0.8, 'mix');
-    A.tint(g, 110, 88, 44, 59, 'night0', 0.8, 'mix');
+    const LIFT = [1, 2, 3, 4].map(k => A.lut('mix', 'mist1', k * 0.09));
+    const skyLit = (id, y0, y1) => {                         // fog-pale at the top of each house, fading down; only its own pixels
+      const B = g.buf, M = g.mask, gw = g.w;
+      for (let y = Math.max(0, y0); y < Math.min(g.h, y1); y++) {
+        const v = 4 * (1 - (y - y0) / (y1 - y0)), row = y * gw;
+        for (let x = 0; x < gw; x++) { const i = row + x; if (M[i] !== id) continue; let q = v | 0; if (v - q > A.bayer(x, y)) q++; if (q > 0) B[i] = LIFT[Math.min(3, q - 1)][B[i]]; }
+      }
+    };
+    A.canalHouse(g, -8, 146, 62, 126, { gable: 'roof', lit: 0, seed: 51, brick: 'night2', trim: 'night3', door: false }); skyLit(g.sn, 20, 92);
+    A.canalHouse(g, 54, 146, 56, 110, { gable: 'bell', lit: 0, seed: 52, brick: 'night2', trim: 'night3', door: false }); skyLit(g.sn, 36, 100);
+    A.canalHouse(g, 110, 146, 44, 96, { gable: 'step', lit: 0, seed: 53, brick: 'night2', trim: 'night3', door: false }); skyLit(g.sn, 50, 106);
+    A.tint(g, -10, 96, 66, 51, 'night0', 0.45, 'mix');
+    A.tint(g, 54, 104, 56, 43, 'night0', 0.45, 'mix');
+    A.tint(g, 110, 110, 44, 37, 'night0', 0.45, 'mix');
     // dead windows: cold glass with one glint, different sizes, nothing like a grid
     for (const [x, y, w, h] of [[63, 88, 6, 9], [96, 86, 5, 8], [118, 100, 6, 9], [136, 104, 5, 8]]) {
       A.rect(g, x - 1, y - 1, w + 2, h + 2, 'night0'); A.rect(g, x, y, w, h, 'night1');
@@ -180,10 +188,14 @@
       A.rect(g, 14, sy, w, 6, 'wood2'); A.hline(g, 14, sy, w, 'wood3');
       A.vline(g, 14 + w, sy + 1, 4, 'wood2'); A.vline(g, 15 + w, sy + 2, 2, 'wood2');
     }
-    A.omafiets(g, 44, GROUND, { rider: false, speed: 0, shadow: false });
-    A.tint(g, 14, 126, 62, 34, 'night0', 0.62, 'mix');
+    A.omafiets(g, 44, GROUND, { rider: false, speed: 0, shadow: false, rim: 1 });
+    {   // the parked bike, in the dark: one step down its own ramps (not a fog over it), so it stays a crisp shape
+      const id = g.sn, B = g.buf, M = g.mask, gw = g.w;
+      for (let y = 120; y < GROUND + 1; y++) for (let x = 10; x < 80; x++) { const i = y * gw + x; if (M[i] === id) B[i] = A.step(B[i], -1); }
+    }
+    A.tint(g, 14, 120, 24, 34, 'night0', 0.5, 'mix');                                    // the signpost in shade
     A.cheeseCart(g, 304, 156, { glow: 0 });
-    A.tint(g, 286, 134, 34, 24, 'night0', 0.7, 'mix');
+    A.tint(g, 286, 134, 34, 24, 'night0', 0.55, 'mix');
 
     // the cobble strip at the very bottom, the near foreground
     A.hline(g, -20, 179, 360, 'night0');
@@ -209,39 +221,13 @@
     }
   }
 
-  // ---------------------------------------------------------------- the changed neighbour (a local sprite)
-  // A tall thin woman in a long skirt and a bonnet, hunched, head pushed forward, facing left. A dark
-  // silhouette with two eye pixels. She holds her Tikkie phone up to her face until the window lights,
-  // then lowers it. (x, y): the ground under her.
+  // ---------------------------------------------------------------- the changed neighbour (the shared bonnet zombie)
+  // A tall thin woman in a long skirt and a bonnet, hunched, head pushed forward, facing left. She holds her
+  // Tikkie phone up to her face until the window lights, then lowers it; her eyes flare when it catches.
+  // (x, y): the ground under her.
   function neighbour(g, x, y, t, phoneUp, flash) {
-    const sway = Math.sin(t * 1.3 + 2) > 0.2 ? 1 : 0;
-    const body = 'night1', body2 = 'night2';
-    A.begin(g);
-    A.line(g, x - 2, y - 36, x - 1, y - 14, 'night0', 2);                                            // the far arm, long and loose
-    A.poly(g, [x - 2, y - 25, x + 5, y - 26, x + 9, y - 2, x - 7, y - 2], body);                      // the long skirt
-    A.poly(g, [x - 1, y - 22, x + 3, y - 22, x + 5, y - 4, x - 2, y - 4], body2);                     // the apron, a shade paler
-    A.rect(g, x - 7, y - 2, 17, 2, 'night0');
-    A.rect(g, x - 8, y - 3, 3, 3, 'night2'); A.rect(g, x - 10, y - 1, 3, 1, 'night2');                // clog toes
-    A.poly(g, [x - 2, y - 24, x + 5, y - 25, x + 6, y - 33, x + 4, y - 39 - sway, x - 3, y - 40, x - 8, y - 38, x - 6, y - 31], body);  // hunched back
-    A.rect(g, x - 13, y - 44 + sway, 6, 6, body);                                                      // head, pushed forward
-    A.rect(g, x - 14, y - 41 + sway, 1, 3, body);                                                      // the slack jaw
-    // the bonnet: a pale cap with a flap behind the neck, a shape of its own (not ears)
-    A.rect(g, x - 12, y - 46 + sway, 6, 3, 'mist2'); A.hline(g, x - 11, y - 47 + sway, 4, 'mist3');
-    A.rect(g, x - 8, y - 43 + sway, 3, 6, 'mist1'); A.px(g, x - 7, y - 37 + sway, 'mist1');
-    // the near arm: up with the phone, or hanging long
-    if (phoneUp) {
-      A.line(g, x - 6, y - 36, x - 11, y - 29, body2, 2); A.line(g, x - 11, y - 29, x - 14, y - 36, body2, 2);
-      A.rect(g, x - 17, y - 40 + sway, 2, 4, 'phone2'); A.px(g, x - 17, y - 40 + sway, 'phone5');
-    } else {
-      A.line(g, x - 6, y - 36, x - 8, y - 26, body2, 2); A.line(g, x - 8, y - 26, x - 9, y - 15, body2, 2);
-      A.rect(g, x - 10, y - 15, 2, 3, 'night3'); A.px(g, x - 10, y - 12, 'phone1');
-    }
-    A.end(g);
-    // eyes glow on top of the rim light
-    const ex = x - 13, ey = y - 42 + sway;
-    A.px(g, ex, ey, flash ? 'amber8' : 'eye4'); A.px(g, ex + 2, ey, flash ? 'amber6' : 'eye2');
-    glow(g, ex + 1, ey, 5, flash ? 'amber6' : 'eye3', flash ? 0.6 : 0.4, { power: 1.4 });
-    if (phoneUp) glow(g, x - 16, y - 38 + sway, 7, 'phone4', 0.34, { power: 1.4 });
+    const r = A.zombie(g, x, y, { variant: 'bonnet', facing: 'left', t, seed: 6, height: 50, hunch: 0.45, phone: phoneUp, shirt: 'night2', pants: 'night1', glow: flash ? 0.8 : 0.4, shadow: false });
+    if (flash) glow(g, r.head[0], r.head[1] + 5, 6, 'amber6', 0.5, { power: 1.2 });
   }
 
   // ---------------------------------------------------------------- the piece
