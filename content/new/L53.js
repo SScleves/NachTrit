@@ -13,9 +13,9 @@
   // New rules: obj (object pronouns), er (er is / er zijn), vergl (comparison). Set only if missing.
   // New props: none (water, kerk, nummer).
   // Word forks take their wrong signs from each other, so no two nouns here mean the same thing.
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem-haar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.vergl = window.RULES.vergl || { name: 'Comparison: -er dan, het -st', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -71,11 +71,11 @@
         FK(['gezellig', 'gezellige'], 0, 'adj', 'café is a het-word after een: the one place with no -e.'), 'café bij de haven.'] },
 
       // builds: comparison
-      { en: 'Mussels are cheaper than oysters.', parts: ['Mosselen zijn', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergl', 'Comparing two things: the adjective plus -er, then dan.'), 'dan oesters.'] },
-      { en: 'A beer is more expensive than a coffee.', parts: ['Een biertje is', FK(['duurder', 'duurer', 'duurst'], 0, 'vergl', 'duur ends in -r, so a d slips in: duurder.'), 'dan een koffie.'] },
-      { en: "I'd rather drink tea than coffee.", parts: ['Ik drink', FK(['liever', 'graagder', 'meer graag'], 0, 'vergl', 'graag has its own ladder: graag, liever, liefst.'), 'thee dan koffie.'] },
-      { en: 'The waitress is taller than me.', parts: ['De serveerster is', FK(['langer', 'lang', 'langst'], 0, 'vergl', 'Tall for people is lang. Taller than: langer dan.'), 'dan ik.'] },
-      { en: 'The mussels from Yerseke are the tastiest.', parts: ['De mosselen uit Yerseke zijn', FK(['het lekkerst', 'het lekkerder'], 0, 'vergl', 'The best of all: het plus -st. -er is only for two things.'), '.'] },
+      { en: 'Mussels are cheaper than oysters.', parts: ['Mosselen zijn', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing two things: the adjective plus -er, then dan.'), 'dan oesters.'] },
+      { en: 'A beer is more expensive than a coffee.', parts: ['Een biertje is', FK(['duurder', 'duurer', 'duurst'], 0, 'vergelijk', 'duur ends in -r, so a d slips in: duurder.'), 'dan een koffie.'] },
+      { en: "I'd rather drink tea than coffee.", parts: ['Ik drink', FK(['liever', 'graagder', 'meer graag'], 0, 'vergelijk', 'graag has its own ladder: graag, liever, liefst.'), 'thee dan koffie.'] },
+      { en: 'The waitress is taller than me.', parts: ['De serveerster is', FK(['langer', 'lang', 'langst'], 0, 'vergelijk', 'Tall for people is lang. Taller than: langer dan.'), 'dan ik.'] },
+      { en: 'The mussels from Yerseke are the tastiest.', parts: ['De mosselen uit Yerseke zijn', FK(['het lekkerst', 'het lekkerder'], 0, 'vergelijk', 'The best of all: het plus -st. -er is only for two things.'), '.'] },
 
       // builds: adjective -e, with a time word up front
       { en: "I'd like a cold beer.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. No t for ik.'), 'graag een',
