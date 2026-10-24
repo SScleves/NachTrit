@@ -121,11 +121,20 @@
       A.rect(g, x + w * 0.68, by - gh * 0.7, 3, 6, base);
     }
     A.hline(g, x, by, w, trim);
+    if (o.lintel) {                                          // the sky lights the upper facade: base pixels step up, dithered, fading down
+      const id = g.sa, lt = A.step(base, 1), bi = A.col(base), y0 = Math.round(by - gh), hh = Math.round((y - y0) * 0.55);
+      for (let yy = Math.max(0, y0 + g.oy); yy < Math.min(g.h, y0 + hh + g.oy); yy++) {
+        const lv = 1 - (yy - g.oy - y0) / hh, row = yy * g.w;
+        for (let xx = Math.max(0, x + g.ox); xx < Math.min(g.w, x + w + g.ox); xx++) { const i = row + xx; if (g.mask[i] === id && g.buf[i] === bi && lv > A.bayer(xx, yy)) g.buf[i] = lt; }
+      }
+    }
     const ww = 4, wh = 6, cols = Math.max(1, Math.floor((w - 3) / 7)), gw = cols * ww + (cols - 1) * 3, x0 = x + Math.round((w - gw) / 2);
     const rows = Math.max(1, Math.floor((y - by - 16) / 10));
     if (!o.bare) for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
       const wx = x0 + c * 7, wy = by + 4 + r * 10;
+      if (o.lintel) A.rect(g, wx - 1, wy - 1, ww + 2, 1, o.lintel);
       A.rect(g, wx, wy, ww, wh, glass); A.hline(g, wx - 1, wy + wh, ww + 2, trim);
+      if (o.lintel) A.px(g, wx + ww - 1, wy, A.step(glass, 2));
     }
     A.rect(g, x, y - 3, w, 3, o.plinth);
     A.end(g, 1);
@@ -133,7 +142,7 @@
     (o.lit || []).forEach(l => {
       const wx = x0 + l[0] * 7, wy = by + 4 + l[1] * 10;
       if (l[2]) { o.out.push([wx, wy]); return; }
-      A.window(g, wx, wy, ww, wh, { lit: 0.9, frame: trim, glow: 0, sill: false, bars: 'cross' });
+      A.window(g, wx, wy, ww, wh, { lit: 0.9, frame: trim, glow: 0, sill: false, bars: 't' });
       glow(g, wx + 2, wy + 3, 9, 9, 'amber5', 0.3, 1.2);
     });
   }
@@ -199,7 +208,7 @@
   }
 
   const MIDLIT = [], NEARLIT = [];
-  const LIFT = s => { s.ox = PAD; glow(s, 152, 124, 50, 30, 'mist4', 0.26, 1.2, 3); };   // the lift behind the figures
+  const LIFT = s => { s.ox = PAD; glow(s, 176, 120, 66, 30, 'mist5', 0.34, 1.1, 4); };   // the pale fog behind the figures, so they read as dark shapes
   const D = (s, d) => { A.depth(s, d); s.ox = PAD; s.oy = 0; };
   function midBank(s) {
     D(s, 0.4);
@@ -214,14 +223,15 @@
   function nearStreet(s) {
     D(s, 0.85);
     NEARLIT.length = 0;
-    const NEAR = { base: 'night2', trim: 'night4', glass: 'night0', plinth: 'night1', fog: y => 0.05 + 0.5 * Math.max(0, Math.min(1, (y - 50) / 96)), out: NEARLIT };
-    house(s, -16, 146, 38, 98, 'bell', NEAR);
-    house(s, 22, 146, 34, 104, 'step', Object.assign({ lit: [[0, 7]] }, NEAR));
-    house(s, 56, 146, 30, 90, 'spout', NEAR);
-    house(s, 86, 146, 36, 100, 'roof', Object.assign({ lit: [[2, 1], [3, 2]] }, NEAR));
+    // the near row: dark brick, deep window recesses, warm windows here and there; the mist only at their feet
+    const NEAR = { base: 'night1', trim: 'night3', glass: 'night0', plinth: 'night0', lintel: 'slate2', brick: true, fog: y => Math.max(0, Math.min(1, (y - 96) / 50)) * 0.42, out: NEARLIT };
+    house(s, -16, 146, 38, 98, 'bell', Object.assign({ lit: [[1, 1], [3, 3]] }, NEAR));
+    house(s, 22, 146, 34, 104, 'step', Object.assign({ lit: [[0, 0], [2, 2], [1, 4]] }, NEAR));
+    house(s, 56, 146, 30, 90, 'spout', Object.assign({ lit: [[1, 2]] }, NEAR));
+    house(s, 86, 146, 36, 100, 'roof', Object.assign({ lit: [[2, 1], [3, 2], [0, 4]] }, NEAR));
     house(s, 122, 146, 30, 96, 'step', Object.assign({ lit: [[1, 1], [2, 3, true]] }, NEAR));
-    house(s, 270, 146, 36, 92, 'neck', Object.assign({ lit: [[1, 2]] }, NEAR));
-    house(s, 306, 146, 34, 100, 'bell', NEAR);
+    house(s, 270, 146, 36, 92, 'neck', Object.assign({ lit: [[1, 2], [3, 0]] }, NEAR));
+    house(s, 306, 146, 34, 100, 'bell', Object.assign({ lit: [[0, 3]] }, NEAR));
     D(s, 1);
     A.rect(s, -20, 147, 360, 8, 'slate3'); A.hline(s, -20, 147, 360, 'slate5'); A.hline(s, -20, 154, 360, 'slate1');
     for (let x = -20; x < 340; x += 9) A.vline(s, x + ((x / 9) & 1) * 4, 148, 6, 'slate2');
@@ -233,7 +243,6 @@
     A.omafiets(s, 272, 153, { facing: 'left', rim: 1 });
     const bid = s.sn, DK = A.lut('mix', 'night0', 0.55);   // a parked bike in the dark: a shape, not a prize
     for (let y = 120; y < 156; y++) for (let x = 240 + PAD; x < 300 + PAD; x++) { const i = y * LW + x; if (s.mask[i] === bid) s.buf[i] = DK[s.buf[i]]; }
-    LIFT(s);
   }
   const LAMPS = [[40, 1], [292, 2]];
   const FAR = [[158, 25], [186, 20], [214, 16], [240, 13]];
@@ -303,7 +312,7 @@
       paste(g, layer('near', nearStreet), 0.95);
       A.depth(g, 0.85);
       NEARLIT.forEach(([wx, wy]) => {       // the window behind the man's head is live: it stutters like the lamp
-        A.window(g, wx, wy, 4, 6, { lit: dip ? 0.5 : 0.9, frame: 'night4', glow: 0, sill: false, bars: 'cross' });
+        A.window(g, wx, wy, 4, 6, { lit: dip ? 0.5 : 0.9, frame: 'night3', glow: 0, sill: false, bars: 't' });
         glow(g, wx + 2, wy + 3, 9, 9, 'amber5', dip ? 0.15 : 0.3, 1.2);
       });
       A.depth(g, 1);
@@ -332,16 +341,15 @@
         if (g.mask[i] === zid) { const c = g.buf[i]; if (PAPER[c]) g.buf[i] = DIMPAPER[c]; }
       }
       const z2 = A.zombie(g, 207 + sway(2), 153, { variant: 'phone', t, seed: 5, facing: 'left', height: 56, shirt: 'night4' });
-      // the tall woman: 70 px against his 40. Her own arm is drawn here, so the phone hangs at his head, not at her face.
+      // the tall woman: 80 px against his 40. Her phone arm is drawn here from her real shoulder, so the phone hangs at his head, not at her face.
+      const manX = 148, manTop = 153 - 40 + (Math.sin(t * 2.2 + 1) > 0.55 ? 1 : 0);
       const WH = 80, WX = 160 + sway(1), WSEED = 8, WHUNCH = 0.25;
       const w = A.tallWoman(g, WX, 153, { t, facing: 'left', seed: WSEED, phone: false, height: WH, hunch: WHUNCH, shirt: 'teal2' });
-      const wa = 0.08 + WHUNCH * 0.7 + Math.sin(t * 1.3 + WSEED * 1.7) * 0.04, wLeg = Math.round(WH * 0.42), wTor = Math.round(WH * 0.34);
-      const wsx = WX - Math.round(Math.sin(wa) * wTor) - 1, wsy = 153 - wLeg - Math.round(Math.cos(wa) * wTor);
-      const wh = [wsx - 3, wsy + 16], we = [wsx + 5, wsy + 14];
-      A.line(g, wsx, wsy + 2, we[0], we[1], 'teal4', 2); A.line(g, we[0], we[1], wh[0], wh[1], 'teal5', 2);
-      A.rect(g, wh[0] - 1, wh[1] - 1, 3, 3, 'zombie6');
+      const wsx = w.shoulder[0], wsy = w.shoulder[1];
+      const wh = [manX + 9, manTop + 3], we = [Math.round((wsx + wh[0]) / 2) + 4, Math.round((wsy + wh[1]) / 2) + 2];
+      A.line(g, wsx, wsy + 1, we[0], we[1], 'teal3', 2); A.line(g, we[0], we[1], wh[0], wh[1], 'zombie5', 1);
+      A.rect(g, wh[0] - 1, wh[1] - 1, 3, 3, 'zombie6'); A.px(g, wh[0] - 2, wh[1] + 1, 'zombie5');
       w.hand = [wh[0], wh[1] - 2];
-      const manX = 148, manTop = 153 - 40 + (Math.sin(t * 2.2 + 1) > 0.55 ? 1 : 0);
       A.man(g, manX, 153, { t, facing: 'front', face: flash ? 'worry' : 'deadpan' });
 
       // local phones, 4x6, aimed at the man, with a Tikkie bar
