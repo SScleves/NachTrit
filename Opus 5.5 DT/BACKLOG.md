@@ -10,7 +10,8 @@ pipeline with the atmosphere pass (haze sky dome, fog keyed to the horizon, lamp
 pools, window glow, golden wisps, violet toon shadows), the lamp and night mechanic, fares and
 euros, the 14-panel intro (panels 4 to 6 are placeholder paintings), the route-board map, and
 levels for 11 of 13 towns (1 to 114, audited). In flight on the laptop: `world` (composition,
-props, materials passes), `map` (concept-style map), Nijmegen and Amsterdam content.
+props, materials passes) and `map` (the concept-style map). Nothing else; the laptop then only
+merges, checks on the GPU and pushes.
 
 ---
 
@@ -142,8 +143,8 @@ now on `world`; wait for `reports/` to say it merged, then take the following.
 ## C. Content
 
 ### C1. Nijmegen (115 to 122) and Amsterdam (123 to 130). Branch `dt/content-nijmegen-amsterdam`.
-LAPTOP may already be writing these; check `content/new/` and `content/pending/` on main first.
-If not done: follow CONTENT-BRIEF.md and the tier fences, the pattern writer, auditor, spot-check.
+Yours: the laptop is not writing these. Two unaudited drafts, L118 and L122, sit in `content/pending/`;
+reuse or discard them. Follow CONTENT-BRIEF.md and the tier fences, the pattern writer, auditor, spot-check.
 Amsterdam is the finale: its eighth level (eigen, "De grachten") ends the game.
 
 ### C2. A fourth audit for the error class that gets through. Branch `dt/audit-distractors`.
