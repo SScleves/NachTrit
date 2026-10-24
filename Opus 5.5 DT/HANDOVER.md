@@ -156,8 +156,8 @@ no per-frame allocations in update(); ribbons untouched; draw calls under 2x.
 - "In Amsterdam I also want to see the red light district." Clean and funny.
 - "Make it look really really close to the concept art, and use the GitHub repos as code
   examples" (PhiloLabs/fable51-worlds: kyoto-higashiyama and death-star-trench-run; a16z-infra/
-  ai-town and ceresOPA/Alicization-Town for character and map ideas). Local copies of the useful
-  Kyoto and Trench Run files were under refcode/ on the laptop; fetch them from GitHub yourself.
+  ai-town and ceresOPA/Alicization-Town for character and map ideas). See REFERENCE-REPOS.md: URLs, what to study in each, and local copies of the key files in
+  reference-code/.
 - "The lights need to dim as it progresses, otherwise there's no point capturing lights."
 - "Each joke should have its own frame" in the intro (done: 14 panels; panels 4 to 6 unpainted).
 - "The map should be clearer about difficulty, with a rideable bike between towns" (done as
