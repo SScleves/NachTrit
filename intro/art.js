@@ -135,6 +135,7 @@
       else throw new Error('NRART: unknown light mode ' + mode);
       t[i] = nearest(r, gg, b, RAMP_OF[i], lr);
     }
+    if (lutCache.size >= 4096) lutCache.clear();   // a piece that varies a strength every frame must not grow this forever
     lutCache.set(key, t); return t;
   }
   function levels(mode, c, strength, Q) {
