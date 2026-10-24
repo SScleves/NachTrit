@@ -20,7 +20,8 @@ const AUTOPILOT = `window.autopilot = () => {
   if (ahead.some(o => o.lane === NR.lane)) { const free = lanes.filter(l => !ahead.some(o => o.lane === l)); if (free.length) NR.lane = free.sort((a, b) => Math.abs(a - NR.lane) - Math.abs(b - NR.lane))[0]; }
 };`;
 
-const browser = await chromium.launch({ headless: true, args: ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+// NR_CHANNEL=chrome (or msedge) runs the harness in an installed browser where Playwright's own Chromium cannot be downloaded; still software GL
+const browser = await chromium.launch({ headless: true, ...(process.env.NR_CHANNEL ? { channel: process.env.NR_CHANNEL } : {}), args: ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 page.on('console', m => { if (m.type() === 'error') report.errors.push({ where: 'console', text: m.text() }); });
 page.on('pageerror', e => report.errors.push({ where: 'page', text: String(e) }));
