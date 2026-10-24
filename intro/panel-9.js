@@ -109,6 +109,99 @@
     A.end(g, rim);
   }
 
+  // the room never moves on its own: wall, window frame, curtains, radiator, the Delft tile's frame, the floor and its
+  // moonlight, the lamp, the sofa and the clog. Drawn in the frame's own camera offset (depth 1).
+  const WX = 14, WY = 16, WW = 98, WB = 106, SX = 146, SW = 140;   // the pane: left, top, width, bottom; the sofa
+  function room(g) {
+    // ============ 2. the wall: flat night3, a sparse stripe, wainscot ============
+    const wall = (x, y, w, h) => { A.rect(g, x, y, w, h, 'night3'); for (let xx = x - ((x % 24) + 24) % 24; xx < x + w; xx += 24) if (xx >= x) A.vline(g, xx, y, h, 'night2'); };
+    wall(-20, 0, 34, 132); wall(112, 0, 240, 132); wall(WX, 0, WW, WY); wall(WX, WB + 2, WW, 26);
+    A.ditherGradient(g, 0, 0, 320, 16, null, 'night1', 'up');                       // the ceiling goes dark
+    A.rect(g, -20, 108, 360, 24, 'wood1');
+    for (let xx = -16; xx < 330; xx += 24) { A.rect(g, xx, 111, 20, 17, 'wood2'); A.hline(g, xx, 111, 20, 'wood3'); A.hline(g, xx, 127, 20, 'wood0'); A.vline(g, xx + 19, 111, 17, 'wood0'); }
+    A.hline(g, -20, 108, 360, 'wood3'); A.hline(g, -20, 107, 360, 'wood2'); A.rect(g, -20, 129, 360, 3, 'wood0'); A.hline(g, -20, 129, 360, 'wood2');
+    // the window: frame, mullion, a high transom, a low sill
+    const fr = 'wood3';
+    A.rect(g, WX - 2, WY - 2, WW + 4, 2, fr); A.rect(g, WX - 2, WB, WW + 4, 3, fr); A.hline(g, WX - 3, WB + 3, WW + 6, 'wood5');
+    A.rect(g, WX - 2, WY - 2, 2, WB - WY + 4, fr); A.rect(g, WX + WW, WY - 2, 2, WB - WY + 4, fr);
+    A.rect(g, 62, WY, 3, WB - WY, fr); A.rect(g, WX, 40, WW, 2, fr);
+    A.vline(g, WX, WY, WB - WY, 'wood4'); A.vline(g, 62, WY, WB - WY, 'wood4'); A.hline(g, WX, WY - 1, WW, 'wood4');
+    // curtains: slate, one low step, pushed to the sides
+    const curtain = (x0, w) => { A.rect(g, x0, 10, w, 98, 'slate1'); for (let k = 0; k < w; k += 3) { A.vline(g, x0 + k, 12, 96, 'slate0'); A.vline(g, x0 + k + 1, 12, 96, 'slate2'); } };
+    curtain(4, 8); curtain(114, 9);
+    A.rect(g, 1, 8, 125, 2, 'wood3'); A.rect(g, 0, 7, 3, 4, 'wood4'); A.rect(g, 125, 7, 3, 4, 'wood4'); A.hline(g, 1, 8, 125, 'wood4');
+    // the radiator under the window, quiet slate
+    A.rect(g, 26, 112, 72, 14, 'steel1');
+    for (let xx = 27; xx < 96; xx += 5) { A.rect(g, xx, 113, 3, 12, 'steel2'); A.vline(g, xx, 113, 12, 'steel3'); A.vline(g, xx + 2, 113, 12, 'steel0'); }
+    A.hline(g, 26, 112, 72, 'steel3'); A.hline(g, 26, 126, 72, 'steel0');
+    // a Delft tile with a windmill: the Netherlands has no mountains (the mill itself turns, so it is drawn live)
+    A.rect(g, 170, 26, 28, 28, 'wood3'); A.rect(g, 172, 28, 24, 24, 'paper1'); A.hline(g, 170, 26, 28, 'wood5');
+    A.rect(g, 173, 29, 22, 22, 'paper2');
+    for (const [cx, cy] of [[174, 30], [193, 30], [174, 49], [193, 49]]) { A.px(g, cx, cy, 'blue3'); A.px(g, cx + 1, cy, 'blue3'); A.px(g, cx, cy + 1, 'blue3'); }
+
+    // ============ 3. the floor, the rug, the cold light from the glass ============
+    A.rect(g, 0, 132, 320, 50, 'wood1');
+    for (let r = 0; r < 11; r++) {
+      const y0 = 132 + Math.round(r * r * 0.22 + r * 2.6), h = Math.round(2.6 + r * 0.5);
+      A.rect(g, -20, y0, 360, Math.max(2, h), (r & 1) ? 'wood1' : 'wood0'); A.hline(g, -20, y0, 360, 'wood0');
+      for (let xx = -20 + Math.floor(H(r, 3) * 40); xx < 330; xx += 46 + Math.floor(H(r, 5) * 30)) A.vline(g, xx, y0, Math.max(2, h), 'wood0');
+    }
+    A.ditherGradient(g, 0, 150, 320, 30, null, 'night0', 'down');
+    // the rug: night slate, low
+    A.ellipse(g, 196, 158, 92, 14, 'night2'); A.ellipse(g, 196, 158, 86, 11, 'night3'); A.ellipse(g, 196, 158, 66, 7, 'night2');
+    A.ditherRect(g, 140, 153, 112, 10, null, 'night4', 0.1);
+    // the window's cold patch on the floor: two soft slabs of moonlight with the mullion between them, the watcher cast into the room
+    const patch = (key, xa0, xb0, xa1, xb1) => cfield(g, key, -20, 134, 160, 46, (i, j) => {
+      const f = j / 46, xa = xa0 + (xa1 - xa0) * f + 20, xb = xb0 + (xb1 - xb0) * f + 20;
+      if (i < xa || i > xb) return 0;
+      return (1 - f * 0.55) * Math.min(1, Math.min(i - xa, xb - i) / 3.5);
+    }, 'add', 'mist5', 0.3, 5);
+    patch('fl1', 18, 60, -14, 28); patch('fl2', 67, 113, 35, 81);
+    A.poly(g, [74, 134, 86, 134, 74, 148, 56, 166, 44, 180, 24, 180, 34, 164, 56, 148], 'wood0');   // her long shadow, stretched
+    A.disc(g, 36, 174, 3, 'wood0');                                                                  // the head
+
+    // ============ 4. the lamp, dimmed: warm, but not the star ============
+    A.depth(g, 1);
+    A.rect(g, 300, 54, 2, 80, 'slate1'); A.vline(g, 301, 54, 80, 'slate3'); A.rect(g, 293, 132, 16, 2, 'slate2'); A.rect(g, 295, 130, 12, 2, 'slate1');
+    A.poly(g, [290, 54, 312, 54, 307, 38, 295, 38], 'amber2'); A.hline(g, 290, 54, 23, 'amber3'); A.hline(g, 295, 38, 13, 'amber1'); A.vline(g, 297, 40, 14, 'amber3'); A.vline(g, 305, 40, 14, 'amber1'); A.rect(g, 298, 54, 6, 2, 'amber5');
+
+    // ============ 5. the sofa (the man and the dogs are live) ============
+    A.rect(g, SX, 84, SW, 46, 'teal1'); A.rect(g, SX, 84, SW, 3, 'teal3'); A.hline(g, SX, 84, SW, 'teal4');
+    for (let xx = SX + 12; xx < SX + SW - 8; xx += 24) { A.vline(g, xx, 90, 30, 'teal0'); for (let yy = 96; yy < 118; yy += 10) A.px(g, xx + 12, yy, 'teal2'); }
+    A.rect(g, SX - 8, 102, 12, 38, 'teal3'); A.rect(g, SX - 8, 102, 12, 2, 'teal4'); A.vline(g, SX - 8, 104, 36, 'teal2');
+    A.rect(g, SX + SW - 4, 102, 12, 38, 'teal3'); A.rect(g, SX + SW - 4, 102, 12, 2, 'teal4');
+    A.rect(g, SX + 4, 122, SW - 8, 4, 'teal3');                                           // the cushion top, seen low
+    A.rect(g, SX + 4, 126, SW - 8, 11, 'teal2'); A.hline(g, SX + 4, 126, SW - 8, 'teal3'); A.vline(g, SX + 72, 127, 10, 'teal1'); A.hline(g, SX + 4, 136, SW - 8, 'teal1');
+    A.rect(g, SX - 6, 138, 4, 4, 'wood1'); A.rect(g, SX + SW + 2, 138, 4, 4, 'wood1');
+    fshadow(g, SX + SW / 2, 141, 78, 2, 0.7);
+    // the cushion that is not orange: a quiet slate square
+    A.rect(g, SX + 100, 104, 17, 18, 'slate2'); A.hline(g, SX + 100, 104, 17, 'slate4'); A.vline(g, SX + 116, 105, 17, 'slate1');
+    // a chewed clog, the dogs' toy: one small yellow note, dimmed
+    A.rect(g, 234, 156, 9, 3, 'cheese2'); A.rect(g, 235, 155, 5, 1, 'cheese3'); A.rect(g, 234, 158, 9, 1, 'cheese1'); A.px(g, 242, 157, 'wood1'); A.px(g, 240, 155, 'wood0'); A.px(g, 236, 158, 'wood0');
+  }
+  // Painted twice over two different colours: a pixel that comes out differently is glass, where the live view outside
+  // shows through. One plate per camera offset (the drift is a few pixels, so there are only a handful).
+  // The copy runs as a list of [start, end) spans of room pixels, so a frame costs a few hundred memcpys.
+  const plates = new Map();
+  function plateFor(g) {
+    A.depth(g, 1);
+    const key = g.w + 'x' + g.h + ':' + g.ox + ',' + g.oy; let p = plates.get(key); if (p) return p;
+    const keep = g.buf.slice(), keepMask = g.mask.slice();   // the back plane reads beyond the pane (the water), so leave the frame as it was
+    g.buf.fill(1); g.mask.fill(0); room(g); const buf = g.buf.slice();
+    g.buf.fill(2); room(g);
+    const spans = []; let s = -1;
+    for (let i = 0; i <= buf.length; i++) {
+      const isRoom = i < buf.length && buf[i] === g.buf[i];
+      if (isRoom && s < 0) s = i; else if (!isRoom && s >= 0) { spans.push(s, i); s = -1; }
+    }
+    g.buf.set(keep); g.mask.set(keepMask);
+    p = { buf, spans: Int32Array.from(spans) }; plates.set(key, p); return p;
+  }
+  function pastePlate(g, p) {
+    const buf = g.buf, mask = g.mask, src = p.buf, sp = p.spans;
+    for (let k = 0; k < sp.length; k += 2) { buf.set(src.subarray(sp[k], sp[k + 1]), sp[k]); mask.fill(0, sp[k], sp[k + 1]); }
+  }
+
   A.panels[8] = {
     text: 'Now the only ones who still understand him are two dogs and a grammar book he never opened.',
     nl: 'Nu begrijpen alleen twee honden hem nog, en een grammaticaboek dat hij nooit heeft opengeslagen.',
@@ -116,9 +209,9 @@
       A.camera(g, t, { x: -5, period: 8 }); A.key(g, 300, 50, 1);
       const talk = (t % 4) < 1.4, tilt = talk && (t * 4 % 1) < 0.8 ? 1 : 0;
       const pulse = 0.5 + 0.5 * Math.sin(t * TAU / 4);
+      const plate = plateFor(g);                       // the room for this camera offset, painted once
 
       // ============ 1. the cold back plane, seen through the window ============
-      const WX = 14, WY = 16, WW = 98, WB = 106;      // the pane: left, top, width, bottom
       A.depth(g, 0.3);
       skyBand(g, WX - 4, 12, WW + 8, 82, ['night4', 'night5', 'mist0', 'mist1', 'mist2', 'mist3']);
       A.church(g, 100, 88, 0.55, { tone: 'mist1' });
@@ -151,71 +244,13 @@
       A.px(g, HPX - 1, HPY + 3, 'mist5'); A.px(g, HPX - 2, HPY + 2, 'mist4');
       A.vline(g, HPX + 2, HPY + 5, 4 + Math.round(pulse * 2), 'mist4'); A.vline(g, HPX + 4, HPY + 5, 2, 'mist4');
 
-      // ============ 2. the wall: flat night3, a sparse stripe, wainscot ============
-      const wall = (x, y, w, h) => { A.rect(g, x, y, w, h, 'night3'); for (let xx = x - ((x % 24) + 24) % 24; xx < x + w; xx += 24) if (xx >= x) A.vline(g, xx, y, h, 'night2'); };
-      wall(-20, 0, 34, 132); wall(112, 0, 240, 132); wall(WX, 0, WW, WY); wall(WX, WB + 2, WW, 26);
-      A.ditherGradient(g, 0, 0, 320, 16, null, 'night1', 'up');                       // the ceiling goes dark
-      A.rect(g, -20, 108, 360, 24, 'wood1');
-      for (let xx = -16; xx < 330; xx += 24) { A.rect(g, xx, 111, 20, 17, 'wood2'); A.hline(g, xx, 111, 20, 'wood3'); A.hline(g, xx, 127, 20, 'wood0'); A.vline(g, xx + 19, 111, 17, 'wood0'); }
-      A.hline(g, -20, 108, 360, 'wood3'); A.hline(g, -20, 107, 360, 'wood2'); A.rect(g, -20, 129, 360, 3, 'wood0'); A.hline(g, -20, 129, 360, 'wood2');
-      // the window: frame, mullion, a high transom, a low sill
-      const fr = 'wood3';
-      A.rect(g, WX - 2, WY - 2, WW + 4, 2, fr); A.rect(g, WX - 2, WB, WW + 4, 3, fr); A.hline(g, WX - 3, WB + 3, WW + 6, 'wood5');
-      A.rect(g, WX - 2, WY - 2, 2, WB - WY + 4, fr); A.rect(g, WX + WW, WY - 2, 2, WB - WY + 4, fr);
-      A.rect(g, 62, WY, 3, WB - WY, fr); A.rect(g, WX, 40, WW, 2, fr);
-      A.vline(g, WX, WY, WB - WY, 'wood4'); A.vline(g, 62, WY, WB - WY, 'wood4'); A.hline(g, WX, WY - 1, WW, 'wood4');
-      // curtains: slate, one low step, pushed to the sides
-      const curtain = (x0, w) => { A.rect(g, x0, 10, w, 98, 'slate1'); for (let k = 0; k < w; k += 3) { A.vline(g, x0 + k, 12, 96, 'slate0'); A.vline(g, x0 + k + 1, 12, 96, 'slate2'); } };
-      curtain(4, 8); curtain(114, 9);
-      A.rect(g, 1, 8, 125, 2, 'wood3'); A.rect(g, 0, 7, 3, 4, 'wood4'); A.rect(g, 125, 7, 3, 4, 'wood4'); A.hline(g, 1, 8, 125, 'wood4');
-      // the radiator under the window, quiet slate
-      A.rect(g, 26, 112, 72, 14, 'steel1');
-      for (let xx = 27; xx < 96; xx += 5) { A.rect(g, xx, 113, 3, 12, 'steel2'); A.vline(g, xx, 113, 12, 'steel3'); A.vline(g, xx + 2, 113, 12, 'steel0'); }
-      A.hline(g, 26, 112, 72, 'steel3'); A.hline(g, 26, 126, 72, 'steel0');
-      // a Delft tile with a windmill: the Netherlands has no mountains
-      A.rect(g, 170, 26, 28, 28, 'wood3'); A.rect(g, 172, 28, 24, 24, 'paper1'); A.hline(g, 170, 26, 28, 'wood5');
-      A.rect(g, 173, 29, 22, 22, 'paper2');
+      // ============ 2-5. the room: wall, window, curtains, radiator, floor, lamp, sofa and clog, pasted around the glass ============
+      pastePlate(g, plate);
+      // the windmill on the Delft tile turns with the one outside; the tile's corner dots stay on top
       A.windmill(g, 184, 50, 0.28, -t * Math.PI / 16 + 0.5, { tone: 'blue2', sail: 'blue2', stage: false, lit: 0, rim: 0 });
       for (const [cx, cy] of [[174, 30], [193, 30], [174, 49], [193, 49]]) { A.px(g, cx, cy, 'blue3'); A.px(g, cx + 1, cy, 'blue3'); A.px(g, cx, cy + 1, 'blue3'); }
 
-      // ============ 3. the floor, the rug, the cold light from the glass ============
-      A.rect(g, 0, 132, 320, 50, 'wood1');
-      for (let r = 0; r < 11; r++) {
-        const y0 = 132 + Math.round(r * r * 0.22 + r * 2.6), h = Math.round(2.6 + r * 0.5);
-        A.rect(g, -20, y0, 360, Math.max(2, h), (r & 1) ? 'wood1' : 'wood0'); A.hline(g, -20, y0, 360, 'wood0');
-        for (let xx = -20 + Math.floor(H(r, 3) * 40); xx < 330; xx += 46 + Math.floor(H(r, 5) * 30)) A.vline(g, xx, y0, Math.max(2, h), 'wood0');
-      }
-      A.ditherGradient(g, 0, 150, 320, 30, null, 'night0', 'down');
-      // the rug: night slate, low
-      A.ellipse(g, 196, 158, 92, 14, 'night2'); A.ellipse(g, 196, 158, 86, 11, 'night3'); A.ellipse(g, 196, 158, 66, 7, 'night2');
-      A.ditherRect(g, 140, 153, 112, 10, null, 'night4', 0.1);
-      // the window's cold patch on the floor: two soft slabs of moonlight with the mullion between them, the watcher cast into the room
-      const patch = (key, xa0, xb0, xa1, xb1) => cfield(g, key, -20, 134, 160, 46, (i, j) => {
-        const f = j / 46, xa = xa0 + (xa1 - xa0) * f + 20, xb = xb0 + (xb1 - xb0) * f + 20;
-        if (i < xa || i > xb) return 0;
-        return (1 - f * 0.55) * Math.min(1, Math.min(i - xa, xb - i) / 3.5);
-      }, 'add', 'mist5', 0.3, 5);
-      patch('fl1', 18, 60, -14, 28); patch('fl2', 67, 113, 35, 81);
-      A.poly(g, [74, 134, 86, 134, 74, 148, 56, 166, 44, 180, 24, 180, 34, 164, 56, 148], 'wood0');   // her long shadow, stretched
-      A.disc(g, 36, 174, 3, 'wood0');                                                                  // the head
-
-      // ============ 4. the lamp, dimmed: warm, but not the star ============
-      A.depth(g, 1);
-      A.rect(g, 300, 54, 2, 80, 'slate1'); A.vline(g, 301, 54, 80, 'slate3'); A.rect(g, 293, 132, 16, 2, 'slate2'); A.rect(g, 295, 130, 12, 2, 'slate1');
-      A.poly(g, [290, 54, 312, 54, 307, 38, 295, 38], 'amber2'); A.hline(g, 290, 54, 23, 'amber3'); A.hline(g, 295, 38, 13, 'amber1'); A.vline(g, 297, 40, 14, 'amber3'); A.vline(g, 305, 40, 14, 'amber1'); A.rect(g, 298, 54, 6, 2, 'amber5');
-
-      // ============ 5. the sofa, the man, the two dogs that understand him ============
-      const SX = 146, SW = 140;
-      A.rect(g, SX, 84, SW, 46, 'teal1'); A.rect(g, SX, 84, SW, 3, 'teal3'); A.hline(g, SX, 84, SW, 'teal4');
-      for (let xx = SX + 12; xx < SX + SW - 8; xx += 24) { A.vline(g, xx, 90, 30, 'teal0'); for (let yy = 96; yy < 118; yy += 10) A.px(g, xx + 12, yy, 'teal2'); }
-            A.rect(g, SX - 8, 102, 12, 38, 'teal3'); A.rect(g, SX - 8, 102, 12, 2, 'teal4'); A.vline(g, SX - 8, 104, 36, 'teal2');
-      A.rect(g, SX + SW - 4, 102, 12, 38, 'teal3'); A.rect(g, SX + SW - 4, 102, 12, 2, 'teal4');
-      A.rect(g, SX + 4, 122, SW - 8, 4, 'teal3');                                           // the cushion top, seen low
-      A.rect(g, SX + 4, 126, SW - 8, 11, 'teal2'); A.hline(g, SX + 4, 126, SW - 8, 'teal3'); A.vline(g, SX + 72, 127, 10, 'teal1'); A.hline(g, SX + 4, 136, SW - 8, 'teal1');
-      A.rect(g, SX - 6, 138, 4, 4, 'wood1'); A.rect(g, SX + SW + 2, 138, 4, 4, 'wood1');
-            fshadow(g, SX + SW / 2, 141, 78, 2, 0.7);
-      // the cushion that is not orange: a quiet slate square
-      A.rect(g, SX + 100, 104, 17, 18, 'slate2'); A.hline(g, SX + 100, 104, 17, 'slate4'); A.vline(g, SX + 116, 105, 17, 'slate1');
+      // ============ 5. the man and the two dogs that understand him ============
       // brown dog on the sofa, chin on his knee
       const MX = 240, MY = 124;
       dogKnee(g, MX - 22, MY, t, tilt, 1);
@@ -230,8 +265,6 @@
       // the dark dog at his feet, same moment, same tilt
       dogUp(g, 219, 149, t, tilt, 2);
 
-      // a chewed clog, the dogs' toy: one small yellow note, dimmed
-      A.rect(g, 234, 156, 9, 3, 'cheese2'); A.rect(g, 235, 155, 5, 1, 'cheese3'); A.rect(g, 234, 158, 9, 1, 'cheese1'); A.px(g, 242, 157, 'wood1'); A.px(g, 240, 155, 'wood0'); A.px(g, 236, 158, 'wood0');
       // ============ 6. light: the dimmed lamp, then the book ============
       cglow(g, 'lamp', 301, 58, 56, 50, 'amber4', 0.14, 1.4);
       cglow(g, 'pool', 238, 116, 74, 40, 'amber5', 0.2, 1.2);                     // the lamp's warmth on the three of them
