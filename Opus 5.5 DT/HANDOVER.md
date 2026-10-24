@@ -1,4 +1,9 @@
-# Handover: where every piece of work stands (24 Oct 2026, 13:40 CET)
+# Handover: where every piece of work stands (24 Oct 2026, updated 14:50 CET)
+
+UPDATE 14:50: Santi merged `world` (PR 2), `map` (PR 3) and the remote agent's `dt/world-pass`
+(PR 4) into main. Main is now the merged state and is live. Sections 3 and 4 below still apply,
+but start from `main`, not from the old branches. The laptop's evaluation of the merged result is
+in `reports/eval-24oct-laptop-gpu.md`.
 
 The laptop agent has stopped all local work. From here the Opus 5.5 DT agent carries the heavy
 lifting. This file says exactly where each piece stopped so you can pick it up. Read README.md
