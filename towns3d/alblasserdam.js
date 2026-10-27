@@ -97,7 +97,7 @@
       q: { cold: Q(0, 0), warm: Q(1, 0), red: Q(2, 0), green: Q(3, 0), beam: Q(4, 0), wash: Q(5, 0), hall: Q(6, 0), office: Q(7, 0),
         sCold: Q(0, 1), sWarm: Q(1, 1), sRed: Q(2, 1), sGreen: Q(3, 1), band: Q(4, 1), solid: Q(5, 1), warmPanel: Q(6, 1), hallWin: Q(7, 1) },
       grass: keep(Mat({ color: 0x19221a })), rock: keep(Mat({ color: 0x23272c })), quay: keep(Mat({ color: 0x3a3f46 })),
-      clad: keep(Mat({ color: 0xaab3bc })), navy: keep(Mat({ color: 0x173062, emissive: 0x0a1a40, emissiveIntensity: 1 })),
+      clad: keep(Mat({ color: 0xaab3bc })), navy: keep(Mat({ color: 0x163060, emissive: 0x06102a, emissiveIntensity: 1 })),
       white: keep(Mat({ color: 0xd2d8dd, emissive: 0x1a2027, emissiveIntensity: 1 })), steel: keep(Mat({ color: 0x4b5862 })),
       crane: keep(Mat({ color: 0x627684 })), dark: keep(new THREE.MeshBasicMaterial({ color: 0x0b0d12 })), green: keep(Mat({ color: 0x264a31 })),
       hull: keep(Mat({ color: 0x14171c })), deck: keep(Mat({ color: 0x2d3238 })), lampGrey: keep(Mat({ color: 0x6c7378 })),
@@ -241,9 +241,9 @@
     if (front) for (const z of [-30, -2, 26]) {
       K.kadd(k, K.KG.cyl, M.steel, qx(10.4), 8, z, 0, 0, 0, 0.32, 17.5, 0.32); K.kb(k, M.steel, qx(10.9), 16.8, z, 1.4, 0.25, 2.0);
       for (const dz of [-0.6, 0.6]) lamp(K, k, 'cold', qx(11.4), 16.6, z + dz, 2.4);
-      K.kadd(k, M.q.beam, M.glow, qx(13.3), 11.3, z, 0, 0, 0.42, 7, 12.5, 1);
+      K.kadd(k, M.q.beam, M.glow, qx(12.8), 12.4, z, 0, 0, 0.42, 4.2, 9.5, 1);
     }
-    K.kadd(k, M.q.wash, M.glow, yx - 5.4, RIVER + 4.6, -4, 0, -Math.PI / 2, 0, 70, 7, 1);
+    K.kadd(k, M.q.wash, M.glow, yx - 5.4, RIVER + 4.2, -4, 0, -Math.PI / 2, 0, 52, 4.2, 1);
     const cz = 18;   // the gantry over the basin
     for (const x of [10.9, 28.2]) for (const dz of [-2.2, 2.2]) K.kb(k, M.crane, qx(x), 11.2, cz + dz, 0.8, 24.4, 0.8);
     K.kb(k, M.crane, qx(19.5), 23.8, cz, 19.4, 1.7, 5.6); K.kb(k, M.crane, qx(16.5), 22.2, cz, 3, 1.8, 3.4);
@@ -527,14 +527,14 @@
   let seq = 0;   // the dike's three set pieces come in turn, about 200 m apart, open river between them
   let kind = 0;
   const river = near => [   // what every street along the Noord has on its water: ships under way and the river out to the far bank
-    { make: K => shipRing(K, [['barge', 'convoy', 'waterbus'], ['convoy', 'barge', 'barge'], ['waterbus', 'barge', 'convoy']][kind++ % 3], 0.05), n: 4, gap: 105, side: 'right', xr: [near, near], y: RIVER, r: 0.5 },
-    { make: K => shipRing(K, ['barge', 'convoy', 'barge', 'barge'], 0.05, 60, 3.2), n: 2, gap: 230, side: 'right', xr: [near + 44, near + 44], y: RIVER, r: 0.5 },
+    { make: K => shipRing(K, [['barge', 'convoy', 'waterbus', 'barge', 'convoy', 'barge'], ['convoy', 'barge', 'barge', 'waterbus', 'barge', 'convoy'], ['waterbus', 'barge', 'convoy', 'barge', 'barge', 'convoy']][kind++ % 3], 0.05, 75, 2.6), n: 6, gap: 70, side: 'right', xr: [near, near], y: RIVER, r: 0.5 },
+    { make: K => shipRing(K, ['barge', 'convoy', 'barge', 'waterbus', 'barge'], 0.05, 60, 3.4), n: 2, gap: 230, side: 'right', xr: [near + 18, near + 18], y: RIVER, r: 0.5 },
     { make: farRiver, n: 2, gap: 210, side: 'right', xr: [110, 110], y: RIVER - 0.03, r: 0.5 },
   ];
   const themes = {
     // on the dike: the river and the yard on the right, the dike houses stepping down into the polder on the left
     dyke: base => Object.assign({}, base, {
-      fog: 0x48525c, fogD: 0.0125, night: 0.15, open: true, stars: true, ground: 0x0e1311, groundY: POLDER, canal: 1, water: 0x2a3540, waterY: RIVER, waterK: 0.36,
+      fog: 0x48525c, fogD: 0.0112, night: 0.15, open: true, stars: true, ground: 0x0e1311, groundY: POLDER, canal: 1, water: 0x2a3540, waterY: RIVER, waterK: 0.36,
       curv: 0.0008, landmark: false, spawn: river(42).concat([
         { make: K => [bridgeNoord, K => yard(K, 12), terminal][seq++ % 3](K), n: 3, gap: 155, reg: true, side: 'right', xr: [12, 12], r: 50 },
         { make: mooredBarge, n: 1, gap: 260, side: 'right', xr: [12.5, 12.5], y: RIVER, r: 23 },
