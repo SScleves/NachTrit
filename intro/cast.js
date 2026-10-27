@@ -73,6 +73,6 @@
     A.boat(g, 286, 150, { t, kind: 'barge', mast: true });
     A.boat(g, 286, 168, { t, len: 30 });
     A.say(g, 40, 120, 'Tikkie?', {});
-    A.bubble(g, 4, 126, 60, 14, { text: 'English is fine!', tail: [50, 150] });
+    A.bubble(g, 4, 126, 60, 14, { text: 'English is fine.', tail: [50, 150] });
   };
 })();

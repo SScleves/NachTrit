@@ -263,9 +263,15 @@
     line(0, 149, 26, 143, 'orange7'); line(0, 151, 26, 145, 'orange6');
     line(6, 154, 15, 176, 'orange5'); line(13, 150, 22, 172, 'orange5'); line(4, 170, 18, 168, 'orange2'); line(8, 178, 30, 174, 'orange2');
     poly([[22, 144], [31, 142], [41, 170], [33, 173]], 'orange5'); line(22, 144, 31, 142, 'orange7'); line(33, 173, 41, 170, 'orange2'); line(31, 142, 41, 170, 'orange6');
-    // back of the hand
+    // back of the hand: lit toward the knuckles and the lamp, falling into shade toward the wrist
     poly([[31, 145], [47, 141], [55, 151], [47, 166], [36, 168]], 'skin4');
+    for (let yy = 142; yy < 168; yy++) for (let xx = 31; xx < 56; xx++) {
+      const f = (xx - 31) / 24 - (yy - 142) / 40;
+      if (f > 0.35 && f - 0.35 > A.bayer(X(xx), Y(yy)) * 0.6 && A.hash(xx, yy) < 0.9) { if (A.C.skin4 === g.buf[Y(yy) * 320 + X(xx)]) px(xx, yy, 'skin5'); }
+      else if (f < -0.25 && -0.25 - f > A.bayer(X(xx), Y(yy)) * 0.5) { if (A.C.skin4 === g.buf[Y(yy) * 320 + X(xx)]) px(xx, yy, 'skin3'); }
+    }
     line(31, 145, 47, 141, 'skin5'); line(47, 141, 55, 151, 'skin5'); line(36, 168, 47, 166, 'skin2'); line(33, 160, 44, 163, 'skin3');
+    line(40, 150, 48, 146, 'skin3'); line(41, 155, 51, 151, 'skin3');                       // tendons toward the knuckles
     for (const [kx, ky] of [[48, 143], [52, 147], [54, 151]]) px(kx, ky, 'skin6');
     // fingers: capsules with a lit top, a shaded underside, knuckle creases and a pale nail
     const finger = (a, b, ang, len, w) => {
@@ -279,7 +285,7 @@
         }
         if (k === Math.round(len * 0.42) || k === Math.round(len * 0.74)) { px(Math.round(a + ca * k + nx * (w * 0.35)), Math.round(b + sa * k + ny * (w * 0.35)), 'skin3'); px(Math.round(a + ca * k - nx * (w * 0.1)), Math.round(b + sa * k - ny * (w * 0.1)), 'skin3'); }
       }
-      for (let k = len - 3; k <= len - 1; k++) { px(Math.round(a + ca * k + nx * -0.8), Math.round(b + sa * k + ny * -0.8), 'paper5'); }
+      for (let k = len - 3; k <= len - 1; k++) { px(Math.round(a + ca * k + nx * -0.8), Math.round(b + sa * k + ny * -0.8), 'skin6'); }
       px(Math.round(a + ca * (len - 3) + nx * 1.2), Math.round(b + sa * (len - 3) + ny * 1.2), 'skin3');
     };
     const D = Math.PI / 180;
@@ -385,8 +391,9 @@
         for (let k = 0; k < 2; k++) A.line(g, Math.round(rx), 150 + k, Math.round(rx + 11), 149 + k * 2, k ? 'red3' : 'red4');
         A.line(g, Math.round(rx + 2), 148, Math.round(rx + 10), 152, 'red3');
       }
-      A.text(228, 142, 'het?!', 'red4', 9, true);
+      A.text(228, 142, 'het?', 'red4', 9, true);
       A.text(52, 31, 'HOOFDSTUK 1', 'slate3', 6); A.text(220, 31, 'LIDWOORDEN', 'slate3', 6);
+      A.grade(g);
     },
   };
 })();
