@@ -2109,6 +2109,8 @@ let scores = {}; try { const raw = JSON.parse(localStorage.getItem('nachtrit.sco
 function saveScores() { try { localStorage.setItem('nachtrit.scores', JSON.stringify(scores)); } catch (e) {} }
 function districtStars(a) { return LEVELS.filter(l => l.act === a).reduce((n, l) => n + (progress[l.id] || 0), 0); }
 const DISTRICT_NEED = 5; // stars in the previous district to open the next
+// ?unlock=1 opens every town on this device, to look at the art (kept in nachtrit.unlock; ?unlock=0 locks them again). The stars are not touched.
+const UNLOCK_ALL = (() => { const v = new URLSearchParams(location.search).get('unlock'); try { if (v === '1') localStorage.setItem('nachtrit.unlock', '1'); else if (v === '0') localStorage.removeItem('nachtrit.unlock'); return localStorage.getItem('nachtrit.unlock') === '1'; } catch (e) { return v === '1'; } })();
 function unlocked(lv) { const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); return t ? townOpen(t) : lv.act === 1; }
 
 // turn a level item into an entry the planner understands
@@ -2643,7 +2645,7 @@ const TOWNS_FALLBACK = [
 function towns() { return (window.TOWNS && window.TOWNS.length ? window.TOWNS : TOWNS_FALLBACK).slice().sort((a, b) => a.tier - b.tier); }
 function townLevels(t) { return LEVELS.filter(l => (l.town || TOWN_OF(l.id)) === t.id); }
 function townStars(t) { return townLevels(t).reduce((n, l) => n + (progress[l.id] || 0), 0); }
-function townOpen(t) { if (t.tier === 1) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
+function townOpen(t) { if (t.tier === 1 || UNLOCK_ALL) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
 // the route board: towns in tier order along roads over the real country, painted by map-art.js (window.NRMAP)
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
 let mapAt = 0, mapAnim = null, mapNodes = [], mapLay = null, mapBadges = [], mapFxOn = false;
