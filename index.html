@@ -855,7 +855,7 @@ const PK = {   // shared materials for the street furniture
   sign: new THREE.MeshBasicMaterial({ map: signAtlas, color: 0xd8ccb0 }),
   bikeSign: new THREE.MeshBasicMaterial({ map: bikeSignTex, color: 0x9aa4b0 }),
   skin: [Mat({ color: 0x1d2227 }), Mat({ color: 0x23272a }), Mat({ color: 0x1f2129 })],
-  jaw: Mat({ color: 0x1a1216 }), linen: Mat({ color: 0xe6e2d6 }), skirt: Mat({ color: 0x1f2630 }), sock: Mat({ color: 0xb8282a }),
+  linen: Mat({ color: 0xe6e2d6 }), skirt: Mat({ color: 0x1f2630 }), sock: Mat({ color: 0xb8282a }),
   phone: new THREE.MeshBasicMaterial({ color: 0x9fe8ff }),
 };
 // a quiz prop is cleaned up with its textures, so it gets its own copy of the sign atlas
@@ -2067,49 +2067,338 @@ function bigSign(text) { // the reading board, wider, stands over the road
   board.position.y = 3.6; board.scale.set(1.5, 1, 1); g.add(board);
   return g;
 }
-// the passengers: the dead who still want a lift. A person you can read from far off: a coloured coat, a pale face, one arm up to flag you down, a cool glow round them
+// ---------- the cast's own shapes: smooth swept tubes and shells, built once and kept (PG) or copied into the kits ----------
+// sweepGeo(rings, seg, o) runs a tube through ring centres [x, y, z, rx, rz, fwd]: rx across, rz toward fwd (o.fwd, default -z, the
+// way the dead face). o.mod(t, th, j) scales a ring round its angle th (0 one side, PI/2 the front, PI the other side, 3PI/2 the back),
+// o.drop(t, th, j) moves a ring point back along the tube (a torn hem), o.cap0 and o.cap1 round the ends off, o.arc [a0, a1] (or a
+// function of t) leaves it open for cloth, o.dense (0 to 1) crowds a closed ring's points toward the front, o.uv(t, j) gives the
+// texture spot, o.shade(v) darkens a vertex on the skin's ramp (0 to 1) and o.warp(v) moves every vertex last. Indexed and without a
+// seam, so the normals come out smooth.
+const _cT = new THREE.Vector3(), _cX = new THREE.Vector3(), _cF = new THREE.Vector3(), _cH = new THREE.Vector3(), _cV = new THREE.Vector3(), _cA = new THREE.Vector3(), _cB = new THREE.Vector3(), _cM = new THREE.Matrix4();
+function sweepGeo(rings, seg, o = {}) {
+  const n = rings.length, open = !!o.arc, cols = open ? seg + 1 : seg, pos = [], uv = [], idx = [], fw = o.fwd || [0, 0, -1];
+  const tex = (t, j) => o.uv ? o.uv(t, j) : [j / seg, t];
+  for (let i = 0; i < n; i++) {
+    const r = rings[i], a = rings[Math.max(0, i - 1)], b = rings[Math.min(n - 1, i + 1)], t = i / Math.max(1, n - 1), arc = typeof o.arc === 'function' ? o.arc(t) : o.arc;
+    _cT.set(b[0] - a[0], b[1] - a[1], b[2] - a[2]).normalize(); if (i === 0) _cA.copy(_cT); if (i === n - 1) _cB.copy(_cT);
+    _cH.fromArray(r[5] || fw); _cX.crossVectors(_cT, _cH).normalize(); _cF.crossVectors(_cX, _cT);
+    for (let j = 0; j < cols; j++) {
+      const ph = j / seg * Math.PI * 2, th = open ? arc[0] + (arc[1] - arc[0]) * j / seg : o.dense ? ph - o.dense * Math.sin(ph - Math.PI / 2) : ph, m = o.mod ? o.mod(t, th, j) : 1, d = o.drop ? o.drop(t, th, j) : 0;
+      const c = Math.cos(th) * r[3] * m, s = Math.sin(th) * r[4] * m;
+      pos.push(r[0] + _cX.x * c + _cF.x * s - _cT.x * d, r[1] + _cX.y * c + _cF.y * s - _cT.y * d, r[2] + _cX.z * c + _cF.z * s - _cT.z * d);
+      uv.push(...tex(t, j));
+    }
+  }
+  for (let i = 0; i < n - 1; i++) for (let j = 0; j < seg; j++) { const a = i * cols + j, b = i * cols + (j + 1) % cols; idx.push(a, a + cols, b, b, a + cols, b + cols); }
+  if (!open) [[0, o.cap0, _cA], [n - 1, o.cap1, _cB]].forEach(([e, len, T]) => {
+    if (len == null) return; const r = rings[e], sg = e ? 1 : -1, p = pos.length / 3;
+    pos.push(r[0] + T.x * len * sg, r[1] + T.y * len * sg, r[2] + T.z * len * sg); uv.push(...tex(e ? 1 : 0, 0));
+    for (let j = 0; j < seg; j++) { const a = e * cols + j, b = e * cols + (j + 1) % cols; if (e) idx.push(p, b, a); else idx.push(p, a, b); }
+  });
+  for (let i = 0; i < pos.length; i += 3) {
+    _cV.fromArray(pos, i);
+    if (o.shade) uv[i / 3 * 2] = 0.25 + 0.5 * THREE.MathUtils.clamp(o.shade(_cV), 0, 1);
+    if (o.warp) { o.warp(_cV); _cV.toArray(pos, i); }
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+function shellGeo(rx, ry, rz, seg, nr, o = {}) {   // an ellipsoid: rings up its y axis and a pole at each end; o as for sweepGeo
+  const rings = []; for (let i = 1; i <= nr; i++) { const ph = Math.PI * i / (nr + 1), s = Math.sin(ph); rings.push([0, -Math.cos(ph) * ry, 0, rx * s, rz * s]); }
+  return sweepGeo(rings, seg, Object.assign({ cap0: ry + rings[0][1], cap1: ry - rings[nr - 1][1] }, o));
+}
+// rings along a chain of joints: segs is [[from, to, [[u, rx, rz, back], ...]], ...], u the share of the way from joint to joint
+function limbRings(segs) { const out = []; for (const [a, b, list] of segs) for (const [u, rx, rz, dz] of list) out.push([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u + (dz || 0), rx, rz || rx]); return out; }
+// a few shapes merged into one geometry: add(geo, x, y, z, rx, ry, rz, sx, sy, sz) places one and disposes it
+const _pk = { userData: {} };
+function partsGeo(build) { const k = kit(); build((geo, x, y, z, rx, ry, rz, sx, sy, sz) => { kadd(k, geo, _pk, x || 0, y || 0, z || 0, rx, ry, rz, sx, sy, sz); geo.dispose(); }); return kmerge(k.get(_pk)); }
+// turns a shape built round the origin onto three axes (its y along ay) at the point o
+function orient(geo, o, ax, ay, az) { if (ax.clone().cross(ay).dot(az) < 0) ax = ax.clone().negate(); return geo.applyMatrix4(_cM.makeBasis(ax, ay, az).setPosition(o[0], o[1], o[2])); }
+const _gs = (x, w) => Math.exp(-(x * x) / (w * w)), _ss = THREE.MathUtils.smoothstep, _lathe = pts => new THREE.LatheGeometry(pts.map(([r, h]) => new THREE.Vector2(r, h)), 18);
+
+// the passengers: the dead who still want a lift. A person you can read from far off: a long coat in a colour, a pale calm face, hair
+// or a hat, one arm up to flag you down, a cool glow round them. Every part is one shared geometry, so a figure is about ten meshes
 const PASS_COATS = [0x3f6e8c, 0x8a4a3a, 0x9a7a3a, 0x4f6a48, 0x6a5280, 0x2f6a70];
+// the coats share a two-texel ramp: u 0.25 is the coat's own colour, u 0.75 a darker shade of it for the belt, the buttons and the front edge
+const PASS_COAT_TEX = (() => { const t = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255, 92, 92, 100, 255]), 2, 1); t.magFilter = t.minFilter = THREE.LinearFilter; t.needsUpdate = true; return t; })();
 const PASS_MAT = {
-  skin: Mat({ color: 0xc3ccd6, emissive: 0x4a5670, emissiveIntensity: 0.55, transparent: true, opacity: 0.95 }),
+  skin: Mat({ color: 0x9ba5b5, emissive: 0x3a465e, emissiveIntensity: 0.2, transparent: true, opacity: 0.95 }),
   legs: Mat({ color: 0x262b34, transparent: true, opacity: 0.95 }),
   hair: Mat({ color: 0x2c2622, transparent: true, opacity: 0.95 }),
-  coats: PASS_COATS.map(c => Mat({ color: c, emissive: c, emissiveIntensity: 0.35, transparent: true, opacity: 0.95 })),
+  coats: PASS_COATS.map(c => { const m = Mat({ color: c, emissive: c, emissiveIntensity: 0.3, map: PASS_COAT_TEX, emissiveMap: PASS_COAT_TEX, transparent: true, opacity: 0.95 }); m.userData.shared = true; return m; }),
   aura: (() => { const m = GlowMat(glowTex, 0x8fb0e0, 0.45, true); m.userData.shared = true; return m; })(),
-  eye: new THREE.MeshBasicMaterial({ color: 0xdff4ff }),
+  eye: new THREE.MeshBasicMaterial({ color: 0x252c3c }),   // the face: calm eyes, brows and a mouth
+};
+PASS_MAT.hairs = [PASS_MAT.hair].concat([0x5a4636, 0x8a8a8c, 0x17171b, 0x7a5a32].map(c => Mat({ color: c, transparent: true, opacity: 0.95 })));
+// a long coat with shoulders, a belt and a turned-up collar, the left sleeve hanging beside it; seated, its skirt lies over the lap and the hand rests there
+const P_COAT = [[0, 0.52, 0.02, 0.3, 0.25], [0, 0.7, 0.015, 0.275, 0.225], [0, 0.9, 0.01, 0.247, 0.197], [0, 1.06, 0.006, 0.222, 0.174], [0, 1.085, 0.005, 0.219, 0.171],
+  [0, 1.145, 0.004, 0.217, 0.168], [0, 1.17, 0.003, 0.218, 0.168], [0, 1.32, 0, 0.226, 0.172], [0, 1.52, 0, 0.25, 0.172], [0, 1.66, -0.005, 0.272, 0.165], [0, 1.75, -0.01, 0.268, 0.15],
+  [0, 1.81, -0.01, 0.215, 0.13], [0, 1.855, -0.005, 0.14, 0.116], [0, 1.94, -0.012, 0.126, 0.118]];
+const coatMod = rings => (t, th) => { const y = rings[Math.round(t * (rings.length - 1))][1]; return 1 - 0.04 * _gs(Math.atan2(Math.cos(th), Math.sin(th)), 0.2) * _ss(-y, -1.06, -0.95) + 0.012 * _ss(y, 1.07, 1.085) * (1 - _ss(y, 1.145, 1.16)); };   // the skirt opens at the front; the belt stands out
+const coatShade = p => Math.max(p.y > 1.075 && p.y < 1.155 ? 1 : 0, 0.55 * _gs(p.x, 0.03) * _ss(p.z, 0.05, 0.12) * _ss(-p.y, -1.78, -1.7));
+function passCoat(seated) {
+  return partsGeo(add => {
+    const rings = seated ? [[0, 0.95, 0.03, 0.235, 0.19]].concat(P_COAT.filter(r => r[1] >= 1.06)) : P_COAT;
+    add(sweepGeo(rings, 16, { fwd: [0, 0, 1], cap0: seated ? 0.05 : undefined, mod: coatMod(rings), shade: coatShade, dense: 0.4 }));
+    for (const y of [1.27, 1.42, 1.57]) add(shellGeo(0.019, 0.019, 0.008, 6, 3, { uv: () => [0.75, 0.5] }), 0, y, 0.174);   // three buttons
+    if (seated) add(sweepGeo([[0, 0.985, 0, 0.245, 0.105], [0, 0.975, 0.18, 0.24, 0.1], [0, 0.955, 0.38, 0.23, 0.095], [0, 0.93, 0.52, 0.215, 0.088]], 14, { fwd: [0, 1, 0], cap1: 0.06, uv: () => [0.25, 0.5] }));
+    add(sweepGeo(seated ? [[-0.25, 1.75, -0.01, 0.076, 0.076], [-0.285, 1.6, 0.01, 0.073, 0.073], [-0.3, 1.42, 0.05, 0.068, 0.068], [-0.29, 1.3, 0.12, 0.064, 0.064], [-0.25, 1.2, 0.25, 0.063, 0.063], [-0.22, 1.15, 0.33, 0.067, 0.067], [-0.215, 1.145, 0.345, 0.06, 0.06]]
+      : [[-0.25, 1.75, -0.01, 0.076, 0.076], [-0.285, 1.6, 0, 0.074, 0.074], [-0.305, 1.42, 0.012, 0.068, 0.068], [-0.31, 1.3, 0.025, 0.064, 0.064], [-0.315, 1.15, 0.045, 0.062, 0.062], [-0.318, 1.075, 0.056, 0.067, 0.067], [-0.318, 1.06, 0.058, 0.06, 0.06]], 10,
+      { fwd: [0, 0, 1], cap0: 0.04, cap1: 0, uv: (t, j) => [t > 0.8 ? 0.6 : 0.25, 0.5] }));   // the cuff a shade darker
+  });
+}// a hand from the wrist (the origin) down along -y, the palm to +z, the thumb to the side th (+1 or -1): a mitten of fingers and a thumb
+const passHand = th => partsGeo(add => {
+  add(sweepGeo([[0, 0.01, 0, 0.03, 0.018], [0, -0.04, 0.002, 0.043, 0.02], [0, -0.088, 0.007, 0.046, 0.018], [0, -0.128, 0.016, 0.041, 0.015], [0, -0.152, 0.028, 0.031, 0.012]], 10, { fwd: [0, 0, 1], cap0: 0.01, cap1: 0.012 }));
+  add(sweepGeo([[th * 0.028, -0.03, 0.008, 0.013, 0.012], [th * 0.05, -0.064, 0.022, 0.012, 0.011], [th * 0.055, -0.09, 0.036, 0.01, 0.009]], 6, { fwd: [0, 0, 1], cap0: 0.006, cap1: 0.009 }));
+});
+// the head round its middle, the face to +z: a calm oval with a chin, a hint of a nose and ears; nothing comes out past z 0.17,
+// where an intro shot may lay a drawn face over it
+const passHeadWarp = p => {
+  const x = p.x, y = p.y, z = p.z, low = _ss(-y, 0.03, 0.15), fr = _ss(z, -0.02, 0.1);
+  p.x *= 1 - 0.17 * low; p.z += 0.008 * _gs(y + 0.125, 0.03) * fr + 0.007 * _gs(x, 0.018) * _gs(y + 0.012, 0.03) * fr;
+  for (const sx of [-1, 1]) { p.x += sx * 0.017 * _gs(x - sx * 0.142, 0.03) * _gs(y, 0.04) * _gs(z + 0.005, 0.03); p.z -= 0.006 * _gs(x - sx * 0.052, 0.022) * _gs(y - 0.022, 0.018) * fr; }
+  if (z < 0) p.z *= 1 + 0.05 * _ss(-z, 0, 0.12);
+};
+// hair over the top and the back of the head; whatever would lie over the face sinks inside the head
+const passHairWarp = p => {
+  const x = p.x, y = p.y, z = p.z, line = z > 0 ? 0.075 - 0.07 * _ss(Math.abs(x), 0.03, 0.13) : -0.03 - 0.08 * _ss(-z, 0, 0.12);
+  const face = _ss(z, -0.06, 0.02) * (1 - _ss(y, line - 0.02, line + 0.015)), k = Math.max(face, _ss(-y, 0.08, 0.12));
+  p.multiplyScalar(1 - 0.2 * k); p.y += 0.008 * _ss(y, 0.08, 0.16);
 };
 Object.assign(PG, {
-  pLimb: new THREE.CapsuleGeometry(0.075, 0.72, 3, 6), pArm: new THREE.CapsuleGeometry(0.06, 0.62, 3, 6), pCoat: new THREE.CylinderGeometry(0.2, 0.31, 0.98, 10),
-  pHead: new THREE.SphereGeometry(0.16, 10, 8), pHair: new THREE.SphereGeometry(0.17, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), pEye: new THREE.SphereGeometry(0.025, 5, 4), pShoulder: new THREE.SphereGeometry(0.3, 8, 6),
+  pLimb: sweepGeo([[0, 0.4, 0, 0.082, 0.08], [0, 0.25, 0, 0.078, 0.076], [0, 0.05, 0, 0.068, 0.066], [0, -0.12, 0, 0.062, 0.062], [0, -0.3, 0.004, 0.064, 0.064], [0, -0.385, 0.016, 0.07, 0.078], [0, -0.418, 0.032, 0.072, 0.092]], 10, { fwd: [0, 0, 1], cap0: 0.035, cap1: 0.018 }),
+  pArm: sweepGeo([[0, 0.37, 0, 0.076, 0.076], [0, 0.22, 0.004, 0.073, 0.073], [0, 0, 0.012, 0.067, 0.067], [0, -0.18, 0.016, 0.063, 0.063], [0, -0.33, 0.012, 0.062, 0.062], [0, -0.355, 0.008, 0.067, 0.067], [0, -0.37, 0.004, 0.06, 0.06]], 10, { fwd: [0, 0, 1], cap0: 0.04, cap1: 0, uv: t => [t > 0.8 ? 0.6 : 0.25, 0.5] }),
+  pCoat: passCoat(false), pCoatSeat: passCoat(true), pHand: passHand(1), pHandL: passHand(-1),
+  pHead: shellGeo(0.142, 0.162, 0.152, 16, 12, { fwd: [0, 0, 1], warp: passHeadWarp }),
+  pHair: shellGeo(0.153, 0.172, 0.163, 16, 11, { fwd: [0, 0, 1], warp: passHairWarp }),
+  pEye: partsGeo(add => {
+    for (const s of [-1, 1]) { add(shellGeo(1, 1, 1, 8, 4), s * 0.052, 0.024, 0.132, 0, 0, s * -0.08, 0.02, 0.011, 0.008); add(shellGeo(1, 1, 1, 6, 3), s * 0.054, 0.062, 0.128, 0, 0, s * 0.1, 0.028, 0.0055, 0.006); }
+    add(shellGeo(1, 1, 1, 6, 3), 0, -0.074, 0.134, 0, 0, 0, 0.026, 0.005, 0.006);
+  }),
+  pHat: partsGeo(add => {   // a soft hat: a rounded crown, a brim that dips at the front
+    add(_lathe([[0.162, 0], [0.156, 0.05], [0.146, 0.11], [0.12, 0.14], [0.07, 0.148], [0.001, 0.15]]));
+    add(_lathe([[0.155, -0.008], [0.25, -0.022], [0.276, -0.034], [0.282, -0.022], [0.25, -0.004], [0.155, 0.012]]), 0, 0, 0, 0.12);
+  }),
+  pBonnet: partsGeo(add => {   // the white cap of the sheet's woman: round over the hair, its two wings turned up at the sides
+    add(shellGeo(0.168, 0.185, 0.178, 16, 10, { fwd: [0, 0, 1], warp: p => p.multiplyScalar(1 - 0.24 * _ss(p.z, 0, 0.08) * (1 - _ss(p.y, 0.02, 0.08))) }));
+    for (const s of [-1, 1]) add(shellGeo(1, 1, 1, 8, 4), s * 0.19, 0.02, 0, 0.2, 0, s * 0.55, 0.075, 0.042, 0.016);
+  }),
+  pHelmet: shellGeo(0.168, 0.15, 0.188, 16, 9, { fwd: [0, 0, 1], mod: (t, th) => 1 + 0.035 * Math.max(0, Math.cos(th * 6)) * _ss(t, 0.45, 0.8), warp: p => { if (p.y < 0) p.multiplyScalar(1 - 0.22 * _ss(-p.y, 0, 0.04)); if (p.z > 0.14 && p.y > -0.02 && p.y < 0.04) p.z += 0.02; } }),
+  pCheese: _lathe([[0.001, -0.1], [0.24, -0.1], [0.27, -0.088], [0.282, -0.05], [0.282, 0.05], [0.27, 0.088], [0.24, 0.1], [0.001, 0.1]]),
+  pClogs: partsGeo(add => { for (const s of [-1, 1]) add(sweepGeo([[s * 0.1, 0.05, -0.11, 0.05, 0.048], [s * 0.1, 0.058, -0.03, 0.062, 0.058], [s * 0.1, 0.052, 0.08, 0.056, 0.05], [s * 0.1, 0.048, 0.15, 0.04, 0.036], [s * 0.1, 0.07, 0.205, 0.016, 0.016]], 10, { fwd: [0, 1, 0], cap0: 0.03, cap1: 0.012 })); }),
+  pPhone: new THREE.PlaneGeometry(0.13, 0.22),
+  pGolf: partsGeo(add => { add(sweepGeo([[0, 0.02, 0, 0.02, 0.02], [0, -0.12, 0.004, 0.012, 0.012], [0, -0.9, 0.05, 0.008, 0.008]], 6, { fwd: [0, 0, 1], cap0: 0.01, cap1: 0.004 })); add(shellGeo(0.03, 0.022, 0.06, 8, 4), 0, -0.93, 0.09, 0.2); }),
 });
 function ghostFigure(own, variant, seated, coat) {
-  const g = new THREE.Group(); const mk = m => own ? m.clone() : m;
+  const g = new THREE.Group();
+  // own: the figure's own materials, so it can fade (set down) or dim (on the rack) alone, its hat and clogs with it
+  const mk = (m, fade) => { if (!own) return m; const c = m.clone(); if (fade && !c.transparent) { c.transparent = true; c.opacity = 0.95; } return c; };
   const v = variant || pick(['plain', 'plain', 'hat', 'bonnet', 'cheese', 'clogs', 'helmet', 'phone', 'golf']);
   const ci = coat != null ? coat : Math.floor(Math.random() * PASS_COATS.length);
   g.userData.variant = v; g.userData.coat = ci;
-  const skin = mk(PASS_MAT.skin), legs = mk(PASS_MAT.legs), hair = mk(PASS_MAT.hair), cm = mk(PASS_MAT.coats[ci]);
-  const add = (geo, mat, x, y, z, rx, rz, sx, sy, sz) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (rx) m.rotation.x = rx; if (rz) m.rotation.z = rz; if (sx) m.scale.set(sx, sy, sz); g.add(m); return m; };
+  const skin = mk(PASS_MAT.skin), hands = own ? mk(PASS_MAT.skin) : skin, legs = mk(PASS_MAT.legs), hair = mk(PASS_MAT.hairs[(ci * 3 + v.length) % PASS_MAT.hairs.length]), cm = mk(PASS_MAT.coats[ci]);
+  const add = (geo, mat, x, y, z, rx, rz, sx, sy, sz, to) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (rx) m.rotation.x = rx; if (rz) m.rotation.z = rz; if (sx) m.scale.set(sx, sy, sz); (to || g).add(m); return m; };
   for (const sx of [-1, 1]) {
     if (seated) { add(PG.pLimb, legs, sx * 0.1, 0.92, 0.3, Math.PI / 2, 0, 1, 0.55, 1); add(PG.pLimb, legs, sx * 0.1, 0.62, 0.55, 0.15, 0, 1, 0.5, 1); }
     else add(PG.pLimb, legs, sx * 0.1, 0.5, 0, 0, sx * 0.03);
   }
-  add(PG.pCoat, cm, 0, 1.36, 0); add(PG.pShoulder, cm, 0, 1.8, 0, 0, 0, 0.95, 0.45, 0.62);
-  add(PG.pHead, skin, 0, 2.04, 0.02); if (v !== 'bonnet' && v !== 'helmet' && v !== 'hat') add(PG.pHair, hair, 0, 2.07, -0.01);
-  for (const sx of [-1, 1]) add(PG.pEye, PASS_MAT.eye, sx * 0.055, 2.06, 0.16);
-  add(PG.pArm, cm, -0.29, 1.42, 0.02, 0, 0.12);
-  if (seated) add(PG.pArm, cm, 0.29, 1.42, 0.1, -0.4, -0.12); else add(PG.pArm, cm, 0.34, 2.02, 0.04, 0, -0.42);   // the right arm up: a lift, please
+  add(seated ? PG.pCoatSeat : PG.pCoat, cm, 0, 0, 0);
+  add(PG.pHead, skin, 0, 2.04, 0.02); if (v !== 'bonnet' && v !== 'helmet' && v !== 'hat') add(PG.pHair, hair, 0, 2.04, 0.02);
+  add(PG.pEye, mk(PASS_MAT.eye, true), 0, 2.04, 0.02);
+  // the right arm is its own mesh with the hand on it: up to flag you down (the phone in that hand lands where intro shot 5 expects it), or resting forward on the lap
+  const arm = seated ? add(PG.pArm, cm, 0.27, 1.44, 0.12, -0.42, -0.08) : add(PG.pArm, cm, 0.34, 1.99, 0.05, 0.15, Math.PI - 0.25);
+  add(PG.pHand, hands, 0, -0.37, 0.004, 0, 0, 0, 0, 0, arm);
+  const lh = seated ? add(PG.pHandL, hands, -0.215, 1.15, 0.35, -1.25) : add(PG.pHandL, hands, -0.318, 1.06, 0.058, 0.05, 0.04);
+  lh.rotation.y = seated ? Math.PI : Math.PI / 2;
   if (!seated) { const au = new THREE.Sprite(mk(PASS_MAT.aura)); au.scale.set(2.0, 3.0, 1); au.position.y = 1.35; g.add(au); }
-  if (v === 'hat') { add(KG.cyl, PM.orange, 0, 2.2, 0, 0, 0, 0.36, 0.18, 0.36); add(KG.cyl, PM.orange, 0, 2.12, 0, 0, 0, 0.62, 0.04, 0.62); }
-  if (v === 'bonnet') { add(PG.pHair, PK.linen, 0, 2.03, -0.02, -0.2, 0, 1.25, 1.35, 1.3); }
-  if (v === 'cheese') add(KG.cyl, PM.cheese, -0.42, 1.3, 0.12, 0, Math.PI / 2, 0.56, 0.2, 0.56);
-  if (v === 'clogs') for (const sx of [-1, 1]) add(KG.box, PM.cheese, sx * 0.11, 0.06, 0.06, 0, 0, 0.15, 0.12, 0.34);
-  if (v === 'helmet') add(PG.pHair, PK.linen, 0, 2.07, 0, 0, 0, 1.15, 1.1, 1.2);
-  if (v === 'phone') add(KG.plane, PK.phone, 0.45, 2.42, 0.1, -0.3, 0, 0.14, 0.24, 1);
-  if (v === 'golf') { add(KG.cyl, PM.silver, -0.42, 1.0, 0.12, 0, 0.25, 0.04, 1.1, 0.04); add(KG.box, PM.silver, -0.55, 0.47, 0.12, 0, 0, 0.14, 0.08, 0.07); }
+  if (v === 'hat') add(PG.pHat, mk(PM.orange, true), 0, 2.13, 0, -0.1);
+  if (v === 'bonnet') add(PG.pBonnet, mk(PK.linen, true), 0, 2.05, 0, -0.12);
+  if (v === 'helmet') add(PG.pHelmet, mk(PK.linen, true), 0, 2.1, 0.01, -0.1);
+  if (v === 'cheese') { if (seated) add(PG.pCheese, mk(PM.cheese, true), 0, 1.12, 0.36, 0, 0, 0.8, 0.8, 0.8); else add(PG.pCheese, mk(PM.cheese, true), -0.47, 1.3, 0.1, 0, Math.PI / 2); }
+  if (v === 'clogs') add(PG.pClogs, mk(PM.cheese, true), 0, seated ? 0.36 : 0, seated ? 0.56 : 0.03);
+  if (v === 'phone') add(PG.pPhone, mk(PK.phone, true), 0, -0.48, 0.07, -0.25, 0, 0, 0, 0, arm);   // in the raised hand, its screen to you
+  if (v === 'golf') { if (seated) add(PG.pGolf, mk(PM.silver, true), -0.21, 1.1, 0.42, -0.9, -0.15); else add(PG.pGolf, mk(PM.silver, true), -0.33, 0.97, 0.1, 0.05, -0.08); }
   g.userData.faceRoad = true; g.userData.ghost = true;
   return g;
 }
-// the dead in the sheet's variants; each variant is merged once into a few shared geometries (kept in PG so cleanup leaves them), so a spawn only makes meshes
-// the shape from the sheet: tall and thin, knees bent, the back bowed forward, a small head pushed out in front, long arms dangling to the knees, eyes glowing yellow
+// ---------- the dead: the sheet's shape, tall and thin, knees bent, the back bowed forward, a small head pushed out in front, long arms
+// dangling to the knees, eyes glowing yellow. The joints stay where every town's dress expects them (hip, sh, hd, and knee, foot,
+// elbow and hand); between them it is swept and smooth: ribs, a knobbed spine, shoulder blades, bony knees and elbows, long-fingered
+// hands, a skull with deep sockets. Each variant is merged once into a few shared geometries (kept in PG so cleanup leaves them).
+// The skin takes a two-texel ramp: a vertex's u runs from 0.25 (its own colour) to 0.75 (near black), so the sockets and the open mouth
+// go dark inside the one skin mesh while every spawn keeps its own skin colour
+const DEAD_SKIN_TEX = (() => { const t = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255, 30, 27, 29, 255]), 2, 1); t.magFilter = t.minFilter = THREE.LinearFilter; t.needsUpdate = true; return t; })();
+for (const m of PK.skin) { m.map = DEAD_SKIN_TEX; m.userData.shared = true; }
+const SKIN_UV = () => [0.25, 0.5];
+// their rags: a palette with a column per cloth, darker toward the torn hem. Three palettes, so a crowd is not dressed alike: a spawn
+// takes one at no extra draw call
+const RAG_W = 6;
+function ragTex(cols) {
+  const d = new Uint8Array(RAG_W * 16);
+  cols.forEach((hex, c) => [0.42, 0.66, 0.88, 1].forEach((k, row) => { const i = (row * RAG_W + c) * 4; d[i] = (hex >> 16 & 255) * k; d[i + 1] = (hex >> 8 & 255) * k; d[i + 2] = (hex & 255) * k; d[i + 3] = 255; }));
+  const t = new THREE.DataTexture(d, RAG_W, 4); t.magFilter = t.minFilter = THREE.LinearFilter; t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; return t;
+}
+const DEAD_RAGS = [   // three shirts, two trousers, the strips
+  [0x35302a, 0x30332d, 0x3b332b, 0x201f1d, 0x262422, 0x221e1b],
+  [0x2a2f38, 0x353533, 0x302b25, 0x1b1d22, 0x23211e, 0x1e2024],
+  [0x3a2a24, 0x34332b, 0x30282d, 0x24211e, 0x1f2022, 0x261e1a],
+].map(p => { const m = Mat({ map: ragTex(p) }); m.userData.shared = true; return m; });
+const ragUV = (col, v0, v1) => t => [(col + 0.5) / RAG_W, 0.125 + 0.75 * (v0 + (v1 - v0) * t)];
+// the torso along the bowed back, t from the hip (0) to the shoulders (1): across, front to back, the chest pushed forward of the spine
+const TORSO = [[-0.09, 0.1, 0.072, 0], [-0.02, 0.13, 0.09, 0], [0.08, 0.122, 0.085, -0.004], [0.18, 0.104, 0.073, -0.012], [0.28, 0.108, 0.077, -0.008],
+  [0.38, 0.128, 0.092, 0.006], [0.48, 0.143, 0.102, 0.014], [0.58, 0.15, 0.108, 0.018], [0.68, 0.151, 0.108, 0.018], [0.78, 0.146, 0.104, 0.014],
+  [0.87, 0.134, 0.096, 0.008], [0.95, 0.116, 0.086, 0], [1.02, 0.09, 0.072, -0.006]];
+const BACK = 1.5 * Math.PI, _ang = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+function torsoMod(t, th) {   // the belly sunk under the ribs, the hip bones, the shoulder blades and the spine standing out
+  const s = Math.sin(th), c = Math.cos(th);
+  return 1 - 0.14 * (s > 0 ? s * s : 0) * _gs(t - 0.22, 0.1) + 0.1 * c * c * _gs(t + 0.01, 0.07)
+    + 0.08 * (_gs(_ang(th, BACK - 0.62), 0.36) + _gs(_ang(th, BACK + 0.62), 0.36)) * _gs(t - 0.8, 0.12) + 0.045 * _gs(_ang(th, BACK), 0.3) * _gs(t - 0.6, 0.4);
+}
+function deadJoints(crawl) {   // the points the body and the clothes hang from, the same ones the towns' dresses use
+  const hip = crawl ? [0, 0.72, 0.1] : [0, 1.0, 0.04], sh = crawl ? [0, 0.86, -0.64] : [0, 1.62, -0.36], hd = crawl ? [0, 0.9, -0.94] : [0, 1.68, -0.64];
+  const side = sx => { const hx = sx * 0.11, shx = sx * 0.25; return { sx, hipJ: [hx, hip[1], hip[2]], shJ: [shx, sh[1], sh[2]],
+    knee: crawl ? [hx * 1.2, 0.32, -0.16] : [hx * 1.1, 0.53, -0.1], foot: crawl ? [hx * 1.2, 0.06, 0.32] : [hx * 1.15, 0.07, 0.06],
+    elbow: crawl ? [shx * 1.1, 0.46, -0.76] : [shx * 1.12, 1.16, -0.48], hand: crawl ? [shx, 0.06, -1.0] : [shx * 1.05, 0.7, -0.6] }; };
+  const V = a => new THREE.Vector3(...a), H = V(hip), S = V(sh), Dn = S.clone().sub(H).normalize(), Fr = new THREE.Vector3(0, 0, -1).addScaledVector(Dn, Dn.z).normalize();
+  const C = H.clone().add(S).multiplyScalar(0.5).addScaledVector(Fr, -0.07), hC = C.clone().sub(H), sC = S.clone().sub(C);
+  const spine = t => t < 0 ? H.clone().addScaledVector(hC, 2 * t) : t > 1 ? S.clone().addScaledVector(sC, 2 * (t - 1)) : H.clone().multiplyScalar((1 - t) * (1 - t)).addScaledVector(C, 2 * t * (1 - t)).addScaledVector(S, t * t);
+  const tang = t => { const u = THREE.MathUtils.clamp(t, 0, 1); return hC.clone().multiplyScalar(2 * (1 - u)).addScaledVector(sC, 2 * u).normalize(); };
+  const prof = t => { let i = 0; while (i < TORSO.length - 2 && TORSO[i + 1][0] < t) i++; const a = TORSO[i], b = TORSO[i + 1], k = THREE.MathUtils.clamp((t - a[0]) / (b[0] - a[0]), 0, 1); return [1, 2, 3].map(q => a[q] + (b[q] - a[q]) * k); };
+  const centre = t => spine(t).addScaledVector(Fr, prof(t)[2]);
+  // a point on the torso (out 1) or off it, at t round the angle th
+  const surf = (t, th, out = 1) => { const T = tang(t), X = T.clone().cross(Fr).normalize(), F = X.clone().cross(T), [rx, rz] = prof(t), m = torsoMod(t, th) * out; return centre(t).addScaledVector(X, Math.cos(th) * rx * m).addScaledVector(F, Math.sin(th) * rz * m); };
+  const ring = (t, s, add) => { const c = centre(t), [rx, rz] = prof(t); return [c.x, c.y, c.z, rx * s + add, rz * s + add]; };
+  return { crawl, hip, sh, hd, H, S, Dn, Fr, prof, centre, surf, ring, L: side(-1), R: side(1) };
+}
+// the skull round its middle, the face to -z: a heavy brow over deep sockets, sharp cheekbones over hollow cheeks, a long jaw, the mouth a little open
+const SKULL = [   // centre, width, push
+  [0.04, 0.016, -0.106, 0.032, 0, 0, 0.038], [-0.04, 0.016, -0.106, 0.032, 0, 0, 0.038],                                // the sockets
+  [0.042, 0.054, -0.104, 0.028, 0.004, 0.004, -0.012], [-0.042, 0.054, -0.104, 0.028, -0.004, 0.004, -0.012], [0, 0.05, -0.112, 0.02, 0, 0, -0.006],   // the brow
+  [0.066, -0.014, -0.08, 0.022, 0.012, 0, -0.008], [-0.066, -0.014, -0.08, 0.022, -0.012, 0, -0.008],                   // the cheekbones
+  [0.066, -0.062, -0.06, 0.028, -0.022, 0, 0.004], [-0.066, -0.062, -0.06, 0.028, 0.022, 0, 0.004],                     // the hollow cheeks
+  [0.092, 0.03, -0.035, 0.028, -0.01, 0, 0], [-0.092, 0.03, -0.035, 0.028, 0.01, 0, 0],                                 // the temples
+  [0, -0.026, -0.11, 0.016, 0, 0, 0.016], [0, 0.006, -0.118, 0.012, 0, 0, -0.004],                                     // the nose: a hole under a ridge
+  [0.014, -0.082, -0.096, 0.02, 0, 0, 0.016], [-0.014, -0.082, -0.096, 0.02, 0, 0, 0.016],                             // the open mouth
+  [0.062, -0.1, -0.03, 0.03, 0.014, -0.006, 0], [-0.062, -0.1, -0.03, 0.03, -0.014, -0.006, 0],                        // the corners of the jaw
+  [0, -0.122, -0.074, 0.03, 0, -0.016, -0.014], [0, 0.01, 0.11, 0.06, 0, 0, 0.016],                                    // the chin, the back of the skull
+];function skullWarp(p) {
+  const x = p.x, y = p.y, z = p.z; let dx = 0, dy = 0, dz = 0;
+  for (const [cx, cy, cz, w, px, py, pz] of SKULL) { const k = Math.exp(-((x - cx) ** 2 + (y - cy) ** 2 + (z - cz) ** 2) / (w * w)); dx += px * k; dy += py * k; dz += pz * k; }
+  const low = _ss(-y, 0.02, 0.11) * _ss(-z, -0.02, 0.07); p.set(x * (1 - 0.3 * low) + dx, y - 0.012 * low + dy, z * (z > 0 ? 1.06 : 1) + dz);
+}
+function skullShade(p) {   // dark in the sockets, the nose, the mouth, a little in the hollow cheeks
+  const g = (cx, cy, cz, w) => Math.exp(-((p.x - cx) ** 2 + (p.y - cy) ** 2 + (p.z - cz) ** 2) / (w * w));
+  return 1.6 * (g(0.04, 0.016, -0.104, 0.028) + g(-0.04, 0.016, -0.104, 0.028)) + 1.3 * g(0, -0.026, -0.11, 0.015) + 1.4 * (g(0.013, -0.082, -0.098, 0.019) + g(-0.013, -0.082, -0.098, 0.019))
+    + 0.35 * (g(0.066, -0.062, -0.065, 0.03) + g(-0.066, -0.062, -0.065, 0.03)) - 0.15;
+}// a long bony hand from the wrist L.hand along d, the palm to n, the thumb to w: a narrow palm, four long fingers curling in, a thumb.
+// Far off it is one curled mitten
+function deadHand(L, d, n, w, far) {
+  w = w.clone().addScaledVector(d, -d.dot(w)).normalize(); n = n.clone().addScaledVector(d, -d.dot(n)).addScaledVector(w, -w.dot(n)).normalize();
+  const W = new THREE.Vector3(...L.hand), at = (p, a, b, c) => p.clone().addScaledVector(d, a).addScaledVector(w, b).addScaledVector(n, c), nf = n.toArray();
+  if (far) return sweepGeo([[0, 0, 0, 0.022, 0.016], [0.05, 0, 0, 0.036, 0.014], [0.12, 0, 0.015, 0.03, 0.011], [0.17, 0, 0.045, 0.014, 0.008]].map(([a, b, c, r1, r2]) => { const p = at(W, a, b, c); return [p.x, p.y, p.z, r1, r2]; }), 4, { fwd: nf, uv: SKIN_UV, cap1: 0.01 });
+  return partsGeo(add => {
+    add(orient(shellGeo(0.036, 0.05, 0.014, 5, 4, { uv: SKIN_UV }), at(W, 0.046, 0, 0).toArray(), w, d, n));
+    [[0.024, 0.105], [0.008, 0.118], [-0.008, 0.11], [-0.023, 0.088]].forEach(([o, len]) => {
+      let p = at(W, 0.088, o, 0), dir = d.clone().addScaledVector(w, o * 1.2).normalize(); const pts = [[p.x, p.y, p.z, 0.0095, 0.0085]];
+      [[0.55, 0.42, 0.0078], [0.45, 0.55, 0.0058]].forEach(([f, bend, r]) => { p = p.clone().addScaledVector(dir, len * f); pts.push([p.x, p.y, p.z, r, r * 0.9]); dir = dir.multiplyScalar(Math.cos(bend)).addScaledVector(n, Math.sin(bend)).normalize(); });
+      add(sweepGeo(pts, 4, { fwd: nf, uv: SKIN_UV, cap0: 0.005, cap1: 0.006 }));
+    });
+    const t0 = at(W, 0.028, 0.03, 0.006), t1 = at(t0, 0.03, 0.022, 0.012), t2 = at(t1, 0.026, 0.012, 0.016);
+    add(sweepGeo([t0, t1, t2].map((p, i) => [p.x, p.y, p.z, 0.0105 - i * 0.0018, 0.0095 - i * 0.0015]), 4, { fwd: nf, uv: SKIN_UV, cap0: 0.006, cap1: 0.006 }));
+  });
+}
+function deadFoot(L, crawl, far) {   // a bony foot from the heel to long toes; the crawler's lie out behind him
+  const [x, , z] = L.foot, sx = L.sx, pts = crawl ? [[x, 0.075, z - 0.03, 0.03, 0.026], [x, 0.055, z + 0.04, 0.036, 0.03], [x, 0.035, z + 0.11, 0.04, 0.022], [x, 0.022, z + 0.17, 0.036, 0.014]]
+    : [[x, 0.04, z + 0.035, 0.03, 0.026], [x, 0.055, z - 0.02, 0.036, 0.034], [x + sx * 0.004, 0.042, z - 0.09, 0.042, 0.025], [x + sx * 0.008, 0.027, z - 0.155, 0.042, 0.017], [x + sx * 0.01, 0.02, z - 0.19, 0.034, 0.013]];
+  return sweepGeo(far ? [pts[0], pts[2], pts[pts.length - 1]] : pts, far ? 4 : 6, { fwd: [0, 1, 0], uv: SKIN_UV, cap0: 0.022, cap1: 0.014 });
+}
+// the shared body, built once per posture and per distance: the skin as one geometry and the eyes as another. The far one (seen from
+// beyond DEAD_FAR) keeps the silhouette and the face and drops the ribs, the knobs and the fingers
+const DEAD_BODY = {}, DEAD_FAR = 12;
+function deadBody(crawl, far) {
+  const key = (crawl ? 'c' : 's') + (far ? 'f' : 'n'); if (DEAD_BODY[key]) return DEAD_BODY[key];
+  const J = deadJoints(crawl), { hd, sh, Fr, Dn } = J, k = kit(), SK = { userData: {} }, EY = { userData: {} }, V = (x, y, z) => new THREE.Vector3(x, y, z), fr = Fr.toArray(), dn = Dn.toArray();
+  const put = (geo, x, y, z, rx, ry, rz, sx, sy, sz, key) => { kadd(k, geo, key || SK, x || 0, y || 0, z || 0, rx, ry, rz, sx, sy, sz); geo.dispose(); };
+  const skin = (rings, seg, o) => sweepGeo(rings, seg, Object.assign({ uv: SKIN_UV }, o)), blob = (rx, ry, rz, seg, nr) => shellGeo(rx, ry, rz, seg, nr, { uv: SKIN_UV });
+  // the torso with its ribs, and the knobs of the spine down the hunched back
+  const TT = far ? TORSO.filter((r, i) => i % 2 === 0) : TORSO;
+  put(skin(TT.map(([t]) => J.ring(t, 1, 0)), far ? 10 : 16, { fwd: fr, cap0: 0.045, cap1: 0.035, mod: (u, th) => torsoMod(TT[Math.round(u * (TT.length - 1))][0], th) }));
+  if (!far) {
+    for (const sx of [-1, 1]) for (const [t0, a1] of [[0.5, 1.2], [0.62, 1.34], [0.74, 1.24]]) {
+      const pts = []; for (let q = 0; q <= 3; q++) { const u = q / 3, p = J.surf(t0 - 0.07 * (1 - u), Math.PI / 2 + sx * (0.24 + a1 * u)); pts.push([p.x, p.y, p.z, 0.0115, 0.0095]); }
+      put(skin(pts, 4, { fwd: dn, cap0: 0.006, cap1: 0.006 }));
+    }
+    for (const t of [0.62, 0.74, 0.85, 0.95]) { const p = J.surf(t, BACK, 0.97); put(blob(0.017, 0.013, 0.015, 5, 3), p.x, p.y, p.z); }
+  }
+  // the shoulders: a bony yoke from one to the other over the top of the back, the collarbones in front
+  put(skin([-1, -0.6, 0, 0.6, 1].map(u => { const a = Math.abs(u); return [u * 0.25, sh[1] + 0.045 * (1 - a * a) + 0.004, sh[2] + 0.025 * (1 - a), 0.05 + 0.008 * (1 - a), 0.052 + 0.016 * (1 - a)]; }), far ? 6 : 10, { fwd: fr, cap0: 0.028, cap1: 0.028 }));
+  if (!far) for (const sx of [-1, 1]) { const a = V(sx * 0.03, sh[1] - 0.012, sh[2]).addScaledVector(Fr, 0.07), b = V(sx * 0.21, sh[1] + 0.012, sh[2]).addScaledVector(Fr, 0.032), m = a.clone().lerp(b, 0.5).addScaledVector(Fr, 0.012); put(skin([a, m, b].map(p => [p.x, p.y, p.z, 0.011, 0.011]), 4, { fwd: dn, cap0: 0.008, cap1: 0.008 })); }
+  // the neck rises off the hunched back and runs forward into the skull, the knob at its foot
+  const N0 = J.S.clone().addScaledVector(Fr, -0.03).addScaledVector(Dn, 0.005), N2 = V(hd[0], hd[1] - 0.055, hd[2] + 0.065), N1 = N0.clone().lerp(N2, 0.5).addScaledVector(Fr, -0.045), neck = [], nq = far ? 3 : 5;
+  for (let q = 0; q <= nq; q++) { const u = q / nq, p = N0.clone().multiplyScalar((1 - u) * (1 - u)).addScaledVector(N1, 2 * u * (1 - u)).addScaledVector(N2, u * u), r = 0.047 - 0.011 * u; neck.push([p.x, p.y, p.z, r, r * 0.94]); }
+  put(skin(neck, far ? 6 : 8, { fwd: [0, -1, 0], cap0: 0.02, cap1: 0.02 }));
+  if (!far) { const c7 = N0.clone().addScaledVector(Fr, -0.04); put(blob(0.022, 0.018, 0.02, 6, 3), c7.x, c7.y, c7.z); }
+  put(shellGeo(0.098, 0.12, 0.112, far ? 10 : 20, far ? 7 : 15, { shade: skullShade, warp: skullWarp, dense: far ? 0.4 : 0.55 }), hd[0], hd[1], hd[2]);
+  for (const sx of [-1, 1]) put(shellGeo(0.016, 0.011, 0.01, far ? 4 : 6, far ? 2 : 3), hd[0] + sx * 0.04, hd[1] + 0.017, hd[2] - 0.082, 0, 0, sx * 0.3, 1, 1, 1, EY);
+  // long thin arms and legs with knobs at the elbows and knees, the hands hanging at the knees
+  for (const L of [J.L, J.R]) {
+    const sx = L.sx;
+    put(skin(limbRings(far ? [[L.shJ, L.elbow, [[0, 0.05], [0.5, 0.04]]], [L.elbow, L.hand, [[0, 0.036], [0.5, 0.031], [1, 0.021, 0.026]]]]
+      : [[L.shJ, L.elbow, [[0, 0.05], [0.22, 0.043], [0.55, 0.038], [0.85, 0.032]]], [L.elbow, L.hand, [[0, 0.036], [0.15, 0.037], [0.45, 0.032], [0.78, 0.026], [1, 0.021, 0.026]]]]), far ? 5 : 7, { cap0: 0.03, cap1: 0.008 }));
+    put(skin(limbRings(far ? [[L.hipJ, L.knee, [[0, 0.07], [0.5, 0.057]]], [L.knee, L.foot, [[0, 0.05], [0.4, 0.045], [1, 0.032]]]]
+      : [[L.hipJ, L.knee, [[0, 0.07], [0.2, 0.066], [0.5, 0.057], [0.82, 0.046]]], [L.knee, L.foot, [[0, 0.05], [0.15, 0.045], [0.38, 0.046, 0.05, 0.006], [0.68, 0.037], [1, 0.032]]]]), far ? 5 : 7, { cap0: 0.02, cap1: 0.01 }));
+    if (!far) {
+      const el = V(...L.elbow).add(V(0, 0.012, 0.03)); put(blob(0.026, 0.03, 0.022, 5, 3), el.x, el.y, el.z);
+      const kp = V(...L.knee).add(crawl ? V(0, -0.035, -0.03) : V(0, 0.012, -0.044)); put(blob(0.032, 0.036, 0.021, 5, 3), kp.x, kp.y, kp.z, crawl ? 1.0 : 0.25);
+    }
+    put(crawl ? deadHand(L, V(0, -0.25, -1).normalize(), V(0, -1, 0), V(-sx, 0, 0), far) : deadHand(L, V(...L.hand).sub(V(...L.elbow)).normalize(), V(-sx, 0, 0), V(0, 0, -1), far));
+    put(deadFoot(L, crawl, far));
+  }
+  return (DEAD_BODY[key] = { J, skin: kmerge(k.get(SK)), eyes: kmerge(k.get(EY)) });
+}
+
+// the shared costumes' smooth parts: the bucket hat, the bonnet with its wings, the long skirt with a hem that is coming apart
+Object.assign(PG, {
+  zHat: partsGeo(add => {
+    add(_lathe([[0.15, -0.06], [0.146, -0.02], [0.138, 0.035], [0.112, 0.064], [0.06, 0.074], [0.001, 0.075]]));
+    add(_lathe([[0.15, -0.068], [0.19, -0.082], [0.232, -0.1], [0.244, -0.104], [0.236, -0.092], [0.2, -0.074], [0.15, -0.062]]));
+  }),
+  zBonnet: partsGeo(add => {
+    add(_lathe([[0.168, 0], [0.165, 0.05], [0.15, 0.11], [0.118, 0.158], [0.07, 0.186], [0.001, 0.194]]));
+    for (const s of [-1, 1]) add(shellGeo(0.026, 0.05, 0.01, 8, 4), s * 0.17, -0.03, 0.01, 0, 0, s * 0.62);
+  }),
+  zSkirt: _lathe([[0.001, -0.5], [0.43, -0.5], [0.44, -0.49], [0.41, -0.4], [0.34, -0.14], [0.27, 0.14], [0.215, 0.38], [0.19, 0.5], [0.001, 0.5]]),
+});// the rags of the shared variants: a shirt hanging open over the ribs with torn short sleeves, ragged trousers cut off above the knee,
+// strips of cloth hanging from the hems. A town's own dead wear its dress instead. Merged into the variant with the rag material
+function deadRags(k, J, v, mat, far) {
+  let h = 7; for (const ch of v) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const shirt = h % 3, trou = 3 + (h >> 4) % 2, hr = i => { const s = Math.sin(h % 997 + i * 12.9898) * 43758.5453; return s - Math.floor(s); };
+  const put = geo => { kadd(k, geo, mat, 0, 0, 0); geo.dispose(); }, fr = J.Fr.toArray(), sh = J.sh, V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const ST = far ? [0.03, 0.3, 0.6, 0.86, 1.02] : [0.03, 0.16, 0.3, 0.45, 0.6, 0.74, 0.86, 0.95, 1.02];
+  put(sweepGeo(ST.map(t => J.ring(t, 1.05, 0.01)), far ? 10 : 16, { fwd: fr, uv: ragUV(shirt, 0, 1), arc: t => { const q = Math.round(t * 8), o = 0.5 + 0.42 * (1 - t) + (far ? 0 : 0.2 * hr(q + 30) - 0.06), p = far ? 0 : 0.2 * hr(q + 31) - 0.06; return [Math.PI / 2 + o, Math.PI * 2.5 - p - 0.5 - 0.42 * (1 - t)]; },
+    mod: (u, th, j) => (0.5 + 0.5 * torsoMod(ST[Math.round(u * (ST.length - 1))], th)) * (0.97 + 0.07 * hr(j * 9 + Math.round(u * 8))), drop: (u, th, j) => u === 0 ? (j % 2 ? 0.025 : 0.06) + hr(j) * 0.07 : 0 }));
+  put(sweepGeo([-1, -0.6, 0, 0.6, 1].map(u => { const a = Math.abs(u); return [u * 0.255, sh[1] + 0.045 * (1 - a * a) + 0.006, sh[2] + 0.025 * (1 - a), 0.056 + 0.008 * (1 - a), 0.058 + 0.016 * (1 - a)]; }), far ? 6 : 8, { fwd: fr, cap0: 0.024, cap1: 0.024, uv: ragUV(shirt, 0.7, 0.7) }));
+  const strip = (p, out, w, len, col) => {   // a strip of cloth hanging from p, both faces
+    const up = V(0, 1, 0), ac = V(0, 0, 0).crossVectors(up, out).normalize(), at = (a, b, c) => p.clone().addScaledVector(ac, a).addScaledVector(up, b).addScaledVector(out, c);
+    const q = [at(-w / 2, 0.012, 0), at(w / 2, 0.012, 0), at(-w * 0.42, -len * 0.5, 0.012), at(w * 0.45, -len * 0.56, 0.014), at(-w * 0.32, -len * 0.84, 0.02), at(w * 0.12, -len, 0.024)], pos = [], uv = [];
+    for (const [a, b, c] of [[0, 2, 1], [1, 2, 3], [2, 4, 3], [3, 4, 5]]) for (const tri of [[a, b, c], [a, c, b]]) for (const i of tri) { pos.push(q[i].x, q[i].y, q[i].z); uv.push((col + 0.5) / RAG_W, 0.3); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.computeVertexNormals(); put(g);
+  };
+  const outAt = (t, th) => { const o = J.surf(t, th, 1.3).sub(J.surf(t, th, 1)); o.y = 0; if (o.lengthSq() < 1e-4) o.set(1, 0, 0); return o.normalize(); };
+  for (const sx of [-1, 1]) strip(V(sx * 0.2, sh[1] + 0.005, sh[2] + 0.085), V(sx * 0.3, 0, 0.95).normalize(), 0.032, 0.12 + hr(sx + 50) * 0.08, 5);   // torn off the shoulders, behind the arms
+  for (const [i, th] of [2.6, 3.5, 4.6, 5.6, 6.6].entries()) strip(J.surf(0.06, th, 1.12), outAt(0.06, th), 0.045 + hr(i + 60) * 0.02, 0.13 + hr(i + 70) * 0.13, i % 2 ? shirt : 5);
+  for (const L of [J.L, J.R]) {
+    put(sweepGeo(limbRings([[L.shJ, L.elbow, far ? [[-0.04, 0.066], [0.4, 0.056]] : [[-0.04, 0.066], [0.18, 0.06], [0.4, 0.056]]]]), far ? 6 : 8, { uv: ragUV(shirt, 1, 0.4), drop: (u, th, j) => u === 1 ? -(0.015 + hr(j + 20) * 0.06) : 0 }));
+    const s = V(...L.shJ).lerp(V(...L.elbow), 0.42).add(V(L.sx * 0.05, 0, 0.01)); strip(s, V(L.sx, 0, 0.2).normalize(), 0.035, 0.1 + hr(L.sx + 80) * 0.06, shirt);
+  }
+  if (v === 'bonnet') return;   // under her skirt
+  const PT = far ? [-0.1, 0.06, 0.16] : [-0.1, -0.03, 0.06, 0.16];
+  put(sweepGeo(PT.map(t => J.ring(t, 1.1, 0.012)), far ? 8 : 14, { fwd: fr, cap0: 0.045, uv: ragUV(trou, 0.6, 1), mod: (u, th) => torsoMod(PT[Math.round(u * (PT.length - 1))], th) }));
+  for (const L of [J.L, J.R]) {
+    put(sweepGeo(limbRings([[L.hipJ, L.knee, far ? [[0, 0.088], [0.84, 0.068]] : [[0, 0.088], [0.3, 0.084], [0.6, 0.074], [0.84, 0.068]]]]), far ? 6 : 9, { uv: ragUV(trou, 1, 0.25), drop: (u, th, j) => u === 1 ? -(0.015 + hr(j + 40) * 0.07) : 0 }));
+    const s = V(...L.hipJ).lerp(V(...L.knee), 0.8).add(V(L.sx * 0.07, 0, 0)); strip(s, V(L.sx, 0, -0.3).normalize(), 0.04, 0.1 + hr(L.sx + 90) * 0.07, trou);
+  }
+}
 const ZOMBIE_VARIANTS = ['plain', 'plain', 'hat', 'bonnet', 'cheese', 'phone', 'clogs', 'scarf', 'boxes', 'socks', 'crawler'];
 const ZOMBIE_PARTS = {};
 // a town's own dead (dead: { pool, dress } in its towns3d file): pool is the variant list a spawn picks from (repeat a name to weight it),
@@ -2117,29 +2406,14 @@ const ZOMBIE_PARTS = {};
 function deadPool() { const d = T3().dead; return (d && d.pool && d.pool.length) ? d.pool : ZOMBIE_VARIANTS; }
 function deadDress(v) { for (const id in TOWN3D) { const d = TOWN3D[id].dead; if (d && d.dress && d.dress[v]) return d.dress[v]; } return null; }
 const ZEYE_MAT = GlowMat(glowTex, 0xffbf40, 1, false, { side: THREE.DoubleSide }); ZEYE_MAT.userData.shared = true;
-function zombieParts(v) {
-  if (ZOMBIE_PARTS[v]) return ZOMBIE_PARTS[v];
-  const k = kit(), sk = PK.skin[0], crawl = v === 'crawler';
-  const hip = crawl ? [0, 0.72, 0.1] : [0, 1.0, 0.04], sh = crawl ? [0, 0.86, -0.64] : [0, 1.62, -0.36], hd = crawl ? [0, 0.9, -0.94] : [0, 1.68, -0.64];
-  ktube(k, sk, ...hip, ...sh, 0.15);                                                                                   // the bowed back
-  kadd(k, KG.ball, sk, 0, (hip[1] + sh[1]) / 2 + 0.05, (hip[2] + sh[2]) / 2 + 0.04, crawl ? 1.2 : 0.5, 0, 0, 0.42, 0.56, 0.34);   // ribs under the rags
-  kb(k, sk, 0, sh[1], sh[2], 0.5, 0.11, 0.17);                                                                          // shoulders
-  ktube(k, sk, ...sh, 0, hd[1] - 0.05, hd[2] + 0.08, 0.045);                                                            // the neck
-  kadd(k, KG.ball, sk, ...hd, 0, 0, 0, 0.22, 0.27, 0.25);
-  kb(k, PK.jaw, 0, hd[1] - 0.1, hd[2] - 0.07, 0.12, 0.05, 0.08);
-  for (const sx of [-1, 1]) kadd(k, KG.ball, PM.eyeGlow, sx * 0.052, hd[1] + 0.03, hd[2] - 0.12, 0, 0, 0, 0.055, 0.045, 0.04);
-  kadd(k, KG.plane, ZEYE_MAT, 0, hd[1] + 0.03, hd[2] - 0.16, 0, 0, 0, 0.55, 0.3);                                       // the glow round the eyes
-  for (const sx of [-1, 1]) {
-    const hx = sx * 0.11, shx = sx * 0.25;
-    const knee = crawl ? [hx * 1.2, 0.32, -0.16] : [hx * 1.1, 0.53, -0.1], foot = crawl ? [hx * 1.2, 0.06, 0.32] : [hx * 1.15, 0.07, 0.06];
-    const elbow = crawl ? [shx * 1.1, 0.46, -0.76] : [shx * 1.12, 1.16, -0.48], hand = crawl ? [shx, 0.06, -1.0] : [shx * 1.05, 0.7, -0.6];
-    ktube(k, sk, hx, hip[1], hip[2], ...knee, 0.085); ktube(k, sk, ...knee, ...foot, 0.062); kb(k, sk, foot[0], 0.04, foot[2] - 0.08, 0.11, 0.07, 0.25);
-    ktube(k, sk, shx, sh[1], sh[2], ...elbow, 0.062); ktube(k, sk, ...elbow, ...hand, 0.05); kadd(k, KG.ball, sk, hand[0], hand[1] - 0.08, hand[2], 0, 0, 0, 0.08, 0.18, 0.07);
-  }
-  if (v === 'hat' || v === 'socks') { kadd(k, KG.cyl, PM.orange, 0, hd[1] + 0.15, hd[2] + 0.02, 0.35, 0, 0, 0.29, 0.15, 0.31); kadd(k, KG.cyl, PM.orange, 0, hd[1] + 0.09, hd[2] + 0.02, 0.35, 0, 0, 0.48, 0.025, 0.48); }
+// a variant is built once, near and far together: its costume once, then the full body and the light one (seen from DEAD_FAR metres)
+// under the same costume parts, so both match and the costume draws its random numbers once, as before (see zombie)
+function zombieParts(v, far) {
+  const key = far ? v + '|far' : v; if (ZOMBIE_PARTS[key]) return ZOMBIE_PARTS[key];
+  const k = kit(), sk = PK.skin[0], crawl = v === 'crawler', { hip, sh, hd } = deadBody(crawl).J, ownDress = deadDress(v);  if (v === 'hat' || v === 'socks') kadd(k, PG.zHat, PM.orange, 0, hd[1] + 0.155, hd[2] + 0.02, 0.35);
   if (v === 'bonnet') {   // the woman from the sheet: a white bonnet with its wings, a long dark skirt
-    kadd(k, KG.dome, PK.linen, 0, hd[1] - 0.01, hd[2] + 0.03, 0.6, 0, 0, 0.33, 0.38, 0.35); for (const sx of [-1, 1]) kb(k, PK.linen, sx * 0.16, hd[1] - 0.04, hd[2] + 0.02, 0.1, 0.16, 0.03, 0, 0, sx * 0.4);
-    const sg = new THREE.CylinderGeometry(0.2, 0.44, 1, 10); kadd(k, sg, PK.skirt, 0, 0.55, -0.02, -0.08, 0, 0, 1, 0.98, 1); sg.dispose();
+    kadd(k, PG.zBonnet, PK.linen, 0, hd[1] - 0.01, hd[2] + 0.03, 0.6);
+    kadd(k, PG.zSkirt, PK.skirt, 0, 0.55, -0.02, -0.08, 0, 0, 1, 0.98, 1);
   }
   if (v === 'cheese') for (let i = 0; i < 5; i++) kadd(k, KG.cyl, PM.cheese, 0, 1.42 + i * 0.15, 0.1 + i * 0.03, 0.4, 0, 0, 0.5, 0.14, 0.5);   // a tall stack of cheese on his back
   if (v === 'boxes') { for (let i = 0; i < 4; i++) kb(k, M.wood, rnd(-0.04, 0.04), 1.4 + i * 0.3, 0.1 + i * 0.07, 0.5, 0.28, 0.42, 0.4, rnd(-0.15, 0.15), 0); kb(k, PK.rope, 0, 1.45, -0.12, 0.44, 0.04, 0.04, 0.4, 0, 0); }
@@ -2147,14 +2421,32 @@ function zombieParts(v) {
   if (v === 'clogs' || v === 'socks') for (const sx of [-1, 1]) kb(k, PM.cheese, sx * 0.125, 0.05, -0.02, 0.14, 0.1, 0.32);
   if (v === 'socks') for (const sx of [-1, 1]) for (let i = 0; i < 4; i++) kadd(k, KG.cyl, i % 2 ? PK.linen : PK.sock, sx * 0.125, 0.14 + i * 0.07, 0.03, 0.2, 0, 0, 0.12, 0.07, 0.12);
   if (v === 'scarf') { const tg = new THREE.TorusGeometry(0.15, 0.05, 6, 10); kadd(k, tg, PM.orange, 0, sh[1] + 0.02, sh[2] - 0.1, Math.PI / 2 + 0.6); tg.dispose(); }
-  const ownDress = deadDress(v); if (ownDress) ownDress(k, { hip, sh, hd, crawl, skin: sk }, townKit());   // a town's own dead: their dress on the same body
-  const parts = []; let i = 0;
-  for (const [m, list] of k) { const geo = kmerge(list); PG['zombie_' + v + '_' + (i++)] = geo; parts.push([geo, m === sk ? null : m]); }
-  return (ZOMBIE_PARTS[v] = parts);
+  if (ownDress) ownDress(k, { hip, sh, hd, crawl, skin: sk }, townKit());   // a town's own dead: their dress on the same body
+  for (const f of [false, true]) {   // the body under it, full and light, with the rags of the shared variants; the costume's parts go on both
+    const B = deadBody(crawl, f), bk = kit(), name = f ? v + '|far' : v, parts = []; let i = 0;
+    kadd(bk, B.skin, sk, 0, 0, 0); kadd(bk, B.eyes, PM.eyeGlow, 0, 0, 0);
+    for (const sx of [-1, 1]) kadd(bk, KG.plane, ZEYE_MAT, hd[0] + sx * 0.042, hd[1] + 0.017, hd[2] - 0.125, 0, 0, 0, 0.17, 0.13);   // the glow round each eye
+    if (!ownDress) deadRags(bk, B.J, v, DEAD_RAGS[0], f);
+    for (const [m, list] of k) { let l = bk.get(m); if (!l) bk.set(m, l = []); l.push(...list); }
+    for (const [m, list] of bk) { const geo = kmerge(list); PG['zombie_' + name + '_' + (i++)] = geo; parts.push([geo, m === sk ? null : m]); }
+    ZOMBIE_PARTS[name] = parts;
+  }
+  return ZOMBIE_PARTS[key];
+}
+// a spawn: its own skin colour and rags. Its meshes swap to the light body past DEAD_FAR metres from the eye and back, so the close
+// ones show every bone while a street full of them costs little more than before
+const _dlV = new THREE.Vector3(); let _ragN = 0;
+function deadLod(force) {
+  THREE.Object3D.prototype.updateMatrixWorld.call(this, force);
+  const d2 = _dlV.setFromMatrixPosition(this.matrixWorld).distanceToSquared(camera.position), far = this.userData.far ? d2 > (DEAD_FAR - 1) ** 2 : d2 > (DEAD_FAR + 1) ** 2;
+  if (far === !!this.userData.far) return;
+  this.userData.far = far; for (const m of this.children) { const l = m.userData.lod; if (l) m.geometry = l[far ? 1 : 0]; }
 }
 function zombie(variant) {
-  const v = variant || pick(deadPool()), skin = pick(PK.skin); const g = new THREE.Group();
-  for (const [geo, m] of zombieParts(v)) g.add(new THREE.Mesh(geo, m || skin));
+  const v = variant || pick(deadPool()), skin = pick(PK.skin), rag = DEAD_RAGS[_ragN++ % DEAD_RAGS.length]; const g = new THREE.Group();
+  const near = zombieParts(v), far = zombieParts(v, true);
+  near.forEach(([geo, m], i) => { const mesh = new THREE.Mesh(geo, !m ? skin : m === DEAD_RAGS[0] ? rag : m); if (far[i] && far[i][1] === m) mesh.userData.lod = [geo, far[i][0]]; g.add(mesh); });
+  g.updateMatrixWorld = deadLod;
   g.rotation.y = Math.PI + rnd(-0.4, 0.4); g.userData.lean = rnd(0.5, 1.5); g.userData.variant = v;   // turned toward you, so you meet the eyes
   return g;
 }
