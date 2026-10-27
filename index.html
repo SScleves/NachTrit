@@ -79,14 +79,19 @@
   #nl text.band { font-weight:500; fill:#b8c2cf; letter-spacing:.06em; paint-order:stroke; stroke:rgba(8,11,16,.85); stroke-width:3px; }
   #nl text.num { font-weight:700; fill:#fff; }
   #nl .town.locked text.nm { fill:#d4d9e0; }
-  #nl .nrdash { animation: nrdash 1.6s linear infinite; }
-  @keyframes nrdash { to { stroke-dashoffset: var(--dash, -20); } }
   #map h1.maptitle { font-size:clamp(28px,5vw,48px); letter-spacing:.34em; padding-left:.34em; font-weight:600; color:#eef0f3; text-shadow:0 2px 18px rgba(0,0,0,.6); margin:0; }
   #map .mapsub { color:#aab5c3; font-size:clamp(12px,1.7vw,17px); margin-top:6px; text-shadow:0 1px 6px #000; }
   #map .maplegend { color:#b4bdca; font-size:clamp(9.5px,1.15vw,13px); letter-spacing:.14em; text-shadow:0 1px 6px #000; }
   #map .maplegend i { font-style:normal; padding:0 .9em; opacity:.7; }
   #map .mapline { width:110px; height:2px; margin:9px auto 7px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent); }
   #map #endless { font-size:clamp(14px,1.5vw,17px); font-weight:500; padding:10px 26px; background:rgba(10,14,20,.55); border:1px solid rgba(255,255,255,.28); border-radius:6px; margin:0; }
+  #map #endless.aslink { background:none; border:0; border-radius:0; padding:2px 10px; font-size:clamp(12px,1.2vw,14px); color:#9fabb9; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(159,171,185,.45); }
+  /* the town card is a bottom sheet: opaque, never taller than three quarters of the screen, scrolling inside */
+  #map #town { background:rgba(9,12,18,.97) !important; max-height:76vh; overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; scrollbar-width:thin; }
+  #map .maplegend .tp { display:none; }
+  #map .maplegend span, #map .mapsub span { white-space:nowrap; }
+  @media (max-width: 600px) { #map .maplegend .kb { display:none; } #map .maplegend .tp { display:inline; } }
+  @media (max-width: 420px) { #map .mapsub span { display:block; } }
   #mapnorth { position:absolute; z-index:1; left:clamp(12px,4.5vw,60px); top:calc(70px + env(safe-area-inset-top)); width:20px; height:60px; pointer-events:none; }
   #mapnorth text { font:600 11px "Segoe UI",system-ui,sans-serif; fill:#c9d0da; }
   @media (max-aspect-ratio: 3/4) { #mapnorth { top:calc(96px + env(safe-area-inset-top)); width:14px; height:42px; } }
@@ -171,15 +176,15 @@
   </div>
   <div class="overlay" id="map" style="display:none;align-items:stretch;padding:0;background:#0a0e14">
     <div id="world" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
-      <div id="mapwrap" style="position:absolute;inset:0;z-index:0"><canvas id="nlart" style="position:absolute;inset:0;width:100%;height:100%"></canvas><svg id="nl" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></svg></div>
+      <div id="mapwrap" style="position:absolute;inset:0;z-index:0"><canvas id="nlart" style="position:absolute;inset:0;width:100%;height:100%"></canvas><canvas id="nlfx" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas><svg id="nl" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></svg></div>
       <div id="maphead" style="position:relative;z-index:1;text-align:center;padding:calc(14px + env(safe-area-inset-top)) 12px 0;pointer-events:none">
         <h1 class="maptitle">NEDERLAND</h1>
-        <div class="mapsub">Thirteen towns, A1 to B2. Ride to a town, go in, pick a place.</div>
+        <div class="mapsub"><span>Thirteen towns, A1 to B2.</span> <span>Ride to a town, go in, pick a place.</span></div>
       </div>
       <svg id="mapnorth" viewBox="0 0 20 60" aria-hidden="true"><text x="10" y="12" text-anchor="middle">N</text><path d="M10,17 L15,30 L10,27 L5,30 Z" fill="#c9d0da"/><path d="M10,28 V58" stroke="#c9d0da" stroke-width="1" opacity=".5"/></svg>
       <div style="flex:1"></div>
       <div id="mapfoot" style="position:relative;z-index:1;text-align:center;padding:0 12px calc(12px + env(safe-area-inset-bottom));pointer-events:none">
-        <div class="maplegend">LEFT / RIGHT: RIDE <i>·</i> ENTER or TAP: GO IN <i>·</i> GREEN EASY, RED HARD</div>
+        <div class="maplegend"><span class="kb">LEFT / RIGHT: RIDE <i>·</i> ENTER or TAP: GO IN <i>·</i></span><span class="tp">TAP A TOWN TO RIDE THERE <i>·</i></span> <span>GREEN EASY, RED HARD</span></div>
         <div class="mapline"></div>
         <button class="btn ghost" id="endless">Endless night (everything, hard)</button>
       </div>
@@ -2639,11 +2644,12 @@ function towns() { return (window.TOWNS && window.TOWNS.length ? window.TOWNS : 
 function townLevels(t) { return LEVELS.filter(l => (l.town || TOWN_OF(l.id)) === t.id); }
 function townStars(t) { return townLevels(t).reduce((n, l) => n + (progress[l.id] || 0), 0); }
 function townOpen(t) { if (t.tier === 1) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
-// the route board: towns in tier order along a winding road over the country, painted by map-art.js (window.NRMAP)
+// the route board: towns in tier order along roads over the real country, painted by map-art.js (window.NRMAP)
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
-let mapAt = 0, mapAnim = null, mapNodes = [], mapPath = null, mapLay = null, mapBadges = [], bikeX = null, bikeFlip = false;
+let mapAt = 0, mapAnim = null, mapNodes = [], mapLay = null, mapBadges = [], mapFxOn = false;
+const mapBike = { x: null, y: 0, flip: false, moving: false, cur: 0, from: -1, to: -1, side: 0 }; window.NRmapBike = mapBike;   // debug hook: where the rider is on the map
 function mapF() { const W = $('world').clientWidth || innerWidth, H = $('world').clientHeight || innerHeight; return Math.max(8.5, Math.min(13, Math.min(W * 1.1, H) / 64)); }
-function nodePositions(n) {   // real geography (lon/lat), a fisheye on the Randstad, then pushed apart so nothing overlaps
+function nodePositions(n) {   // real geography (lon/lat), a lens on the Randstad, then pushed apart so no badge or label overlaps
   const W = $('world').clientWidth || innerWidth, H = $('world').clientHeight || innerHeight, wb = $('world').getBoundingClientRect();
   const top = $('maphead').getBoundingClientRect().bottom - wb.top + 4, bot = $('mapfoot').getBoundingClientRect().top - wb.top - 2;
   const f = mapF(), box = { x: Math.max(8, W * 0.02), y: top, w: W - 2 * Math.max(8, W * 0.02), h: Math.max(120, bot - top) };
@@ -2657,64 +2663,67 @@ function drawWorld() {
   const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
   const T = towns(); const pts = nodePositions(T.length); mapNodes = pts; const f = mapLay.f;
   const states = T.map(townState);
-  NRMAP.paint($('nlart'), mapLay, T, states);
+  NRMAP.paint($('nlart'), mapLay, T, states);   // the country, the roads and the towns, cached until the size or the progress changes
   const openIdx = T.map((t, i) => townOpen(t) ? i : -1).filter(i => i >= 0); if (!openIdx.includes(mapAt)) mapAt = openIdx[openIdx.length - 1] || 0;
-  const lastOpen = openIdx[openIdx.length - 1] || 0;
   const defs = el('defs', {}); defs.innerHTML = NRMAP.defs; svg.appendChild(defs);
-  // the road: a smooth curve through the nodes, lit as far as the towns are open
-  const curve = P => { let d = `M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`; for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)]; const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`; } return d; };
-  const d = curve(pts), dl = curve(pts.slice(0, lastOpen + 1)), dash = `${(f * 0.6).toFixed(1)} ${(f * 0.7).toFixed(1)}`;
-  svg.appendChild(el('path', { d, fill: 'none', stroke: '#ffb347', 'stroke-width': f * 0.5, opacity: 0.12, filter: 'url(#nrblur)' }));
-  mapPath = el('path', { d, fill: 'none', stroke: '#e8c890', 'stroke-width': f * 0.15, 'stroke-dasharray': dash, 'stroke-linecap': 'round', opacity: 0.4 }); svg.appendChild(mapPath);
-  if (lastOpen > 0) {
-    svg.appendChild(el('path', { d: dl, fill: 'none', stroke: '#ffb347', 'stroke-width': f * 0.7, opacity: 0.35, filter: 'url(#nrblur)' }));
-    const lit = el('path', { d: dl, fill: 'none', stroke: '#ffe0a0', 'stroke-width': f * 0.22, 'stroke-dasharray': dash, 'stroke-linecap': 'round', class: 'nrdash', style: `--dash:-${(f * 1.3).toFixed(1)}` }); svg.appendChild(lit);
-  }
-  // little lamps along the road
-  const Lt = mapPath.getTotalLength(), stepL = f * 7, lampsG = el('g', {});
-  for (let l = stepL * 0.5; l < Lt; l += stepL) { const p = mapPath.getPointAtLength(l); if (pts.some(q => Math.hypot(q[0] - p.x, q[1] - p.y) < f * 2.4)) continue; const on = l <= segLenOf(lastOpen, pts, Lt); lampsG.appendChild(el('circle', { cx: p.x, cy: p.y, r: f * (on ? 1.1 : 0.7), fill: 'url(#nrdot)', opacity: on ? 1 : 0.5 })); lampsG.appendChild(el('circle', { cx: p.x, cy: p.y, r: f * 0.2, fill: on ? '#fff0c8' : '#a89878' })); }
-  svg.appendChild(lampsG);
   mapBadges = [];
   T.forEach((t, i) => {
     const [x, y] = pts[i]; const st = states[i]; const stars = townStars(t); const col = CEFR_COL[t.cefr] || '#e8e4d8';
     const g = el('g', { class: 'town' + (st === 'locked' ? ' locked' : ''), transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` });
     g.appendChild(el('circle', { r: f * 2.6, fill: 'transparent' }));
     const b = el('g', {}); g.appendChild(b); mapBadges.push({ b, t, st, col });
-    const label = el('text', { y: f * 2.75, 'text-anchor': 'middle', class: 'nm', style: `font-size:${f}px` }); label.textContent = (t.name.length > 16 ? t.name.split(/[ :]/)[0] : t.name).toUpperCase(); g.appendChild(label);
+    const label = el('text', { y: f * 2.75, 'text-anchor': 'middle', class: 'nm', style: `font-size:${f}px` }); label.textContent = NRMAP.label(t); g.appendChild(label);
     const band = el('text', { y: f * 3.95, 'text-anchor': 'middle', class: 'band', style: `font-size:${(f * 0.88).toFixed(1)}px;fill:${st === 'locked' ? '#aab4c2' : col}` }); band.textContent = t.cefr + (st !== 'locked' && stars ? ' · ★' + stars : ''); g.appendChild(band);
     g.onclick = () => rideTo(i);
     svg.appendChild(g);
   });
-  const bikeG = el('g', { id: 'mapbike' }); bikeG.innerHTML = NRMAP.cyclist(f); svg.appendChild(bikeG);
-  for (const k in _segCache) delete _segCache[k];
-  bikeX = null; placeBike(mapAt);
+  // until the first town is saved, the endless night is a quiet text link, not the biggest thing on the screen
+  $('endless').classList.toggle('aslink', !states.includes('saved'));
+  if (mapAnim) { cancelAnimationFrame(mapAnim); mapAnim = null; }
+  mapBike.from = mapBike.to = -1; placeBike(mapAt); mapFxStart();
 }
 function markCurrent(cur) { mapBadges.forEach(({ b, t, st, col }, i) => { b.innerHTML = NRMAP.badge(t, i, st, i === cur, mapLay.f, col); }); }
-function segLenOf(i, pts, L) { if (i <= 0) return 0; if (i >= pts.length - 1) return L; return segLen(i); }
-function placeBike(i, u) {   // u: fraction along the road from node i to i+1
-  const g = $('mapbike'); if (!g || !mapNodes.length) return;
-  let x, y; const f = mapLay ? mapLay.f : 10;
-  if (u == null) { [x, y] = mapNodes[i]; markCurrent(i); }
-  else { const a = segLen(i), b = segLen(i + 1); const p = mapPath.getPointAtLength(a + (b - a) * u); x = p.x; y = p.y; }
-  if (bikeX != null && Math.abs(x - bikeX) > 0.3) bikeFlip = x < bikeX; bikeX = x;
-  g.setAttribute('transform', `translate(${(x + f * 0.4).toFixed(1)} ${(y - f * 1.45).toFixed(1)})${bikeFlip ? ' scale(-1 1)' : ''}`);
+function segLen(i) { return mapLay ? (mapLay.route.nodeS[i] || 0) : 0; }   // road length from the first town to town i
+function bikeRest(i, side) {   // where the bike waits at town i: on the road just outside the badge, on the side it came in; null when both sides run under the label
+  const R = mapLay.route, f = mapLay.f, s = segLen(i), n = mapLay.nodes[i], B = mapLay.blk[i];
+  const sides = [side || (i > 0 ? -1 : 1), -(side || (i > 0 ? -1 : 1))].filter(d => (d < 0 && i > 0) || (d > 0 && i < R.nodeS.length - 1));
+  for (const d of sides) { const p = NRMAP.at(R, s + d * f * 2.7); if (!(Math.abs(p.x - n[0]) < B.w / 2 && p.y > n[1] + f * 0.6)) return s + d * f * 2.7; }
+  return null;
 }
-const _segCache = {};
-function segLen(i) {   // road length from the start to node i, found by sampling the path
-  if (_segCache[i] != null) return _segCache[i]; const L = mapPath.getTotalLength(); if (i <= 0) return 0; if (i >= mapNodes.length - 1) return L;
-  let best = 0, bd = 1e9; for (let k = 0; k <= 800; k++) { const p = mapPath.getPointAtLength(L * k / 800); const d = Math.hypot(p.x - mapNodes[i][0], p.y - mapNodes[i][1]); if (d < bd) { bd = d; best = L * k / 800; } }
-  _segCache[i] = best; return best;
+function placeBike(i, s, dir) {   // at rest at town i, or riding at arc length s in direction dir
+  if (!mapLay || !mapNodes.length) return;
+  const rest = s == null;
+  if (rest) {
+    s = bikeRest(i, mapBike.side); markCurrent(i);
+    if (s == null) { const n = mapLay.nodes[i], f = mapLay.f; Object.assign(mapBike, { x: n[0] + f * 2.6, y: n[1] + f * 0.55, flip: true, moving: false, cur: i }); return; }   // beside the badge, facing it
+    dir = s <= segLen(i) ? 1 : -1;
+  }
+  const p = NRMAP.at(mapLay.route, s);
+  mapBike.x = p.x; mapBike.y = p.y; mapBike.flip = p.dx * dir < 0; mapBike.moving = !rest; mapBike.cur = rest ? i : -1;
+}
+function mapFxStart() {   // the only animation on the map: glow pulse, road lamps, the lighthouse and the cyclist
+  if (mapFxOn) return; mapFxOn = true; let last = 0;
+  const tick = now => {
+    if ($('map').style.display === 'none') { mapFxOn = false; return; }
+    if (mapBike.moving || now - last > 32) { last = now; NRMAP.fx($('nlfx'), mapLay, now / 1000, mapBike); }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 let _mapResize = 0;
 addEventListener('resize', () => { clearTimeout(_mapResize); _mapResize = setTimeout(() => { if ($('map').style.display !== 'none' && !mapAnim) drawWorld(); }, 150); });
-function rideTo(target) {
+function rideTo(target) {   // ride the road to an open town, through the towns between, then go in
   const T = towns(); if (!townOpen(T[target])) { openTown(T[target]); return; }
   if (mapAnim) return;
   if (target === mapAt) { openTown(T[target]); return; }
-  const dir = target > mapAt ? 1 : -1; let i = mapAt, u = 0; const t0 = performance.now();
-  const step = () => {
-    u += 0.035; if (u >= 1) { i += dir; u = 0; if (i === target) { mapAt = i; mapAnim = null; placeBike(i); openTown(T[i]); return; } }
-    placeBike(dir > 0 ? i : i - 1, dir > 0 ? u : 1 - u); mapAnim = requestAnimationFrame(step);
+  const f = mapLay.f, dir = target > mapAt ? 1 : -1, r0 = bikeRest(mapAt, mapBike.side), r1 = bikeRest(target, -dir), s0 = r0 == null ? segLen(mapAt) : r0, s1 = r1 == null ? segLen(target) : r1;
+  const dur = Math.min(4500, Math.max(800, Math.abs(s1 - s0) / (f * 0.04))), t0 = performance.now();
+  mapBike.from = mapAt; mapBike.to = target; markCurrent(-1);
+  const step = now => {
+    const k = Math.min(1, (now - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    placeBike(mapAt, s0 + (s1 - s0) * e, dir);
+    if (k >= 1) { mapAt = target; mapAnim = null; mapBike.side = -dir; mapBike.from = mapBike.to = -1; placeBike(target); openTown(T[target]); return; }
+    mapAnim = requestAnimationFrame(step);
   };
   $('town').style.transform = 'translate(-50%,105%)';
   mapAnim = requestAnimationFrame(step);
@@ -2746,6 +2755,7 @@ function dehetBonus(t) {
 }
 function openTown(t) {
   const open = townOpen(t);
+  { const i = towns().findIndex(x => x.id === t.id); if (open && i >= 0 && i !== mapAt && !mapAnim && mapLay) { mapAt = i; mapBike.side = 0; placeBike(i); } }   // an open town opened directly (a link, ?map=id): the rider is there
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
   $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || ''; $('t_blurbnl').innerHTML = (t.blurbNl || '') + (t.rumour ? `<div style="margin-top:6px;color:#9fb0cc;font-style:normal"><span style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase">What they say here</span><br>${t.rumour}<br><i>${t.rumourNl}</i></div>` : '');
   const box = $('t_places'); box.innerHTML = '';
