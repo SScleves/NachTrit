@@ -44,6 +44,10 @@
   #start .hint { text-shadow:0 1px 3px #000; }
   .link { pointer-events:auto; background:none; border:0; color:#b8c0cc; text-decoration:underline; font-size:14px; cursor:pointer; margin-top:2px; padding:6px; }
   @media (max-height: 560px), (max-width: 480px) { #start .hint { display:none; } }
+  /* the mission card: a long road scrolls inside the overlay (centred while it fits), Ride and Back stay at the bottom of the screen */
+  #mission { overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; align-items:flex-start; padding-bottom:0; }
+  #mission .box { margin:auto; padding-top:max(12px, env(safe-area-inset-top)); }
+  #mission .mfoot { position:sticky; bottom:0; padding:16px 0 calc(16px + env(safe-area-inset-bottom)); background:linear-gradient(rgba(3,4,8,0), rgba(3,4,8,.97) 40%); }
   #pixframe { transition:opacity .26s ease; }
   #pixtext, #pixnl { transition:opacity .22s ease; }
   #intro { background:#000; }
@@ -203,7 +207,7 @@
       <div id="m_fare" style="color:#ffd27a;font-size:13px;margin-top:4px"></div>
       <div style="text-align:left;margin:14px auto;max-width:460px;line-height:1.5" id="m_lines"></div>
       <div id="m_words" style="text-align:left;margin:0 auto 14px;max-width:460px;font-size:13px;color:#c9d6ff;line-height:1.6"></div>
-      <button class="btn" id="m_go">Ride</button> <button class="btn ghost" id="m_back">Back</button>
+      <div class="mfoot"><button class="btn" id="m_go">Ride</button> <button class="btn ghost" id="m_back">Back</button></div>
     </div>
   </div>
   <div class="overlay" id="summary">
@@ -2792,7 +2796,7 @@ function openMission(lv) {
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
   const words = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.read ? (i.en || (i.o && i.o[i.a])) : (i.w || i.en)}`).filter((v, i, a) => a.indexOf(v) === i).slice(0, 24);
   $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
-  $('mission').style.display = 'flex';
+  $('mission').style.display = 'flex'; $('mission').scrollTop = 0;
 }
 // 'Fares here € 1,00 to € 2,90 · best 1284': every fare on this road, signposts and look forks included
 function missionFares(lv, tier) {
