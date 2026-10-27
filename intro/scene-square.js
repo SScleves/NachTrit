@@ -527,4 +527,6 @@
     A.dog(g, 150, 177, { coat: 'golden', pose: 'sit', look: 'up', facing: 'right', t, shadow: false });
     hero(g, 166, 175, t, false); lap('hero');
   };
+  // the shared night grade, last: the deepest darks lift into the concept art's blue-grey haze (NRART.grade)
+  { const draw = A.scenes.square; A.scenes.square = (g, t) => { draw(g, t); A.grade(g); }; }
 })();

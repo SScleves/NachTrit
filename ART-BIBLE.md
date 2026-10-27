@@ -7,15 +7,19 @@ Cast and props sheets: intro/gallery.html?only=cast and ?only=props.
 - 320x180, every pixel deliberate. Each piece draws into a palette-indexed buffer; nothing anti-aliases.
 - Toolkit primitives only: px, rect, hline, vline, line, disc, ring, ellipse, poly, ditherRect,
   ditherGradient, ditherDisc, sky, glow, cone, haze, mist, tint, shadow, water, streak, rain, stars,
-  moon, brick, tiles, window, windows. Never ctx.arc, gradients, shadowBlur, alpha or image smoothing.
+  moon, brick, tiles, window, windows, grade. Never ctx.arc, gradients, shadowBlur, alpha or image smoothing.
 - Colours by ramp name and step, dark to light: night0-7, mist0-7, slate, brick, wood, amber0-8,
   orange (the hero only), skin, zombie, eye (the threat only), phone (Tikkie cyan), red, green,
   paper, steel, teal, cheese, fur, blue.
 
 ## Light
-- One key light per piece, set with NRART.key(g, x, y, k). Sprites get a rim light toward it.
+- One key light per piece, set with NRART.key(g, x, y, k). Sprites get a rim light toward it, and
+  NRART.end(g, rim, null, 1) also turns the far edge one step into shade (the cast do this).
 - Falloff is dithered (glow, cone, haze use 4x4 Bayer). Amber is the only warmth.
 - Wet surfaces reflect: NRART.water under the ground line, NRART.streak under each light.
+- The night grade: end every piece's draw with NRART.grade(g). It lifts the deepest darks into the
+  cold blue-grey of the concept art, so black never sits on black (Santi's note), and leaves every
+  light, amber, the hero's orange, eyes and phones alone. Costs about 0.1 ms.
 
 ## Depth
 - Three to five layers, NRART.depth(g, d) before each. Farther is bluer, lighter, lower in

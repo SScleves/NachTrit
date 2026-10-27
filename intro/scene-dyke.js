@@ -463,7 +463,7 @@
     // ---- the postman: right profile, riding toward the big mill
     const hx = 108, hy = 148;
     glow(g, hx + 1, hy, 26, 2, 'black', 0.5, 4, 'mul');
-    A.omafiets(g, hx, hy, { rider: true, t, speed: 1.4, facing: 'right', beam: false, basket: null, shadow: false });
+    A.omafiets(g, hx, hy, { rider: true, t, speed: 1.4, facing: 'right', beam: false, basket: 'crate', shadow: false });
     // parcels and letters in the rear rack, a dog in the basket with its ears up
     A.begin(g);
     A.rect(g, hx - 19, hy - 25, 10, 6, 'wood4'); A.hline(g, hx - 19, hy - 25, 10, 'wood5'); A.vline(g, hx - 14, hy - 25, 6, 'paper4'); A.hline(g, hx - 19, hy - 22, 10, 'paper4');
@@ -476,7 +476,7 @@
     A.rect(g, hx + 15, hy - 36 - ear, 2, 3 + ear, 'fur1'); A.rect(g, hx + 19, hy - 37, 2, 4, 'fur1'); A.px(g, hx + 20, hy - 37, 'fur2');
     A.rect(g, hx + 20, hy - 31, 4, 3, 'fur4'); A.px(g, hx + 23, hy - 31, 'slate0'); A.px(g, hx + 18, hy - 32, 'slate0'); A.px(g, hx + 15, hy - 28, 'fur2');
     A.end(g);
-    A.px(g, hx + 24, hy - 19, 'paper6'); A.px(g, hx + 25, hy - 19, 'paper6'); glow(g, hx + 25, hy - 19, 6, 6, 'paper6', 0.6, 4);
+    A.px(g, hx + 24, hy - 19, 'amber8'); A.px(g, hx + 25, hy - 19, 'amber7'); glow(g, hx + 25, hy - 19, 6, 6, 'amber7', 0.5, 4);
     // the second dog trots ahead, down in the beam
     glow(g, 155, 148, 11, 2, 'black', 0.5, 4, 'mul');
     A.dog(g, 154, 148, { coat: 'grey', pose: 'walk', facing: 'right', t, shadow: false });
@@ -499,4 +499,6 @@
     mist(g, t, 152, 18, 0.2, 6, 6, 'mist3');
   };
   A.scenes.polder = (g, t) => A.scenes.dyke(g, t);
+  // the shared night grade, last: the deepest darks lift into the concept art's blue-grey haze (NRART.grade)
+  { const draw = A.scenes.dyke; A.scenes.dyke = (g, t) => { draw(g, t); A.grade(g); }; }
 })();

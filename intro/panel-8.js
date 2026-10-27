@@ -1,6 +1,6 @@
 // Panel 5: two years here and he never practised; everyone was so nice about it.
 // Before the mist: a café terrace on a wet, mild evening, the warmest panel of the intro. Right third opens onto a canal.
-// Beat: 0..1.1 "Hoi!" alone; 1.1..1.4 blink; 1.4+ "Oh, English is fine!" and the whole café beams.
+// Beat: 0..1.1 "Hoi." alone; 1.1..1.4 blink; 1.4+ "Oh, English is fine." and the whole café beams.
 // Loops: pendant sway, candle flicker, steam, far mill sails (anticlockwise), mist, blinks and talk, a waving patron.
 (function () {
   const A = window.NRART;
@@ -19,11 +19,11 @@
       if (v < 0.3) A.hline(g, xx + 1, y + r, 4, 'slate5'); else if (v < 0.5) A.hline(g, xx + 1, y + r, 3, 'slate4');
     }
   }
-  function pendant(g, x, t, seed) {
-    const sway = Math.round(Math.sin(t * Math.PI * 2 / 4 + seed));
-    A.vline(g, x, 69, 18, 'wood1');
-    A.poly(g, [x - 4 + sway, 94, x + 4 + sway, 94, x + 2 + sway, 88, x - 2 + sway, 88], 'wood3');
-    A.hline(g, x - 3 + sway, 94, 7, 'amber8');
+  function pendant(g, x, t, seed, drop) {
+    const sway = Math.round(Math.sin(t * Math.PI * 2 / 4 + seed)), d = drop == null ? 18 : drop, b = 69 + d + 7;
+    A.vline(g, x, 69, d, 'wood1');
+    A.poly(g, [x - 4 + sway, b, x + 4 + sway, b, x + 2 + sway, b - 6, x - 2 + sway, b - 6], 'wood3');
+    A.hline(g, x - 3 + sway, b, 7, 'amber8');
   }
   // a far-bank house drawn locally: flat facade, a gable, a grid of small windows, no per-window glow
   function house(g, x, by, w, h, gable, brickC, litP, seed) {
@@ -161,7 +161,7 @@
     text: 'Two years here and he never practised. Everyone spoke English. Everyone was so nice about it.',
     nl: 'Twee jaar hier en nooit geoefend. Iedereen sprak Engels. Iedereen deed er zo aardig over.',
     draw(g, t) {
-      const T1 = 1.1, T2 = 1.4, nice = t >= T2;                 // 'Hoi!' alone, then the deflation
+      const T1 = 1.1, T2 = 1.4, nice = t >= T2;                 // 'Hoi.' alone, then the deflation
       A.camera(g, t, { x: 5, period: 8 }); A.key(g, 60, 100, 1);
       // ---- 1. the vista: cached sky, far town, bank and bridge; then what moves (stars, mill, mist, water, a moored sloep)
       const kA = offs(g, [0.25, 0.5]);
@@ -192,7 +192,7 @@
       A.rect(g, 6, 118, 93, 12, 'wood2'); A.hline(g, 6, 118, 93, 'wood4');
       for (let i = 0; i < 4; i++) A.rect(g, 14 + i * 22, 115, 3, 3, 'paper5');
       A.vline(g, 51, 69, 61, 'wood2'); A.vline(g, 52, 69, 61, 'wood1');
-      pendant(g, 28, t, 0); pendant(g, 76, t, 2);
+      pendant(g, 28, t, 0); pendant(g, 83, t, 2, 3);
       // ---- 4. the street: mist behind the people, the lamp, dogs, the two of them at the table
       A.depth(g, 1);
       A.tulips(g, 8, 148, 24, { t });
@@ -230,8 +230,9 @@
       A.streak(g, 166, 166, 8, { t, seed: 9, width: 2, strength: 0.8 });
       A.px(g, 150 + Math.round(Math.sin(t * 1.5) * 3), 174, 'mist5'); A.px(g, 182 - Math.round(Math.sin(t * 1.5) * 3), 170, 'mist4');
       // ---- 6. speech: two steps
-      A.say(g, mx, seat - 28, 'Hoi!', {});
-      if (nice) A.say(g, f.head[0], f.head[1], 'Oh, English is fine!', { dx: 14 });
+      A.say(g, mx, seat - 28, 'Hoi.', {});
+      if (nice) A.say(g, f.head[0], f.head[1], 'Oh, English is fine.', { dx: 14 });
+      A.grade(g);
     },
   };
 })();

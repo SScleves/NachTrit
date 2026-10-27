@@ -280,22 +280,31 @@
 
   // ------------------------------------------------------------------ dither
   const keep = c => c === null || c === undefined || c === -1;
+  // write one pixel that is known to be on the surface (the per-pixel loops below have clipped already)
+  const PI_ = (g, i, xx, yy, c) => { g.buf[i] = c; g.mask[i] = g.sa; if (g.sa) bbox(g, xx, yy, xx, yy); };
   /** Fill a rect with a Bayer mix of two colours: level 0 is all c1, 1 is all c2.
    *  Pass null for either colour to leave those pixels as they are (a screen-door veil). */
   NR.ditherRect = (g, x, y, w, h, c1, c2, level) => {
     const a = keep(c1) ? -1 : col(c1), b = keep(c2) ? -1 : col(c2);
     x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
-    for (let yy = Math.max(0, y); yy < Math.min(g.h, y + h); yy++) for (let xx = Math.max(0, x); xx < Math.min(g.w, x + w); xx++) {
-      const c = level > bayer(xx, yy) ? b : a; if (c >= 0) P(g, xx, yy, c);
+    const x0 = Math.max(0, x), x1 = Math.min(g.w, x + w), y1 = Math.min(g.h, y + h);
+    for (let yy = Math.max(0, y); yy < y1; yy++) {
+      const row = yy * g.w, br = (yy & 3) << 2;
+      for (let xx = x0; xx < x1; xx++) { const c = level > BAYER[br | (xx & 3)] ? b : a; if (c >= 0) PI_(g, row + xx, xx, yy, c); }
     }
   };
   /** A dithered gradient from c1 to c2 across the rect: dir 'down' (default), 'up', 'right', 'left'. */
   NR.ditherGradient = (g, x, y, w, h, c1, c2, dir) => {
     const a = keep(c1) ? -1 : col(c1), b = keep(c2) ? -1 : col(c2); dir = dir || 'down';
     x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
-    for (let yy = Math.max(0, y); yy < Math.min(g.h, y + h); yy++) for (let xx = Math.max(0, x); xx < Math.min(g.w, x + w); xx++) {
-      const f = dir === 'down' ? (yy - y + 0.5) / h : dir === 'up' ? 1 - (yy - y + 0.5) / h : dir === 'right' ? (xx - x + 0.5) / w : 1 - (xx - x + 0.5) / w;
-      const c = f > bayer(xx, yy) ? b : a; if (c >= 0) P(g, xx, yy, c);
+    const vert = dir === 'down' || dir === 'up', flipD = dir === 'up' || dir === 'left';
+    const x0 = Math.max(0, x), x1 = Math.min(g.w, x + w), y1 = Math.min(g.h, y + h);
+    for (let yy = Math.max(0, y); yy < y1; yy++) {
+      const row = yy * g.w, br = (yy & 3) << 2, fy = (yy - y + 0.5) / h;
+      for (let xx = x0; xx < x1; xx++) {
+        let f = vert ? fy : (xx - x + 0.5) / w; if (flipD) f = 1 - f;
+        const c = f > BAYER[br | (xx & 3)] ? b : a; if (c >= 0) PI_(g, row + xx, xx, yy, c);
+      }
     }
   };
   /** A dithered disc of colour c: at `level` coverage, falling off toward the edge when soft > 0
@@ -324,16 +333,29 @@
       if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
     }
   }
+  // Falloff curves tabulated once: FALL(p)[k] = (1 - sqrt(k / 1024)) ^ p over squared distance, POWT(p)[k] = (1 - k / 1024) ^ p
+  // over distance; read with linear interpolation, so the light keeps its shape at a fraction of the cost of Math.pow per pixel.
+  const fallTabs = new Map(), powTabs = new Map();
+  const FALL = p => { let T = fallTabs.get(p); if (!T) { T = new Float32Array(1026); for (let k = 0; k <= 1025; k++) T[k] = Math.pow(Math.max(0, 1 - Math.sqrt(Math.min(1, k / 1024))), p); fallTabs.set(p, T); } return T; };
+  const POWT = p => { let T = powTabs.get(p); if (!T) { T = new Float32Array(1026); for (let k = 0; k <= 1025; k++) T[k] = Math.pow(Math.max(0, 1 - Math.min(1, k / 1024)), p); powTabs.set(p, T); } return T; };
   /** Radial light around (x, y): r is the reach (ry for an ellipse), falling off with `power`.
    *  o: { color: 'amber6', strength: 0.5, mode: 'add' | 'mul' | 'mix', power: 1.5, ry, q: 6 } */
   NR.glow = (g, x, y, r, o) => {
     o = o || {}; const Q = o.q || 6, ry = o.ry || r, pw = o.power == null ? 1.5 : o.power;
+    if (!(r > 0) || !(ry > 0)) return;
     const Ls = levels(o.mode || 'add', o.color || 'amber6', o.strength == null ? 0.5 : o.strength, Q);
-    const cx = x + g.ox, cy = y + g.oy;
-    applyField(g, Math.floor(cx - r), Math.floor(cy - ry), Math.ceil(cx + r), Math.ceil(cy + ry), Ls, Q, (xx, yy) => {
-      const dx = (xx - cx) / r, dy = (yy - cy) / ry, d2 = dx * dx + dy * dy; if (d2 >= 1) return 0;
-      return Math.pow(1 - Math.sqrt(d2), pw);
-    });
+    const cx = x + g.ox, cy = y + g.oy, T = FALL(pw), buf = g.buf, gw = g.w, ir = 1 / r, iry = 1 / ry;
+    const x0 = Math.max(0, Math.floor(cx - r)), x1 = Math.min(gw - 1, Math.ceil(cx + r)), y0 = Math.max(0, Math.floor(cy - ry)), y1 = Math.min(g.h - 1, Math.ceil(cy + ry));
+    for (let yy = y0; yy <= y1; yy++) {
+      const dy = (yy - cy) * iry, dy2 = dy * dy; if (dy2 >= 1) continue;
+      const row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) {
+        const dx = (xx - cx) * ir, d2 = dx * dx + dy2; if (d2 >= 1) continue;
+        const f = d2 * 1024, k = f | 0, lv = T[k] + (T[k + 1] - T[k]) * (f - k); if (lv <= 0) continue;
+        const v = (lv > 1 ? 1 : lv) * Q; let q = v | 0; if (v - q > BAYER[br | (xx & 3)]) q++;
+        if (q > 0) { const i = row + xx; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
+      }
+    }
   };
   /** A light cone from (x, y) along `angle` (radians, 0 = right, PI/2 = down), half-angle
    *  `spread`, reaching `len` pixels, with a dithered falloff along it and across its edges.
@@ -346,19 +368,33 @@
     const ax = x + g.ox, ay = y + g.oy, ca = Math.cos(angle), sa = Math.sin(angle), tn = Math.tan(spread);
     const hw = w0 + len * tn, ex = ax + ca * len, ey = ay + sa * len;
     const xs = [ax - sa * w0, ax + sa * w0, ex - sa * hw, ex + sa * hw], ys = [ay + ca * w0, ay - ca * w0, ey + ca * hw, ey - ca * hw];
-    applyField(g, Math.floor(Math.min(...xs)), Math.floor(Math.min(...ys)), Math.ceil(Math.max(...xs)), Math.ceil(Math.max(...ys)), Ls, Q, (xx, yy) => {
-      const vx = xx + 0.5 - ax, vy = yy + 0.5 - ay, u = vx * ca + vy * sa; if (u < 0 || u > len) return 0;
-      const v = Math.abs(vy * ca - vx * sa), half = w0 + u * tn; if (v > half) return 0;
-      const e = 1 - v / half, ef = e >= edge ? 1 : e / edge;
-      return Math.pow(1 - u / len, fade) * ef;
-    });
+    if (!(len > 0)) return;
+    const T = POWT(fade), il = 1024 / len, buf = g.buf, gw = g.w;
+    const x0 = Math.max(0, Math.floor(Math.min(...xs))), x1 = Math.min(gw - 1, Math.ceil(Math.max(...xs))), y0 = Math.max(0, Math.floor(Math.min(...ys))), y1 = Math.min(g.h - 1, Math.ceil(Math.max(...ys)));
+    for (let yy = y0; yy <= y1; yy++) {
+      const vy = yy + 0.5 - ay, row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) {
+        const vx = xx + 0.5 - ax, u = vx * ca + vy * sa; if (u < 0 || u > len) continue;
+        const v = Math.abs(vy * ca - vx * sa), half = w0 + u * tn; if (v > half) continue;
+        const e = 1 - v / half, ef = e >= edge ? 1 : e / edge, f = u * il, k = f | 0;
+        const lv = (T[k] + (T[k + 1] - T[k]) * (f - k)) * ef; if (!(lv > 0)) continue;
+        const vv = (lv > 1 ? 1 : lv) * Q; let q = vv | 0; if (vv - q > BAYER[br | (xx & 3)]) q++;
+        if (q > 0) { const i = row + xx; buf[i] = Ls[q > Q ? Q : q][buf[i]]; }
+      }
+    }
   };
   /** A soft dark contact shadow on the ground under a sprite. */
   NR.shadow = (g, x, y, rx, ry, strength) => NR.glow(g, x, y, rx, { ry: ry || 2, mode: 'mul', color: 'black', strength: strength == null ? 0.55 : strength, power: 0.6, q: 4 });
   /** Light or shade a rectangle evenly (mode 'add' light, 'mul' shade, 'mix' tint), dithered. */
   NR.tint = (g, x, y, w, h, color, amount, mode) => {
-    const Q = 8, Ls = levels(mode || 'mix', color, 1, Q); x = rnd(x) + g.ox; y = rnd(y) + g.oy;
-    applyField(g, x, y, x + rnd(w) - 1, y + rnd(h) - 1, Ls, Q, () => amount);
+    const Q = 8, Ls = levels(mode || 'mix', color, 1, Q); x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
+    if (!(amount > 0)) return;
+    const v = (amount > 1 ? 1 : amount) * Q, q0 = v | 0, fr = v - q0, buf = g.buf, gw = g.w, L0 = Ls[q0 > Q ? Q : q0], L1 = Ls[q0 + 1 > Q ? Q : q0 + 1];
+    const x0 = Math.max(0, x), x1 = Math.min(gw - 1, x + w - 1), y1 = Math.min(g.h - 1, y + h - 1);
+    for (let yy = Math.max(0, y); yy <= y1; yy++) {
+      const row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) { const i = row + xx, L = fr > BAYER[br | (xx & 3)] ? L1 : L0; if (L !== Ls[0]) buf[i] = L[buf[i]]; }
+    }
   };
   /** Atmospheric perspective: pull a region toward the fog colour. amount 0..1, or top/bottom
    *  for a vertical gradient (fog thickest near the ground: top 0.2, bottom 0.6).
@@ -369,26 +405,77 @@
     const Q = 8, Ls = levels('mix', o.color || 'mist3', 1, Q);
     const a0 = o.top == null ? (o.amount == null ? 0.5 : o.amount) : o.top, a1 = o.bottom == null ? a0 : o.bottom;
     x = rnd(x) + g.ox; y = rnd(y) + g.oy; w = rnd(w); h = rnd(h);
-    applyField(g, x, y, x + w - 1, y + h - 1, Ls, Q, (xx, yy) => a0 + (a1 - a0) * (yy - y + 0.5) / h, o.lights == null ? 0.35 : o.lights);
+    const ls = o.lights == null ? 0.35 : o.lights, buf = g.buf, gw = g.w;
+    const x0 = Math.max(0, x), x1 = Math.min(gw - 1, x + w - 1), y1 = Math.min(g.h - 1, y + h - 1);
+    for (let yy = Math.max(0, y); yy <= y1; yy++) {
+      const lv = a0 + (a1 - a0) * (yy - y + 0.5) / h; if (lv <= 0) continue;
+      const v = (lv > 1 ? 1 : lv) * Q, ll = lv * ls, vl = (ll > 1 ? 1 : ll) * Q, row = yy * gw, br = (yy & 3) << 2;
+      for (let xx = x0; xx <= x1; xx++) {
+        const i = row + xx, c = buf[i], vv = IS_LIGHT[c] ? vl : v; let q = vv | 0; if (vv - q > BAYER[br | (xx & 3)]) q++;
+        if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
+      }
+    }
   };
+  // the mist's two noise curves, tabulated per (period, seed) and read with linear interpolation (wave() is three slow sines)
+  const waveTabs = new Map();
+  const waveTab = (period, seed) => {
+    const key = period + ':' + seed; let T = waveTabs.get(key); if (T) return T;
+    const n = Math.ceil(period); T = new Float32Array(n + 2); for (let i = 0; i <= n + 1; i++) T[i] = wave(i, period, seed);
+    waveTabs.set(key, T); return T;
+  };
+  const waveAt = (T, period, x) => { let u = x % period; if (u < 0) u += period; const k = u | 0; return T[k] + (T[k + 1] - T[k]) * (u - k); };
   /** Drifting mist: a soft band centred h/2 below y that thickens and thins along x and slides
    *  sideways with time. It loops seamlessly. o: { amount: 0.45, speed: 5 (px/s), color: 'mist5', seed } */
   NR.mist = (g, t, y, h, o) => {
     o = o || {}; const amt = o.amount == null ? 0.45 : o.amount, sp = o.speed == null ? 5 : o.speed, seed = o.seed || 0;
     const Q = 8, Ls = levels('mix', o.color || 'mist5', 1, Q), lf = o.lights == null ? 0.3 : o.lights;
-    const buf = g.buf, gw = g.w, cy0 = y + g.oy + h / 2;
+    const buf = g.buf, gw = g.w, cy0 = y + g.oy + h / 2, Ta = waveTab(gw, seed), Tb = waveTab(gw, seed + 3);
     for (let xx = 0; xx < gw; xx++) {
       const sx = xx - g.ox + t * sp;
-      const n = wave(sx, gw, seed), n2 = wave(sx * 0.5 + 40, gw, seed + 3);
-      const th = Math.max(0.5, h * (0.35 + 0.65 * n) / 2), cy = cy0 + (n2 - 0.5) * h * 0.5;
+      const n = waveAt(Ta, gw, sx), n2 = waveAt(Tb, gw, sx * 0.5 + 40);
+      const th = Math.max(0.5, h * (0.35 + 0.65 * n) / 2), cy = cy0 + (n2 - 0.5) * h * 0.5, a = amt * (0.55 + 0.45 * n), ith = 1 / th;
       const r0 = Math.max(0, Math.ceil(cy - th)), r1 = Math.min(g.h - 1, Math.floor(cy + th));
       for (let yy = r0; yy <= r1; yy++) {
-        const d = Math.abs(yy + 0.5 - cy) / th; if (d >= 1) continue;
+        const d = Math.abs(yy + 0.5 - cy) * ith; if (d >= 1) continue;
         const i = yy * gw + xx, c = buf[i];
-        let lv = amt * (0.55 + 0.45 * n) * (1 - d * d); if (IS_LIGHT[c]) lv *= lf;
+        let lv = a * (1 - d * d); if (IS_LIGHT[c]) lv *= lf;
         const v = lv * Q; let q = v | 0; if (v - q > BAYER[((yy & 3) << 2) | (xx & 3)]) q++;
         if (q > 0) buf[i] = Ls[q > Q ? Q : q][c];
       }
+    }
+  };
+
+  // ------------------------------------------------------------------ the night grade (shared look)
+  /** The house grade for every intro piece: the deepest darks lift into the cold blue-grey of the
+   *  concept art's haze, so a black never sits on a black. Only darks below `below` luma move, the
+   *  darker the further (up to `lift`), with the same 4x4 Bayer dither as everything else. Lights,
+   *  amber, the hero's orange, eyes, phones, red, cheese and blue are never touched.
+   *  Call it last in a piece's draw. o: { lift: 0.42, color: 'night4', below: 34 } */
+  const gradeCache = new Map();
+  NR.grade = (g, o) => {
+    o = o || {}; const lift = o.lift == null ? 0.42 : o.lift, below = o.below == null ? 34 : o.below, cname = o.color || 'night4';
+    const key = cname + ':' + lift + ':' + below; let M = gradeCache.get(key);
+    if (!M) {
+      // one table for the whole grade: M[(bayer cell << 8) | colour] is the colour after the dithered lift
+      const Q = 6, Ls = levels('mix', cname, 1, Q), V = new Float32Array(256);
+      for (let i = 0; i < PAL_N; i++) {
+        const r = RAMP_OF[i]; if (!r || r === 'amber' || RESERVED.has(r)) continue;
+        const p = PAL_RGB[i], l = 0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2];
+        if (l < below) V[i] = Q * lift * Math.pow(1 - l / below, 0.8);
+      }
+      M = new Uint8Array(16 * 256);
+      for (let b = 0; b < 16; b++) for (let c = 0; c < 256; c++) {
+        const v = V[c]; let q = v | 0; if (v - q > BAYER[b]) q++;
+        M[(b << 8) | c] = q > 0 ? Ls[q > Q ? Q : q][c] : c;
+      }
+      gradeCache.set(key, M);
+    }
+    const buf = g.buf, gw = g.w, gh = g.h;
+    for (let y = 0; y < gh; y++) {
+      const row = y * gw, br = ((y & 3) << 2) << 8, b0 = br, b1 = br | 256, b2 = br | 512, b3 = br | 768;
+      let x = 0;
+      for (; x + 3 < gw; x += 4) { const i = row + x; buf[i] = M[b0 | buf[i]]; buf[i + 1] = M[b1 | buf[i + 1]]; buf[i + 2] = M[b2 | buf[i + 2]]; buf[i + 3] = M[b3 | buf[i + 3]]; }
+      for (; x < gw; x++) { const i = row + x; buf[i] = M[(br | ((x & 3) << 8)) | buf[i]]; }
     }
   };
 
@@ -1039,74 +1126,115 @@
     let lx = 1e9, ly = 1e9;
     for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, px = rnd(cx + Math.cos(a) * r), py = rnd(cy + Math.sin(a) * r); if (px !== lx || py !== ly) { P.p(px, py, c); lx = px; ly = py; } }
   }
-  /** omafiets(g, x, y, o): the black Dutch granny bike, side view, ~46 px long, with a front
-   *  basket and a dynamo lamp. (x, y): x is the pedal crank, y the ground.
+  // a quadratic curve from p0 through the pull of c to p2, as joined pixel lines, shifted by (dx, dy); s0..s1 draws a part
+  function qcurve(P, p0, c, p2, col, dx, dy, s0, s1) {
+    const n = 10, a = s0 || 0, b = s1 == null ? 1 : s1, at = s => { const q = 1 - s; return [q * q * p0[0] + 2 * q * s * c[0] + s * s * p2[0] + dx, q * q * p0[1] + 2 * q * s * c[1] + s * s * p2[1] + dy]; };
+    let pr = at(a);
+    for (let i = 1; i <= n; i++) { const pt = at(a + (b - a) * i / n); P.l(pr[0], pr[1], pt[0], pt[1], col); pr = pt; }
+  }
+  // frame colours per variant, dark to light: shade, body, lit, the thin cool line along the top tube
+  const BIKE = {
+    black: ['slate0', 'slate1', 'slate3', 'mist3'], orange: ['orange1', 'orange3', 'orange4', 'orange6'],
+    blue: ['blue0', 'blue1', 'blue2', 'blue4'], cream: ['paper1', 'paper3', 'paper4', 'paper6'], teal: ['teal1', 'teal2', 'teal3', 'teal5'],
+  };
+  /** omafiets(g, x, y, o): the hero's Dutch granny bike, retro future (Santi's concept G): a black
+   *  step-through frame with two swooping tubes and a thin cool line along the top one, a brown
+   *  leather saddle on coil springs, brown grips on upright bars, a round headlamp with a warm amber
+   *  lens, warm neon strips (chain guard, fork, pedals, under the saddle, the front carrier), a red
+   *  light bar standing on the rear rack. Side view, ~48 px long. (x, y): x the pedal crank, y the ground.
+   *  The wheels, spokes and pedals turn exactly as before.
    *  o: { facing, t, rider: false | true (the man) | function (g, saddleX, saddleY, grip, pedals, flip),
-   *       speed: 1 when ridden (wheels and pedals turn), beam: false | length (the lamp's light cone),
-   *       basket: null | 'book' | 'dog' | 'cheese', face (the rider's), lamp: true, rim, shadow } */
+   *       speed: 1 when ridden (wheels and pedals turn), color: 'black' | 'orange' | 'blue' | 'cream' | 'teal',
+   *       beam: undefined (a soft amber cone ahead when ridden) | false | true | length,
+   *       lights: true (neon, lamp and rear bar lit; false: a dark parked bike),
+   *       basket: null (none) | 'crate' | 'book' | 'dog' | 'cheese' (a crate on the front carrier),
+   *       face (the rider's), lamp: true, rim, shadow } */
   NR.omafiets = (g, x, y, o) => {
     o = o || {}; const t = o.t || 0, flip = flipOf(o.facing), P = pen(g, x, y, flip);
     const speed = o.speed == null ? (o.rider ? 1 : 0) : o.speed, a = t * speed * 7, ca = t * speed * 4.2;
     const Rr = [-14, -8], Fr = [15, -8], BB = [0, -8], S = [-5, -23];
-    const T = [C.teal1, C.teal2, C.teal3, C.teal4];
+    const [fS, fB, fL, fH] = (BIKE[o.color] || BIKE.black).map(col), lit = o.lights !== false;
+    const crate = !!o.basket, N0 = lit ? C.amber6 : fS, N1 = lit ? C.amber7 : fS, N2 = lit ? C.amber8 : fB;   // neon: ends, core, the hottest pixel
     if (o.shadow !== false) NR.shadow(g, x + (flip ? -1 : 1), y, 26, 2, 0.5);
     NR.begin(g);
-    // wheels: tyre with a shine along its top, rim, a few spokes that turn, hub
+    // wheels: tyre with a shine along its top, rim, a few spokes that turn, hub (unchanged: they spin the way they spin)
     for (const h of [Rr, Fr]) {
       P.ring(h[0], h[1], 8, C.slate0, 2); P.ring(h[0], h[1], 6, C.steel2, 1);
       arc(P, h[0], h[1], 8, Math.PI * 1.18, Math.PI * 1.55, C.slate2);
       for (let k = 0; k < 3; k++) { const an = a + k * Math.PI / 3; P.l(h[0] - Math.cos(an) * 5, h[1] - Math.sin(an) * 5, h[0] + Math.cos(an) * 5, h[1] + Math.sin(an) * 5, C.steel1); }
       P.p(h[0], h[1], C.steel4); P.p(h[0] - 1, h[1] - 1, C.steel3);
     }
-    // mudguards, the skirt guard's strings over the back wheel, the rear light
-    arc(P, Rr[0], Rr[1], 9, Math.PI * 1.02, Math.PI * 1.98, C.slate1); arc(P, Fr[0], Fr[1], 9, Math.PI * 1.1, Math.PI * 1.9, C.slate1);
-    for (let k = 0; k < 3; k++) P.l(-6 - k * 2, -18, -13 + k * 2, -9, C.steel0);
-    P.p(-23, -9, C.red4); P.p(-23, -10, C.red3);
-    // rear rack
-    P.l(-6, -19, -21, -19, C.steel3); P.l(-20, -19, -15, -9, C.steel2); P.l(-12, -19, -14, -9, C.steel2); P.l(-7, -20, -20, -20, C.steel1);
-    // frame: seat tube, seat stays, twin low tubes, head tube, fork; the top of each tube catches the light
-    P.l(BB[0], BB[1], S[0] + 1, S[1] + 2, T[2], 1); P.l(BB[0] + 1, BB[1], S[0] + 2, S[1] + 2, T[1], 1);
-    P.l(S[0] + 1, S[1] + 3, Rr[0], Rr[1], T[2]);
-    P.l(11, -21, 3, -12, T[2]); P.l(3, -12, BB[0] + 1, BB[1], T[2]);
-    P.l(12, -18, 4, -10, T[3]); P.l(4, -10, BB[0] + 2, BB[1] + 1, T[3]);
-    P.l(11, -23, 12, -18, T[3], 2); P.l(12, -18, Fr[0], Fr[1], T[2]); P.l(13, -18, Fr[0] + 1, Fr[1], T[1]);
-    P.l(10, -22, 5, -16, C.teal5); P.p(12, -23, C.teal5);
-    // chain case
-    P.poly([-1, -10, -14, -10, -15, -9, -15, -7, -14, -6, -1, -6, 1, -8], C.slate1); P.l(-1, -10, -14, -10, C.slate2); P.l(-3, -7, -13, -7, C.slate0);
-    // crank and pedals
+    // mudguards in the frame colour, a lit edge along their crown
+    arc(P, Rr[0], Rr[1], 9, Math.PI * 1.02, Math.PI * 1.98, fB); arc(P, Fr[0], Fr[1], 9, Math.PI * 1.1, Math.PI * 1.9, fB);
+    arc(P, Rr[0], Rr[1], 10, Math.PI * 1.3, Math.PI * 1.7, fL); arc(P, Fr[0], Fr[1], 10, Math.PI * 1.35, Math.PI * 1.65, fL);
+    // the rear rack: a top rail and a side rail, struts to the axle, and the red light bar standing at its end
+    P.l(-6, -19, -21, -19, fL); P.l(-8, -18, -20, -18, fB); P.l(-20, -18, -15, -9, fB); P.l(-12, -18, -14, -9, fB);
+    P.r(-24, -23, 3, 8, C.slate0);
+    P.r(-23, -22, 1, 6, lit ? C.red6 : C.red2); P.p(-22, -22, lit ? C.red5 : C.red1); P.r(-22, -21, 1, 5, lit ? C.red5 : C.red1);
+    // the frame: seat stays, the seat tube, two swooping step-through tubes, the head tube, the fork
+    P.l(-4, -19, Rr[0], Rr[1], fB);
+    P.l(BB[0], BB[1], S[0] + 1, S[1] + 2, fB); P.l(BB[0] + 1, BB[1] - 1, S[0] + 2, S[1] + 2, fL);
+    qcurve(P, [12, -19], [7, -10], [1, -8], fS, -1, 1); qcurve(P, [12, -19], [7, -10], [1, -8], fB, 0, 0);
+    qcurve(P, [11, -21], [6, -11], [-2, -13], fB, -1, 1); qcurve(P, [11, -21], [6, -11], [-2, -13], fH, 0, 0, 0, 0.62); qcurve(P, [11, -21], [6, -11], [-2, -13], fL, 0, 0, 0.62, 1);
+    P.l(11, -23, 12, -18, fB, 2); P.p(12, -23, fH); P.p(12, -22, fL); P.r(11, -18, 3, 1, fS);
+    P.l(13, -18, Fr[0] + 1, Fr[1], fS); P.l(12, -18, Fr[0], Fr[1], fB);
+    P.l(13, -15, 14, -11, N1); P.p(13, -14, N2); P.p(14, -11, N0);                                        // neon down the fork
+    // the closed chain guard, a long neon strip along it
+    P.poly([-1, -10, -14, -10, -15, -9, -15, -7, -14, -6, -1, -6, 1, -8], fB); P.l(-1, -10, -14, -10, fL); P.l(-3, -6, -13, -6, fS);
+    P.l(-13, -8, -3, -8, N1); P.p(-13, -8, N0); P.p(-3, -8, N0); P.l(-10, -8, -6, -8, N2);
+    // crank and the far pedal
     P.disc(0, -8, 2, C.steel3); P.p(0, -8, C.steel5);
     const pd = [[rnd(Math.cos(ca) * 3), -8 + rnd(Math.sin(ca) * 3)], [rnd(-Math.cos(ca) * 3), -8 + rnd(-Math.sin(ca) * 3)]];
-    P.l(0, -8, pd[1][0], pd[1][1], C.steel2); P.r(pd[1][0] - 1, pd[1][1], 3, 1, C.slate0);
-    // saddle with springs, a lit top
-    P.r(S[0] - 3, S[1] - 1, 7, 2, C.wood2); P.r(S[0] - 2, S[1] - 2, 5, 1, C.wood3); P.r(S[0] - 1, S[1] - 2, 2, 1, C.wood5); P.p(S[0] - 2, S[1] + 1, C.steel3); P.p(S[0] + 2, S[1] + 1, C.steel3);
-    // handlebars swept back, grips, a bell
-    P.l(11, -23, 11, -26, C.steel3); P.l(11, -26, 6, -26, C.steel4); P.p(5, -25, C.slate0); P.p(6, -25, C.slate0); P.p(9, -27, C.steel5);
+    P.l(0, -8, pd[1][0], pd[1][1], C.steel2); P.r(pd[1][0] - 1, pd[1][1], 3, 1, C.slate0); P.p(pd[1][0], pd[1][1], lit ? C.amber5 : fS);
+    // the leather saddle on two coil springs, the seat post, a short neon strip under the nose
+    P.l(S[0] + 1, S[1] + 2, S[0] + 1, S[1], C.steel2);
+    for (const sx of [S[0] - 4, S[0] - 1]) { P.r(sx, S[1] + 1, 2, 1, C.steel4); P.r(sx, S[1] + 2, 2, 1, C.steel1); P.r(sx, S[1] + 3, 2, 1, C.steel3); }
+    P.r(S[0] - 4, S[1] - 1, 9, 1, C.brick4); P.r(S[0] - 4, S[1] - 2, 6, 1, C.brick5); P.r(S[0] - 3, S[1] - 2, 3, 1, C.brick6);
+    P.r(S[0] - 4, S[1], 5, 1, C.brick2); P.p(S[0] + 4, S[1] - 1, C.brick3); P.p(S[0] - 4, S[1] - 2, C.brick4);
+    P.l(S[0] + 2, S[1] + 1, S[0] + 4, S[1] + 1, N1);
+    // upright bars swept back, brown grips
+    P.l(11, -23, 11, -27, C.steel3); P.l(11, -27, 8, -27, C.steel4); P.p(7, -26, C.steel3);
+    P.r(3, -25, 4, 1, C.brick4); P.r(3, -26, 3, 1, C.brick5); P.p(3, -25, C.brick2);
     // parked: the kickstand down
     if (!o.rider && !speed) P.l(-3, -7, -6, -1, C.steel1);
-    // basket on the front carrier
-    P.l(14, -20, 15, -14, C.steel2);
-    P.r(13, -27, 11, 7, C.wood3); P.r(13, -27, 11, 1, C.wood5); P.r(13, -21, 11, 1, C.wood2);
-    for (let i = 0; i < 11; i += 2) P.r(13 + i, -26, 1, 5, C.wood2);
-    for (let j = -25; j < -21; j += 2) for (let i = 0; i < 11; i += 2) P.p(14 + i, j, C.wood4);
-    if (o.basket === 'book') { P.r(15, -29, 6, 2, C.red3); P.r(15, -29, 6, 1, C.red4); P.r(15, -28, 1, 1, C.paper4); }
-    else if (o.basket === 'cheese') { P.r(15, -30, 7, 3, C.cheese4); P.r(15, -30, 7, 1, C.cheese5); P.p(21, -29, C.cheese3); }
-    else if (o.basket === 'dog') { P.r(16, -31, 5, 4, C.fur3); P.r(19, -30, 4, 2, C.fur2); P.p(22, -30, C.slate0); P.p(18, -30, C.slate0); P.r(16, -31, 2, 3, C.fur1); }
-    // lamp
-    if (o.lamp !== false) { P.r(23, -20, 2, 3, C.steel2); P.p(24, -19, o.beam ? C.paper6 : C.paper3); }
+    // the front carrier over the wheel (a crate on it, or a neon strip along its rail)
+    P.l(12, -21, 22, -21, fL); P.l(13, -20, 21, -20, fB); P.l(21, -20, 16, -9, fB);
+    if (crate) {
+      P.r(13, -27, 11, 7, C.wood3); P.r(13, -27, 11, 1, C.wood5); P.r(13, -21, 11, 1, C.wood2);
+      for (let i = 0; i < 11; i += 2) P.r(13 + i, -26, 1, 5, C.wood2);
+      for (let j = -25; j < -21; j += 2) for (let i = 0; i < 11; i += 2) P.p(14 + i, j, C.wood4);
+      if (o.basket === 'book') { P.r(15, -29, 6, 2, C.red3); P.r(15, -29, 6, 1, C.red4); P.r(15, -28, 1, 1, C.paper4); }
+      else if (o.basket === 'cheese') { P.r(15, -30, 7, 3, C.cheese4); P.r(15, -30, 7, 1, C.cheese5); P.p(21, -29, C.cheese3); }
+      else if (o.basket === 'dog') { P.r(16, -31, 5, 4, C.fur3); P.r(19, -30, 4, 2, C.fur2); P.p(22, -30, C.slate0); P.p(18, -30, C.slate0); P.r(16, -31, 2, 3, C.fur1); }
+    } else { P.l(15, -21, 19, -21, N1); P.p(17, -21, N2); }
+    // the round headlamp under the front of the carrier: a dark housing, a warm round lens facing ahead
+    if (o.lamp !== false) {
+      P.disc(22, -19, 2, C.slate1); P.r(21, -21, 2, 1, C.slate2); P.p(20, -19, C.slate0);
+      P.r(23, -20, 2, 3, lit ? C.amber6 : C.slate2); P.p(25, -19, lit ? C.amber6 : C.slate2); P.p(24, -19, lit ? C.amber8 : C.paper3); P.p(23, -19, lit ? C.amber7 : C.paper2);
+    }
     // the rider
     if (o.rider) {
       const sx = S[0], sy = S[1] - 1, grip = [6 - sx, -25 - sy], pedals = [[pd[0][0] - sx, pd[0][1] - sy], [pd[1][0] - sx, pd[1][1] - sy]];
       if (typeof o.rider === 'function') o.rider(g, x + (flip ? -sx - 1 : sx), y + sy, grip, pedals, flip);
       else NR.man(g, x + (flip ? -sx - 1 : sx), y + sy, { pose: 'ride', facing: flip ? 'left' : 'right', t, grip, pedals, face: o.face, seed: o.seed, rim: o.rim });
     }
-    // near crank arm and pedal over the rider's foot
-    P.l(0, -8, pd[0][0], pd[0][1], C.steel4); P.r(pd[0][0] - 1, pd[0][1], 3, 1, C.slate1);
+    // near crank arm and pedal over the rider's foot, a neon strip on the pedal
+    P.l(0, -8, pd[0][0], pd[0][1], C.steel4); P.r(pd[0][0] - 1, pd[0][1], 4, 1, C.slate1); P.r(pd[0][0], pd[0][1], 2, 1, N1);
     NR.end(g, o.rim);
-    if (o.beam) {
-      const len = o.beam === true ? 90 : o.beam, lx = x + (flip ? -25 : 25), ly = y - 19;
-      NR.glow(g, lx, ly, 6, { color: 'paper6', strength: 0.6 });
-      NR.cone(g, lx, ly, flip ? Math.PI - 0.06 : 0.06, 0.2, len, { color: 'paper5', strength: 0.42, width: 3, fade: 1.2 });
-    }
+    if (!lit) return;
+    // the light: a small dithered glow round every strip, the lamp's bloom and, when ridden, a soft amber cone ahead
+    const gx = dx => P.X(dx) - g.ox, gy = dy => P.y - g.oy + dy;
+    NR.glow(g, gx(-8), gy(-8), 8, { ry: 2, color: 'amber6', strength: 0.24, power: 1.4, q: 4 });
+    NR.glow(g, gx(13.5), gy(-13), 2, { ry: 4, color: 'amber6', strength: 0.22, power: 1.2, q: 4 });
+    NR.glow(g, gx(pd[0][0] + 0.5), gy(pd[0][1]), 3, { ry: 2, color: 'amber6', strength: 0.22, power: 1.2, q: 4 });
+    NR.glow(g, gx(S[0] + 3), gy(S[1] + 1), 3, { ry: 2, color: 'amber6', strength: 0.2, power: 1.2, q: 4 });
+    if (!crate) NR.glow(g, gx(17), gy(-21), 4, { ry: 2, color: 'amber6', strength: 0.2, power: 1.2, q: 4 });
+    NR.glow(g, gx(-22.5), gy(-19), 3, { ry: 5, color: 'red5', strength: 0.3, power: 1.2, q: 4 });
+    if (o.lamp === false) return;
+    const ridden = !!o.rider || speed > 0, len = o.beam === true ? 90 : typeof o.beam === 'number' ? o.beam : o.beam === false || !ridden ? 0 : 56;
+    const lx = x + (flip ? -25 : 25), ly = y - 19;
+    NR.glow(g, gx(24), gy(-19), 5, { color: 'amber7', strength: 0.4, power: 1.5, q: 4 });
+    if (len > 0) NR.cone(g, lx, ly, flip ? Math.PI - 0.06 : 0.06, 0.2, len, { color: 'amber6', strength: 0.26, width: 3, fade: 1.2, q: 5 });
   };
 })();
 
@@ -1141,7 +1269,7 @@
    *       phone: true (hold a phone up, any variant),
    *       tone: one colour for the whole body (far silhouettes; the eyes still glow),
    *       eyes: true, glow: 0.35 (eye glow strength), rim, shadow }
-   *  Returns { head: [x, y], hand: [x, y] } in screen pixels, for bubbles and props. */
+   *  Returns { head: [x, y], hand: [x, y], shoulder: [x, y] } in screen pixels, for bubbles and props. */
   NR.zombie = (g, x, y, o) => {
     o = o || {}; const t = o.t || 0, seed = o.seed == null ? 5 : o.seed, v = o.variant || 'plain';
     const flip = flipOf(o.facing), P = pen(g, x, y, flip);
@@ -1330,7 +1458,7 @@
       NR.px(g, sxN - g.ox, sy - g.oy, 'eye4'); NR.px(g, sxF - g.ox, sy - g.oy, 'eye2');
     }
     if (phoneUp && tone < 0) NR.glow(g, P.X(handN[0]) - g.ox, P.y + handN[1] - 2 - g.oy, 6, { color: 'phone4', strength: 0.32, power: 1.4, q: 4 });
-    return { head: [P.X(hx0 + (hw >> 1)) - g.ox, P.y + hy0 - 2 - g.oy], hand: [P.X(handN[0]) - g.ox, P.y + handN[1] - g.oy] };
+    return { head: [P.X(hx0 + (hw >> 1)) - g.ox, P.y + hy0 - 2 - g.oy], hand: [P.X(handN[0]) - g.ox, P.y + handN[1] - g.oy], shoulder: [P.X(sh[0]) - g.ox, P.y + sh[1] - g.oy] };
   };
 
   /** tallWoman(g, x, y, o): a changed woman, a head taller than anyone, upright, long coat, hair
@@ -1340,8 +1468,8 @@
   // ---------------------------------------------------------------- the friend (before the mist)
   const FRIEND_TOP = [
     '....YYYYYY....',
-    '...YYYYYYYY...',
-    '..YYYYYYYYyY..',
+    '...YYZZYYYY...',
+    '..YYZYYYYYyY..',
     '..YYyyyyyyYY..',
     '..YSSSSSSSSy..',
     '..ySBBSSBBSy..',
@@ -1354,7 +1482,7 @@
     '...uUUccUUu...',
     '.uUUUUccUUUUu.',
   ];
-  const FRIEND_LEG = { Y: C.cheese4, y: C.cheese3, S: C.skin5, s: C.skin4, d: C.skin3, B: C.cheese3, E: C.slate0, m: C.skin2, p: C.paper5,
+  const FRIEND_LEG = { Y: C.cheese4, y: C.cheese3, Z: C.cheese6, S: C.skin5, s: C.skin4, d: C.skin3, B: C.cheese3, E: C.slate0, m: C.skin2, p: C.paper5,
     u: C.blue2, U: C.blue3, c: C.paper4, a: C.blue2, h: C.skin4, J: C.blue1, j: C.night4, K: C.paper4, k: C.paper2 };
   /** friend(g, x, y, o): a Dutch friend from before the mist: a head taller than the man, blond,
    *  blue sweater, white sneakers, smiling because English is fine. Front view, 46 px.
@@ -1367,17 +1495,23 @@
     P.map(-7, top, FRIEND_TOP, FRIEND_LEG);
     if (o.face === 'talk' && Math.sin(t * 12 + seed) > 0) { P.r(-2, top + 9, 4, 1, C.skin1); P.r(-1, top + 10, 2, 1, C.red3); }
     if (blinking(t, seed) || o.face === 'blink') { P.p(-4, top + 6, C.skin4); P.p(3, top + 6, C.skin4); }
-    // sweater, arms, hands
+    // sweater, arms, hands: lit shoulders, a darker underside, a ribbed hem and cuffs
     P.r(-6, top + 14, 12, 14, C.blue3); P.r(-5, top + 26, 10, 2, C.blue2); P.r(-1, top + 14, 2, 4, C.blue2);
-    P.r(-7, top + 14, 2, 12, C.blue2); P.r(5, top + 14, 2, 12, C.blue2); P.r(-7, top + 26, 2, 2, C.skin4);
+    P.r(-5, top + 14, 3, 1, C.blue4); P.r(2, top + 14, 3, 1, C.blue4); P.r(-4, top + 15, 2, 1, C.blue4);    // the shoulders catch the light
+    P.r(-6, top + 22, 12, 1, C.blue2); P.p(-3, top + 20, C.blue2); P.p(2, top + 21, C.blue2);               // folds over the belly
+    for (let k = -5; k < 5; k += 2) P.p(k, top + 27, C.blue1);                                              // the ribbed hem
+    P.r(-7, top + 14, 2, 12, C.blue2); P.r(5, top + 14, 2, 12, C.blue2); P.r(-7, top + 25, 2, 1, C.blue1); P.r(-7, top + 26, 2, 2, C.skin4);
     if (o.arm === 'wave') { const w = Math.sin(t * 8) > 0 ? 0 : 1; P.r(5, top + 14, 2, 12, C.blue3); P.l(6, top + 14, 9 + w, top + 6, C.blue2, 2); P.r(9 + w, top + 3, 2, 3, C.skin5); }
-    else if (o.arm === 'drink') { P.r(5, top + 14, 2, 5, C.blue2); P.l(6, top + 19, 3, top + 19, C.blue2, 2); P.r(2, top + 15, 3, 5, C.cheese4); P.r(2, top + 15, 3, 1, C.paper5); P.r(1, top + 18, 2, 2, C.skin4); }
-    else P.r(5, top + 26, 2, 2, C.skin4);
-    // jeans and sneakers
+    else if (o.arm === 'drink') { P.r(5, top + 14, 2, 5, C.blue2); P.l(6, top + 19, 3, top + 19, C.blue2, 2); P.r(2, top + 15, 3, 5, C.cheese4); P.r(2, top + 15, 3, 1, C.paper5); P.p(4, top + 16, C.cheese5); P.r(1, top + 18, 2, 2, C.skin4); }
+    else { P.r(5, top + 25, 2, 1, C.blue1); P.r(5, top + 26, 2, 2, C.skin4); }
+    // jeans with a seam, a lit knee and a cuff; sneakers with a sole
     P.r(-5, top + 28, 10, 3, C.blue1); P.r(-5, top + 31, 4, 13, C.blue1); P.r(1, top + 31, 4, 13, C.blue1);
     P.r(-2, top + 31, 1, 13, C.night4); P.r(1, top + 31, 1, 13, C.night4); P.r(-1, top + 28, 2, 2, C.night4);
+    P.p(-4, top + 37, C.blue2); P.p(-3, top + 37, C.blue2); P.p(3, top + 37, C.blue2); P.p(4, top + 38, C.blue2);   // the knees
+    P.r(-5, top + 43, 4, 1, C.blue2); P.r(1, top + 43, 4, 1, C.blue2);                                                // the turned-up cuffs
     P.r(-6, top + 44 - bob, 5, 2, C.paper4); P.r(1, top + 44 - bob, 5, 2, C.paper4); P.r(-6, top + 45 - bob, 5, 1, C.paper2); P.r(1, top + 45 - bob, 5, 1, C.paper2);
-    NR.end(g, o.rim);
+    P.p(-6, top + 44 - bob, C.paper5); P.p(1, top + 44 - bob, C.paper5);
+    NR.end(g, o.rim, null, 1);
     return { head: [x, y + top - 2] };
   };
 })();

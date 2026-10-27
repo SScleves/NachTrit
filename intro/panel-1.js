@@ -128,7 +128,7 @@
               if (Math.abs(dx) > hw + 1) continue;
               if (Math.abs(dx) > hw) c = dx > 0 ? 'night0' : (d > 0.15 ? 'night3' : 'night1');
               else if (i === 2) { c = (0.28 + (1 - d) * 0.3) > A.bayer(xx, yy) ? 'night4' : 'night2'; }
-              else { const m = clamp(1 - Math.abs(cx - 268) / 80, 0, 1), lv = (1 - d) * 0.75 + m * 0.2 + 0.1; c = lv > A.bayer(xx, yy) ? 'mist3' : 'night4'; }
+              else { const m = clamp(1 - Math.abs(cx - 268) / 80, 0, 1), lv = (1 - d) * 0.75 + m * 0.2 + 0.1; c = lv > A.bayer(xx, yy) ? (m > 0.35 ? 'mist3' : (1 - d) * 0.6 + m > A.bayer(xx + 1, yy) ? 'mist1' : 'night5') : 'night3'; }
             }
             if (!c) {
               const sheen = clamp(1 - Math.abs(xx - 262) / 120, 0, 1) * 0.1 * (1 - d);
@@ -202,7 +202,7 @@
           const h = A.hash(yy + i * 61, step), h2 = A.hash(yy * 3 + i * 17, (step + 5) % 16); if (h < 0.35) continue;
           const w = Math.max(1, rnd((1 + d * (hw * 1.7)) * (0.5 + h2))), m = clamp(1 - Math.abs(cx - 268) / 28, 0, 1) * (i === 3 ? 1 : 0.25);
           if (i === 2) { if (h2 < 0.45) A.hline(g, cx - (w >> 1) + rnd((h2 - 0.5) * hw), yy, Math.min(w, rnd(hw * 1.4)), 'night5'); continue; }
-          const c = m > 0.4 ? (h2 < 0.5 ? 'paper5' : 'mist6') : m > 0.1 ? 'mist5' : 'mist4';
+          const c = m > 0.4 ? (h2 < 0.5 ? 'paper5' : 'mist6') : m > 0.1 ? 'mist4' : 'mist2';
           A.hline(g, cx + rnd((h2 - 0.5) * hw) - (w >> 1), yy, Math.min(w, rnd(hw * 2)), c);
         }
       });
@@ -219,6 +219,7 @@
       A.reeds(g, -14, 182, 30, 40, { t, seed: 2, tone: 'night0', dense: 0.8 });
       A.reeds(g, 292, 182, 36, 38, { t, seed: 5, tone: 'night0', dense: 0.8 });
       A.fingerpost(g, 277, 178, { signs: [['Molen', 'left']], tone: 'wood1' });
+      A.grade(g);
     },
   };
 })();
