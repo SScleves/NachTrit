@@ -45,7 +45,9 @@ The shot gets `W` (also `window.NRW` in the console).
 
 | Call | What it does |
 |---|---|
-| `W.stage({ town, theme, fog, lamp, rider, preroll })` | Builds the set: a town id and one of the themes `street`, `gracht`, `shops`, `square`, `nightshop`, `dyke`, `polder`. `fog` multiplies the haze (1 is the theme's). `lamp` is his lamp from 0 to 100 (default 92). `rider: false` hides him. `preroll` rolls the street on first (default 50) so the road behind him is built too. |
+| `W.stage({ town, theme, fog, lamp, rider, preroll, seed })` | Builds the set: a town id and one of the themes `street`, `gracht`, `shops`, `square`, `nightshop`, `dyke`, `polder`. `fog` multiplies the haze (1 is the theme's). `lamp` is his lamp from 0 to 100 (default 92). `rider: false` hides him and puts his lamp light out. `preroll` rolls the street on first (default 50) so the road behind him is built too. `seed` makes the set the same on every play. |
+| `W.hide(test)` | Hides what the set does not need: `test(object)` gets every scenery piece and every object in the scene, and hides it when it returns true. Hidden scenery stays hidden when it comes round again; everything comes back when the shot ends. |
+| `W.band()` | The picture between the top bar and the captions, measured now, in CSS pixels: `{ top, bottom, height, width, portrait }`. |
 | `W.speed(v, world)` | His wheels turn at `v`; the street rolls past at `world` (default `v`). `W.speed(7, 0)` stops the street while he rides on. |
 | `W.ride(z)` | Puts him, his lamp and its light at `z` along the road. With the street stopped, a growing negative `z` is him riding away. |
 | `W.cam(px, py, pz, lx, ly, lz, fov)` | Camera position, the point it looks at, and optionally the field of view. |
@@ -94,7 +96,10 @@ so the first two seconds must already read. Bubbles carry only the words said in
 - No exclamation marks anywhere: captions, bubbles, signs, screens.
 - Netherlands Dutch, never Flemish.
 - No new external assets. Build with the game's builders, the kit and canvas textures.
-- Four lights only, the game's own. Glow comes from emissive or additive materials.
+- Four lights only, the game's own. Glow comes from emissive or additive materials. The game runs three.js r152 without
+  physically correct lights: a light fades as `(1 - d / distance) ^ decay`, so intensities copied from newer three.js
+  examples come out far too bright.
+- If `update` throws, the shot is ended and cleaned up and the panel falls back to its painting. `dispose` still runs.
 - Never dispose a game material or geometry. If you make your own texture, set `mesh.userData.ownTex = true` and it is
   disposed when the shot ends.
 - Keep the draw calls under about 600 on the Intel Iris Xe and check the frame time.

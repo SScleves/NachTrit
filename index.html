@@ -1819,7 +1819,7 @@ function sceneryPlace(o) {
   const sp = o.sp; let side = sp.side === 'both' ? (Math.random() < 0.5 ? -1 : 1) : sp.side === 'left' ? -1 : sp.side === 'right' ? 1 : (o.i % 2 ? 1 : -1);
   const r = footprint(sp);
   o.bx = side * rnd(sp.xr[0], sp.xr[1]);
-  o.mesh.visible = true;
+  o.mesh.visible = !o.cineHidden;   // a piece an intro shot hid stays hidden when it comes round again
   // flip side once, then push back along the road until it does not sit inside something else
   for (let tries = 0; tries < 6 && overlaps(o.z, side, r, o); tries++) { if (sp.side === 'both' && tries === 0) { side = -side; o.bx = -o.bx; } else o.z -= r + 3; }
   if (overlaps(o.z, side, r, o)) o.mesh.visible = false;
@@ -2643,6 +2643,7 @@ function showIntro(then, panels, full, from) {
       txt.textContent = p.text; nlEl.textContent = ''; nlEl.style.opacity = 0; txt.style.opacity = 1; cover.style.opacity = 0;
     }
     hg.clearRect(0, 0, hc.width, hc.height);
+    if (p._cine && !cineShot) { p._cine = false; frameEl.style.display = ''; }   // its shot broke: the painting takes over
     if (p._cine) { /* the game's own canvas shows through, drawn by the main loop */ }
     else if (p.nr) { NA.labels.length = 0; NA.paint(g, p.draw, introT); NA.drawLabels(hg, NA.labels, hc.width / cv.width); }
     else {   // legacy 192x108 drawings, scaled up to the canvas
@@ -2690,7 +2691,7 @@ startArt.on();
 // without a shot keeps its pixel painting. ?cine=N plays the intro from panel N; ?cine=N&t=S freezes shot N at S seconds.
 const CINE = window.NRCINE = window.NRCINE || [];
 let cineShot = null, cineT = 0, cineFrozen = false, cineTitleAt = Infinity, cineDy = 0;
-const cineProps = [], cineSays = [], _cineV = new THREE.Vector3();
+const cineProps = [], cineSays = [], cineHidden = [], _cineV = new THREE.Vector3();
 const W = {
   THREE, scene, camera, bike, beam, lampLight, render, ROAD_W, KERB_W,
   house, terrace, backRow, lamppost, treeCard, reeds, boat, moorings, ducks, canalBridge, drawbridge, bridge, windmill, church, tower, LANDMARK,
@@ -2699,16 +2700,27 @@ const W = {
   rnd, pick, lerp, smooth, clamp,
   // the set: a town and one of the game's themes (street, gracht, shops, square, nightshop, dyke, polder), the hero or not.
   // The world is rolled on by o.preroll metres (default 50) so the road behind him is built too, for shots that look back.
+  // o.seed makes the set the same on every play (the scenery's random choices come from it); rider: false also puts his lamp out.
   stage(o = {}) {
-    townId = o.town || 'alblasserdam'; townStyle = townStyleOf(townId);
-    L = null; LANE_X = LANES3; BASE = BASE_SPEED; MAXS = MAX_SPEED;
-    buildScenery(THEMES[o.theme || 'street'] || THEMES.street); setRoadLook(3, theme);
-    reset(); for (const ob of S.objs) if (ob.mesh) scene.remove(ob.mesh); S.objs = []; S.planCursor = 1e9;   // no forks, no wisps: nothing is played
-    S.mode = 'cine'; S.fogMul = o.fog || 1; S.lamp = o.lamp == null ? 92 : o.lamp; S.lane = 1; S.x = 0; keepBehind = 40; ribZ0 = 40;
-    W.ride(0); bike.rotation.set(0, 0, 0); bike.visible = o.rider !== false; hideCard();
-    const pre = o.preroll == null ? 50 : o.preroll; S.cineSpeed = pre / 0.5; for (let i = 0; i < 10; i++) update(0.05);
-    S.cineSpeed = 0; S.speed = 0; S.t = 0;
+    const rand = Math.random; if (o.seed != null) { let s = (o.seed | 0) % 2147483646 + 1; Math.random = () => (s = (s * 16807) % 2147483647) / 2147483647; }
+    try {
+      townId = o.town || 'alblasserdam'; townStyle = townStyleOf(townId);
+      L = null; LANE_X = LANES3; BASE = BASE_SPEED; MAXS = MAX_SPEED;
+      buildScenery(THEMES[o.theme || 'street'] || THEMES.street); setRoadLook(3, theme);
+      reset(); for (const ob of S.objs) if (ob.mesh) scene.remove(ob.mesh); S.objs = []; S.planCursor = 1e9;   // no forks, no wisps: nothing is played
+      S.mode = 'cine'; S.fogMul = o.fog || 1; S.lamp = o.lamp == null ? 92 : o.lamp; S.lane = 1; S.x = 0; keepBehind = 40; ribZ0 = 40;
+      W.ride(0); bike.rotation.set(0, 0, 0); bike.visible = o.rider !== false; hideCard();
+      const pre = o.preroll == null ? 50 : o.preroll; S.cineSpeed = pre / 0.5; for (let i = 0; i < 10; i++) update(0.05);
+      S.cineSpeed = 0; S.speed = 0; S.t = 0;
+    } finally { Math.random = rand; }
   },
+  // hides what a set does not need: test(object) gets every scenery piece and every object in the scene; all of it comes back when the shot ends
+  hide(test) {
+    for (const o of scenery) if (!o.cineHidden && test(o.mesh, o)) { o.cineHidden = true; o.mesh.visible = false; cineHidden.push(o); }
+    for (const ch of scene.children) if (ch.visible && !cineProps.includes(ch) && !scenery.some(o => o.mesh === ch) && test(ch)) { ch.visible = false; cineHidden.push({ mesh: ch }); }
+  },
+  // the picture between the top bar and the captions, in CSS pixels, measured now: { top, bottom, height, width, portrait }
+  band() { const top = Math.round(innerHeight * 0.09), bottom = Math.round($('intro').querySelector('.box').getBoundingClientRect().top); return { top, bottom, height: bottom - top, width: innerWidth, portrait: innerWidth < bottom - top }; },
   // the wheels turn at v; the world rolls past at world (default v). W.speed(7, 0) stops the street while he rides on (see ride)
   speed(v, world) { S.speed = v; S.slow = 1; S.cineSpeed = world == null ? v : world; },
   fog(mul) { S.fogMul = mul; },                                                   // thicker (> 1) or thinner haze than the theme's
@@ -2739,7 +2751,8 @@ function cineEnd() {
   if (cineShot && cineShot.dispose) try { cineShot.dispose(W); } catch (e) {}
   for (const p of cineProps) { scene.remove(p); p.traverse(m => { if (m.userData.ownTex && m.material) { if (m.material.map) m.material.map.dispose(); m.material.dispose(); } }); }
   cineProps.length = 0; for (const s of cineSays) s.el.remove(); cineSays.length = 0;
-  $('cinetitle').style.opacity = 0; cineShot = null; cineFrozen = false; S.fogMul = 1; S.cineSpeed = 0; bike.visible = true; W.ride(0); bike.rotation.set(0, 0, 0);
+  for (const o of cineHidden) { o.mesh.visible = true; o.cineHidden = false; } cineHidden.length = 0;
+  $('cinetitle').style.opacity = 0; cineShot = null; cineFrozen = false; S.fogMul = 1; S.cineSpeed = 0; bike.visible = true; beam.visible = true; W.ride(0); bike.rotation.set(0, 0, 0);
   keepBehind = 20; ribZ0 = 10; cineDy = 0; camera.clearViewOffset();
   if (S.mode === 'cine') S.mode = 'start';
   $('intro').classList.remove('cine'); document.body.classList.remove('cine');
@@ -2753,7 +2766,7 @@ function cineTick(dt) {
   if (!cineShot || cineFrozen) return;
   cineT += dt; update(dt);
   const adv = (S.cineSpeed || 0) * dt; for (const p of cineProps) if (p.userData.cineWorld) p.position.z += adv;
-  try { cineShot.update(W, cineT, dt); } catch (e) { console.error(`cine update: ${e && e.message}`); cineShot = null; return; }
+  try { cineShot.update(W, cineT, dt); } catch (e) { console.error(`cine update: ${e && e.message}`); cineEnd(); return; }   // a broken shot cleans up after itself; the panel falls back to its painting
   cineFrame();
   if (cineT >= cineTitleAt) $('cinetitle').style.opacity = 1;
   for (const s of cineSays) {   // bubbles ride on their actors, hidden off screen or behind the eye
@@ -3161,7 +3174,7 @@ function update(dt) {
 
   // lamp look
   const Lf = S.lamp / 100;
-  lampLight.intensity = 0.8 + Lf * 4.0;
+  lampLight.intensity = cine && !bike.visible ? 0 : 0.8 + Lf * 4.0;   // a shot without the rider has no bike lamp either
   const nd = nightDepth(), nightK = lerp(1, theme.night || 0.17, nd);
   hemiLight.intensity = 0.6 - 0.4 * nd;
   scene.fog.color.copy(theme.fogC).multiplyScalar(nightK); skyDome.material.color.setScalar(nightK);   // the haze and the sky dim together as the night deepens
