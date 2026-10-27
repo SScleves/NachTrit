@@ -24,9 +24,14 @@
 
   // ---------- made once: textures, materials, the sign sheet ----------
   let R = null;
-  function dimFog(m, key) {   // additive points fade to black in the haze, as the game's glows do, instead of turning into haze
-    m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb *= 1.0 - 0.85 * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth ));\n#endif'); };
-    m.customProgramCacheKey = () => 'amsPts' + key; m.userData.shared = true; return m;
+  function dimFog(m, key, keep) {   // additive light fades to black in the haze, as the game's glows do, instead of turning into haze; keep: how much is left at full haze
+    const k = (1 - (keep == null ? 0.15 : keep)).toFixed(2);
+    m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb *= 1.0 - ' + k + ' * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth ));\n#endif'); };
+    m.customProgramCacheKey = () => 'amsPts' + key + k; m.userData.shared = true; return m;
+  }
+  function thinFog(m, key, part) {   // the haze takes only part of this colour: the blue crown reads through the fog at a distance
+    m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, ' + part.toFixed(2) + ' * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth )) );\n#endif'); };
+    m.customProgramCacheKey = () => 'amsThin' + key; m.userData.shared = true; return m;
   }
   const SHOP = ['KAASHANDEL', 'BLOEMEN', 'STROOPWAFELS', 'PATAT', 'HARING', 'FIETSEN', 'DROGISTERIJ', 'BRUIN CAFÉ', 'TULPENBOLLEN', 'BOEKHANDEL'];
   const NEON = ['NIET FOTOGRAFEREN', 'KAMER VRIJ', 'BAR', 'HOTEL', 'OPEN', 'CAFÉ'];
@@ -69,19 +74,29 @@
     const stripes = (a, b) => ctex(cv(64, 64, g => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(i * 8, 0, 8, 64); } g.fillStyle = 'rgba(0,0,0,0.25)'; g.fillRect(0, 54, 64, 10); }), true);
     const quad = (u0, v0, u1, v1) => { const p = new THREE.PlaneGeometry(1, 1), uv = p.attributes.uv; for (let j = 0; j < uv.count; j++) uv.setXY(j, u0 + uv.getX(j) * (u1 - u0), v0 + uv.getY(j) * (v1 - v0)); return p; };
     for (let i = 0; i < 16; i++) K.PG['ams_sign' + i] = quad(0, 1 - (i + 1) / 16, 1, 1 - i / 16);   // kept in PG: the street cleanup leaves them
-    const pts = (color, size, key) => dimFog(new THREE.PointsMaterial({ color, size, map: bulbT, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }), key);
+    const pts = (color, size, key, keep) => dimFog(new THREE.PointsMaterial({ color, size, map: bulbT, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }), key, keep);
+    // the bulbs of a bridge, each with its own brightness; one below the water is a bulb's image in the canal: drawn at its mirror point,
+    // with the depth of the water where the eye meets it, so the quay in front hides it as it would hide a real reflection
+    const ptsRefl = (color, size, key) => {
+      const m = new THREE.PointsMaterial({ color, size, map: bulbT, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      m.onBeforeCompile = sh => {
+        sh.vertexShader = sh.vertexShader.replace('#include <fog_vertex>', '#include <fog_vertex>\n  { vec4 wp = modelMatrix * vec4( transformed, 1.0 );\n    if ( wp.y < ' + (WY - 0.02).toFixed(2) + ' ) {\n      float tt = ( cameraPosition.y - ' + WY.toFixed(2) + ' ) / max( 0.01, cameraPosition.y - wp.y );\n      vec3 hit = cameraPosition + tt * ( wp.xyz - cameraPosition );\n      hit += normalize( cameraPosition - hit ) * 0.08;\n      vec4 hc = projectionMatrix * viewMatrix * vec4( hit, 1.0 );\n      gl_Position.z = hc.z / hc.w * gl_Position.w;\n    } }');
+        sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb *= 1.0 - 0.75 * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth ));\n#endif');
+      };
+      m.customProgramCacheKey = () => 'amsRefl' + key; m.userData.shared = true; return m;
+    };
     R = {
       glow: sh(K.GlowMat(glowT, 0xffb466, 0.55)), bulb: sh(K.GlowMat(glowT, 0xffc27e, 0.8)), bulbW: sh(K.GlowMat(glowT, 0xfff0dc, 0.75)), red: sh(K.GlowMat(glowT, 0xff2a48, 0.85)),
       frame: sh(Mat({ color: 0xcfc8b8 })), plaster: sh(Mat({ color: 0x8c867c })), door: sh(Mat({ color: 0x1a2a23 })), iron: sh(Mat({ color: 0x1b211e })),
       paal: sh(Mat({ color: 0x5e2019 }, 0x7a5a64)), sand: sh(Mat({ color: 0x8a8276 })), white: sh(Mat({ color: 0xd9d6cc })), lead: sh(Mat({ color: 0x2c3137 })),
       tower: sh(Mat({ color: 0x6a3c2c, emissive: 0x3a1a0e, emissiveIntensity: 0.55 }, 0x7a5a64)), stoneLit: sh(Mat({ color: 0x9a9080, emissive: 0x2e2416, emissiveIntensity: 0.5 })),
-      crown: sh(new THREE.MeshBasicMaterial({ color: 0x2f5ad6 })), gold: sh(new THREE.MeshBasicMaterial({ color: 0xe2b452 })), clock: sh(new THREE.MeshBasicMaterial({ color: 0xf2e2bc })),
+      crown: thinFog(new THREE.MeshBasicMaterial({ color: 0x2c64ff }), 'crown', 0.3), gold: thinFog(new THREE.MeshBasicMaterial({ color: 0xf0c060 }), 'gold', 0.45), clock: sh(new THREE.MeshBasicMaterial({ color: 0xf2e2bc })),
       redWin: sh(new THREE.MeshBasicMaterial({ map: redT })), neon: sh(new THREE.MeshBasicMaterial({ color: 0xff3a5c })), signs: sh(new THREE.MeshBasicMaterial({ map: signT, color: 0xf2e6cc })),
-      cabins: [0x22302a, 0x2a2f3c, 0x3c2c22, 0x1d1d22, 0x34302a].map(c => sh(Mat({ color: c }))),
+      cabins: [0x4a6a52, 0x3e5878, 0x7a5636, 0x8a867a, 0x6e3630, 0x2e4a4e].map(c => sh(Mat({ color: c }))),
       awnings: [stripes('#7a2a24', '#c8beac'), stripes('#2c4a36', '#c8beac'), stripes('#2a3a5a', '#c8beac')].map(t => sh(Mat({ map: t, side: THREE.DoubleSide }))),
       kase: sh(Mat({ color: 0x2c4a5e })), coat: sh(Mat({ color: 0x1b1d24 })), scarf: sh(Mat({ color: 0x7a2a20 })), umbrella: sh(Mat({ color: 0x9a3a1e })),
-      crownGlow: sh(K.GlowMat(K.glowTex, 0x90a8ff, 0.55, true)),
-      pts: pts(0xffc77a, 0.85, 'w'), ptsW: pts(0xfff2e2, 0.7, 'l'), ptsR: pts(0xff5a78, 0.8, 'r'),
+      crownGlow: dimFog(new THREE.SpriteMaterial({ map: K.glowTex, color: 0x5a86ff, opacity: 0.7, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }), 'crownGlow', 0.65),
+      pts: pts(0xffc77a, 1.0, 'w', 0.25), ptsW: pts(0xfff2e2, 0.8, 'l', 0.25), ptsR: pts(0xff5a78, 0.8, 'r'), ptsB: ptsRefl(0xffc77a, 1.05, 'b'), ptsBW: ptsRefl(0xfff2e2, 0.85, 'bw'),
     };
     return R;
   }
@@ -235,97 +250,148 @@
   }
 
   // ---------- bridges outlined in bulbs, and their light doubled in the canal ----------
-  const BL = 23.7, BW = 7.2, WY = -1.0, SPRING = WY + 0.15;   // across the canal from the road's quay to the far one; the water 1 m below the street
-  const TYPES = { drie: { hump: 1.5, arches: [[BL / 2, 8.6, 1.85], [BL / 2 - 7.3, 4.2, 1.25], [BL / 2 + 7.3, 4.2, 1.25]] }, een: { hump: 1.6, arches: [[BL / 2, 12, 1.9]] } };
-  const deckY = (x, hump) => 0.06 + hump * Math.sin(PI * Math.min(1, Math.max(0, x / BL)));
+  // the canals are 16.4 m wide, from the road's quay (x 7.62) to the far quay (x 24), the water 1 m below the street; the Amstel is wider
+  const BW = 7.2, WY = -1.0, SPRING = WY + 0.15, FARQ = 27;
+  const TYPES = {
+    drie: { L: 16.4, hump: 2.2, arches: [[8.2, 6.0, 2.35], [3.2, 2.8, 1.45], [13.2, 2.8, 1.45]] },
+    een: { L: 16.4, hump: 2.3, arches: [[8.2, 8.6, 2.6]] },
+    amstel: { L: 23.7, hump: 1.8, arches: [[11.85, 8.6, 2.2], [4.55, 4.2, 1.4], [19.15, 4.2, 1.4]] },
+  };
+  const deckY = (x, A) => 0.06 + A.hump * Math.sin(PI * Math.min(1, Math.max(0, x / A.L)));
   const BRP = {};
-  function bridgeParts(K, type) {   // the brick body with its arches and the bulbs, made once per kind; the geometries are kept in PG
-    const key = 'ams_br_' + type; if (K.PG[key + 'b'] && BRP[type]) return [K.PG[key + 'b'], K.PG[key + 'p'], BRP[type]];
-    const THREE = K.THREE, A = TYPES[type], sh = new THREE.Shape();
-    sh.moveTo(-0.4, WY - 0.8); sh.lineTo(BL + 0.4, WY - 0.8); sh.lineTo(BL + 0.4, deckY(BL, A.hump) - 0.04);
-    for (let i = 24; i >= 0; i--) { const x = BL * i / 24; sh.lineTo(x, deckY(x, A.hump) - 0.04); }
-    sh.lineTo(-0.4, deckY(0, A.hump) - 0.04);
+  function bridgeParts(K, type) {   // the brick body with its arches, made once per kind and kept in PG; the bulbs as plain arrays, copied per bridge
+    const key = 'ams_br3_' + type; if (K.PG[key] && BRP[type]) return [K.PG[key], BRP[type]];
+    const THREE = K.THREE, A = TYPES[type], BL = A.L, sh = new THREE.Shape();
+    sh.moveTo(-0.4, WY - 0.8); sh.lineTo(BL + 0.4, WY - 0.8); sh.lineTo(BL + 0.4, deckY(BL, A) - 0.04);
+    for (let i = 24; i >= 0; i--) { const x = BL * i / 24; sh.lineTo(x, deckY(x, A) - 0.04); }
+    sh.lineTo(-0.4, deckY(0, A) - 0.04);
     for (const [cx, s, rise] of A.arches) {
       const h = new THREE.Path(); h.moveTo(cx - s / 2, WY - 0.7); h.lineTo(cx - s / 2, SPRING);
       for (let j = 1; j < 16; j++) { const a = PI - PI * j / 16; h.lineTo(cx + s / 2 * Math.cos(a), SPRING + rise * Math.sin(a)); }
       h.lineTo(cx + s / 2, SPRING); h.lineTo(cx + s / 2, WY - 0.7); sh.holes.push(h);
     }
     const body = new THREE.ExtrudeGeometry(sh, { depth: BW, bevelEnabled: false, curveSegments: 4 }); body.translate(0, 0, -BW / 2);
-    const P = [], refl = [], add = (x, y) => { P.push(x, y, BW / 2 + 0.16, x, y, -BW / 2 - 0.16); refl.push([x, y]); };
-    for (const [cx, s, rise] of A.arches) { const n = Math.round((s + rise) * 2.3); for (let j = 0; j <= n; j++) { const a = PI - PI * j / n; add(cx + (s / 2 + 0.1) * Math.cos(a), SPRING + (rise + 0.1) * Math.sin(a)); } }
-    for (let j = 0; j <= 56; j++) { const x = BL * j / 56; add(x, deckY(x, A.hump) - 0.2); }
-    const pts = new THREE.BufferGeometry(); pts.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); pts.computeBoundingSphere();
-    K.PG[key + 'b'] = body; K.PG[key + 'p'] = pts; BRP[type] = refl;
-    return [body, pts, refl];
+    const B = { P: [], C: [], refl: [] }, zf = BW / 2 + 0.16;
+    const add = (x, y) => { bulb(B, x, y, zf, 1, true); bulb(B, x, y, -zf, 1, true); B.refl.push([x, y]); };
+    for (const [cx, s, rise] of A.arches) { const n = Math.round((s + rise) * 2.7); for (let j = 0; j <= n; j++) { const a = PI - PI * j / n; add(cx + (s / 2 + 0.1) * Math.cos(a), SPRING + (rise + 0.1) * Math.sin(a)); } }
+    const nd = Math.round(BL * 2.6); for (let j = 0; j <= nd; j++) { const x = BL * j / nd; add(x, deckY(x, A) - 0.2); }
+    K.PG[key] = body; BRP[type] = B;
+    return [body, B];
   }
-  function brug(K, type) {
-    const r = res(K), k = K.kit(), { kb, kadd, ktube, PG, PM } = K, t = type || pick(['drie', 'drie', 'een']), A = TYPES[t];
-    const [body, ptsGeo, refl] = bridgeParts(K, t);
-    kadd(k, body, K.brickMat(0x4a2a22), 0, 0, 0);
+  // a bulb at (x, y, z) with its brightness k; mirror: also its image in the water below, at half the brightness
+  function bulb(B, x, y, z, k, mirror) {
+    B.P.push(x, y, z); B.C.push(k, k, k);
+    if (mirror) { B.P.push(x, 2 * WY - y, z); B.C.push(k * 0.5, k * 0.46, k * 0.42); }
+  }
+  // the bulbs of one bridge, its moored boats' strings of lights included: one draw call
+  function bulbPoints(K, B, mat) {
+    const THREE = K.THREE, geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(B.P, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(B.C, 3)); geo.computeBoundingSphere();
+    return new THREE.Points(geo, mat);
+  }
+  // what is moored in the stretch of water before a bridge: a houseboat at the far quay (on the Amstel at the near one), a low open boat
+  // at the near quay, so nothing tall stands between the eye and the next bridge's arches. left: the bridge stands left of the road and is
+  // turned round, so "before the bridge" is its own minus z
+  function moor(K, k, BL, o, B) {
+    if (!o || !o.boats) return;
+    if (o.left) { if (Math.random() < 0.9) woonboot(K, k, B, 4.1, -1, -1); return; }
+    if (Math.random() < 0.8) woonboot(K, k, B, BL - 2.6, 1, 1);
+    // a low barge at the near quay, its bow 13 m short of the bridge: the eye sees over its cabin roof to the arches
+    if (o.near && Math.random() < 0.65) woonboot(K, k, B, 2.5, 1, -1, { barge: true, L: rnd(11, 12.5), oz: L => 13 + L / 2 });
+    else if (Math.random() < 0.55) sloep(K, k, 1.9, rnd(9, 20));
+  }
+  function brug(K, type, o) {
+    const r = res(K), k = K.kit(), { kb, kadd, ktube, PG, PM } = K, t = type || pick(['drie', 'drie', 'een']), A = TYPES[t], BL = A.L, brick = K.brickMat(0x4a2a22);
+    const [body, B0] = bridgeParts(K, t), B = { P: B0.P.slice(), C: B0.C.slice() };
+    kadd(k, body, brick, 0, 0, 0);
+    kb(k, brick, BL + 1.4, -0.48, 0, 2.8, 1.06, BW + 0.6);   // the landing on the far quay
     for (const [cx, s, rise] of A.arches) {   // the stone ring round each arch
       const n = Math.round((s + rise) * 1.6);
       for (let j = 0; j <= n; j++) { const a = PI - PI * j / n, x = cx + (s / 2 + 0.28) * Math.cos(a), y = SPRING + (rise + 0.28) * Math.sin(a); for (const zf of [BW / 2 + 0.02, -BW / 2 - 0.02]) kb(k, r.sand, x, y, zf, 0.24, 0.5, 0.1, 0, 0, a - PI / 2); }
     }
     for (const zf of [BW / 2 - 0.18, -BW / 2 + 0.18]) for (let i = 0; i < 16; i++) {   // the stone curb along the hump, the iron railing on it
-      const x0 = BL * i / 16, x1 = BL * (i + 1) / 16, y0 = deckY(x0, A.hump), y1 = deckY(x1, A.hump), ang = Math.atan2(y1 - y0, x1 - x0);
+      const x0 = BL * i / 16, x1 = BL * (i + 1) / 16, y0 = deckY(x0, A), y1 = deckY(x1, A), ang = Math.atan2(y1 - y0, x1 - x0);
       kb(k, r.sand, (x0 + x1) / 2, (y0 + y1) / 2 + 0.1, zf, Math.hypot(x1 - x0, y1 - y0) + 0.03, 0.3, 0.38, 0, 0, ang);
       ktube(k, PM.pole, x0, y0 + 1.08, zf, x1, y1 + 1.08, zf, 0.035);
       for (let b = 0; b < 3; b++) { const tt = (b + 0.5) / 3, x = x0 + (x1 - x0) * tt, y = y0 + (y1 - y0) * tt; kb(k, PM.pole, x, y + 0.66, zf, 0.04, 0.8, 0.04); }
     }
-    for (const [x, y] of refl) { const L = 2.4 + (y - WY) * 3.0; kadd(k, PG.winStreak, r.bulb, x, WY + 0.03, BW / 2 + 0.3 + L / 2, -PI / 2, 0, 0, 0.95, L); }
+    // under the mirrored bulbs, a broken shimmer runs from each toward the eye
+    const zs = o && o.left ? -1 : 1;
+    for (const [x, y] of B0.refl) { const L = 2.0 + (y - WY) * 2.4; kadd(k, PG.winStreak, r.bulb, x, WY + 0.03, zs * (BW / 2 + 0.3 + L / 2), -PI / 2, 0, 0, 0.9, L); }
     const nb = 2 + Math.floor(Math.random() * 4);   // bikes chained to the railing at the near end
-    for (let i = 0; i < nb; i++) { const x = 0.9 + i * 0.75 + rnd(-0.1, 0.1); bike(K, k, PM.pole, x, deckY(x, A.hump), BW / 2 - 0.55, PI / 2 + rnd(-0.12, 0.12), -0.16); }
-    at(K, k, 0, 0, 0, 0, 0);
-    const g = K.kbuild(k); g.add(new K.THREE.Points(ptsGeo, r.pts)); g.userData.faceRoad = true; return g;
+    for (let i = 0; i < nb; i++) { const x = 0.9 + i * 0.75 + rnd(-0.1, 0.1); bike(K, k, PM.pole, x, deckY(x, A), zs * (BW / 2 - 0.55), PI / 2 + rnd(-0.12, 0.12), -0.16); }
+    at(K, k, 0, 0, 0, 0, 0); moor(K, k, BL, o, B); at(K, k, 0, 0, 0, 0, 0);
+    const g = K.kbuild(k); g.add(bulbPoints(K, B, r.ptsB)); g.userData.faceRoad = true; return g;
   }
   // the Magere Brug: a white wooden double drawbridge, its two portal frames and long balance beams outlined in white bulbs
-  function magereBrug(K) {
-    const r = res(K), k = K.kit(), { kb, kadd, ktube, PG, PM, THREE } = K, L = 27, dy = 1.15, c = L / 2, W = 4.4, P = [], refl = [];
-    const yAt = x => Math.min(dy, 0.06 + Math.min(x, L - x) * 0.3), add = (x, y, z, front) => { P.push(x, y, z); if (front) refl.push([x, y]); };
-    for (let i = 0; i < L; i++) {
-      const x0 = i, x1 = i + 1, y0 = yAt(x0), y1 = yAt(x1), ang = Math.atan2(y1 - y0, 1);
-      kb(k, r.white, i + 0.5, (y0 + y1) / 2 - 0.18, 0, 1.03, 0.36, W, 0, 0, ang);
-      for (const z of [-W / 2, W / 2]) { kb(k, r.white, i + 0.5, (y0 + y1) / 2 + 0.95, z, 1.03, 0.1, 0.1, 0, 0, ang); kb(k, r.white, i, y0 + 0.45, z, 0.08, 0.9, 0.08); }
-      add(i + 0.5, (y0 + y1) / 2 - 0.42, W / 2 + 0.14, true); add(i + 0.5, (y0 + y1) / 2 - 0.42, -W / 2 - 0.14);
-      add(i + 0.5, (y0 + y1) / 2 + 1.05, W / 2 + 0.05, true);
+  function magereBrug(K, len, o) {
+    const r = res(K), k = K.kit(), { kb, kadd, ktube, PG, PM } = K, L = len || 16.4, dy = 1.15, c = L / 2, W = 4.4, B = { P: [], C: [] }, refl = [], bl = Math.min(10.5, L * 0.44), zs = o && o.left ? -1 : 1;
+    const yAt = x => Math.min(dy, 0.06 + Math.min(x, L - x) * 0.3), add = (x, y, z) => { bulb(B, x, y, z, 1, true); if (z * zs > 0) refl.push([x, y]); };
+    for (let i = 0; i < Math.ceil(L); i++) {
+      const x0 = i, x1 = Math.min(L, i + 1), y0 = yAt(x0), y1 = yAt(x1), ang = Math.atan2(y1 - y0, x1 - x0), xm = (x0 + x1) / 2;
+      kb(k, K.M.wood, xm, (y0 + y1) / 2 - 0.18, 0, x1 - x0 + 0.03, 0.36, W - 0.3, 0, 0, ang);   // the deck planks; the white is in the frame
+      for (const z of [-W / 2, W / 2]) { kb(k, r.white, xm, (y0 + y1) / 2 - 0.2, z, x1 - x0 + 0.03, 0.42, 0.16, 0, 0, ang); kb(k, r.white, xm, (y0 + y1) / 2 + 0.95, z, x1 - x0 + 0.03, 0.1, 0.1, 0, 0, ang); kb(k, r.white, i, y0 + 0.45, z, 0.08, 0.9, 0.08); }
+      add(xm, (y0 + y1) / 2 - 0.42, W / 2 + 0.14, true); add(xm, (y0 + y1) / 2 - 0.42, -W / 2 - 0.14);
+      add(xm, (y0 + y1) / 2 + 1.05, W / 2 + 0.05, true); add(xm, (y0 + y1) / 2 + 1.05, -W / 2 - 0.05);
     }
     for (let x = 2.5; x < L - 2; x += 3.2) for (const z of [-1.7, 1.7]) kb(k, r.white, x, (WY - 0.5 + yAt(x)) / 2, z, 0.3, yAt(x) - WY + 0.5, 0.3);
     for (const s of [-1, 1]) {
       const gx = c + s * 3.3;   // the portal frame of each leaf, and its balance beam resting on top
       for (const z of [-2.75, 2.75]) {
-        kb(k, r.white, gx, dy + 3.1, z, 0.36, 6.2, 0.36); kb(k, r.white, (gx + c + s * 10.5) / 2, dy + 6.95, z, Math.abs(c + s * 10.5 - (c + s * 0.4)) + 0.4, 0.5, 0.4);
-        kb(k, r.white, c + s * 10.5, dy + 6.2, z, 0.9, 1.2, 0.55); ktube(k, PM.pole, c + s * 0.6, dy + 6.7, z * 0.85, c + s * 0.45, dy + 0.3, z * 0.85, 0.035);
+        kb(k, r.white, gx, dy + 3.1, z, 0.36, 6.2, 0.36); kb(k, r.white, c + s * (bl + 0.4) / 2, dy + 6.95, z, bl, 0.5, 0.4);
+        kb(k, r.white, c + s * bl, dy + 6.2, z, 0.9, 1.2, 0.55); ktube(k, PM.pole, c + s * 0.6, dy + 6.7, z * 0.85, c + s * 0.45, dy + 0.3, z * 0.85, 0.035);
         for (let y = dy + 0.4; y < dy + 6.2; y += 0.42) add(gx - s * 0.24, y, z + Math.sign(z) * 0.24, z > 0);
-        const xa = c + s * 0.3, xb = c + s * 10.6;
-        for (let j = 0; j <= 26; j++) { const x = xa + (xb - xa) * j / 26; add(x, dy + 7.24, z + Math.sign(z) * 0.25, z > 0); add(x, dy + 6.66, z + Math.sign(z) * 0.25, z > 0); }
+        const xa = c + s * 0.3, xb = c + s * (bl + 0.1), nj = Math.round(bl * 2.5);
+        for (let j = 0; j <= nj; j++) { const x = xa + (xb - xa) * j / nj; add(x, dy + 7.24, z + Math.sign(z) * 0.25, z > 0); add(x, dy + 6.66, z + Math.sign(z) * 0.25, z > 0); }
       }
       kb(k, r.white, gx, dy + 6.2, 0, 0.36, 0.4, 5.9);
       for (let j = 0; j <= 12; j++) add(gx, dy + 6.45, -2.75 + 5.5 * j / 12, false);
     }
-    for (const [x, y] of refl) { const L2 = 1.2 + (y - WY) * 1.4; kadd(k, PG.winStreak, r.bulbW, x, WY + 0.03, W / 2 + 0.6 + L2 / 2, -PI / 2, 0, 0, 0.55, L2); }
-    const g = K.kbuild(k), geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); geo.computeBoundingSphere();
-    g.add(new THREE.Points(geo, r.ptsW)); g.userData.faceRoad = true; return g;
+    kb(k, r.white, L + 1.4, -0.48, 0, 2.8, 1.06, W + 0.6);   // the landing on the far side
+    for (const [x, y] of refl) if (y < dy + 1.5) { const L2 = 2.0 + (y - WY) * 1.9; kadd(k, PG.winStreak, r.bulbW, x, WY + 0.03, zs * (W / 2 + 0.6 + L2 / 2), -PI / 2, 0, 0, 0.7, L2); }
+    at(K, k, 0, 0, 0, 0, 0); moor(K, k, L, o, B); at(K, k, 0, 0, 0, 0, 0);
+    const g = K.kbuild(k); g.add(bulbPoints(K, B, r.ptsBW)); g.userData.faceRoad = true; return g;
   }
 
   // ---------- on the water and along the quay ----------
-  // a houseboat moored along the quay: an ark with a wooden cabin and a roof garden, or an old barge with a wheelhouse; lit windows.
-  // far: moored at the far quay; the object stands near the road's quay so the game keeps it clear of the bridges, its boat drawn 17 m out
-  function woonboot(K, far) {
-    const r = res(K), k = K.kit(), { kb, kadd, PG, PM } = K, ox = far ? 17.2 : 0, qs = far ? 1 : -1, barge = Math.random() < 0.4, L = barge ? rnd(16, 19) : rnd(12, 15), B = barge ? 4.2 : rnd(4.2, 4.8), cab = pick(r.cabins);
-    kb(k, PM.boat, ox, -0.05, 0, B, 1.2, L); kb(k, r.sand, ox, 0.57, 0, B + 0.1, 0.07, L + 0.1);   // the hull, a pale rim along its deck
-    if (barge) { kb(k, PM.boat, ox, -0.05, -L / 2, B * 0.71, 1.2, B * 0.71, 0, PI / 4, 0); kb(k, cab, ox, 1.1, 1.0, B - 0.8, 1.1, L - 6.5); kb(k, PM.roof, ox, 1.7, 1.0, B - 0.6, 0.1, L - 6.3); kb(k, cab, ox, 1.6, L / 2 - 1.6, B - 0.6, 2.1, 2.2); kb(k, PM.roof, ox, 2.7, L / 2 - 1.6, B - 0.4, 0.1, 2.4); }
-    else { kb(k, cab, ox, 1.75, 0.3, B - 0.5, 2.4, L - 2.4); kb(k, PM.roof, ox, 3.0, 0.3, B - 0.2, 0.12, L - 2.0); for (let i = 0; i < 4; i++) kadd(k, K.KG.ball, PM.leaf, ox + rnd(-1.2, 1.2), 3.25, rnd(-L / 2 + 2, L / 2 - 2), 0, 0, 0, rnd(0.6, 1.0), rnd(0.5, 0.8), rnd(0.6, 1.0)); }
+  // a houseboat at the far quay, built into the kit of the bridge it lies before: an ark with a painted wooden cabin and a roof garden,
+  // or an old barge with a wheelhouse; most windows lit and doubled in the water, a string of small bulbs along the roof. It lies just in front of
+  // its bridge, where the eye finds it in the stretch of water before the arches
+  function woonboot(K, k, B, ox, zs, qs, opt) {
+    opt = opt || {};
+    const r = res(K), { kb, kadd, ktube, PG, PM } = K, barge = opt.barge != null ? opt.barge : Math.random() < 0.4, L = opt.L || (barge ? rnd(14, 16) : rnd(10.5, 13)), Bw = barge ? 4.0 : rnd(4.2, 4.6), cab = pick(r.cabins), wood = K.M.wood;
+    const oz = opt.oz ? opt.oz(L) : zs * (BW / 2 + 0.7 + L / 2 + rnd(0, 1.2));
+    at(K, k, ox, WY, oz, 0, 0);
+    const lamp = (x, y, z, kk) => bulb(B, ox + x, WY + y, oz + z, kk);
+    kb(k, PM.boat, 0, -0.05, 0, Bw, 1.2, L); kb(k, r.sand, 0, 0.57, 0, Bw + 0.1, 0.08, L + 0.1);   // the hull, a pale rim along its deck
+    let top;
+    if (barge) {
+      kb(k, PM.boat, 0, -0.05, -L / 2, Bw * 0.71, 1.2, Bw * 0.71, 0, PI / 4, 0); kb(k, cab, 0, 1.1, 1.0, Bw - 0.8, 1.1, L - 6.5); kb(k, PM.roof, 0, 1.7, 1.0, Bw - 0.6, 0.1, L - 6.3);
+      kb(k, cab, 0, 1.6, L / 2 - 1.6, Bw - 0.6, 2.1, 2.2); kb(k, PM.roof, 0, 2.7, L / 2 - 1.6, Bw - 0.4, 0.1, 2.4); kb(k, r.sand, 0, 1.67, 1.0, Bw - 0.7, 0.06, L - 6.4);
+      kb(k, wood, 0, 2.6, -L / 2 + 1.2, 0.12, 4.0, 0.12); top = 1.78;
+      for (let j = 0; j <= 14; j++) { const t = j / 14; lamp(0, 4.55 - t * 2.75 - Math.sin(t * PI) * 0.25, -L / 2 + 1.2 + t * (L - 4.8), 0.75); }   // from the mast to the wheelhouse
+    } else {
+      kb(k, cab, 0, 1.75, 0.3, Bw - 0.5, 2.4, L - 2.4); kb(k, PM.roof, 0, 3.0, 0.3, Bw - 0.2, 0.12, L - 2.0); kb(k, r.sand, 0, 2.9, 0.3, Bw - 0.42, 0.1, L - 2.32);
+      for (let i = 0; i < 5; i++) kadd(k, K.KG.ball, PM.leaf, rnd(-1.2, 1.2), 3.25, rnd(-L / 2 + 2, L / 2 - 2), 0, 0, 0, rnd(0.6, 1.0), rnd(0.5, 0.8), rnd(0.6, 1.0));
+      top = 3.08;
+    }
+    for (let z = -L / 2 + (barge ? 4 : 1.3); z <= L / 2 - 1.3; z += 0.62) lamp(-(Bw / 2 - (barge ? 0.35 : 0.12)), top + 0.06 - 0.12 * Math.abs(Math.sin(z * 1.43)), z + 0.3, 0.75);   // along the roof edge toward the street
     const wy = barge ? 1.15 : 1.75, wh = barge ? 0.7 : 1.3, n = Math.floor((barge ? L - 7 : L - 3) / 1.9);
     for (let i = 0; i < n; i++) for (const side of [-1, 1]) {
-      const z = (barge ? 1.0 : 0.3) - (n - 1) * 0.95 + i * 1.9, x = ox + side * ((barge ? B - 0.8 : B - 0.5) / 2 + 0.02), lit = Math.random() < 0.55;
-      kadd(k, PG['win' + (lit ? pick([0, 1, 2]) : pick([4, 5]))], PM.winAtlas, x, wy, z, 0, side * PI / 2, 0, 0.9, wh);
-      if (lit) { kadd(k, PG.winGlow, r.glow, x + side * 0.06, wy, z, 0, side * PI / 2, 0, 2.2, 2.0); if (side < 0) kadd(k, PG.winStreak, r.glow, x - (far ? 3.0 : 0.9), 0.03, z, -PI / 2, 0, PI / 2, 0.9, far ? 5.0 : 1.6); }
+      const z = (barge ? 1.0 : 0.3) - (n - 1) * 0.95 + i * 1.9, x = side * ((barge ? Bw - 0.8 : Bw - 0.5) / 2 + 0.02), lit = Math.random() < (side < 0 ? 0.85 : 0.4);
+      kadd(k, PG['win' + (lit ? pick([0, 0, 1, 2]) : pick([4, 5]))], PM.winAtlas, x, wy, z, 0, side * PI / 2, 0, 1.0, wh);
+      if (lit) { kadd(k, PG.winGlow, r.glow, x + side * 0.06, wy, z, 0, side * PI / 2, 0, 2.6, 2.3); if (side < 0) kadd(k, PG.winStreak, r.glow, x - 2.4, 0.03, z, -PI / 2, 0, PI / 2, 1.0, 4.2); }
     }
-    for (const mz of [-L / 2 + 1.5, L / 2 - 1.5]) { const mx = ox + qs * (B / 2 + 0.7); kadd(k, K.KG.cyl, M_wood(K), mx, 0.25, mz, 0, 0, 0, 0.26, 2.3, 0.26); kadd(k, K.KG.cyl, PM.pole, mx, 1.42, mz, 0, 0, 0, 0.3, 0.06, 0.3); K.ktube(k, K.PK.rope, mx, 1.1, mz, ox + qs * B / 2, 0.62, mz * 0.8, 0.025); }   // mooring posts and lines
-    kb(k, M_wood(K), ox + qs * (B / 2 + 0.55), 0.85, rnd(-L / 4, L / 4), 1.3, 0.08, 0.8, 0, 0, -qs * 0.25);   // the gangway up to the quay
-    if (Math.random() < 0.6) bike(K, k, PM.pole, ox + rnd(-0.6, 0.6), 0.6, -L / 2 + 1.8, rnd(-0.2, 0.2), 0);
-    at(K, k, 0, 0, 0, 0, 0);
-    const g = K.kbuild(k); g.userData.faceRoad = true; return g;
+    for (const mz of [-L / 2 + 1.5, L / 2 - 1.5]) { const mx = qs * (Bw / 2 + 0.7); kadd(k, K.KG.cyl, wood, mx, 0.25, mz, 0, 0, 0, 0.26, 2.3, 0.26); kadd(k, K.KG.cyl, r.sand, mx, 1.42, mz, 0, 0, 0, 0.3, 0.06, 0.3); ktube(k, wood, mx, 1.1, mz, qs * Bw / 2, 0.62, mz * 0.8, 0.025); }   // mooring posts and lines
+    kb(k, wood, qs * (Bw / 2 + 0.8), 0.85, rnd(-L / 4, L / 4), 1.8, 0.08, 0.8, 0, 0, -qs * 0.3);   // the gangway up to the quay
+    const dz = rnd(-L / 4, L / 4); kb(k, PM.pole, qs * (Bw / 2 - 0.25), top + 0.55, dz, 0.06, 1.1, 0.06); kadd(k, PG.winGlow, r.glow, qs * (Bw / 2 - 0.25), top + 1.1, dz, 0, -PI / 2, 0, 1.6, 1.6); lamp(qs * (Bw / 2 - 0.25), top + 1.12, dz, 1.4);   // a deck lamp on a post
+  }
+  // a low open boat at the near quay, its canvas cover pulled over, too low to hide the bridges
+  function sloep(K, k, ox, oz) {
+    const r = res(K), L = rnd(5.2, 6.8), cov = pick(r.cabins);
+    at(K, k, ox, WY, oz, rnd(-0.06, 0.06), 0);
+    K.kb(k, K.PM.boat, 0, 0.05, 0, 1.9, 0.62, L); K.kb(k, K.PM.boat, 0, 0.05, -L / 2, 1.34, 0.62, 1.34, 0, PI / 4, 0); K.kb(k, r.sand, 0, 0.38, 0, 1.96, 0.05, L + 0.04);
+    K.kb(k, cov, 0, 0.5, 0.3, 1.7, 0.26, L - 1.4); K.kb(k, K.PM.pole, 0, 0.35, L / 2 + 0.15, 0.3, 0.5, 0.3);
   }
   const M_wood = K => K.M.wood;
   // the canal lamp: a slim cast iron post with a ladder bar, a six-sided lantern under a little crown; now and then a bike locked to it
@@ -373,13 +439,14 @@
     for (const cx of [-w / 2 - 2.2, -w / 2 + 2.2]) { ktube(k, r.iron, cx, 6.05, -14, cx, 6.05, 14, 0.014); ktube(k, r.iron, cx, 6.05, 0, cx, 6.75, 0, 0.012); }
     ktube(k, r.iron, -w / 2, 6.75, 0, -w / 2, 6.4, 0, 0.015);
     K.kbuild(k, g);
-    const glass = new K.THREE.Mesh(cyl6(K), K.PM.lampHead); glass.position.set(-w / 2, 6.2, 0); glass.scale.set(0.5, 0.34, 0.5); g.add(glass);
-    K.lampLights(g, -w / 2, 6.12, 0, 0.62); const cn = g.children[g.children.length - 3]; if (cn && cn.isSprite) cn.scale.y *= 0.55;   // a short cone: the lamp hangs high over the middle of the road
+    const glass = new K.THREE.Mesh(cyl6(K), K.PM.lampHead); glass.position.set(-w / 2, 6.25, 0); glass.scale.set(0.3, 0.22, 0.3); g.add(glass);
+    K.lampLights(g, -w / 2, 6.12, 0, 0.55);
+    for (const c of g.children.slice()) if (c.isSprite && c.center.y === 1) g.remove(c);   // no cone of light in the haze: the lamp hangs high over the middle of the road and its beam hid the street
     g.userData.faceRoad = true; return g;
   }
   // a market stall at the kerb, the Albert Cuyp: a frame, a striped awning sloping to the street, crates of fruit, cheese or tulips, bulbs under the edge
-  function kraam(K) {
-    const r = res(K), k = K.kit(), g = new K.THREE.Group(), { kb, kadd } = K, L = rnd(3.0, 4.2), P = [], fill = pick([K.PM.orange, K.PM.cheese, K.PM.tulip, K.PM.orange]);
+  function kraam(K, fills) {
+    const r = res(K), k = K.kit(), g = new K.THREE.Group(), { kb, kadd } = K, L = rnd(3.0, 4.2), P = [], fill = pick(fills || [K.PM.orange, K.PM.cheese, K.PM.tulip, K.PM.orange]);
     for (const x of [-0.7, 0.7]) for (const z of [-L / 2, L / 2]) kb(k, K.PM.pole, x, 1.15, z, 0.05, 2.3, 0.05);
     kb(k, K.M.wood, 0, 0.85, 0, 1.4, 0.08, L);
     for (let i = 0; i < Math.floor(L / 0.6); i++) { const z = -L / 2 + 0.3 + i * 0.6; kb(k, K.M.wood, -0.25, 0.98, z, 0.5, 0.18, 0.5); for (let j = 0; j < 3; j++) kadd(k, K.KG.ball, fill, -0.25 + rnd(-0.12, 0.12), 1.12, z + rnd(-0.15, 0.15), 0, 0, 0, 0.16, 0.14, 0.16); }
@@ -413,17 +480,18 @@
     kadd(k, c8, r.stoneLit, 0, 38.0, 0, 0, PI / 8, 0, 7.4, 0.4, 7.4);
     kadd(k, c8, r.lead, 0, 40.6, 0, 0, PI / 8, 0, 5.4, 5.0, 5.4); kadd(k, c8, r.stoneLit, 0, 43.2, 0, 0, PI / 8, 0, 5.8, 0.3, 5.8);
     kadd(k, c8, r.lead, 0, 45.2, 0, 0, PI / 8, 0, 4.0, 3.8, 4.0); kadd(k, c8, r.lead, 0, 48.0, 0, 0, PI / 8, 0, 2.9, 2.0, 2.9);
-    kadd(k, KG.cyl, r.crown, 0, 49.5, 0, 0, 0, 0, 2.8, 1.0, 2.8);
-    for (let i = 0; i < 12; i++) { const a = i / 12 * 2 * PI; kadd(k, KG.ball, r.gold, Math.sin(a) * 1.4, 50.05, Math.cos(a) * 1.4, 0, 0, 0, 0.3, 0.3, 0.3); }
-    const arc = PG.ams_arc || (PG.ams_arc = new THREE.TorusGeometry(1.25, 0.17, 5, 14, PI));
-    kadd(k, arc, r.crown, 0, 50.0, 0); kadd(k, arc, r.crown, 0, 50.0, 0, 0, PI / 2, 0);
-    kadd(k, KG.ball, r.gold, 0, 51.45, 0, 0, 0, 0, 0.64, 0.64, 0.64); kb(k, r.gold, 0, 52.3, 0, 0.15, 1.0, 0.15); kb(k, r.gold, 0, 52.45, 0, 0.62, 0.15, 0.15);
-    ktube(k, r.gold, 0, 52.8, 0, 0, 55.6, 0, 0.06); kb(k, r.gold, 0.42, 55.1, 0, 0.9, 0.42, 0.05);
+    kadd(k, KG.cyl, r.crown, 0, 49.6, 0, 0, 0, 0, 3.8, 1.3, 3.8);   // Maximilian's crown, larger than life so it reads from the far end of the canal
+    for (let i = 0; i < 12; i++) { const a = i / 12 * 2 * PI; kadd(k, KG.ball, r.gold, Math.sin(a) * 1.9, 50.3, Math.cos(a) * 1.9, 0, 0, 0, 0.4, 0.4, 0.4); }
+    const arc = PG.ams_arc2 || (PG.ams_arc2 = new THREE.TorusGeometry(1.7, 0.26, 5, 14, PI));
+    kadd(k, arc, r.crown, 0, 50.2, 0); kadd(k, arc, r.crown, 0, 50.2, 0, 0, PI / 2, 0);
+    kadd(k, KG.ball, r.gold, 0, 52.1, 0, 0, 0, 0, 0.85, 0.85, 0.85); kb(k, r.gold, 0, 53.1, 0, 0.2, 1.2, 0.2); kb(k, r.gold, 0, 53.3, 0, 0.8, 0.2, 0.2);
+    ktube(k, r.gold, 0, 53.7, 0, 0, 56.6, 0, 0.08); kb(k, r.gold, 0.5, 56.1, 0, 1.1, 0.5, 0.06);
     kb(k, r.tower, 18.5, 6, 0, 28, 18, 15); for (const s of [-1, 1]) kb(k, PM.roof, 18.5, 18.1, s * 3.75, 28.4, 0.2, 9.7, s * 0.675, 0, 0);
     const tri = new THREE.Shape(); tri.moveTo(-7.6, 0); tri.lineTo(7.6, 0); tri.lineTo(0, 6.1); tri.closePath(); const tg = new THREE.ShapeGeometry(tri); kadd(k, tg, r.tower, 4.49, 15, 0, 0, -PI / 2, 0); tg.dispose();
     for (const x of [9, 15, 21, 27]) { kadd(k, PG.win2, PM.winAtlas, x, 8, 7.52, 0, 0, 0, 1.6, 4.2); kadd(k, PG.winGlow, r.glow, x, 8, 7.6, 0, 0, 0, 3.6, 6); }
     K.kbuild(k, g);
-    const s1 = new THREE.Sprite(r.crownGlow); s1.position.set(0, 50.4, 0); s1.scale.set(9, 9, 1); g.add(s1);
+    const s1 = new THREE.Sprite(r.crownGlow); s1.position.set(0, 50.8, 0); s1.scale.set(13, 11, 1); g.add(s1);
+    g.scale.setScalar(0.72);   // the game's houses are 12 to 16 m: at 40 m the tower stands over them and its crown is in frame before the haze takes it
     return g;
   }
   // the Oude Kerk in the middle of De Wallen: a wide low hall of chapels and a slim tower with an open lantern and a spire
@@ -495,12 +563,24 @@
     }
   }
   function redWindows(P, f0, f1, n) { P.w.fillStyle = 'rgba(255,40,70,0.95)'; for (let i = 0; i < n; i++) { const x = P.X(P.rr(f0, f1)); P.w.fillRect(x, P.g.canvas.height - 5 * P.m - P.rr(1, 4) * P.m, 1.3 * P.m, 1.9 * P.m); } }
+  // the Westertoren's imperial crown on top of the painted tower at height h: its shape in the silhouette, and blue light in the window layer
+  // (the band's window layer is tinted amber, so the paint is pushed to a cold blue to come out a clear slate blue)
+  function kroon(P, x, h) {
+    const m = P.m, base = P.g.canvas.height - 5 * m, Y = v => base - v * m, g = P.g, w = P.w;
+    for (const c of [g, w]) {
+      if (c === w) { c.fillStyle = 'rgba(0,150,255,1)'; c.shadowColor = 'rgba(0,120,255,1)'; c.shadowBlur = 3 * m; }
+      c.beginPath(); c.ellipse(x, Y(h + 2.2), 2.6 * m, 2.4 * m, 0, PI, 0); c.lineTo(x + 2.6 * m, Y(h + 0.6)); c.lineTo(x - 2.6 * m, Y(h + 0.6)); c.closePath(); c.fill();
+      c.fillRect(x - 0.35 * m, Y(h + 6.4), 0.7 * m, 1.9 * m);
+      c.shadowBlur = 0;
+    }
+    w.fillStyle = 'rgba(255,220,140,1)'; w.beginPath(); w.arc(x, Y(h + 4.9), 0.75 * m, 0, 7); w.fill(); w.fillRect(x - 2.6 * m, Y(h + 0.9), 5.2 * m, 0.4 * m);   // the gold orb and band
+  }
   const skyline = {
     near(P) { gables(P, 0, 0.4, 11, 17, 0.14); gables(P, 0.6, 1, 11, 17, 0.14); P.trees(0, 0.4, 9, 15, 11); P.trees(0.6, 1, 9, 15, 11); P.trees(0.42, 0.58, 4, 7, 12); if (isWallen()) { redWindows(P, 0, 0.4, 26); redWindows(P, 0.6, 1, 26); } },
     mid(P) {
       P.trees(0, 1, 7, 12, 14); gables(P, 0, 0.5, 9, 15, 0.1); gables(P, 0.7, 1, 9, 15, 0.1);
       if (isWallen()) { const x = P.X(0.6); P.box(x + 12 * P.m, 26, -5, 13); P.tower(x, [[6.6, 24], [5.4, 5], [4, 3], [3, 2.4]], 'spire', true); redWindows(P, 0.5, 0.75, 30); }
-      else { const x = P.X(0.56); P.box(x + 15 * P.m, 26, -5, 15); P.poly([[x + 2 * P.m, 15], [x + 15 * P.m, 21], [x + 28 * P.m, 15]]); P.tower(x, [[9, 26], [7.4, 7], [6.6, 6.5], [5.2, 5], [3.9, 3.8], [2.8, 2]], 'crown', true); P.win(x, 33.6, 0.95, 2.4, 2.4); }
+      else { const x = P.X(0.56); P.box(x + 15 * P.m, 26, -5, 15); P.poly([[x + 2 * P.m, 15], [x + 15 * P.m, 21], [x + 28 * P.m, 15]]); const h = P.tower(x, [[9, 26], [7.4, 7], [6.6, 6.5], [5.2, 5], [3.9, 3.8], [2.8, 2]], 'flat', true); P.win(x, 33.6, 0.95, 2.4, 2.4); kroon(P, x, h); }
       P.tower(P.X(0.32), [[7, 28], [5, 8], [3.6, 6]], 'spire', true);
     },
     far(P) {
@@ -543,49 +623,56 @@
 
   // ---------- the streets ----------
   const quay = (base, o) => Object.assign({}, base, { verge: 'tiles', water: 0x0e1218, waterY: -1.0, waterK: 0.2, ground: 0x0b0e12, groundY: -1.15 }, o);
+  // the canal on the right: a humpback bridge outlined in bulbs every 30 m with houseboats moored between them, the far quay with its houses,
+  // elms and lamps. On the finale every third bridge is the Magere Brug
+  let bi = 0;
+  const canal = o => [
+    { make: K => { const i = bi++, mo = { boats: true, near: o.near !== false }; return isFinale() && i % 3 === 0 ? magereBrug(K, 16.4, mo) : brug(K, null, mo); }, n: o.n || 5, gap: o.gap || 30, side: 'right', reg: true, xr: [7.62, 7.62], r: 4.6 },
+    { make: K => row(K, { len: 26, n: 5, far: true, lit: 0.4, red: isWallen(), shop: o.farShop }), n: o.farN || 6, gap: 26, side: 'right', reg: true, xr: [FARQ, FARQ], r: 12.9 },
+    { make: elm, n: 6, gap: 25, side: 'right', xr: [24.5, 24.7], r: 0.9 }, { make: lampKade, n: 4, gap: 36, side: 'right', reg: true, xr: [4.75, 4.75] },
+  ];
+  const bloemen = K => kraam(K, [K.PM.tulip, K.PM.tulip, K.PM.orange]);   // the flower market on the Singel
   const themes = {
-    // the canal quay: houses on the left, the canal on the right with its bridges, houseboats and elms, the far quay and its houses
+    // the canal quay: houses on the left, the canal on the right with a bridge every 30 m, houseboats between them, the far quay and its houses
     gracht: base => quay(base, { fog: 0x585758, fogD: 0.0148, night: 0.16, canal: 1, curv: 0.0012, landmark: false, road: { kind: 'klinkers', tone: '#4a3a36' }, spawn: [
-      { make: K => isWallen() ? oudeKerk(K) : westertoren(K), n: 2, gap: 120, side: 'right', xr: [43, 45], y: 0, r: 12 },
-      { make: K => brug(K), n: 3, gap: 48, side: 'right', reg: true, xr: [7.62, 7.62], r: 4.6 },
-      { make: K => isFinale() ? magereBrug(K) : brug(K, 'een'), n: 1, gap: 200, side: 'right', xr: [7.62, 7.62], r: 4.6 },
+      { make: K => isWallen() ? oudeKerk(K) : westertoren(K), n: 2, gap: 120, side: 'right', xr: [38, 40], y: 0, r: 12 },
+      ...canal({}),
       { make: K => row(K, { len: 22, n: 4, lit: 0.42, red: isWallen(), dx: -1.35 }), n: 7, gap: 22, side: 'left', reg: true, xr: [8.15, 8.15], r: 10.9 },
-      { make: K => row(K, { len: 26, n: 5, far: true, lit: 0.4, red: isWallen() }), n: 6, gap: 26, side: 'right', reg: true, xr: [34.5, 34.5], r: 12.9 },
-      { make: lamp, n: 8, gap: 18, side: 'left', reg: true, xr: [4.75, 4.75] }, { make: lampKade, n: 4, gap: 36, side: 'right', reg: true, xr: [4.75, 4.75] },
-      { make: K => woonboot(K), n: 3, gap: 50, side: 'right', xr: [11.5, 11.9], y: -1.0, r: 8.5 }, { make: K => woonboot(K, true), n: 2, gap: 75, side: 'right', xr: [11.0, 11.0], y: -1.0, r: 8.5 },
-      { make: elm, n: 7, gap: 20, side: 'right', xr: [6.8, 7.1], r: 0.9 }, { make: elm, n: 6, gap: 25, side: 'right', xr: [32.0, 32.4], r: 0.9 },
+      { make: lamp, n: 8, gap: 18, side: 'left', reg: true, xr: [4.75, 4.75] }, { make: elm, n: 3, gap: 50, side: 'right', xr: [6.9, 7.1], r: 0.9 },
       { make: paaltjes, n: 9, gap: 16, side: 'left', xr: [4.4, 4.4], r: 0.3 }, { make: paaltjes, n: 5, gap: 30, side: 'right', xr: [4.4, 4.4], r: 0.3 },
-      { make: fietsen, n: 5, gap: 30, side: 'right', xr: [5.6, 6.3], r: 0.6 }, { make: fietsen, n: 3, gap: 48, side: 'left', xr: [5.3, 5.4], r: 0.6 },
+      { make: fietsen, n: 4, gap: 36, side: 'right', xr: [5.6, 6.2], r: 0.6 }, { make: fietsen, n: 3, gap: 48, side: 'left', xr: [5.3, 5.4], r: 0.6 },
       { make: wegwijzer, n: 1, gap: 150, side: 'right', xr: [4.6, 4.6], r: 0.5 },
       { make: lang, n: 3, gap: 50, side: 'both', xr: [4.9, 5.5], r: 0.6 }, { make: 'zombieWalk', n: 6, gap: 24, side: 'both', xr: [4.8, 5.4], r: 0.6 } ] }),
-    // the market street: canal houses with shops on both sides, stalls under striped awnings, tram rails and wires
-    shops: base => Object.assign({}, base, { fog: 0x5a5856, fogD: 0.0155, night: 0.16, ground: 0x15171b, groundY: -0.05, canal: 0, curv: 0.0016, lmX: [30, 36], lmSide: 'right', verge: 'tiles', road: { tone: rails(), rails: 1 }, spawn: [
+    // the market: shops and stalls under striped awnings on the left, tram rails and wires, the Singel on the right with the flower stalls on its quay
+    shops: base => quay(base, { fog: 0x5a5856, fogD: 0.0155, night: 0.16, canal: 1, curv: 0.0014, landmark: false, road: { tone: rails(), rails: 1 }, spawn: [
+      ...canal({ farShop: 0.6 }),
       { make: K => row(K, { len: 20, n: 4, lit: 0.45, shop: 0.85, dx: -1.35, floors: [3, 4, 4] }), n: 7, gap: 20, side: 'left', reg: true, xr: [9.0, 9.0], r: 9.9 },
-      { make: K => row(K, { len: 20, n: 4, lit: 0.45, shop: 0.85, dx: -1.35, floors: [3, 4, 4] }), n: 7, gap: 20, side: 'right', reg: true, xr: [9.0, 9.0], r: 9.9 },
-      { make: tramMast, n: 5, gap: 28, side: 'alt', reg: true, xr: [4.7, 4.7] }, { make: kraam, n: 8, gap: 18, side: 'both', xr: [5.7, 5.8], r: 0.9 },
-      { make: paaltjes, n: 8, gap: 18, side: 'alt', xr: [4.4, 4.4], r: 0.3 }, { make: fietsen, n: 5, gap: 26, side: 'both', xr: [5.3, 5.5], r: 0.6 },
-      { make: lamp, n: 4, gap: 36, side: 'alt', reg: true, xr: [4.75, 4.75] }, { make: wegwijzer, n: 1, gap: 150, side: 'both', xr: [4.6, 4.6], r: 0.5 },
+      { make: tramMast, n: 5, gap: 28, side: 'alt', reg: true, xr: [4.7, 4.7] },
+      { make: kraam, n: 6, gap: 22, side: 'left', xr: [5.7, 5.8], r: 0.9 }, { make: bloemen, n: 4, gap: 30, side: 'right', xr: [5.9, 6.0], r: 0.9 },
+      { make: paaltjes, n: 8, gap: 18, side: 'alt', xr: [4.4, 4.4], r: 0.3 }, { make: fietsen, n: 4, gap: 30, side: 'left', xr: [5.3, 5.5], r: 0.6 },
+      { make: lamp, n: 3, gap: 48, side: 'left', reg: true, xr: [4.75, 4.75] }, { make: wegwijzer, n: 1, gap: 150, side: 'both', xr: [4.6, 4.6], r: 0.5 },
       { make: lang, n: 2, gap: 70, side: 'both', xr: [5.0, 5.5], r: 0.6 }, { make: 'zombieWalk', n: 7, gap: 20, side: 'both', xr: [4.8, 5.4], r: 0.6 } ] }),
-    // the Damrak and the Dam: a row of houses on the left, tram rails and wires, the open square on the right with the palace or the station
-    square: base => Object.assign({}, base, { fog: 0x5a5858, fogD: 0.0145, night: 0.16, ground: 0x1c1c21, groundY: -0.05, canal: 0, curv: 0.0014, landmark: false, verge: 'tiles', road: { tone: rails(), rails: 1 }, spawn: [
-      { make: landmark, n: 2, gap: 120, side: 'right', xr: [28, 31], y: 0, r: 12 },
+    // the Damrak: houses on the left, tram rails and wires, the water on the right with its bridges, and across it the palace or the station
+    square: base => quay(base, { fog: 0x5a5858, fogD: 0.0145, night: 0.16, canal: 1, curv: 0.0012, landmark: false, road: { tone: rails(), rails: 1 }, spawn: [
+      { make: landmark, n: 2, gap: 120, side: 'right', xr: [30, 31], y: 0, r: 26 },
+      ...canal({ n: 4, gap: 37.5, farN: 4, near: false }),
       { make: K => row(K, { len: 22, n: 4, lit: 0.45, shop: 0.5, dx: -1.35 }), n: 7, gap: 22, side: 'left', reg: true, xr: [8.15, 8.15], r: 10.9 },
-      { make: tramMast, n: 5, gap: 28, side: 'alt', reg: true, xr: [4.7, 4.7] }, { make: elm, n: 8, gap: 20, side: 'right', xr: [7, 13], r: 0.9 },
-      { make: paaltjes, n: 8, gap: 18, side: 'both', xr: [4.4, 4.4], r: 0.3 }, { make: fietsen, n: 6, gap: 24, side: 'both', xr: [5.3, 5.6], r: 0.6 },
-      { make: lamp, n: 5, gap: 28, side: 'right', reg: true, xr: [4.75, 4.75] }, { make: kraam, n: 2, gap: 70, side: 'right', xr: [6.0, 6.2], r: 0.9 },
-      { make: K => row(K, { len: 26, n: 5, lit: 0.35, floors: [4, 4, 5] }), n: 4, gap: 40, side: 'right', reg: true, xr: [48, 50], r: 12 },
+      { make: tramMast, n: 5, gap: 28, side: 'alt', reg: true, xr: [4.7, 4.7] },
+      { make: paaltjes, n: 8, gap: 18, side: 'both', xr: [4.4, 4.4], r: 0.3 }, { make: fietsen, n: 5, gap: 28, side: 'both', xr: [5.3, 5.6], r: 0.6 },
+      { make: lamp, n: 4, gap: 36, side: 'left', reg: true, xr: [4.75, 4.75] }, { make: kraam, n: 2, gap: 70, side: 'right', xr: [6.0, 6.2], r: 0.9 },
       { make: wegwijzer, n: 1, gap: 150, side: 'right', xr: [4.6, 4.6], r: 0.5 },
       { make: lang, n: 2, gap: 70, side: 'both', xr: [5.0, 6.0], r: 0.6 }, { make: 'zombieWalk', n: 6, gap: 26, side: 'both', xr: [5.0, 6.0], r: 0.6 } ] }),
-    // the Amstel: the river on the left with the Magere Brug, houseboats and a rowing eight, the Amsteldijk's houses on the right, the Riekermolen across
+    // the Amstel: the river on the left, the Magere Brug and the arched bridges every 40 m with houseboats and a rowing eight between them,
+    // the Amsteldijk's houses on the right, the Riekermolen across
     dyke: base => quay(base, { fog: 0x56575a, fogD: 0.0135, night: 0.16, open: true, waterK: 0.26, canal: -1, curv: 0.0016, landmark: false, road: { tone: '#55302b' }, spawn: [
-      { make: magereBrug, n: 2, gap: 120, side: 'left', xr: [7.62, 7.62], r: 4 }, { make: K => brug(K, 'drie'), n: 1, gap: 200, side: 'left', xr: [7.62, 7.62], r: 4.6 },
-      { make: K => woonboot(K), n: 4, gap: 45, side: 'left', xr: [11.5, 11.9], y: -1.0, r: 8.5 }, { make: roeiboot, n: 2, gap: 90, side: 'left', xr: [16, 22], y: -1.0, r: 3 },
+      { make: K => { const g = (bi++ % 2) ? brug(K, 'amstel', { boats: true, left: true }) : magereBrug(K, 27, { boats: true, left: true }); if (Math.random() < 0.5) { const rb = roeiboot(K); rb.position.set(12, WY, -21); g.add(rb); } return g; }, n: 4, gap: 40, side: 'left', reg: true, xr: [7.62, 7.62], r: 4.6 },
       { make: K => row(K, { len: 24, n: 4, lit: 0.4, dx: -1.35, floors: [3, 3, 4] }), n: 6, gap: 24, side: 'right', reg: true, xr: [9.6, 9.6], r: 11.9 },
       { make: lamp, n: 7, gap: 22, side: 'right', reg: true, xr: [4.75, 4.75] }, { make: lampKade, n: 4, gap: 40, side: 'left', reg: true, xr: [4.75, 4.75] },
-      { make: elm, n: 6, gap: 24, side: 'left', xr: [6.8, 7.1], r: 0.9 }, { make: K => K.windmill(), n: 1, gap: 260, side: 'left', xr: [36, 40], y: -1.1, r: 4 },
+      { make: elm, n: 4, gap: 40, side: 'left', xr: [6.8, 7.1], r: 0.9 }, { make: K => K.windmill(), n: 1, gap: 260, side: 'left', xr: [36, 40], y: -1.1, r: 4 },
       { make: fietsen, n: 3, gap: 50, side: 'right', xr: [5.3, 5.6], r: 0.6 }, { make: paaltjes, n: 4, gap: 40, side: 'right', xr: [4.4, 4.4], r: 0.3 },
       { make: wegwijzer, n: 1, gap: 180, side: 'right', xr: [4.6, 4.6], r: 0.5 }, { make: 'zombieWalk', n: 4, gap: 45, side: 'right', xr: [4.8, 5.4], r: 0.6 } ] }),
   };
+
 
   T.amsterdam = {
     style: { brick: BRICK, gables: 0.95, height: [10, 13], width: [3.6, 4.6], lamp: 'classic' },

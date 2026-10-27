@@ -2610,14 +2610,35 @@ const SCENES = {
   polder: (g, t) => SCENES.dyke(g, t),
 };
 const rumourShown = new Set();
+// the card before a level: a few seconds of the level's own town in 3D under its line, so every level opens on its place.
+// k 0 is the wide shot under the town's rumour (high at the side, craning down the street), k 1 the low shot behind him under
+// the level's line. Seeded per level, so a level always opens the same way. The painting stays as the fallback.
+function levelCard(lv, k) {
+  const town = lv.town || TOWN_OF(lv.id), themeKey = (lv.theme && THEMES[lv.theme]) ? lv.theme : 'polder';
+  const side = (lv.id % 2) ? 1 : -1;   // which side of the street the camera favours, varied per level
+  return {
+    hold: 4,
+    build(W) {
+      W.stage({ town, theme: themeKey, seed: lv.id * 7 + k, preroll: 60 });
+      W.speed(k ? 6 : 3); W.face('deadpan');
+      this.update(W, 0, 0);
+    },
+    update(W, t) {
+      const s = W.smooth(W.clamp(t / 7, 0, 1));
+      if (!k) W.cam(side * W.lerp(5.5, 3.2, s), W.lerp(8.5, 4.6, s), W.lerp(9, 6.5, s), side * 0.6, 1.6, -38, 56);
+      else W.cam(side * W.lerp(2.3, 1.5, s), W.lerp(1.5, 2.1, s), W.lerp(5.6, 4.4, s), 0, 1.35, -18, 52);
+      W.drift(t, 0.6);
+    },
+  };
+}
 function showLevelIntro(lv, then) {
   if (!lv.intro) return then();
   const NA = window.NRART, sc = NA && (NA.scenes[lv.theme] || NA.scenes.street);
   const draw = sc || SCENES[lv.theme] || SCENES.street;
   const panels = [];
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id)));
-  if (t && t.rumour && !rumourShown.has(t.id)) { rumourShown.add(t.id); panels.push({ text: `${t.name}. Nobody agrees on what caused it. Here they say: ${t.rumour}`, nl: `${t.name}. Niemand is het eens over de oorzaak. Hier zeggen ze: ${t.rumourNl}`, draw, nr: !!sc }); }
-  panels.push({ text: lv.intro, nl: lv.introNl || '', draw, nr: !!sc });
+  if (t && t.rumour && !rumourShown.has(t.id)) { rumourShown.add(t.id); panels.push({ text: `${t.name}. Nobody agrees on what caused it. Here they say: ${t.rumour}`, nl: `${t.name}. Niemand is het eens over de oorzaak. Hier zeggen ze: ${t.rumourNl}`, draw, nr: !!sc, cine: levelCard(lv, 0) }); }
+  panels.push({ text: lv.intro, nl: lv.introNl || '', draw, nr: !!sc, cine: levelCard(lv, 1) });
   showIntro(then, panels);
 }
 
@@ -2635,7 +2656,7 @@ function showIntro(then, panels, full, from) {
   const txt = $('pixtext'), nlEl = $('pixnl'), frameEl = $('pixframe'), cover = $('introfade'); PANELS_.forEach(p => { p._nlShown = false; });
   // captions appear whole with a fade, the Dutch a beat later and spoken; a panel holds for its reading time (and the
   // spoken Dutch, and a 3D shot's own length), then moves on by itself; tap, space or enter moves on sooner
-  const hold = p => Math.max(3.2, 0.055 * p.text.length + 0.035 * (p.nl || '').length, p._cine && CINE[p.cine].hold || 0);
+  const hold = p => Math.max(3.2, 0.055 * p.text.length + 0.035 * (p.nl || '').length, (p._cine && (typeof p.cine === 'object' ? p.cine : CINE[p.cine]).hold) || 0);
   let shown = -1, leaving = false, last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now; introT += dt;
@@ -2746,9 +2767,9 @@ const W = {
 };
 window.NRW = W;   // the world handle: the shots, QA camera shots and the console use it
 function cineBegin(i) {
-  const shot = CINE[i]; if (!shot) return false;
+  const shot = typeof i === 'object' ? i : CINE[i]; if (!shot) return false;   // an intro panel's index, or a shot object (the level cards)
   cineEnd(); cineShot = shot; cineT = 0; cineTitleAt = Infinity;
-  try { shot.build(W); } catch (e) { console.error(`cine shot ${i + 1}: ${e && e.message}`); cineEnd(); return false; }
+  try { shot.build(W); } catch (e) { console.error(`cine shot ${typeof i === 'object' ? 'card' : i + 1}: ${e && e.message}`); cineEnd(); return false; }
   $('intro').classList.add('cine'); document.body.classList.add('cine'); cineFrame(); return true;
 }
 function cineEnd() {

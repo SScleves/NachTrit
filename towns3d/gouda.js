@@ -144,7 +144,8 @@
       cone8: new THREE.ConeGeometry(0.5, 1, 8), cone4: new THREE.ConeGeometry(0.5, 1, 4), oct: new THREE.CylinderGeometry(0.5, 0.5, 1, 8),
       taper: new THREE.CylinderGeometry(0.64, 1, 1, 14), tri: new THREE.ShapeGeometry(tri), arch: new THREE.ShapeGeometry(half, 10),
     };
-    K.PG.goudaWillow = R.willowQ = new THREE.PlaneGeometry(1, 1).translate(0, 0.5, 0);   // a card mesh, not a kit part: kept in PG so cleanup leaves it
+    K.PG.goudaWillow = R.willowQ = new THREE.PlaneGeometry(1, 1).translate(0, 0.5, 0);
+    R.treeMat = K.treeCard([1]).children[0].material;   // the game's shared tree card material, for lime trees merged into a kit   // a card mesh, not a kit part: kept in PG so cleanup leaves it
     return R;
   }
   const at = (k, x, y, z, ry) => { k.base.makeRotationY(ry || 0); k.base.setPosition(x, y, z); };
@@ -240,25 +241,81 @@
     K.kbuild(k, g); g.userData.faceRoad = true; return g;
   }
   // thirty metres of the canal in one kit, standing at the middle of the road: the land under the near houses (the ground lies
-  // low so the water can), the pale coping of the near quay, the far quay wall with its coping and street, the canal houses
-  // across the water and their light broken up on it
-  function farQuay(K) {
-    const R = res(K), g = new K.THREE.Group(), k = K.kit(), st = K.style, pal = [K.pick(st.brick), K.pick(st.brick)], L = 30.1;
+  // low so the water can), the pale coping of the near quay, the far quay wall with its coping and street. Across the water
+  // stand canal houses with lime trees before them and their light broken up on the water ('houses'), or the canal passes the
+  // Markt: its cobbles open up with candle lanterns and candlelit houses on the far side ('open'), then the stadhuis stands
+  // there alone with the lit tree beside it, its candles doubled in the canal ('stadhuis')
+  function farQuay(K, mode) {
+    const R = res(K), g = new K.THREE.Group(), k = K.kit(), st = K.style, pal = [K.pick(st.brick), K.pick(st.brick)], L = 30.1, markt = mode === 'open' || mode === 'stadhuis';
     K.kb(k, K.PM.pole, -24, -0.6, 0, 33, 1.16, L);
     K.kb(k, R.stone, 7.9, 0.0, 0, 0.44, 0.26, L);
     K.kb(k, K.brickMat(pal[0]), 16.95, -0.62, 0, 0.7, 1.28, L);
     K.kb(k, R.stone, 16.75, 0.0, 0, 0.5, 0.24, L);
-    K.kb(k, K.PM.pole, 24.5, -0.6, 0, 15, 1.16, L);
+    if (markt) K.kb(k, K.PM.stone, 31.2, -0.6, 0, 28.4, 1.16, L); else K.kb(k, K.PM.pole, 24.5, -0.6, 0, 15, 1.16, L);
     for (let z = -12; z < 15; z += 6) K.kadd(k, K.KG.cyl, K.PM.pole, 17.2, 0.32, z + K.rnd(-1.2, 1.2), 0, 0, 0, 0.24, 0.64, 0.24);
     k.base.identity();
-    for (let i = 0; i < 5; i++) {
-      const w = K.rnd(st.width[0], st.width[1]) * 1.2, h = K.rnd(st.height[0], st.height[1]) * K.rnd(0.95, 1.15), oz = -12 + i * 6;
-      K.house({ k, g, w, h, brick: pal[i % 2], ox: 23.6 + w / 2, oz, plain: true, lit: 0.32, peer: false });
-      k.base.identity();
-      for (const dz of [-1.95, 0.15, 2.25]) if (Math.random() < 0.55) K.kadd(k, R.streakQ, R.candle, K.rnd(12.6, 15.8), GW + 0.03, oz + dz, -Math.PI / 2, 0, 0, 1.5, K.rnd(6, 10), 1);
+    if (mode === 'stadhuis') {
+      stadhuis(K, k, R, 26.5, -3); kerstboom(K, k, R, 34, 14, 20); k.base.identity();
+      for (let c = 0; c < 6; c++) K.kadd(k, R.streakQ, R.candle, K.rnd(12.4, 15.6), GW + 0.03, -11.5 + c * 3.4, -Math.PI / 2, 0, 0, 1.6, K.rnd(7, 11), 1);
+      for (const z of [12, -14]) candleLanternIn(K, R, k, 19.2, 0, z);
+    } else if (mode === 'open') {
+      for (const z of [-12, -2, 8]) candleLanternIn(K, R, k, 19.2, 0, z + K.rnd(-1, 1));
+      cheeseIn(K, k, 23, -6); cheeseIn(K, k, 25.5, 4);
+      for (let i = 0; i < 4; i++) {
+        const w = K.rnd(st.width[0], st.width[1]) * 1.1, h = K.rnd(st.height[0], st.height[1]), oz = -10 + i * 6.05;
+        K.house({ k, g, w, h, brick: pal[i % 2], ox: 38 + w / 2, oz, plain: true, lit: 0.18, peer: false }); k.base.identity();
+        for (let r = 0; r < 3; r++) for (const dz of [-1.95, 0.15, 2.25]) if (Math.random() < 0.5) K.kadd(k, R.flameQ, R.candle, 37.93, 1.48 + r * 2.3, oz + dz, 0, -Math.PI / 2, 0, 0.62, 0.62, 1);
+      }
+    } else {
+      for (let i = 0; i < 5; i++) {
+        const w = K.rnd(st.width[0], st.width[1]) * 1.2, h = K.rnd(st.height[0], st.height[1]) * K.rnd(0.95, 1.15), oz = -12 + i * 6;
+        K.house({ k, g, w, h, brick: pal[i % 2], ox: 23.6 + w / 2, oz, plain: true, lit: 0.32, peer: false });
+        k.base.identity();
+        for (const dz of [-1.95, 0.15, 2.25]) if (Math.random() < 0.55) K.kadd(k, R.streakQ, R.candle, K.rnd(12.6, 15.8), GW + 0.03, oz + dz, -Math.PI / 2, 0, 0, 1.5, K.rnd(6, 10), 1);
+      }
+      for (const z of [K.rnd(-13, -4), K.rnd(3, 12)]) { const s = K.rnd(0.85, 1.1); for (const ry of [0, Math.PI / 2]) K.kadd(k, K.PG.tree1, R.treeMat, 19.4, 0, z, 0, ry, 0, 8 * s, 11 * s, 1); }
     }
     K.kbuild(k, g); return bendFollow(g);
   }
+  function candleLanternIn(K, R, k, x, y, z) {   // candle night: a candle in a lantern on an iron stand, its light on the cobbles
+    K.kb(k, K.PM.pole, x, y + 0.45, z, 0.05, 0.9, 0.05); K.kb(k, K.PM.pole, x, y + 0.9, z, 0.36, 0.04, 0.36);
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) K.kb(k, K.PM.pole, x + sx * 0.15, y + 1.12, z + sz * 0.15, 0.025, 0.44, 0.025);
+    K.kadd(k, R.cone4, K.PM.pole, x, y + 1.44, z, 0, Math.PI / 4, 0, 0.52, 0.22, 0.52);
+    for (const ry of [0, Math.PI / 2]) K.kadd(k, R.flameQ, R.candle2, x, y + 1.1, z, 0, ry, 0, 0.55, 0.55, 1);
+    K.kadd(k, R.poolQ, R.candle2, x, y + 0.04, z, -Math.PI / 2, 0, 0, 3.0, 3.0, 1);
+  }
+  function cheeseIn(K, k, x, z) {   // Thursday's cheese left out on its pallet
+    K.kb(k, K.M.wood, x, 0.08, z, 1.6, 0.16, 2.4);
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) K.kadd(k, K.KG.cyl, K.PM.cheese, x - 0.38 + c * 0.76, 0.27, z - 0.8 + r * 0.8, 0, 0, 0, 0.7, 0.2, 0.7);
+    for (let i = 0; i < 2; i++) K.kadd(k, K.KG.cyl, K.PM.cheese, x + K.rnd(-0.3, 0.3), 0.47, z - 0.4 + i * 0.8, 0, 0, 0, 0.66, 0.2, 0.66);
+  }
+  // a shopping street opens onto the Markt: the houses on the right stop, the cobbles run back to the stadhuis standing alone
+  // with the tree beside it and candle lanterns before it. It takes the place of a terrace on the right (x about 7.8)
+  function marktOpening(K) {
+    const R = res(K), k = K.kit();
+    K.kb(k, K.PM.stone, 17, 0.0, -24, 34.4, 0.06, 78);
+    stadhuis(K, k, R, 13.5, -12); kerstboom(K, k, R, 21, 5, 20); k.base.identity();
+    for (const z of [9, -3, -15, -27]) candleLanternIn(K, R, k, 2.2, 0, z);
+    cheeseIn(K, k, 5.2, 2); cheeseIn(K, k, 5.6, -33);
+    const g = K.kbuild(k); g.userData.faceRoad = true; return g;
+  }
+  // where the dike passes the edge of the town: a gap between two rows of houses opens onto the Markt, raised on its cobbles
+  // above the polder, the stadhuis alone in the middle with the lit tree, candle lanterns along the edge. Built for the right
+  // side and stood at town level (y -0.05): the cobbled ground runs down to the polder
+  function marktRand(K) {
+    const R = res(K), k = K.kit(), st = K.style, pal = [K.pick(st.brick), K.pick(st.brick)];
+    K.kb(k, K.PM.stone, 9, -0.45, -3, 30, 0.9, 66);
+    stadhuis(K, k, R, 9, -3); kerstboom(K, k, R, 17.5, 12, 20); k.base.identity();
+    for (const z of [11, 1, -9, -19]) candleLanternIn(K, R, k, -4.6, 0, z);
+    const g = new K.THREE.Group();
+    for (const [z0, dir] of [[15, 1], [-24.2, -1]]) for (let i = 0; i < 3; i++) {
+      const w = K.rnd(st.width[0], st.width[1]), oz = z0 + i * 6.05 * dir;
+      K.house({ k, g, w, brick: pal[i % 2], ox: -5.8 + w / 2, oz, lit: 0.3, peer: false }); k.base.identity();
+    }
+    K.kbuild(k, g); return g;
+  }
+  const empty = K => new K.THREE.Group();
+  const seq = list => { let i = 0; return K => list[i++ % list.length](K); };   // a spawn whose copies differ in turn: the game makes them in order, n at a time
   // a low brick bridge over the canal as on the Westhaven: a humped deck, brick parapets with pale caps, a lantern at each end, the arch dark over the water
   function brug(K) {
     const R = res(K), k = K.kit(), b = K.brickMat(0x6a3e33), L = 9.4, half = L / 2, rise = 0.6, sl = Math.hypot(half, rise) + 0.1, a = Math.atan2(rise, half);
@@ -427,12 +484,12 @@
         fog: 0x4d5258, fogD: 0.0148, night: 0.18, ground: 0x1d1e22, curv: 0.0016, landmark: false,
         road: { kind: 'cobbles', tone: '#4a4541', lines: false },
         spawn: [
-          { make: markt, n: 1, gap: 220, side: 'right', xr: [17, 18], r: 14 },
+          { make: seq([empty, markt]), n: 2, gap: 115, side: 'right', reg: true, xr: [17, 18], r: 14 },
           { make: K => row(K, 3, { candles: 0.55, lit: 0.12 }), n: 6, gap: 24, side: 'left', reg: true, xr: [9.6, 10], r: 9 },
           { make: K.backRow, n: 5, gap: 30, side: 'left', reg: true, xr: [21, 22.5], r: 14 },
           { make: K => row(K, 4, { plain: true, lit: 0.08, candles: 0.5 }), n: 4, gap: 36, side: 'right', reg: true, xr: [46, 48], r: 14 },
           { make: tulipLamp, n: 8, gap: 18, side: 'left', reg: true, xr: [4.7, 4.7] },
-          { make: candleLantern, n: 9, gap: 16, side: 'right', reg: true, xr: [5.3, 5.3], r: 0.3 },
+          { make: candleLantern, n: 7, gap: 20, side: 'right', reg: true, xr: [5.3, 5.3], r: 0.3 },
           { make: cheesePile, n: 3, gap: 70, side: 'right', xr: [7.5, 9.5], r: 1.2 },
           { make: () => K.treeCard([1, 1, 0]), n: 4, gap: 40, side: 'left', xr: [5.6, 6], r: 0.9 },
           { make: K.bench, n: 3, gap: 50, side: 'left', xr: [5.0, 5.1], r: 0.9 },
@@ -445,16 +502,15 @@
       gracht: (base, K) => Object.assign({}, base, {
         fog: 0x4b5258, fogD: 0.0152, night: 0.18, ground: 0x15191e, groundY: -1.05, water: 0x161d26, waterY: GW, waterK: 0.3, canal: 1, curv: 0.0012, landmark: false,
         spawn: [
-          { make: farQuay, n: 7, gap: 30, side: 'right', reg: true, xr: [0, 0], r: 0.5 },
+          { make: seq([farQuay, farQuay, K => farQuay(K, 'open'), K => farQuay(K, 'stadhuis'), farQuay, farQuay, farQuay]), n: 7, gap: 30, side: 'right', reg: true, xr: [0, 0], r: 0.5 },
           { make: brug, n: 1, gap: 160, side: 'right', xr: [12.3, 12.3], r: 3 },
           { make: K => row(K, 3, { candles: 0.22 }), n: 6, gap: 24, side: 'left', reg: true, xr: [7.9, 8.2], r: 9 },
           { make: K.backRow, n: 4, gap: 36, side: 'left', reg: true, xr: [19, 20.5], r: 14 },
           { make: tulipLamp, n: 8, gap: 18, side: 'left', reg: true, xr: [4.7, 4.7] },
           { make: tulipLamp, n: 3, gap: 50, side: 'right', reg: true, xr: [4.7, 4.7] },
           { make: () => K.treeCard([1, 1, 2]), n: 6, gap: 26, side: 'right', xr: [6.6, 7.1], r: 0.9 },
-          { make: () => K.treeCard([1, 1]), n: 8, gap: 30, side: 'right', xr: [18.2, 19], r: 0.9 },
           { make: () => K.treeCard([0, 1]), n: 3, gap: 48, side: 'left', xr: [5.5, 5.8], r: 0.9 },
-          { make: sintJan, n: 1, gap: 240, side: 'right', xr: [46, 50], r: 12 },
+          { make: sintJan, n: 1, gap: 240, side: 'right', xr: [54, 58], r: 12 },
           { make: K.boat, n: 3, gap: 50, side: 'right', xr: [9.4, 10.2], y: GW + 0.6, r: 2.5 },
           { make: K.boat, n: 2, gap: 80, side: 'right', xr: [14.6, 15.4], y: GW + 0.6, r: 2.5 },
           { make: K.moorings, n: 4, gap: 40, side: 'right', xr: [8.3, 8.5], y: GW, r: 0.5 },
@@ -466,14 +522,14 @@
         ] }),
       // the shopping streets off the Markt (Kleiweg, Lange Groenendaal): cheese, candles and syrup waffles in the windows,
       // tulip lanterns on wires across the street, the Sint-Jan rising behind the roofs
-      shops: (base, K) => Object.assign({}, base, {
+      shops: (base, K) => { const r3 = K => row(K, 3, { shops: 0.8, candles: 0.2, lit: 0.45 }); return Object.assign({}, base, {
         fog: 0x4e5359, fogD: 0.016, night: 0.18, curv: 0.0022, landmark: false,
         spawn: [
-          { make: K => row(K, 3, { shops: 0.8, candles: 0.2, lit: 0.45 }), n: 12, gap: 12, side: 'alt', reg: true, xr: [7.6, 7.9], r: 9 },
-          { make: K.backRow, n: 8, gap: 18, side: 'alt', reg: true, xr: [18.5, 20.5], r: 14 },
+          { make: seq([r3, r3, r3, r3, r3, empty, r3, marktOpening, r3, empty, r3, r3]), n: 12, gap: 12, side: 'alt', reg: true, xr: [7.6, 7.9], r: 9 },
+          { make: seq([K.backRow, K.backRow, K.backRow, empty, K.backRow, empty, K.backRow, K.backRow]), n: 8, gap: 18, side: 'alt', reg: true, xr: [18.5, 20.5], r: 14 },
           { make: wireLamp, n: 7, gap: 20, side: 'right', reg: true, xr: [0, 0], r: 0.5 },
           { make: tulipLamp, n: 4, gap: 36, side: 'alt', reg: true, xr: [4.7, 4.7] },
-          { make: sintJan, n: 1, gap: 240, side: 'right', xr: [40, 44], r: 12 },
+          { make: sintJan, n: 1, gap: 240, side: 'right', xr: [48, 52], r: 12 },
           { make: K.cheeseCart, n: 2, gap: 80, side: 'both', xr: [5.4, 5.6], r: 0.9 },
           { make: cheesePile, n: 2, gap: 90, side: 'both', xr: [5.6, 5.8], r: 1.2 },
           { make: K.crates, n: 4, gap: 32, side: 'both', xr: [5.0, 5.2], r: 0.5 },
@@ -482,19 +538,20 @@
           { make: K.bakfiets, n: 1, gap: 150, side: 'both', xr: [5.0, 5.1], r: 0.7 },
           { make: fingerpost, n: 1, gap: 140, side: 'both', xr: [4.6, 4.6], r: 0.5 },
           { make: 'zombieWalk', n: 8, gap: 18, side: 'both', xr: [4.8, 5.4], r: 0.6 },
-        ] }),
+        ] }); },
       // along the IJssel into town: the river black on the left with barges and the water tower across it, the polder on the
       // right with pollard willows, a cheese farm and its sign, and De Roode Leeuw turning by the road
       dyke: (base, K) => Object.assign({}, base, {
         fog: 0x4a5359, fogD: 0.0142, night: 0.17, water: 0x2f3a44, curv: 0.0035, landmark: false, road: { kind: 'asphalt', tone: '#353a44' },
         spawn: [
+          { make: seq([empty, marktRand]), n: 2, gap: 100, side: 'right', reg: true, xr: [21, 21], y: -0.05, r: 30 },
           { make: roodeLeeuw, n: 1, gap: 190, side: 'right', xr: [17, 18], y: -0.6, r: 6 },
           { make: boerderij, n: 1, gap: 210, side: 'right', xr: [19, 19], y: -0.6, r: 11 },
           { make: K.windmill, n: 2, gap: 130, side: 'right', xr: [34, 50], y: -0.6, r: 4 },
           { make: willow, n: 16, gap: 13, side: 'right', xr: [7, 11], y: -0.7, r: 0.9 },
           { make: fenceRun, n: 8, gap: 30, side: 'right', reg: true, xr: [0, 0], r: 0.5 },
           { make: tulipLamp, n: 5, gap: 40, side: 'right', reg: true, xr: [4.7, 4.7] },
-          { make: K => row(K, 2, { lit: 0.45, candles: 0.3 }), n: 2, gap: 120, side: 'right', xr: [26, 28], y: -0.6, r: 6 },
+          { make: K => row(K, 2, { lit: 0.45, candles: 0.3 }), n: 2, gap: 120, side: 'right', xr: [22, 24], y: -0.6, r: 6 },
           { make: waterToren, n: 1, gap: 240, side: 'left', xr: [44, 48], y: -0.6, r: 8 },
           { make: K.reeds, n: 30, gap: 5, side: 'left', xr: [4.8, 5.6], y: -0.7 },
           { make: K.boat, n: 4, gap: 50, side: 'left', xr: [9, 14], y: 0, r: 2.5 },
