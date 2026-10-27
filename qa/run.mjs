@@ -72,7 +72,8 @@ async function playIntro() {
   await page.waitForTimeout(1200);
   await shot('title');
   await page.click('#go');
-  for (let i = 0; i < 14; i++) { await page.waitForTimeout(3400); await shot(`intro${i + 1}`); await page.keyboard.press('Space'); await page.waitForTimeout(150); await page.keyboard.press('Space'); }
+  // a first run plays the short cut; every panel holds for its reading time, so step through with Space until it closes
+  for (let i = 0; i < 20 && await page.evaluate(() => document.getElementById('intro').style.display !== 'none'); i++) { await page.waitForTimeout(1600); await shot(`intro${i + 1}`); await page.keyboard.press('Space'); await page.waitForTimeout(500); }
   await page.waitForTimeout(400); await shot('after-intro');
   report.runs.push({ intro: true, err: await errBox() });
 }

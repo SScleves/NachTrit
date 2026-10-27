@@ -240,6 +240,8 @@
       if (lvl(T, 1.6, 5.7) > 1) A.px(g, mx - 1, my - 13, 'steel4');            // the shine of his eye
       // ---- eyes in the black: one pair, too high and too wide for a dog
       pair(g, 267, 48, 7, lvl(T, 2.0, 5.7, [4.3, 4.75]), true);
+      // ---- it says it through the glass while it leans in: a dim bubble, so the room stays dark
+      if (T > 2.4 && T < 5.5) A.say(g, hx + 10, hy + 6, 'Gezellig.', { size: 7, dx: 30, dy: 28, fill: 'mist4', edge: 'mist2', color: 'night0' });
     },
   };
 })();
