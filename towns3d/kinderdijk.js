@@ -62,7 +62,7 @@
       glow: keep(K.GlowMat(lt, 0xffffff, 1, false, { side: THREE.DoubleSide })),
       q: { warm: Q(0, 0), cold: Q(1, 0), red: Q(2, 0), green: Q(3, 0), beam: Q(4, 0), wash: Q(5, 0), panel: Q(6, 0), office: Q(7, 0), sWarm: Q(0, 1), sCold: Q(1, 1), sRed: Q(2, 1), sGreen: Q(3, 1), band: Q(4, 1), solid: Q(5, 1) },
       reed: reed.children[0].material, grass: keep(Mat({ color: 0x18211a })), thatch: keep(Mat({ color: 0x3b352b })), thatchDark: keep(Mat({ color: 0x2c2822 })),
-      sail: keep(Mat({ color: 0x2a2219 })), white: keep(Mat({ color: 0xcfcabc })), stone: keep(Mat({ color: 0x8c877a })), tuff: keep(Mat({ color: 0x7c7868 })),
+      sail: keep(Mat({ color: 0x2a2219 })), white: keep(Mat({ color: 0x9e998c })), stone: keep(Mat({ color: 0x7a766a })), tuff: keep(Mat({ color: 0x7c7868 })),
       iron: keep(Mat({ color: 0x24302c })), dark: keep(new THREE.MeshBasicMaterial({ color: 0x0b0d12 })), hull: keep(Mat({ color: 0x16181c })),
       red: keep(Mat({ color: 0x5a2420 })), green: keep(Mat({ color: 0x1f3a2a })), quay: keep(Mat({ color: 0x3a3e45 })), lead: keep(Mat({ color: 0x3c4249 })),
       half: new THREE.CircleGeometry(0.5, 14, 0, Math.PI), oct: new THREE.CylinderGeometry(0.62, 1, 1, 8).translate(0, 0.5, 0),
@@ -96,7 +96,7 @@
   let mc = 0;
   function mill(K, kind) {
     const M = mats(K), k = K.kit(), ks = K.kit(), g = new K.THREE.Group(), i = mc++, round = kind === 'nederwaard';
-    const state = i % 16 === 5 ? 'mourn' : i % 4 === 0 ? 'turn' : i % 2 ? 'plus' : 'cross', lit = i % 8 === 2;
+    const state = i % 16 === 5 ? 'mourn' : i % 4 === 0 ? 'turn' : i % 2 ? 'plus' : 'cross', lit = i % 16 === 2 || i % 16 === 11;
     const H = round ? 13.4 : 14.2, R0 = round ? 4.4 : 4.6, L = round ? 13.6 : 14.2, hubY = H + 1.0, hubZ = R0 * 0.72 + 0.9;
     K.kb(k, M.grass, 0, -0.2, 0, 13, 0.7, 13);   // the patch of land it stands on, just above the water
     if (round) K.kadd(k, M.round, K.brickMat(0x4e352d), 0, 0, 0, 0, 0, 0, R0, H, R0);
@@ -110,9 +110,9 @@
       if (on) K.kadd(k, M.q.warm, M.glow, x * 1.03, y, z * 1.03, 0, a, 0, 1.8, 1.8, 1);
     }
     K.kb(k, M.sail, 0.0, hubY - H * 0.45, -R0 - 1.3, 0.14, H * 0.9, 0.14, -0.35, 0, 0);    // the tail pole down to the ground behind
-    if (lit) {   // floodlit: its body washed with warm light from the ground, two lamps in the grass
-      for (const a of [0, -Math.PI / 2, Math.PI / 2]) K.kadd(k, M.q.wash, M.glow, Math.sin(a) * (R0 + 0.3), H * 0.45, Math.cos(a) * (R0 + 0.3), 0, a, 0, R0 * 3.2, H * 1.4, 1);
-      for (const s of [-1, 1]) { lamp(K, k, 'warm', s * 3.5, 0.4, R0 + 2.5, 1.6); K.kadd(k, M.q.beam, M.glow, s * 2.4, H * 0.42, R0 + 1.6, 0, 0, Math.PI - s * 0.18, 4.5, H * 0.9, 1); }
+    if (lit) {   // floodlit as in the lighting week: the front of its body washed with warm light from two lamps in the grass
+      K.kadd(k, M.q.wash, M.glow, 0, H * 0.4, R0 + 0.35, 0, 0, 0, R0 * 2.4, H * 1.1, 1);
+      for (const s of [-1, 1]) { lamp(K, k, 'warm', s * 3.5, 0.4, R0 + 2.5, 1.2); K.kadd(k, M.q.beam, M.glow, s * 2.2, H * 0.36, R0 + 1.6, 0, 0, Math.PI - s * 0.16, 3.2, H * 0.72, 1); }
     }
     K.kbuild(k, g);
     const a0 = state === 'mourn' ? -Math.PI / 2 + 0.2 : state === 'cross' ? Math.PI / 4 : 0;
@@ -144,6 +144,23 @@
   }
   function farWater(K) {   // the water beyond the ribbon, out into the haze
     const g = new K.THREE.Group(), m = new K.THREE.Mesh(new K.THREE.PlaneGeometry(182, 214), K.M.water); m.rotation.x = -Math.PI / 2; g.add(m); return g;
+  }
+  // the brown tourist board at the head of the path, as the ANWB puts them up: the mills by name, white on brown
+  function boardSign(K) {
+    const M = mats(K), k = K.kit(), g = new K.THREE.Group();
+    for (const z of [-1.3, 1.3]) K.kb(k, K.PM.pole, 0.1, 1.0, z, 0.1, 2.0, 0.1);
+    K.kbuild(k, g);
+    if (!MT.boardMat) {
+      const c = document.createElement('canvas'); c.width = 512; c.height = 256; const x = c.getContext('2d');
+      x.fillStyle = '#5a3a24'; x.fillRect(0, 0, 512, 256); x.strokeStyle = '#e8e2d2'; x.lineWidth = 8; x.strokeRect(12, 12, 488, 232);
+      x.fillStyle = '#efe9da'; x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.font = 'bold 50px "Segoe UI", system-ui, sans-serif'; x.fillText('MOLENS', 256, 70); x.fillText('KINDERDIJK', 256, 128);
+      x.font = '30px "Segoe UI", system-ui, sans-serif'; x.fillText('Werelderfgoed  ·  19 molens', 256, 196);
+      const t = new K.THREE.CanvasTexture(c); t.colorSpace = K.THREE.SRGBColorSpace;
+      MT.boardMat = new K.THREE.MeshBasicMaterial({ map: t, color: 0xb8b0a0 }); MT.boardMat.userData.shared = true;
+    }
+    const b = new K.THREE.Mesh(new K.THREE.PlaneGeometry(3.0, 1.5), MT.boardMat); b.position.set(-0.02, 2.2, 0); b.rotation.y = -Math.PI / 2; g.add(b);
+    g.userData.faceRoad = true; return g;
   }
   // ---------- Dordrecht ----------
   function solid(THREE, P, tris, c) {   // triangles turned to face away from the inside point c; flat normals, uvs filled by the kit
@@ -184,7 +201,7 @@
     const M = mats(K), k = K.kit(), g = new K.THREE.Group(), fx = (o.fx || 8.0) - X, w = 6.1, names = [], yaw = -Math.PI / 2;
     if (o.far) { K.kb(k, M.quay, fx - 1.6, -0.75, 0, 3.4, 1.5, 3 * w + 0.4); K.kb(k, M.stone, fx - 3.25, 0.02, 0, 0.3, 0.14, 3 * w + 0.4); }
     for (let i = 0; i < 3; i++) {
-      const zc = -w + i * w, plaster = Math.random() < 0.22, wall = plaster ? M.white : K.brickMat(K.pick(BRICK)), floors = K.pick([3, 3, 4]), fh = 3.1, H = floors * fh + 0.3, d = K.rnd(10, 13), gh = K.rnd(5.2, 6.8);
+      const zc = -w + i * w, plaster = Math.random() < 0.15, wall = plaster ? M.white : K.brickMat(K.pick(BRICK)), floors = K.pick([3, 3, 4]), fh = 3.1, H = floors * fh + 0.3, d = K.rnd(10, 13), gh = K.rnd(5.2, 6.8);
       K.kb(k, wall, fx + d / 2, H / 2, zc, d, H, w - 0.04);
       K.kadd(k, saddle(K), K.PM.roof, fx + d / 2 + 0.4, H - 0.05, zc, 0, 0, 0, d - 0.6, gh - 0.3, w - 0.2);
       for (let s = 0; s < 5; s++) {
@@ -197,19 +214,22 @@
       for (let f = 0; f < floors; f++) {
         const y = f * fh + 1.75;
         if (f) K.kb(k, M.white, fx - 0.05, f * fh + 0.08, zc, 0.12, 0.14, w - 0.04);
-        if (o.shops && f === 0) {
-          const name = K.pick(SHOPS); names.push(name);
-          K.kadd(k, K.PG['shop' + (name === 'CAFÉ' ? 1 : 0)], K.PM.winAtlas, fx - 0.02, 1.35, zc - 0.55, 0, yaw, 0, 3.7, 2.1);
-          K.kadd(k, M.q.panel, M.glow, fx - 0.1, 1.4, zc - 0.55, 0, yaw, 0, 4.6, 3.0, 1); K.kadd(k, M.q.warm, M.glow, fx - 1.4, 0.09, zc - 0.55, -Math.PI / 2, 0, 0, 3.6, 2.4, 1);
+        if (o.shops && f === 0) {   // a shop front of small panes in green painted wood, the light kept behind the glass
+          const name = K.pick(SHOPS), sz = zc - 0.55; names.push(name);
+          K.kadd(k, K.PG['shop' + (name === 'CAFÉ' ? 1 : 0)], K.PM.winAtlas, fx - 0.02, 1.6, sz, 0, yaw, 0, 2.9, 1.6);
+          K.kb(k, M.green, fx - 0.06, 0.42, sz, 0.12, 0.7, 3.3); K.kb(k, M.green, fx - 0.06, 2.48, sz, 0.12, 0.16, 3.3);
+          for (const dz of [-1.5, -0.75, 0, 0.75, 1.5]) K.kb(k, M.green, fx - 0.05, 1.6, sz + dz, 0.07, 1.6, dz === 0 || Math.abs(dz) > 1 ? 0.16 : 0.07);
+          K.kb(k, M.green, fx - 0.05, 2.0, sz, 0.07, 0.07, 2.9);
+          K.kadd(k, M.q.warm, M.glow, fx - 0.12, 1.6, sz, 0, yaw, 0, 3.0, 2.0, 1); K.kadd(k, M.q.sWarm, M.glow, fx - 1.2, 0.09, sz, -Math.PI / 2, 0, Math.PI / 2, 1.6, 2.6, 1);
           K.kb(k, M.green, fx - 0.03, 1.1, zc + 2.25, 0.06, 2.2, 0.95);
           continue;
         }
         if (f === 0 && !o.far) { K.kb(k, M.green, fx - 0.03, 1.15, zc, 0.06, 2.3, 1.0); K.kb(k, M.stone, fx - 0.3, 0.12, zc, 0.6, 0.24, 1.4); }
         for (const dz of f === 0 && !o.far ? [-1.85, 1.85] : [-1.45, 1.45]) {
-          const wz = zc + dz, r = Math.random(), lit = r < (o.far ? 0.3 : 0.36);
-          K.kadd(k, K.PG['win' + (lit ? K.pick([0, 1, 2]) : r < 0.5 ? 3 : K.pick([4, 5]))], K.PM.winAtlas, fx - 0.015, y, wz, 0, yaw, 0, 1.2, 1.85);
+          const wz = zc + dz, r = Math.random(), lit = r < (o.far ? 0.26 : 0.27);
+          K.kadd(k, K.PG['win' + (lit ? K.pick([0, 1, 2]) : r < 0.45 ? 3 : K.pick([4, 5]))], K.PM.winAtlas, fx - 0.015, y, wz, 0, yaw, 0, 1.2, 1.85);
           K.kadd(k, M.half, M.white, fx - 0.02, y + 0.92, wz, 0, yaw, 0, 1.5, 1.5, 1); K.kadd(k, M.half, M.red, fx - 0.035, y + 0.95, wz, 0, yaw, 0, 1.1, 1.1, 1);
-          if (lit) { K.kadd(k, M.q.warm, M.glow, fx - 0.09, y, wz, 0, yaw, 0, 2.7, 2.9, 1); if (o.far) K.kadd(k, M.q.sWarm, M.glow, fx - 4, HARBOUR + 0.03, wz, -Math.PI / 2, 0, Math.PI / 2, 1.1, 6.5, 1); }
+          if (lit) { K.kadd(k, M.q.warm, M.glow, fx - 0.09, y, wz, 0, yaw, 0, 2.2, 2.4, 1); if (o.far) K.kadd(k, M.q.sWarm, M.glow, fx - 4, HARBOUR + 0.03, wz, -Math.PI / 2, 0, Math.PI / 2, 1.1, 6.5, 1); }
           else if (!o.far && Math.random() < 0.5) K.kb(k, Math.random() < 0.5 ? M.red : M.green, fx - 0.04, y - 0.45, wz, 0.06, 0.9, 1.2);
         }
       }
@@ -288,6 +308,7 @@
   // lead dome of 1692 with its lantern, lit
   function groothoofd(K) {
     const M = mats(K), k = K.kit(), b = K.brickMat(0x5c3c30);
+    K.kb(k, M.quay, 4.5, -1.15, 0, 11, 2.3, 17);   // it stands on the quay's head, not on the water
     K.kb(k, b, 4.5, 6.5, 0, 9, 13, 15); K.kadd(k, saddle(K), K.PM.roof, 4.5, 12.95, 0, 0, Math.PI / 2, 0, 15.4, 3.2, 9.4);
     K.kb(k, M.dark, -0.02, 2.7, 0, 0.06, 5.4, 4.2); K.kadd(k, M.half, M.dark, -0.03, 5.4, 0, 0, -Math.PI / 2, 0, 4.2, 4.2, 1); K.kadd(k, M.half, M.stone, -0.01, 5.4, 0, 0, -Math.PI / 2, 0, 5.2, 5.2, 1);
     for (const y of [6.9, 12.8]) K.kb(k, M.stone, -0.05, y, 0, 0.14, 0.3, 15);
@@ -295,7 +316,7 @@
     K.kadd(k, M.oct8, b, 4.5, 14, 0, 0, Math.PI / 8, 0, 3.5, 3.6, 3.5); K.kadd(k, M.dome, M.lead, 4.5, 17.5, 0, 0, 0, 0, 3.7, 3.4, 3.7);
     K.kadd(k, M.oct8, M.lead, 4.5, 20.6, 0, 0, Math.PI / 8, 0, 0.9, 2.0, 0.9); K.kadd(k, M.dome, M.lead, 4.5, 22.5, 0, 0, 0, 0, 1.0, 0.9, 1.0); K.kb(k, K.PM.pole, 4.5, 24.2, 0, 0.1, 2.2, 0.1);
     for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2; K.kadd(k, M.q.panel, M.glow, 4.5 + Math.sin(a) * 0.95, 21.6, Math.cos(a) * 0.95, 0, a, 0, 0.8, 1.4, 1); }
-    K.kadd(k, M.q.wash, M.glow, -0.6, 8, 0, 0, -Math.PI / 2, 0, 20, 18, 1); K.kadd(k, M.q.wash, M.glow, 1.2, 17, 0, 0, -Math.PI / 2, 0, 9, 9, 1);
+    K.kadd(k, M.q.wash, M.glow, -0.5, 5, 0, 0, -Math.PI / 2, 0, 11, 9, 1); K.kadd(k, M.q.wash, M.glow, 1.2, 18, 0, 0, -Math.PI / 2, 0, 6, 6, 1);
     const g = K.kbuild(k); g.userData.faceRoad = true; return g;
   }
   function festoon(K) {   // a string of bulbs over a café terrace, between two poles at the kerb and the facade
@@ -310,8 +331,8 @@
     K.kb(k, M.hull, 0, 0.2, 0, convoy ? 10 : 8, 2, convoy ? 40 : 36); K.kb(k, M.quay, 0, 2.3, 14, 6.5, 2.2, 6); K.kb(k, M.quay, 0, 4.4, 13, 4.2, 2, 3.6);
     for (const s of [-1, 1]) K.kadd(k, M.q.band, M.glow, s * 2.13, 4.5, 13, 0, Math.PI / 2, 0, 3.2, 1.1, 1);
     K.kadd(k, M.q.band, M.glow, 0, 4.5, 11.18, 0, 0, 0, 3.8, 1.1, 1);
-    lamp(K, k, 'cold', 0, 6.6, 13, 2.4, 0, 12); lamp(K, k, 'red', -2.3, 5.7, 11.6, 2.2, 0, 9); lamp(K, k, 'green', 2.3, 5.7, 11.6, 2.2, 0, 9);
-    lamp(K, k, 'cold', 0, 5.6, -17, 2.6, 0, 12); lamp(K, k, 'warm', 3, 2.2, 15.5, 1.6);
+    lamp(K, k, 'cold', 0, 6.6, 13, 3.6, 0, 14); lamp(K, k, 'red', -2.3, 5.7, 11.6, 3.4, 0, 11); lamp(K, k, 'green', 2.3, 5.7, 11.6, 3.4, 0, 11);
+    lamp(K, k, 'cold', 0, 5.6, -17, 3.8, 0, 14); lamp(K, k, 'warm', 3, 2.2, 15.5, 2.4);
   }
   function shipRing(K) {
     mats(K); const { THREE } = K, root = new THREE.Group(), pivot = new THREE.Group(), blades = new THREE.Group(), up = new THREE.Group(), R = 70, dir = Math.random() < 0.5 ? 1 : -1, k = K.kit();
@@ -350,12 +371,13 @@
   const themes = {
     // Kinderdijk: the path on the embankment between the two rows of mills, water on both sides, reeds, no lamps at all
     dyke: base => Object.assign({}, base, {
-      fog: 0x434c56, fogD: 0.0115, night: 0.15, open: true, ground: 0x0b1015, groundY: WATER - 0.1, canal: 1, water: 0x26313c, waterY: WATER, waterK: 0.42,
+      fog: 0x434c56, fogD: 0.0098, night: 0.15, open: true, ground: 0x0b1015, groundY: WATER - 0.1, canal: 1, water: 0x26313c, waterY: WATER, waterK: 0.42,
       curv: 0.0012, verge: 'grass', landmark: false, road: { kind: 'slabs', tone: '#2f3337', lines: false },
       sky: { stars: 360, clouds: 0.5, glows: [{ az: 40, el: 0.5, w: 80, h: 12, color: 0xd9c6a8, a: 0.3 }, { az: -60, el: 0.5, w: 50, h: 8, color: 0xf0b888, a: 0.16 }] },
       spawn: [
-        { make: K => mill(K, 'nederwaard'), n: 8, gap: 50, side: 'left', xr: [21, 33], y: WATER, r: 7.5 },
-        { make: K => mill(K, 'overwaard'), n: 8, gap: 50, reg: true, side: 'right', xr: [37, 37], y: WATER, r: 7.5 },
+        { make: K => mill(K, 'nederwaard'), n: 8, gap: 40, side: 'left', xr: [21, 30], y: WATER, r: 7.5 },
+        { make: K => mill(K, 'overwaard'), n: 8, gap: 40, reg: true, side: 'right', xr: [37, 37], y: WATER, r: 7.5 },
+        { make: boardSign, n: 1, gap: 320, side: 'left', xr: [5.6, 5.6], r: 1.6 },
         { make: reedBank, n: 10, gap: 22, reg: true, side: 'left', xr: [5.4, 5.4], r: 0.5 }, { make: reedBank, n: 10, gap: 22, reg: true, side: 'right', xr: [5.4, 5.4], r: 0.5 },
         { make: bank, n: 9, gap: 24, reg: true, side: 'left', xr: [5.3, 5.3], r: 0.5 }, { make: bank, n: 9, gap: 24, reg: true, side: 'right', xr: [5.3, 5.3], r: 0.5 },
         { make: farWater, n: 2, gap: 210, side: 'left', xr: [99, 99], y: WATER - 0.03, r: 0.5 }, { make: farWater, n: 2, gap: 210, side: 'right', xr: [112, 112], y: WATER - 0.03, r: 0.5 },
@@ -368,7 +390,7 @@
     // Damiatebrug across the harbour, the houses of the far quay in the water, the Grote Kerk over the roofs
     street: base => Object.assign({}, base, {
       fog: 0x4a525c, fogD: 0.0155, night: 0.17, ground: 0x10151a, groundY: HARBOUR - 0.4, canal: 1, water: 0x141b24, waterY: HARBOUR, waterK: 0.3,
-      curv: 0.0016, verge: 'tiles', lmX: [31, 34], lmSide: 'left', road: { kind: 'cobbles', tone: '#3e3a3a' }, sky: { stars: 100, clouds: 0.85, glows: glowsDordt },
+      curv: 0.0016, verge: 'tiles', lmX: [40, 44], lmSide: 'left', road: { kind: 'cobbles', tone: '#3e3a3a' }, sky: { stars: 100, clouds: 0.85, glows: glowsDordt },
       spawn: [
         { make: K => dordtRow(K, 9.5, {}), n: 8, gap: 18.6, reg: true, side: 'left', xr: [9.5, 9.5], r: 9 },
         { make: K => dordtRow(K, 34, { far: true, fx: 33.6 }), n: 6, gap: 19, reg: true, side: 'right', xr: [34, 34], r: 9 },
@@ -383,7 +405,7 @@
     }),
     // the Voorstraat: shops in the merchant houses on both sides, their names on boards, lanterns, the tower ahead
     shops: base => Object.assign({}, base, {
-      fog: 0x4c535c, fogD: 0.016, night: 0.17, ground: 0x1b1f24, groundY: -0.05, canal: 0, curv: 0.002, lmX: [33, 36], lmSide: 'right',
+      fog: 0x4c535c, fogD: 0.016, night: 0.17, ground: 0x1b1f24, groundY: -0.05, canal: 0, curv: 0.002, lmX: [40, 44], lmSide: 'right',
       road: { kind: 'klinkers', tone: '#463935' }, sky: { stars: 80, clouds: 0.9, glows: glowsDordt },
       spawn: [
         { make: K => dordtRow(K, 8.2, { shops: true }), n: 8, gap: 18.6, reg: true, side: 'left', xr: [8.2, 8.2], r: 9 },
@@ -396,7 +418,7 @@
     // the Nieuwe Haven at night: cafés under strings of bulbs on the left, the harbour and its moored barges on the right
     nightshop: base => Object.assign({}, base, {
       fog: 0x3c4552, fogD: 0.017, night: 0.22, ground: 0x0f1318, groundY: HARBOUR - 0.4, canal: 1, water: 0x121820, waterY: HARBOUR, waterK: 0.28,
-      curv: 0.002, verge: 'tiles', lmX: [31, 34], lmSide: 'left', road: { kind: 'cobbles', tone: '#3a3636' }, sky: { stars: 60, clouds: 0.9, glows: glowsDordt },
+      curv: 0.002, verge: 'tiles', lmX: [40, 44], lmSide: 'left', road: { kind: 'cobbles', tone: '#3a3636' }, sky: { stars: 60, clouds: 0.9, glows: glowsDordt },
       spawn: [
         { make: K => dordtRow(K, 9.0, { shops: true }), n: 8, gap: 18.6, reg: true, side: 'left', xr: [9.0, 9.0], r: 9 },
         { make: festoon, n: 6, gap: 30, side: 'left', xr: [5.6, 5.6], r: 0.5 },
@@ -411,11 +433,11 @@
     // road, the wide water full of ships, merchant houses on the town side
     square: base => Object.assign({}, base, {
       fog: 0x48515b, fogD: 0.0135, night: 0.16, open: true, ground: 0x0f1418, groundY: -2.0, canal: 1, water: 0x26313c, waterY: -1.6, waterK: 0.36,
-      curv: 0.0012, verge: 'tiles', lmX: [31, 34], lmSide: 'left', road: { kind: 'cobbles', tone: '#3c3836' }, sky: { stars: 120, clouds: 0.8, glows: glowsDordt },
+      curv: 0.0012, verge: 'tiles', lmX: [40, 44], lmSide: 'left', road: { kind: 'cobbles', tone: '#3c3836' }, sky: { stars: 120, clouds: 0.8, glows: glowsDordt },
       spawn: [
-        { make: groothoofd, n: 1, gap: 230, side: 'right', xr: [11, 11], r: 9 },
+        { make: groothoofd, n: 1, gap: 230, side: 'right', xr: [15, 15], r: 9 },
         { make: K => dordtRow(K, 9.5, {}), n: 8, gap: 18.6, reg: true, side: 'left', xr: [9.5, 9.5], r: 9 },
-        { make: shipRing, n: 4, gap: 105, side: 'right', xr: [40, 40], y: -1.6, r: 0.5 },
+        { make: shipRing, n: 5, gap: 84, side: 'right', xr: [22, 22], y: -1.6, r: 0.5 },
         { make: farWater, n: 2, gap: 210, side: 'right', xr: [112, 112], y: -1.63, r: 0.5 },
         { make: quayWall, n: 9, gap: 24, reg: true, side: 'right', xr: [4.95, 4.95], r: 0.5 },
         { make: tjalk, n: 2, gap: 110, side: 'right', xr: [10.4, 11], y: -1.6, r: 11 },
@@ -430,6 +452,12 @@
   const skyline = {
     near(P, K, th) {
       if (field(th)) { P.trees(0, 0.3, 3, 7, 14); P.trees(0.7, 1, 3, 7, 14); for (let i = 0; i < 3; i++) P.mill(P.X(0.12 + i * 0.07), 22, 0.4 + i, 1); return; }
+      if (th && th.key === 'square') {   // where the rivers meet: town roofs on the left, across the wide water only a low far bank with its lights
+        P.roofs(0, 0.42, 9, 16, 0.14, ['step', 'step', 'roof']); P.trees(0.42, 0.55, 3, 6, 12);
+        P.box(P.X(0.78), 0.44 * 2048 / P.m, -5, 1.4); P.roofs(0.6, 0.98, 2, 5, 0.25, ['roof', 'flat', 'roof']);
+        for (let i = 0; i < 24; i++) P.win(P.X(0.58 + i * 0.017), 0.5 + P.r() * 1.0, 0.4 + P.r() * 0.5, 0.45, 0.45);
+        return;
+      }
       P.roofs(0, 0.42, 9, 16, 0.14, ['step', 'step', 'roof', 'step']); P.roofs(0.58, 1, 9, 16, 0.14, ['step', 'roof', 'step']); P.trees(0.42, 0.58, 3, 6, 12);
     },
     mid(P, K, th) {
@@ -440,11 +468,7 @@
         return;
       }
       P.trees(0, 1, 6, 11, 12); P.roofs(0, 0.4, 9, 15, 0.1, ['step', 'roof']); P.roofs(0.7, 1, 9, 15, 0.1, ['step', 'roof']);
-      const t = P.X(0.6);   // the Grote Kerk: the stubby square tower with its clock stage, leaning a little, the long church beside it
-      P.box(t + 34 * P.m, 56, -5, 22); P.poly([[t + 6 * P.m, 22], [t + 34 * P.m, 33], [t + 62 * P.m, 22]]);
-      P.poly([[t - 8 * P.m, -5], [t + 8 * P.m, -5], [t + 9.6 * P.m, 60], [t - 6.4 * P.m, 60]]); P.box(t + 1.6 * P.m, 13, 60, 62);
-      for (const dx of [-5, 5]) P.poly([[t + (dx + 0.6) * P.m, 62], [t + (dx + 1.6) * P.m, 66], [t + (dx + 2.6) * P.m, 62]]);
-      P.win(t + 1.3 * P.m, 54, 0.95, 3.6, 3.6); P.win(t + 0.7 * P.m, 39, 0.4, 1.2, 6);
+      P.box(P.X(0.55) + 16 * P.m, 36, -5, 13); P.poly([[P.X(0.55) - 2 * P.m, 13], [P.X(0.55) + 16 * P.m, 20], [P.X(0.55) + 34 * P.m, 13]]);   // the long roof of the Grote Kerk under its tower
       const gp = P.X(0.8); P.box(gp, 12, -5, 12); P.box(gp, 6, 12, 15); P.g.beginPath(); P.g.ellipse(gp, P.g.canvas.height - 20 * P.m, 3.2 * P.m, 3.4 * P.m, 0, Math.PI, 0); P.g.fill(); P.box(gp, 1, 18, 21);
       P.mill(P.X(0.3), 26, 0.3, 2);   // Kyck over den Dyck, the last mill in the town
     },
@@ -453,8 +477,28 @@
       if (field(th)) { const t = P.X(0.72); P.box(t, 9, -5, 44); P.box(t, 7, 44, 47); P.win(t, 40, 0.6, 1.5, 1.5); for (let i = 0; i < 5; i++) { const x = P.X(0.15 + i * 0.03), h = P.rr(24, 44); P.box(x, P.rr(5, 9), -5, h); } return; }
       for (let i = 0; i < 6; i++) P.mill(P.X(0.25 + i * 0.025), 16 - i, 0.4 + i * 0.7, 0);
       for (let i = 0; i < 3; i++) { const x = P.X(0.86 + i * 0.03); P.line(x, -5, x, 26, 0.8); P.line(x - 6 * P.m, 26, x + 20 * P.m, 26, 0.8); }
+      groteKerkSky(P, P.X(0.545));
     },
   };
+  // the Grote Kerk's tower on the far band at its true size, 65 m: seen across a corner, two faces, stubby, stepping in at
+  // 30 and 48 m, four little turrets on the flat top, leaning 2.25 m; floodlit, a lit clock face the size of a door on each face
+  function groteKerkSky(P, x) {
+    const m = P.m, g = P.g, w = P.w, lean = 2.25 / 65, Y = h => g.canvas.height - 5 * m - h * m, at = (dx, h) => [x + (dx + h * lean) * m, Y(h)];
+    const stage = (h0, h1, half) => { g.beginPath(); for (const [dx, h] of [[-half, h0], [half, h0], [half, h1], [-half, h1]]) { const [px, py] = at(dx, h); g.lineTo(px, py); } g.closePath(); g.fill(); };
+    stage(-5, 30, 10.5); stage(29.5, 48, 9.5); stage(47.5, 60, 8.7);
+    for (const dx of [-10.5, 0, 10.5]) { const [px] = at(dx, 14); g.fillRect(px - 1.2 * m, Y(28), 2.4 * m, 33 * m); }   // the corner buttresses
+    for (const dx of [-7.4, 7.4]) { const [px, py] = at(dx, 60); g.beginPath(); g.moveTo(px - 0.9 * m, py); g.lineTo(px, py - 4.4 * m); g.lineTo(px + 0.9 * m, py); g.fill(); g.fillRect(px - 0.9 * m, py, 1.8 * m, 1.5 * m); }
+    const [bx, by] = at(0, 61); g.fillRect(bx - 8.9 * m, by, 17.8 * m, 1.2 * m);
+    w.save(); w.globalCompositeOperation = 'lighter';
+    const fl = w.createLinearGradient(0, Y(60), 0, Y(0)); fl.addColorStop(0, 'rgba(255,255,255,0.05)'); fl.addColorStop(0.7, 'rgba(255,255,255,0.12)'); fl.addColorStop(1, 'rgba(255,255,255,0.2)');
+    w.fillStyle = fl; w.beginPath(); for (const [dx, h] of [[-10.5, 0], [10.5, 0], [8.7, 60], [-8.7, 60]]) { const [px, py] = at(dx, h); w.lineTo(px, py); } w.closePath(); w.fill();
+    for (const dx of [-4.4, 4.4]) {   // a clock on each of the two faces we see
+      const [cx, cy] = at(dx, 54); w.fillStyle = 'rgba(255,255,255,0.95)'; w.beginPath(); w.ellipse(cx, cy, 2.4 * m * 0.8, 2.4 * m, 0, 0, 7); w.fill();
+      w.fillStyle = 'rgba(0,0,0,1)'; w.globalCompositeOperation = 'source-over'; w.fillRect(cx - 0.15 * m, cy - 1.7 * m, 0.3 * m, 1.7 * m); w.fillRect(cx, cy - 0.15 * m, 1.2 * m, 0.3 * m); w.globalCompositeOperation = 'lighter';
+    }
+    for (const dx of [-5, 5]) for (const h of [36, 42]) { const [px, py] = at(dx, h); w.fillStyle = 'rgba(255,255,255,0.22)'; w.fillRect(px - 0.7 * m, py, 1.4 * m, 4 * m); }
+    w.restore();
+  }
 
   T.kinderdijk = {
     style: { brick: BRICK, gables: 0.8, height: [9, 12], width: [5.6, 6.2], lamp: 'classic' },

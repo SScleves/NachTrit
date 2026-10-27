@@ -31,7 +31,7 @@
     cell(S.silver, () => { const gr = g.createLinearGradient(0, 0, 64, 64); gr.addColorStop(0, '#f0f2f4'); gr.addColorStop(1, '#8a9096'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
     cell(S.gold, () => { const gr = g.createLinearGradient(0, 0, 64, 64); gr.addColorStop(0, '#f2cc5a'); gr.addColorStop(1, '#9a6a18'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
     flat(S.bib, '#a8202a', 20); flat(S.linen, '#eeede6', 30);
-    cell(S.lace, () => { g.fillStyle = '#ecc848'; g.fillRect(0, 0, 64, 64); g.fillStyle = 'rgba(120,80,10,0.5)'; for (let y = 3; y < 64; y += 7) for (let x = (y % 2) * 3 + 2; x < 64; x += 7) { g.beginPath(); g.arc(x, y, 1.6, 0, 7); g.fill(); } });
+    cell(S.lace, () => { g.fillStyle = '#dcc068'; g.fillRect(0, 0, 64, 64); g.fillStyle = 'rgba(120,90,30,0.45)'; for (let y = 3; y < 64; y += 7) for (let x = (y % 2) * 3 + 2; x < 64; x += 7) { g.beginPath(); g.arc(x, y, 1.6, 0, 7); g.fill(); } });
     cell(S.garnet, () => { g.fillStyle = '#6a0a12'; g.fillRect(0, 0, 64, 64); g.fillStyle = '#d4343e'; for (let i = 0; i < 40; i++) { g.beginPath(); g.arc(r() * 64, r() * 64, 2.2, 0, 7); g.fill(); } });
     stripes(S.apron, ['#1d2a52', '#dcdcd2', '#5a7cb6', '#dcdcd2'], 4);
     flat(S.skirt, '#161b28', 40);
@@ -97,13 +97,14 @@
     for (const m of [U.paint, U.dress, U.sign, U.beam]) m.userData.shared = true;
     // unit shapes the kits copy from (never drawn themselves)
     U.cyl = new THREE.CylinderGeometry(0.5, 0.5, 1, 10);
+    U.lace = new THREE.TorusGeometry(0.5, 0.032, 4, 20);
     U.flare = new THREE.CylinderGeometry(0.17, 0.34, 1, 12);
     U.skirt = new THREE.CylinderGeometry(0.2, 0.46, 1, 14);
     U.apron = new THREE.CylinderGeometry(0.212, 0.473, 0.9, 10, 1, true, Math.PI - 0.75, 1.5);
     U.jacket = new THREE.CylinderGeometry(0.205, 0.215, 1, 12, 1, true, Math.PI + 0.62, Math.PI * 2 - 1.24);
     U.cape = new THREE.CylinderGeometry(0.14, 0.28, 1, 12, 1, true);
     U.ring = new THREE.TorusGeometry(0.5, 0.1, 5, 16);
-    U.thinRing = new THREE.TorusGeometry(0.5, 0.02, 4, 24); U.lace = new THREE.TorusGeometry(0.5, 0.05, 4, 18);
+    U.thinRing = new THREE.TorusGeometry(0.5, 0.02, 4, 24);
     U.taper = new THREE.CylinderGeometry(0.5, 0.66, 1, 16);
     U.mast = new THREE.CylinderGeometry(0.42, 0.75, 1, 10);
     U.tri = (() => { const sh = new THREE.Shape(); sh.moveTo(-0.5, 0); sh.lineTo(0.5, 0); sh.lineTo(0, 1); sh.closePath(); return new THREE.ShapeGeometry(sh); })();
@@ -194,8 +195,8 @@
       K.kadd(k, sw(B, S.black), D, L.foot[0], 0.05, L.foot[2] - 0.08, 0, 0, 0, 0.13, 0.09, 0.27);
     }
     // the hul: a white cap with a yellow lace edge round the face, over the silver oorijzer whose knobs show at the temples
-    K.kadd(k, sw(K.KG.dome, S.linen), D, 0, hd[1] - 0.005, hd[2] + 0.035, 1.25, 0, 0, 0.27, 0.3, 0.3);
-    K.kadd(k, sw(U.lace, S.lace), D, 0, hd[1] - 0.01, hd[2] + 0.02, -0.32, 0, 0, 0.29, 0.31, 0.29);
+    K.kadd(k, sw(K.KG.dome, S.linen), D, 0, hd[1] - 0.005, hd[2] + 0.035, 1.25, 0, 0, 0.3, 0.33, 0.32);
+    K.kadd(k, sw(U.lace, S.lace), D, 0, hd[1] - 0.01, hd[2] + 0.005, -0.32, 0, 0, 0.3, 0.32, 0.3);
     for (const sx of [-1, 1]) K.kadd(k, sw(ball, S.silver), D, sx * 0.13, hd[1] - 0.02, hd[2] - 0.02, 0, 0, 0, 0.04, 0.075, 0.075);
     // strands of garnets at the throat
     for (const [y, z, s] of [[1.585, -0.42, 0.21], [1.568, -0.44, 0.25]]) K.kadd(k, sw(U.ring, S.garnet), D, 0, y, z, 0, 0, 0, s, s, s);
@@ -457,26 +458,41 @@
     P.g.beginPath(); P.g.ellipse(x, Yof(P, base + 18.6 * s), 1.35 * s * P.m, 1.2 * s * P.m, 0, Math.PI, 0); P.g.fill();
     P.win(x, base + 17.0 * s, 1, 2.6 * s, 1.8 * s); P.win(x, base + 9 * s, 0.35, 0.5 * s, 0.8 * s);
   }
-  function hillP(P, f0, f1, top, litP) {   // the old island: a low mound covered in small roofs, windows lit all the way up
-    const x0 = P.X(f0), x1 = P.X(f1), hAt = t => top * Math.pow(Math.max(0, Math.sin(t * Math.PI)), 0.75), pts = [[x0, -5]];
-    for (let i = 0; i <= 30; i++) pts.push([x0 + (x1 - x0) * i / 30, hAt(i / 30)]);
+  function cottage(P, x, wd, base, h, litP) {   // a small fisherman's house far off: low walls, a saddle roof, one or two lit windows
+    const hw = wd * P.m / 2, rise = wd * P.rr(0.36, 0.48);
+    P.box(x, wd, -5, base + h); P.poly([[x - hw - 0.3 * P.m, base + h], [x, base + h + rise], [x + hw + 0.3 * P.m, base + h]]);
+    for (const dx of wd > 4.6 ? [-0.24, 0.24] : [0]) if (P.r() < litP) P.win(x + dx * wd * P.m, base + 1.0, P.rr(0.55, 1), 0.9, 1.0);
+  }
+  function hillP(P, f0, f1, top, litP) {   // the old island: a low mound, its small houses in rows up the slope, windows lit all the way up
+    const x0 = P.X(f0), x1 = P.X(f1), hAt = t => top * Math.pow(Math.max(0, Math.sin(t * Math.PI)), 0.9), pts = [[x0, -5]];
+    for (let i = 0; i <= 40; i++) pts.push([x0 + (x1 - x0) * i / 40, hAt(i / 40)]);
     pts.push([x1, -5]); P.poly(pts);
-    for (let t = 0.04; t < 0.96;) { const wd = P.rr(4.5, 7); P.house(x0 + (x1 - x0) * t, wd, hAt(t) + P.rr(2.8, 4.6), 'roof', litP); t += wd * P.m / (x1 - x0) * P.rr(0.85, 1.25); }
+    for (const [drop, step] of [[0, 1.05], [-3.4, 0.95], [-6.8, 1.15]]) {   // the highest row first, each lower row in front of it
+      for (let t = 0.05 + P.r() * 0.03; t < 0.96;) {
+        const wd = P.rr(3.6, 5.4), b = hAt(t) + drop;
+        if (b > -2) cottage(P, x0 + (x1 - x0) * t, wd, b, P.rr(1.8, 2.6), litP);
+        t += wd * P.m / (x1 - x0) * P.rr(0.9, 1.15) * step;
+      }
+    }
+    const gx = x0 + (x1 - x0) * 0.5, gy = Yof(P, top * 0.5), rg = P.w.createRadialGradient(0, 0, 0, 0, 0, 1);   // the warm light of the village in the haze over it
+    rg.addColorStop(0, 'rgba(255,255,255,0.16)'); rg.addColorStop(1, 'rgba(255,255,255,0)');
+    P.w.save(); P.w.translate(gx, gy); P.w.scale((x1 - x0) * 0.62, top * 2.2 * P.m); P.w.fillStyle = rg; P.w.beginPath(); P.w.arc(0, 0, 1, 0, 7); P.w.fill(); P.w.restore();
     return hAt;
   }
   const skyline = {
     near(P, K, th) {
-      if (th.key === 'dyke') { P.trees(0.64, 0.8, 6, 11, 9); P.house(P.X(0.72), 9, 4, 'roof', 0.5); P.trees(0.86, 1, 6, 10, 10); return; }   // polder trees on the right, nothing over the lake
+      if (th.key === 'dyke') { P.trees(0.8, 0.9, 6, 10, 9); P.house(P.X(0.86), 9, 4, 'roof', 0.5); return; }   // nothing over the lake, a farm on the polder far right
       P.roofs(0, 0.4, 5, 8, 0.16, ['roof']); P.roofs(0.6, 1, 5, 8, 0.16, ['roof']); P.trees(0.42, 0.58, 3, 5, 14);
     },
     mid(P, K, th) {
-      if (th.key === 'dyke') {   // turbines out in the lake on the left, the lit hill of Urk ahead on the right
+      if (th.key === 'dyke') {   // turbines out in the lake on the left; ahead on the right the old island, a lit mound with the lighthouse at its lake end
         for (let i = 0; i < 4; i++) turbineP(P, P.X(0.12 + i * 0.09), P.rr(30, 36), P.rr(0, 6.3), true);
-        const h = hillP(P, 0.47, 0.92, 15, 0.55);
-        lighthouseP(P, P.X(0.53), h(0.13) - 1, 1.15); P.tower(P.X(0.585), [[3.6, h(0.26) + 9]], 'onion');
+        const f0 = 0.5, f1 = 0.76, h = hillP(P, f0, f1, 14, 0.6), at = f => h((f - f0) / (f1 - f0));
+        lighthouseP(P, P.X(0.513), at(0.513) - 0.5, 1.15); P.tower(P.X(0.535), [[3.2, at(0.535) + 6]], 'onion');
+        P.tower(P.X(0.64), [[3.4, at(0.64) + 12]], 'spire', true);   // one of the big churches on the top of the island
         return;
       }
-      for (let i = 0; i < 3; i++) turbineP(P, P.X(0.06 + i * 0.08), P.rr(28, 33), P.rr(0, 6.3), true);
+      for (let i = 0; i < 3; i++) turbineP(P, P.X(0.27 + i * 0.065), P.rr(28, 33), P.rr(0, 6.3), true);   // over the roofs to the left of the street
       P.roofs(0.3, 0.9, 8, 15, 0.22, ['roof']); lighthouseP(P, P.X(0.68), 9, 1.15); P.tower(P.X(0.42), [[3.8, 20]], 'onion');
     },
     far(P) {   // the polder flat to the horizon and the wind park in rows, red lights on every nacelle

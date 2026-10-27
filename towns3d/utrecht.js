@@ -87,9 +87,12 @@
     const ga = tex(glowAtlas()), half = new THREE.Shape(); half.moveTo(-1, 0); half.absarc(0, 0, 1, Math.PI, 0, true); half.lineTo(-1, 0);
     const stone = keep(K.Mat({ color: 0xcfc6b0, map: tex(stoneTex(), true, true) })); stone.userData.wuv = 2.6;
     const tri = new THREE.Shape(); tri.moveTo(-0.5, 0); tri.lineTo(0.5, 0); tri.lineTo(0, 1); tri.closePath();
+    const rtri = new THREE.Shape(); rtri.moveTo(0, 0); rtri.lineTo(-1, 0); rtri.lineTo(-1, 1); rtri.closePath();
     R = {
       stone,
       glow: keep(K.GlowMat(ga, 0xffffff, 1, false)),
+      cool: keep(K.GlowMat(ga, 0xbcd0ff, 0.9, false)), warm: keep(K.GlowMat(ga, 0xffb060, 0.55, false)),
+      bronze: keep(K.Mat({ color: 0x2c2b27 })), treeMat: K.treeCard([1]).children[0].material,
       door: keep(new THREE.MeshBasicMaterial({ map: tex(cellarDoors(), true) })),
       glass: keep(new THREE.MeshBasicMaterial({ map: tex(churchGlass(), true), alphaTest: 0.5, color: 0xc8c0b0 })),
       plan: keep(new THREE.MeshBasicMaterial({ map: tex(navePlan(), true), color: 0x9a9a9a })),
@@ -102,7 +105,7 @@
       jacket: keep(K.Mat({ color: 0x2c3a4c })), hoodie: keep(K.Mat({ color: 0x5a4a52 })), crate: keep(K.Mat({ color: 0x2f6a3a })), bottle: keep(K.Mat({ color: 0x4a3a20 })),
       pack: keep(K.Mat({ color: 0x8a3a2a })), phones: keep(K.Mat({ color: 0xd8d8d0 })), frame: keep(K.Mat({ color: 0x14161a })),
       flameQ: quad(0, 0, 1 / 3, 1), poolQ: quad(1 / 3, 0, 2 / 3, 1), streakQ: quad(2 / 3, 0, 1, 1), doorLitQ: quad(0, 0, 0.5, 1), doorDarkQ: quad(0.5, 0, 1, 1),
-      cone8: new THREE.ConeGeometry(0.5, 1, 8), oct: new THREE.CylinderGeometry(0.5, 0.5, 1, 8), arch: new THREE.ShapeGeometry(half, 12), tri: new THREE.ShapeGeometry(tri),
+      cone8: new THREE.ConeGeometry(0.5, 1, 8), oct: new THREE.CylinderGeometry(0.5, 0.5, 1, 8), arch: new THREE.ShapeGeometry(half, 12), tri: new THREE.ShapeGeometry(tri), rtri: new THREE.ShapeGeometry(rtri),
     };
     return R;
   }
@@ -159,8 +162,8 @@
   // left (the ground lies low so the water can), the iron railing over the drop on the right, the wharf two metres down; across
   // the water the far wharf with its terraces, the quay wall with the arched cellar doors glowing at the waterline, a festoon of
   // bulbs along it, the railing and the street above, and the tall houses of the far side
-  function werf(K) {
-    const R = res(K), g = new K.THREE.Group(), k = K.kit(), st = K.style, pal = [K.pick(st.brick), K.pick(st.brick)], L = 30.1, bw = K.brickMat(pal[0]), P = K.PM.pole;
+  function werf(K, mode) {
+    const R = res(K), g = new K.THREE.Group(), k = K.kit(), st = K.style, pal = [K.pick(st.brick), K.pick(st.brick)], L = 30.1, bw = K.brickMat(pal[0]), P = K.PM.pole, wed = mode === 'wed';
     K.kb(k, P, -24, -1.3, 0, 33, 2.56, L);
     K.kb(k, K.PM.stone, 7.85, 0.0, 0, 0.36, 0.2, L); K.kb(k, bw, 8.15, -1.1, 0, 0.5, 2.2, L); K.kb(k, K.PM.stone, 9.4, -2.3, 0, 2.5, 0.6, L);
     for (let z = -14; z < 15.5; z += 2) K.kb(k, P, 7.62, 0.55, z, 0.05, 1.1, 0.05);
@@ -170,24 +173,60 @@
     for (let z = -14; z < 15.5; z += 2) K.kb(k, P, 25.5, 0.6, z, 0.05, 1.1, 0.05);
     for (const y of [1.1, 0.6]) K.kb(k, P, 25.5, y, 0, 0.05, 0.05, L);
     K.kb(k, K.PM.stone, 30.2, -1.3, 0, 9, 2.56, L);
+    // the cellars under the far street: arched doors glowing at the waterline, a lamp on a bracket over every other one
     for (let z = -12.6; z < 14; z += 4.2) {
+      if (wed && z < 4) continue;
       const lit = Math.random() < 0.75;
       K.kadd(k, lit ? R.doorLitQ : R.doorDarkQ, R.door, 25.38, -1.0, z, 0, -Math.PI / 2, 0, 2.2, 2.0);
       if (lit) { K.kadd(k, R.poolQ, R.glow, 24.3, WT + 0.02, z, -Math.PI / 2, 0, 0, 3.4, 3.4, 1); K.kadd(k, R.streakQ, R.glow, K.rnd(17.5, 19.8), UW + 0.03, z, -Math.PI / 2, 0, 0, 1.6, K.rnd(6, 10), 1); }
     }
-    for (let i = 0; i < 4; i++) {
-      const z = -12 + i * 7.5 + K.rnd(-1, 1), x = K.rnd(21.8, 23.4);
-      K.kadd(k, K.KG.cyl, K.M.wood, x, WT + 0.75, z, 0, 0, 0, 0.9, 0.05, 0.9); K.kb(k, P, x, WT + 0.37, z, 0.06, 0.74, 0.06);
-      for (const s of [-1, 1]) { K.kb(k, K.M.wood, x, WT + 0.45, z + s * 0.7, 0.45, 0.05, 0.45); K.kb(k, K.M.wood, x, WT + 0.7, z + s * 0.92, 0.45, 0.5, 0.05); }
-      K.kadd(k, R.flameQ, R.glow, x - 0.1, WT + 0.95, z, 0, -Math.PI / 2, 0, 0.7, 0.7, 1);
-      if (Math.random() < 0.5) { K.kb(k, P, x + 0.1, WT + 1.3, z + 0.1, 0.05, 2.6, 0.05); K.kadd(k, R.cone8, K.PK.linen, x + 0.1, WT + 2.1, z + 0.1, 0, 0, 0, 0.3, 1.6, 0.3); }
+    // lamps on the wharf itself: lanterns on short iron posts along the water's edge, their light on the stones and in the canal
+    for (let z = -11; z < 15; z += 10) {
+      if (wed && z < 4) continue;
+      wharfLamp(K, R, k, 20.9, z);
     }
-    for (let z = -14.6; z < 15; z += 0.9) { const t = ((z + 15) % 3.6) / 3.6; K.kadd(k, R.poolQ, R.glow, 25.3, -0.42 - 0.34 * Math.sin(t * Math.PI), z, 0, -Math.PI / 2, 0, 0.42, 0.42, 1); }
+    // the terraces down by the water: tables in twos and threes under a string of bulbs, a candle on each, warm light on the stones
+    const groups = wed ? [9] : [-9.5, 1, 10.5];
+    for (const z0 of groups) {
+      const n = 2 + (Math.random() < 0.5 ? 1 : 0);
+      for (let i = 0; i < n; i++) {
+        const z = z0 + (i - (n - 1) / 2) * 2.2, x = 22.6 + K.rnd(-0.4, 0.4);
+        K.kadd(k, K.KG.cyl, K.M.wood, x, WT + 0.75, z, 0, 0, 0, 0.8, 0.05, 0.8); K.kb(k, P, x, WT + 0.37, z, 0.06, 0.74, 0.06);
+        for (const s of [-1, 1]) { K.kb(k, K.M.wood, x, WT + 0.45, z + s * 0.62, 0.42, 0.05, 0.42); K.kb(k, K.M.wood, x, WT + 0.7, z + s * 0.82, 0.42, 0.5, 0.05); }
+        K.kadd(k, R.flameQ, R.glow, x - 0.1, WT + 0.92, z, 0, -Math.PI / 2, 0, 0.7, 0.7, 1);
+        K.kadd(k, R.poolQ, R.glow, x, WT + 0.03, z, -Math.PI / 2, 0, 0, 2.6, 2.6, 1);
+      }
+      if (Math.random() < 0.6) { K.kb(k, P, 22.7, WT + 1.3, z0, 0.05, 2.6, 0.05); K.kadd(k, R.cone8, K.PK.linen, 22.7, WT + 2.1, z0, 0, 0, 0, 0.3, 1.6, 0.3); }
+      for (let j = 0; j < 7; j++) { const zz = z0 - 3.3 + j * 1.1, sag = Math.sin(j / 6 * Math.PI) * 0.35; K.kadd(k, R.poolQ, R.glow, 21.6, WT + 2.7 - sag, zz, 0, -Math.PI / 2, 0, 0.45, 0.45, 1); }
+      K.kadd(k, R.streakQ, R.glow, K.rnd(17, 19), UW + 0.03, z0, -Math.PI / 2, 0, 0, 2.0, 9, 1);
+    }
+    // a wed: the ramp from the far street down to the wharf, along the quay wall, with its own railing and a lamp at the top
+    if (wed) {
+      const z0 = -13, z1 = 3, len = z1 - z0, a = Math.atan2(2, len), cz = (z0 + z1) / 2;
+      K.kb(k, K.PM.stone, 24.0, -1.0 - 0.15, cz, 2.8, 0.3, Math.hypot(len, 2), a, 0, 0);
+      K.kadd(k, R.rtri, bw, 22.58, WT, z1, 0, -Math.PI / 2, 0, len, 2, 1);
+      K.kb(k, bw, 22.62, -1.0 + 0.45, cz, 0.24, 0.9, Math.hypot(len, 2) + 0.2, a, 0, 0);
+      K.kb(k, K.PM.stone, 22.62, -1.0 + 0.95, cz, 0.34, 0.1, Math.hypot(len, 2) + 0.2, a, 0, 0);
+      for (let z = z0 + 1; z < z1; z += 2) { const y = -2 * (z - z0) / len; K.kb(k, P, 25.15, y + 0.55, z, 0.05, 1.1, 0.05); }
+      K.ktube(k, P, 25.15, 1.05, z0, 25.15, -0.95, z1, 0.03);
+      for (let z = z0 + 2.6; z < z1; z += 2.7) { const y = -2 * (z - z0) / len; K.kadd(k, R.poolQ, R.glow, 24.0, y + 0.06, z, -Math.PI / 2 + a, 0, 0, 2.0, 2.0, 1); }
+      K.kb(k, P, 22.75, 1.6, z0 - 0.4, 0.1, 3.2, 0.1); K.kadd(k, K.KG.cyl, K.PM.lampHead, 22.75, 3.35, z0 - 0.4, 0, 0, 0, 0.3, 0.5, 0.3); K.kadd(k, R.cone8, P, 22.75, 3.72, z0 - 0.4, 0, 0, 0, 0.44, 0.26, 0.44);
+      K.kadd(k, R.poolQ, R.glow, 22.6, 3.35, z0 - 0.4, 0, -Math.PI / 2, 0, 2.6, 2.6, 1); K.kadd(k, R.streakQ, R.glow, 18.6, UW + 0.03, z0 + 4, -Math.PI / 2, 0, 0, 1.6, 9, 1);
+    }
+    for (let z = -14.6; z < 15; z += 0.9) { if (wed && z < 3.5) continue; const t = ((z + 15) % 3.6) / 3.6; K.kadd(k, R.poolQ, R.glow, 25.3, -0.42 - 0.34 * Math.sin(t * Math.PI), z, 0, -Math.PI / 2, 0, 0.42, 0.42, 1); }
     for (let i = 0; i < 5; i++) {
       const w = K.rnd(st.width[0], st.width[1]) * 1.2, h = K.rnd(st.height[0], st.height[1]) * K.rnd(0.95, 1.12);
       K.house({ k, g, w, h, brick: pal[i % 2], ox: 34.7 + w / 2, oz: -12 + i * 6, plain: true, lit: 0.35, peer: false });
     }
     k.base.identity(); K.kbuild(k, g); return bendFollow(g);
+  }
+  function wharfLamp(K, R, k, x, z) {   // a lantern on a short iron post at the water's edge of the wharf
+    const P = K.PM.pole, y = WT;
+    K.kadd(k, K.KG.cyl, P, x, y + 1.3, z, 0, 0, 0, 0.1, 2.6, 0.1); K.kadd(k, K.KG.cyl, K.PM.lampHead, x, y + 2.8, z, 0, 0, 0, 0.28, 0.42, 0.28);
+    K.kadd(k, R.cone8, P, x, y + 3.12, z, 0, 0, 0, 0.42, 0.24, 0.42); K.kb(k, P, x, y + 2.56, z, 0.34, 0.05, 0.34);
+    K.kadd(k, R.poolQ, R.glow, x - 0.05, y + 2.8, z, 0, -Math.PI / 2, 0, 2.2, 2.2, 1);
+    K.kadd(k, R.poolQ, R.glow, x + 0.6, y + 0.03, z, -Math.PI / 2, 0, 0, 4.2, 4.2, 1);
+    K.kadd(k, R.streakQ, R.glow, x - 2.6, UW + 0.03, z + 3.5, -Math.PI / 2, 0, 0, 1.4, 8, 1);
   }
   // a brick bridge at street level over the sunken canal (Gaardbrug, Bakkerbrug): a broad deck, iron railings, a wide arch over
   // the water and a low one over each wharf, a lamp at each end. It stands centred over the trench (x 16.6)
@@ -235,7 +274,46 @@
     }
     K.kb(k, st, cx + 23, 12, 0, 30, 24, 18);
     for (const s of [-1, 1]) K.kb(k, roof, cx + 23, 28, s * 4.5, 30.4, 0.4, Math.hypot(9, 8) + 0.4, s * Math.atan2(8, 9), 0, 0);
+    // round the square: the pillars of the lost nave as low pale stones, lime trees along its sides, lanterns, benches, and
+    // Jan van Nassau on his pedestal near the street
+    for (let x = 3; x < 36; x += 6) for (const z of [-4.6, 4.6]) K.kb(k, st, x, 0.15, z, 1.3, 0.3, 1.3);
+    for (const x of [2, 9.5]) for (const z of [-13.5, 13.5]) { const s = K.rnd(0.85, 1.1); for (const ry of [0, Math.PI / 2]) K.kadd(k, K.PG.tree1, R.treeMat, x + K.rnd(-1, 1), 0, z, 0, ry, 0, 8 * s, 11 * s, 1); }
+    for (const [x, z] of [[1, -9.5], [1, 9.5], [18, -9.5], [18, 9.5], [33, -9.5], [33, 9.5]]) squareLamp(K, R, k, x, z);
+    for (const [x, z] of [[9, -11.8], [24, -11.8], [9, 11.8], [24, 11.8]]) { K.kb(k, K.M.wood, x, 0.45, z, 1.6, 0.06, 0.5); K.kb(k, K.M.wood, x, 0.7, z + Math.sign(z) * 0.25, 1.6, 0.4, 0.05); for (const dx of [-0.65, 0.65]) K.kb(k, K.PM.pole, x + dx, 0.22, z, 0.06, 0.45, 0.45); }
+    K.kb(k, st, 0.5, 1.4, 11, 1.8, 2.8, 1.8); K.kb(k, st, 0.5, 2.9, 11, 2.2, 0.25, 2.2);
+    K.ktube(k, R.bronze, 0.5, 3.0, 10.9, 0.45, 4.1, 10.95, 0.28); K.ktube(k, R.bronze, 0.45, 4.1, 10.95, 0.5, 5.2, 11, 0.22); K.kadd(k, K.KG.ball, R.bronze, 0.5, 5.45, 11, 0, 0, 0, 0.36, 0.42, 0.36);
+    K.kadd(k, R.cone8, R.bronze, 0.5, 3.6, 11, 0, 0, 0, 1.1, 1.4, 1.1); K.ktube(k, R.bronze, 0.5, 4.9, 11.3, 0.1, 4.0, 11.9, 0.08); K.ktube(k, R.bronze, 0.5, 4.9, 10.7, 0.4, 3.3, 10.2, 0.08);
     return K.kbuild(k);
+  }
+  function squareLamp(K, R, k, x, z) {   // a lantern on a post on the square, its light on the paving
+    const P = K.PM.pole;
+    K.kadd(k, K.KG.cyl, P, x, 1.8, z, 0, 0, 0, 0.14, 3.6, 0.14); K.kadd(k, K.KG.cyl, K.PM.lampHead, x, 3.85, z, 0, 0, 0, 0.36, 0.56, 0.36);
+    K.kadd(k, R.cone8, P, x, 4.25, z, 0, 0, 0, 0.52, 0.3, 0.52); K.kb(k, P, x, 3.55, z, 0.42, 0.06, 0.42);
+    K.kadd(k, R.poolQ, R.cool, x - 0.25, 3.85, z, 0, -Math.PI / 2, 0, 2.6, 2.6, 1);
+    K.kadd(k, R.poolQ, R.cool, x, 0.05, z, -Math.PI / 2, 0, 0, 6, 6, 1);
+  }
+  // the Academiegebouw across the square: a long hall of brick with pale stone bands, rows of tall lit windows, a gabled bay in
+  // the middle with a small lantern on the roof, lime trees and lanterns before it
+  function academie(K) {
+    const R = res(K), k = K.kit(), b = K.brickMat(0x6a3a30), st = R.stone, roof = K.PM.roof, yaw = -Math.PI / 2, x0 = 16, L = 46, H = 15;
+    K.kb(k, b, x0 + 10, H / 2, 0, 20, H, L);
+    for (const y of [0.5, 5.2, 10.2, H]) K.kb(k, st, x0 - 0.06, y, 0, 0.3, 0.5, L + 0.2);
+    for (const s of [-1, 1]) { K.kb(k, roof, x0 + 10 + s * 5, H + 3.2, 0, Math.hypot(10, 6.4) + 0.4, 0.35, L + 0.4, 0, 0, -s * Math.atan2(6.4, 10)); K.kadd(k, R.tri, b, x0 + 10, H, s * L / 2, 0, s > 0 ? 0 : Math.PI, 0, 20, 6.4, 1); }
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 12; c++) {
+      const z = -L / 2 + 2.4 + c * 3.8, y = 2.7 + r * 5, mid = Math.abs(z) < 4.5; if (mid && r === 0) continue;
+      const lit = Math.random() < (r === 0 ? 0.7 : 0.45), cell = lit ? K.pick([0, 1, 2]) : K.pick([3, 4, 4]);
+      K.kadd(k, K.PG['win' + cell], K.PM.winAtlas, x0 - 0.03, y, z, 0, yaw, 0, 1.5, 3.2);
+      if (lit) K.kadd(k, R.poolQ, R.warm, x0 - 0.08, y, z, 0, yaw, 0, 3.4, 4.6, 1);
+    }
+    K.kb(k, b, x0 - 1, (H + 6) / 2, 0, 2, H + 6, 9); K.kadd(k, R.tri, b, x0 - 2.02, H + 6, 0, 0, yaw, 0, 9, 5, 1);
+    for (const y of [5.2, 10.2, H]) K.kb(k, st, x0 - 2.06, y, 0, 0.3, 0.5, 9.2);
+    for (const y of [7.7, 12.7, 17.6]) K.kadd(k, K.PG.win0, K.PM.winAtlas, x0 - 2.04, y, 0, 0, yaw, 0, 2.2, 3.4);
+    K.kadd(k, R.arch, K.PM.windowOff, x0 - 2.04, 0, 0, 0, yaw, 0, 1.6, 3.2, 1); K.kadd(k, R.poolQ, R.warm, x0 - 2.1, 1.8, 0, 0, yaw, 0, 5, 5, 1);
+    K.kadd(k, R.oct, st, x0 + 6, H + 7.5, 0, 0, 0, 0, 2.2, 3, 2.2); K.kadd(k, R.cone8, roof, x0 + 6, H + 10.6, 0, 0, 0, 0, 2.6, 3.2, 2.6);
+    for (let z = -L / 2 + 3; z < L / 2; z += 7.5) { const s = K.rnd(0.85, 1.1); for (const ry of [0, Math.PI / 2]) K.kadd(k, K.PG.tree1, R.treeMat, 7 + K.rnd(-0.6, 0.6), 0, z, 0, ry, 0, 8 * s, 11 * s, 1); }
+    for (const z of [-15, 0, 15]) squareLamp(K, R, k, 3, z + 3.7);
+    K.kb(k, K.PM.stone, 9, 0.02, 0, 22, 0.04, L);
+    const g = K.kbuild(k); g.userData.faceRoad = true; return g;
   }
   // ---------- small things of Utrecht ----------
   function kratten(K) {   // crates of beer stacked by a door: the beer comes by boat, the empties go back on it
@@ -289,6 +367,9 @@
   };
   const fingerpost = K => K.fingerpost(T.utrecht.signs.slice().sort(() => Math.random() - 0.5).slice(0, 3));
   const domAt = o => K => dom(K, o);   // the Dom as a spawn: one per level, its place in the sky set per kind of street
+  const DOMPLEIN = { d: 300, az: -12, turn: 0.6 };   // on the square the whole tower stands over the open Domplein, its foot clear of the houses
+  const empty = K => new K.THREE.Group();
+  const seq = list => { let i = 0; return K => list[i++ % list.length](K); };   // a spawn whose copies differ in turn: the game makes them in order
 
   T.utrecht = {
     style: { brick: [0x5e3a32, 0x6e4438, 0x4a3430, 0x7a5040, 0x3e2e2c], gables: 0.65, height: [9, 12.5], width: [3.4, 4.4], lamp: 'classic' },
@@ -307,8 +388,8 @@
       gracht: (base, K) => Object.assign({}, base, {
         fog: 0x47505b, fogD: 0.015, night: 0.17, ground: 0x111418, groundY: UG, water: 0x10151c, waterY: UW, waterK: 0.2, canal: 1, curv: 0.0012, landmark: false,
         spawn: [
-          { make: domAt({ d: 250, az: -13 }), n: 1, gap: 1000, side: 'right', xr: [0, 0], r: 0.5 },
-          { make: werf, n: 8, gap: 30, side: 'right', reg: true, xr: [0, 0], r: 0.5 },
+          { make: domAt({ d: 300, az: -12 }), n: 1, gap: 1000, side: 'right', xr: [0, 0], r: 0.5 },
+          { make: seq([werf, werf, werf, K => werf(K, 'wed'), werf, werf, werf]), n: 7, gap: 30, side: 'right', reg: true, xr: [0, 0], r: 0.5 },
           { make: utBrug, n: 1, gap: 170, side: 'right', xr: [16.6, 16.6], r: 3 },
           { make: () => K.terrace(3, { tall: 1.05 }), n: 6, gap: 24, side: 'left', reg: true, xr: [7.9, 8.2], r: 9 },
           { make: K.backRow, n: 4, gap: 36, side: 'left', reg: true, xr: [19, 20.5], r: 14 },
@@ -329,7 +410,7 @@
         fog: 0x4a525d, fogD: 0.016, night: 0.18, curv: 0.002, landmark: false,
         road: { kind: 'asphalt', tone: '#5a2f2b' },
         spawn: [
-          { make: domAt({ d: 250, az: 3, turn: 0.4 }), n: 1, gap: 1000, side: 'right', xr: [0, 0], r: 0.5 },
+          { make: domAt({ d: 300, az: 3, turn: 0.4 }), n: 1, gap: 1000, side: 'right', xr: [0, 0], r: 0.5 },
           { make: () => K.terrace(3, { shops: 0.75, tag: 0.35, tall: 1.05 }), n: 12, gap: 12, side: 'alt', reg: true, xr: [7.6, 7.9], r: 9 },
           { make: K.backRow, n: 8, gap: 18, side: 'alt', reg: true, xr: [18.5, 20.5], r: 14 },
           { make: utLamp, n: 12, gap: 12, side: 'alt', reg: true, xr: [4.7, 4.7] },
@@ -342,36 +423,42 @@
           { make: 'zombieWalk', n: 8, gap: 18, side: 'both', xr: [4.8, 5.4], r: 0.6 },
         ] }),
       // the Domplein and round it: the plan of the lost nave in the paving, the Domkerk at its end, the Dom close over the square
-      square: (base, K) => Object.assign({}, base, {
+      square: (base, K) => { const tr = () => K.terrace(3, { tall: 1.12, tag: 0.2 }); return Object.assign({}, base, {
         fog: 0x48515c, fogD: 0.0155, night: 0.17, curv: 0.0015, landmark: false,
         road: { kind: 'slabs', tone: '#3c3f45' },
         spawn: [
-          { make: domAt({ d: 222, az: -21, turn: 0.7 }), n: 1, gap: 1000, side: 'right', xr: [0, 0], r: 0.5 },
-          { make: domplein, n: 1, gap: 200, side: 'right', xr: [10, 10], r: 14 },
-          { make: () => K.terrace(3, { tall: 1.12, tag: 0.2 }), n: 6, gap: 24, side: 'left', reg: true, xr: [9.6, 10], r: 9 },
-          { make: K.backRow, n: 4, gap: 36, side: 'left', reg: true, xr: [21, 22.5], r: 14 },
-          { make: () => K.treeCard([1, 1, 2]), n: 5, gap: 34, side: 'right', xr: [11, 17], r: 0.9 },
-          { make: K.bikeRow, n: 5, gap: 30, side: 'right', xr: [8.5, 12], r: 0.6 },
+          { make: domAt(DOMPLEIN), n: 1, gap: 1000, side: 'right', xr: [0, 0], r: 0.5 },
+          { make: domplein, n: 1, gap: 150, side: 'right', reg: true, xr: [10, 10], r: 14 },
+          { make: seq([tr, tr, empty, academie, empty, tr]), n: 6, gap: 24, side: 'left', reg: true, xr: [9.6, 10], r: 9 },
+          { make: seq([K.backRow, K.backRow, empty, K.backRow]), n: 4, gap: 36, side: 'left', reg: true, xr: [21, 22.5], r: 14 },
+          { make: K.bikeRow, n: 4, gap: 36, side: 'right', xr: [8.5, 11], r: 0.6 },
           { make: utLamp, n: 9, gap: 16, side: 'alt', reg: true, xr: [4.7, 4.7] },
           { make: () => K.treeCard([1, 1, 0]), n: 6, gap: 26, side: 'left', xr: [5.6, 7], r: 0.9 },
           { make: K.bikeRow, n: 6, gap: 24, side: 'both', xr: [4.9, 5.0], r: 0.6 },
           { make: K.bench, n: 2, gap: 70, side: 'left', xr: [5.0, 5.1], r: 0.9 },
           { make: fingerpost, n: 1, gap: 150, side: 'right', xr: [4.6, 4.6], r: 0.5 },
           { make: 'zombieWalk', n: 6, gap: 26, side: 'both', xr: [5.0, 6.0], r: 0.6 },
-        ] }),
+        ] }); },
     },
     // the painted far town: tall gables near, church towers lower than the Dom in the middle (the Buurkerk, the Jacobikerk, the two
     // towers of the Nicolaikerk, the Janskerk, the bank tower by the station), low roofs far off. The Dom itself is not painted
     skyline: {
-      near(P) { P.roofs(0, 0.4, 11, 18, 0.12, ['bell', 'step', 'roof', 'bell']); P.roofs(0.6, 1, 11, 18, 0.12, ['step', 'bell', 'roof']); P.trees(0, 0.4, 9, 16, 9); P.trees(0.6, 1, 9, 16, 9); P.trees(0.42, 0.58, 4, 7, 12); },
-      mid(P) {
-        P.trees(0, 1, 7, 13, 13); P.roofs(0, 0.46, 9, 15, 0.12, ['bell', 'step', 'roof']); P.roofs(0.54, 1, 9, 15, 0.12, ['bell', 'step', 'roof']);
+      // on the Domplein the bands stay open where the Dom stands (DOMPLEIN.az), so its foot shows over the square, not behind roofs
+      near(P, K, th) {
+        const sq = th && th.key === 'square';
+        P.roofs(0, sq ? 0.36 : 0.4, 11, 18, 0.12, ['bell', 'step', 'roof', 'bell']); P.roofs(sq ? 0.64 : 0.6, 1, 11, 18, 0.12, ['step', 'bell', 'roof']);
+        P.trees(0, sq ? 0.38 : 0.4, 9, 16, 9); P.trees(sq ? 0.63 : 0.6, 1, 9, 16, 9); P.trees(0.42, sq ? 0.5 : 0.58, 4, 7, 12);
+      },
+      mid(P, K, th) {
+        const sq = th && th.key === 'square';
+        P.trees(0, sq ? 0.5 : 1, 7, 13, 13); if (sq) P.trees(0.62, 1, 7, 13, 13);
+        P.roofs(0, 0.46, 9, 15, 0.12, ['bell', 'step', 'roof']); P.roofs(sq ? 0.62 : 0.54, 1, 9, 15, 0.12, ['bell', 'step', 'roof']);
         P.tower(P.X(0.34), [[7, 26], [5, 8]], 'spire', true); P.tower(P.X(0.22), [[6, 24]], 'spire', false);
         for (const dx of [-3.4, 3.4]) P.tower(P.X(0.8) + dx * P.m, [[4, 30]], 'spire', false);
         P.church(P.X(0.68), 30);
         const rb = P.X(0.1); P.box(rb, 14, -5, 48); P.win(rb, 46.5, 0.9, 0.8, 0.8);
       },
-      far(P) { P.trees(0, 1, 5, 10, 11); P.roofs(0, 1, 6, 11, 0.06, ['roof', 'flat', 'step']); },
+      far(P, K, th) { const sq = th && th.key === 'square'; for (const [f0, f1] of sq ? [[0, 0.52], [0.6, 1]] : [[0, 1]]) { P.trees(f0, f1, 5, 10, 11); P.roofs(f0, f1, 6, 11, 0.06, ['roof', 'flat', 'step']); } },
     },
   };
 })();

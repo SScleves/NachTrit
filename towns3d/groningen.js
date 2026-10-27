@@ -21,8 +21,8 @@
     const flat = (i, col, grain) => cell(i, () => { g.fillStyle = col; g.fillRect(0, 0, 64, 64); for (let j = 0; j < (grain || 0); j++) { g.fillStyle = r() < 0.5 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.07)'; g.fillRect(r() * 64, r() * 64, 2, 2); } });
     flat(S.black, '#141518', 40); flat(S.denim, '#2c4468', 70); flat(S.grey, '#5c6068', 50); flat(S.navy, '#1e2a46', 50);
     flat(S.red, '#b0322a', 30); flat(S.yellow, '#d8a428', 30); flat(S.teal, '#2a7a7a', 30); flat(S.white, '#e8e6de', 20);
-    cell(S.silver, () => { const gr = g.createLinearGradient(0, 0, 64, 0); gr.addColorStop(0, '#9aa2aa'); gr.addColorStop(0.5, '#e4e8ec'); gr.addColorStop(1, '#8a929a'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
-    flat(S.gold, '#e2b62a', 20); flat(S.paleBlue, '#9ebedc', 20); flat(S.brick, '#6a3a30', 90); flat(S.sand, '#8e897e', 90); flat(S.darkStone, '#4a4844', 90); flat(S.copper, '#4f7a66', 40);
+    cell(S.silver, () => { const gr = g.createLinearGradient(0, 0, 64, 0); gr.addColorStop(0, '#6e767e'); gr.addColorStop(0.5, '#b4bac2'); gr.addColorStop(1, '#646c74'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
+    flat(S.gold, '#c89a22', 20); flat(S.paleBlue, '#7f9cba', 20); flat(S.brick, '#6a3a30', 90); flat(S.sand, '#8e897e', 90); flat(S.darkStone, '#4a4844', 90); flat(S.copper, '#4f7a66', 40);
     flat(S.bikeBlack, '#17191d', 10); flat(S.bikeRed, '#8a2a26', 10); flat(S.bikeBlue, '#2a4a7c', 10); flat(S.bikeGreen, '#2f5a3a', 10); flat(S.tyre, '#0d0e11', 0);
     flat(S.wood, '#4a3424', 60); flat(S.canvas, '#3a3f48', 30);
     cell(S.scarf, () => { for (let y = 0, j = 0; y < 64; y += 8, j++) { g.fillStyle = j % 2 ? '#e8e6de' : '#2f7a3e'; g.fillRect(0, y, 64, 8); } });
@@ -43,9 +43,9 @@
       THREE, geo: {},
       paint: K.Mat({ map: paint }),
       dress: K.Mat({ map: paint, emissive: 0xffffff, emissiveMap: paint, emissiveIntensity: 0.16 }),
-      lit: K.Mat({ map: paint, emissive: 0xffffff, emissiveMap: paint, emissiveIntensity: 0.55 }),   // the museum's colours, lit
+      lit: K.Mat({ map: paint, emissive: 0xffffff, emissiveMap: paint, emissiveIntensity: 0.2 }),   // the museum's colours, softly lit
       stone: K.brickMat(0x8c877a),
-      wash: K.GlowMat(wash, 0xffc890, 0.3),          // the soft warm light on the facades
+      wash: K.GlowMat(wash, 0xffc890, 0.13),         // the soft warm light on the lower facades
       washWarm: K.GlowMat(wash, 0xffbe7a, 0.55),     // the Martinitoren's foot
       washCool: K.GlowMat(soft, 0xc8dcff, 0.42),     // its upper stages
       crown: K.GlowMat(K.glowTex, 0xd6e6ff, 0.9, true),
@@ -155,22 +155,24 @@
     const g = new U.THREE.Group(), k = K.kit(), st = K.style, len = n * 6.05, pal = [K.pick(st.brick), K.pick(st.brick)];
     for (let i = 0; i < n; i++) {
       const w = K.rnd(st.width[0], st.width[1]) * (o.plain ? 1.25 : 1), shop = o.shops && Math.random() < o.shops, oz = -len / 2 + 3 + i * 6.05;
-      K.house(Object.assign({}, o, { k, g, w, brick: pal[i % 2], ox: w / 2 - 2.2, oz, sign: shop ? SHOPS[shopTurn++ % SHOPS.length] : null, lit: o.lit != null ? o.lit : shop ? 0.6 : 0.45 }));
+      K.house(Object.assign({}, o, { k, g, w, brick: pal[i % 2], ox: w / 2 - 2.2, oz, sign: shop ? SHOPS[shopTurn++ % SHOPS.length] : null, lit: o.lit != null ? o.lit : shop ? 0.5 : 0.38 }));
       k.base.identity();
-      if (!o.plain) K.kadd(k, K.KG.plane, U.wash, -2.34, 3.3, oz, 0, -Math.PI / 2, 0, 6.2, 6.6);
+      if (!o.plain) K.kadd(k, K.KG.plane, U.wash, -2.34, 2.3, oz, 0, -Math.PI / 2, 0, 6.0, 4.6);
     }
     K.kbuild(k, g); g.userData.faceRoad = true; return g;
   }
-  // warm white lamps hanging on a wire over the middle of the street, the wire held by the house fronts (or by two masts on a square)
+  // warm white lamps hanging on a wire over the middle of the street, the wire held by the house fronts (or by two masts on a square).
+  // They hang high and their cone of light ends above the rider's head, so riding under one never floods the view
   function hangLamp(K, masts) {
-    mats(K); const g = new U.THREE.Group(), k = K.kit(), P = U.paint, BK = sw(U.cyl, S.bikeBlack), x0 = masts ? 0 : 1.0, x1 = masts ? -9.4 : -10.4, mid = -4.7, top = 7.9, hy = 6.5;
+    mats(K); const g = new U.THREE.Group(), k = K.kit(), P = U.paint, BK = sw(U.cyl, S.bikeBlack), x0 = masts ? 0 : 3.2, x1 = masts ? -9.4 : -12.6, mid = -4.7, top = 8.9, hy = 7.5;
     if (masts) for (const x of [x0, x1]) K.kadd(k, BK, P, x, top / 2, 0, 0, 0, 0, 0.13, top, 0.13);
     else for (const x of [x0, x1]) K.kadd(k, sw(K.KG.box, S.bikeBlack), P, x, top - 0.1, 0, 0, 0, 0, 0.3, 0.3, 0.12);
     tube(K, k, BK, P, [x0, top - 0.1, 0], [mid, hy + 0.55, 0], 0.012); tube(K, k, BK, P, [x1, top - 0.1, 0], [mid, hy + 0.55, 0], 0.012);
     K.kadd(k, sw(U.dome, S.bikeBlack), P, mid, hy + 0.1, 0, 0, 0, 0, 1.0, 0.55, 1.0);
     K.kbuild(k, g);
     const b = new U.THREE.Mesh(K.PG.bulb, K.PM.lampHead); b.position.set(mid, hy, 0); b.scale.set(1.8, 0.5, 1.8); g.add(b);
-    K.lampLights(g, mid, hy, 0, 0.95);
+    K.lampLights(g, mid, hy, 0, 0.9);
+    for (const c of g.children) if (c.isSprite && c.center.y === 1) c.scale.y = 4.4;   // the cone: from the lamp down to about 3 m
     g.userData.faceRoad = true; return g;
   }
   // a lime on the square with a string of small warm bulbs through its crown
@@ -221,7 +223,7 @@
     K.kadd(k, sw(B, S.paleBlue), L, 0.6, 1.5 + 4.2, -10.5, 0, 0.35, 0.06, 12, 8.4, 9);
     K.kadd(k, sw(B, S.gold), L, 4.2, 1.5 + 2.2, 2.5, 0, -0.2, 0, 5, 4.4, 6);
     for (let i = 0; i < 5; i++) K.kadd(k, sw(B, S.amber), L, 3.32, 4.2, 5.2 + i * 1.3, 0, 0, 0, 0.1, 1.2, 0.8);   // a band of lit glass in the cylinder
-    K.kadd(k, K.KG.plane, U.washWarm, 3.55, 9, -1.5, 0, Math.PI / 2, 0, 5, 18);
+    K.kadd(k, K.KG.plane, U.washWarm, 3.55, 6, -1.5, 0, Math.PI / 2, 0, 5, 12);
     return K.kbuild(k);
   }
   function woonboot(K) {   // a houseboat on the Diepenring: flat hull, a boxy cabin, warm windows, a chimney, plants on deck
@@ -303,7 +305,7 @@
       P.tower(P.X(0.33), [[7.5, 28], [5.5, 10]], 'lantern', true); P.tower(P.X(0.7), [[6, 25]], 'onion', true);
       const fx = P.X(0.82); P.poly([[fx - 14 * P.m, -5], [fx - 14 * P.m, 30], [fx - 5 * P.m, 41], [fx + 9 * P.m, 37], [fx + 14 * P.m, 25], [fx + 14 * P.m, -5]]);
       for (let fy = 3; fy < 30; fy += 3.4) for (let dx = -12; dx < 13; dx += 2.6) if (P.r() < 0.45) P.win(fx + dx * P.m, fy, P.rr(0.5, 1), 1.6, 1.4);
-      martiniP(P, P.X(0.6), 0.74);
+      martiniP(P, P.X(0.535), 0.56);   // just right of the road, where the street opens: it rises over the far end of every street
     },
     far(P) { P.trees(0, 1, 5, 9, 11); P.roofs(0, 1, 7, 12, 0.1, ['roof', 'step']); P.tower(P.X(0.44), [[6, 30]], 'spire'); P.tower(P.X(0.9), [[5, 24]], 'spire'); },
   };
