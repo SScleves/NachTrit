@@ -47,7 +47,7 @@ The shot gets `W` (also `window.NRW` in the console).
 |---|---|
 | `W.stage({ town, theme, fog, lamp, rider, preroll, seed })` | Builds the set: a town id and one of the themes `street`, `gracht`, `shops`, `square`, `nightshop`, `dyke`, `polder`. `fog` multiplies the haze (1 is the theme's). `lamp` is his lamp from 0 to 100 (default 92). `rider: false` hides him and puts his lamp light out. `preroll` rolls the street on first (default 50) so the road behind him is built too. `seed` makes the set the same on every play. |
 | `W.hide(test)` | Hides what the set does not need: `test(object)` gets every scenery piece and every object in the scene, and hides it when it returns true. Hidden scenery stays hidden when it comes round again; everything comes back when the shot ends. |
-| `W.band()` | The picture between the top bar and the captions, measured now, in CSS pixels: `{ top, bottom, height, width, portrait }`. |
+| `W.band()` | The picture between the top bar and the captions, measured now, in CSS pixels: `{ top, bottom, height, width, portrait }`. A shot object with its own `band()` sets its own picture: the title screen uses the screen under the title. Read it every frame rather than the DOM, so a shot frames itself right wherever it plays. |
 | `W.speed(v, world)` | His wheels turn at `v`; the street rolls past at `world` (default `v`). `W.speed(7, 0)` stops the street while he rides on. |
 | `W.ride(z)` | Puts him, his lamp and its light at `z` along the road. With the street stopped, a growing negative `z` is him riding away. |
 | `W.cam(px, py, pz, lx, ly, lz, fov)` | Camera position, the point it looks at, and optionally the field of view. |
@@ -90,6 +90,23 @@ wide shot shows, so keep the subject near the look point.
 The English caption shows at once, the Dutch follows at 0.6 seconds and is spoken. The panel holds for the longest of
 its reading time, the shot's `hold` and the end of the speech, then dips to black and moves on. A tap moves on sooner,
 so the first two seconds must already read. Bubbles carry only the words said in the scene, short.
+
+## The title screen and the level cards
+
+The same machinery plays two more things. `cineBegin` takes a panel index or a shot object.
+
+- The title screen (`startArt` in `index.html`): `startArt.on3d()` wraps shot 1 in a shot object that holds its first
+  beat behind the title. It feeds shot 1 a clock that eases from 0 to 3.4 seconds and back every 28 seconds, so the
+  camera slides along the row of mills and back, the sails keep turning the right way and the mist breathes. Its
+  `band()` is the screen under the title. Start cuts into shot 1 from its beginning. The first painting stays as the
+  fallback: it plays while the 3D world is not up yet and takes over if the shot breaks (`startArt.watch()`).
+  Every way off the title (`openMap`, `start`, the intro) ends the shot with `startArt.off()` or `cineBegin`.
+- The card before a level (`levelCard(lv, k)` in `index.html`): a shot object staged in the level's own town and theme,
+  seeded by the level id. `k = 0` is the wide shot under the town's rumour, `k = 1` the low shot behind him under the
+  level's line.
+
+A shot can be held for minutes (the title screen holds shot 1). Anything in it that drifts must come back round,
+like the mist banks in `shot-1.js`.
 
 ## Rules
 

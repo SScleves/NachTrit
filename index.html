@@ -36,8 +36,11 @@
   .btn { pointer-events:auto; display:inline-block; background:#e8e4d8; color:#090b12; border:0; border-radius:10px; padding:12px 26px; font-size:17px; font-weight:700; cursor:pointer; margin:6px; }
   .btn.ghost { background:transparent; color:var(--ink); border:1px solid rgba(255,255,255,.25); }
   .hint { color:var(--dim); font-size:13px; margin-top:14px; }
-  /* the start screen is the cover: the first intro painting, live, behind the title in the sky */
+  /* the start screen is the cover: the intro's first shot, live in 3D, behind the title in the sky. The first intro painting
+     stands in while the 3D world cannot run. */
   #start { background:#05070b; align-items:flex-start; padding-top:max(6vh, calc(12px + env(safe-area-inset-top))); }
+  #start.live3d { background:linear-gradient(to bottom, rgba(5,7,11,.55) 0%, rgba(5,7,11,.15) 38%, rgba(5,7,11,0) 55%, rgba(5,7,11,0) 84%, rgba(5,7,11,.4) 100%); }
+  #start.live3d #startpix { display:none; }
   #startpix { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:76% 50%; image-rendering:pixelated; image-rendering:crisp-edges; z-index:0; }   /* portrait phones keep the big mill and the moon */
   #start .box { position:relative; z-index:1; padding:18px 30px 16px; border-radius:18px; background:radial-gradient(ellipse at center, rgba(4,6,11,.7) 0%, rgba(4,6,11,.42) 62%, rgba(4,6,11,0) 100%); }
   #start .premise { color:#c9cfd8; font-size:15px; line-height:1.45; max-width:430px; margin:-12px auto 20px; }
@@ -2787,7 +2790,7 @@ function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir
 addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') steer(-1);
   else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') steer(1);
-  else if ((e.key === ' ' || e.key === 'Enter') && S.mode === 'start' && $('start').style.display !== 'none' && $('map').style.display === 'none') $('go').click();
+  else if ((e.key === ' ' || e.key === 'Enter') && (S.mode === 'start' || S.mode === 'cine') && $('start').style.display !== 'none' && $('map').style.display === 'none') { e.stopImmediatePropagation(); e.preventDefault(); $('go').click(); }   // cine: the title screen's 3D shot; the key must not also move the intro it opens past panel 1
 });
 let touchX = null, touchT = 0;
 addEventListener('touchstart', e => { touchX = e.touches[0].clientX; touchT = performance.now(); }, { passive: true });
@@ -2991,13 +2994,37 @@ let onKey = null;
 addEventListener('keydown', e => { if (onKey && $('intro').style.display !== 'none') { onKey(e); e.preventDefault(); } });
 let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'); } catch (e) {}
 if (new URLSearchParams(location.search).has('intro')) introSeen = false;
-// the start screen: the first intro painting, live behind the title, so the first second already says mist, mills and night.
-// While it is up the 3D scene is hidden under it, so the loop skips that render.
+// the start screen: the intro's first shot, live in 3D behind the title (the mills of Kinderdijk at night, the moon, thin mist).
+// It holds the shot's first beat, the camera sliding slowly along the row and back, so Start cuts into the same shot. The first
+// painting, live, stands in until the 3D world is up and takes over if the shot cannot run; under it the loop skips the 3D render.
 const startArt = (() => {
   const cv = $('startpix'), g = cv.getContext('2d'), NA = window.NRART, p = NA && NA.panels && NA.panels[0];
-  let raf = 0; const t0 = performance.now();
-  const frame = now => { if ($('start').style.display === 'none') { raf = 0; return; } NA.labels.length = 0; NA.paint(g, p.draw, (now - t0) / 1000); raf = requestAnimationFrame(frame); };
-  return { on() { if (p && !raf) { g.imageSmoothingEnabled = false; raf = requestAnimationFrame(frame); } }, get live() { return !!raf; } };
+  let raf = 0, shot = null; const t0 = performance.now();
+  const up = () => $('start').style.display !== 'none';
+  const frame = now => { if (!up() || shot) { raf = 0; return; } NA.labels.length = 0; NA.paint(g, p.draw, (now - t0) / 1000); raf = requestAnimationFrame(frame); };
+  const drop = () => { shot = null; $('start').classList.remove('live3d'); };
+  return {
+    on() { if (p && !raf && !shot) { g.imageSmoothingEnabled = false; raf = requestAnimationFrame(frame); } },
+    on3d() {
+      const s1 = CINE[0]; if (!s1 || !up()) return false;
+      let T = 0;
+      const s = {
+        hold: 0,
+        build(W) { s1.build(W); },
+        // the shot's clock eases from 0 to 3.4 s and back every 28 s: always its first beat, the sails the right way, the mist breathing
+        update(W, t, dt) { T += dt; s1.update(W, 3.4 * (0.5 - 0.5 * Math.cos(T * Math.PI / 14)), dt); },
+        dispose(W) { if (s1.dispose) s1.dispose(W); },
+        // its picture is the screen under the title, so the mills and the moon stand clear of the words
+        band() { const top = Math.round(Math.min($('start').querySelector('.box').getBoundingClientRect().bottom, innerHeight * 0.6)); return { top, bottom: innerHeight, height: innerHeight - top, width: innerWidth, portrait: innerWidth < innerHeight - top }; },
+      };
+      if (!cineBegin(s)) return false;
+      shot = s; if (raf) { cancelAnimationFrame(raf); raf = 0; } $('start').classList.add('live3d'); return true;
+    },
+    // leaving the start screen ends its shot; a shot that broke gives the screen back to the painting
+    off() { if (!shot) return; const s = shot; drop(); if (cineShot === s) cineEnd(); },
+    watch() { if (shot && cineShot !== shot) { drop(); if (up()) this.on(); } },
+    get live() { return !!raf; },
+  };
 })();
 $('replay').style.display = introSeen ? '' : 'none';   // the first run plays the intro after Start; the link is for the second time
 startArt.on();
@@ -3036,8 +3063,12 @@ const W = {
     for (const o of scenery) if (!o.cineHidden && test(o.mesh, o)) { o.cineHidden = true; o.mesh.visible = false; cineHidden.push(o); }
     for (const ch of scene.children) if (ch.visible && !cineProps.includes(ch) && !scenery.some(o => o.mesh === ch) && test(ch)) { ch.visible = false; cineHidden.push({ mesh: ch }); }
   },
-  // the picture between the top bar and the captions, in CSS pixels, measured now: { top, bottom, height, width, portrait }
-  band() { const top = Math.round(innerHeight * 0.09), bottom = Math.round($('intro').querySelector('.box').getBoundingClientRect().top); return { top, bottom, height: bottom - top, width: innerWidth, portrait: innerWidth < bottom - top }; },
+  // the picture between the top bar and the captions, in CSS pixels, measured now: { top, bottom, height, width, portrait }.
+  // A shot object with its own band() sets its own picture (the title screen: the screen under the title).
+  band() {
+    if (cineShot && cineShot.band) return cineShot.band();
+    const top = Math.round(innerHeight * 0.09), bottom = Math.round($('intro').querySelector('.box').getBoundingClientRect().top); return { top, bottom, height: bottom - top, width: innerWidth, portrait: innerWidth < bottom - top };
+  },
   // the wheels turn at v; the world rolls past at world (default v). W.speed(7, 0) stops the street while he rides on (see ride)
   speed(v, world) { S.speed = v; S.slow = 1; S.cineSpeed = world == null ? v : world; },
   fog(mul) { S.fogMul = mul; },                                                   // thicker (> 1) or thinner haze than the theme's
@@ -3074,9 +3105,9 @@ function cineEnd() {
   if (S.mode === 'cine') S.mode = 'start';
   $('intro').classList.remove('cine'); document.body.classList.remove('cine');
 }
-// the projection is centred on the letterboxed picture (between the top bar and the captions), so a shot's lookAt point is its middle
+// the projection is centred on the shot's picture (W.band: between the top bar and the captions), so a shot's lookAt point is its middle
 function cineFrame() {
-  const bar = $('intro').querySelector('.box').getBoundingClientRect().top, dy = Math.round((innerHeight - bar - innerHeight * 0.09) / 2);
+  const b = W.band(), dy = Math.round((innerHeight - b.top - b.bottom) / 2);
   if (dy !== cineDy) { cineDy = dy; camera.setViewOffset(innerWidth, innerHeight, 0, dy, innerWidth, innerHeight); }
 }
 function cineTick(dt) {
@@ -3244,7 +3275,7 @@ function openTown(t) {
 $('t_close').onclick = () => { $('town').style.transform = 'translate(-50%,105%)'; };
 
 function openMap() {
-  warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  startArt.off(); warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   for (const id of ['start', 'summary', 'mission']) $(id).style.display = 'none';
   $('map').style.display = 'flex'; drawWorld(); $('town').style.transform = 'translate(-50%,105%)';
   S.mode = 'start';
@@ -3268,7 +3299,7 @@ function missionFares(lv, tier) {
   return 'Fares here ' + (lo === hi ? FARES.fmtEuro(lo) + ' each' : FARES.fmtEuro(lo) + ' to ' + FARES.fmtEuro(hi)) + (best ? ' · best ' + best : '');
 }
 function start(lv) {
-  L = lv || null;
+  startArt.off(); L = lv || null;
   LANE_X = (L && L.lanes === 2) ? LANES2 : LANES3;
   BASE = L ? L.speed : BASE_SPEED; MAXS = L ? L.maxSpeed : MAX_SPEED;
   for (const id of ['start', 'summary', 'mission', 'map']) $(id).style.display = 'none';
@@ -3649,6 +3680,7 @@ function loop() {
     for (const w of wieven) w.position.x += Math.sin(S.t += dt * 0.01) * 0.002;
     camera.position.y = 22 + Math.sin(performance.now() / 2000) * 0.4;
   }
+  startArt.watch();
   if (!startArt.live) render();   // under the live start painting the 3D scene cannot be seen
 }
 const q = new URLSearchParams(location.search);
@@ -3678,6 +3710,7 @@ if (q.has('shot')) {
   // headless screenshots cannot see WebGL canvases: copy the frame into an image
   const img = new Image(); img.src = renderer.domElement.toDataURL(); img.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1'; document.body.appendChild(img);
 }
+startArt.on3d();   // the title screen in 3D, now the world and the shots are up (only while the start screen is still showing)
 loop();
 </script>
 </body>

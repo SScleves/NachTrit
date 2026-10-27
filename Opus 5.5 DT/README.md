@@ -1,5 +1,8 @@
 # Opus 5.5 DT: instructions for the remote heavy-lifting agent
 
+Status on 27 October 2026: how the game was built, every tool used and how to test it is in `HOW-IT-WAS-BUILT.md`.
+What is left, as instructions, is in `NEXT-STEPS.md`. Read those two first, then this file.
+
 You are an Opus 5.5 agent with no usage limit, working on Nachtrit from a clone of
 https://github.com/SScleves/NachTrit. Another Claude (on Santi's laptop) merges, checks on the
 real GPU, and pushes to the live site https://sscleves.github.io/NachTrit/. You do the heavy

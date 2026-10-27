@@ -305,9 +305,9 @@
         const s = t - CUT, k = W.smooth(W.clamp(s / 5, 0, 1)) + 0.015 * Math.max(0, s - 5);
         c = [W.lerp(5.1, 4.5, k), W.lerp(0.2, 0.25, k), W.lerp(-5.9, -10.4, k), 3, 7.5, 44, 0.5, 23.5];
       }
-      // the picture is the band between the top bar and the captions; on a short band (a phone on its side) widen the view and lift
-      // it until the moon and the hub are in, rather than lose them off the top
-      const box = document.querySelector('#intro .box'), H = innerHeight, f = W.clamp(((box ? box.getBoundingClientRect().top : H * 0.75) - H * 0.09) / H, 0.15, 1);
+      // the picture is the band between the top bar and the captions (W.band; on the title screen, the screen under the title); on a
+      // short band (a phone on its side) widen the view and lift it until the moon and the hub are in, rather than lose them off the top
+      const H = innerHeight, f = W.clamp(W.band().height / H, 0.15, 1);
       const need = (c[7] - c[6]) / 2 * DEG; let half = Math.atan(f * Math.tan(c[5] / 2 * DEG));
       if (half < need) { c[5] = Math.min(64, 2 * Math.atan(Math.tan(need) / f) / DEG); half = Math.atan(f * Math.tan(c[5] / 2 * DEG)); }
       const hd = half / DEG; c[4] = 2 * hd >= c[7] - c[6] ? W.clamp(c[4], c[7] - hd, c[6] + hd) : c[7] - hd;
@@ -327,8 +327,13 @@
         const dx = c[0] - s.x, dz = c[2] - s.z, L = Math.hypot(dx, dz), len = Math.min(L - 2, 4 + s.h * 2.2);
         s.q.position.set(s.x + dx / L * (len / 2 + 2.5), WY + 0.03, s.z + dz / L * (len / 2 + 2.5)); s.q.rotation.set(-Math.PI / 2, Math.atan2(dx, dz), 0, 'YXZ'); s.q.scale.set(s.k, len, 1);
       }
-      // the mist banks drift in from the right and thicken
-      for (const s of st.mist) { s.position.x += s.userData.vx * dt; s.material.opacity = W.clamp(0.1 + 0.45 * fk + 0.06 * Math.sin(t * 0.7 + s.userData.t0 * 2), 0, 0.6) * s.userData.k; s.material.color.copy(W.scene.fog.color).multiplyScalar(1.45); }
+      // the mist banks drift in from the right and thicken; on the title screen the shot holds for minutes, so a bank that has
+      // drifted off to the left fades out and comes back, faded in, far down the row
+      for (const s of st.mist) {
+        s.position.x += s.userData.vx * dt; if (s.position.x < -60) s.position.x += 240;
+        const edge = W.clamp((s.position.x + 60) / 25, 0, 1) * W.clamp((180 - s.position.x) / 20, 0, 1);
+        s.material.opacity = edge * W.clamp(0.1 + 0.45 * fk + 0.06 * Math.sin(t * 0.7 + s.userData.t0 * 2), 0, 0.6) * s.userData.k; s.material.color.copy(W.scene.fog.color).multiplyScalar(1.45);
+      }
       // tree cards and reeds turn to the eye (in their own frames)
       const bx = (c[0] - BANK.x) * Math.cos(BANK.yaw) - (c[2] - BANK.z) * Math.sin(BANK.yaw), bz = (c[0] - BANK.x) * Math.sin(BANK.yaw) + (c[2] - BANK.z) * Math.cos(BANK.yaw);
       for (const cd of st.cards) cd.rotation.y = Math.atan2(bx - cd.position.x, bz - cd.position.z);
