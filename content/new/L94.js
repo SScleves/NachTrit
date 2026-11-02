@@ -38,18 +38,18 @@
       want: 'Since the mist came, everyone who spoke Dutch changed, and on Texel nobody noticed, because the sheep never spoke Dutch anyway. The dead in the queue now talk in long sentences: die for the de-words, dat for the het-words, the verb at the very end of the clause. They use om te, they say als ... dan, and they say erop and ermee instead of repeating themselves. The women are still taller than you. The sheep are not, but they act like it.' },
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the end
-      { en: 'The ferry that leaves at nine is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
-        'boot is a de-word, so die: de boot die.'), FK(['om negen uur vertrekt', 'vertrekt om negen uur'], 0, 'bijzin',
-        'Inside a die or dat clause the verb goes to the very end: die om negen uur vertrekt.'), ', is vol.'] },
+      { en: 'The ferry that leaves at nine today is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
+        'boot is a de-word, so die: de boot die.'), FK(['vandaag om negen uur vertrekt', 'vertrekt vandaag om negen uur'], 0, 'bijzin',
+        'Inside a die or dat clause the verb goes to the very end: die vandaag om negen uur vertrekt.'), ', is vol.'] },
       { en: 'The ticket that I bought is in my bag.', parts: ['Het kaartje', FK(['dat', 'die'], 0, 'diedat',
         'kaartje is a het-word, so dat: het kaartje dat.'), FK(['ik gekocht heb', 'heb ik gekocht'], 0, 'bijzin',
         'A relative clause is a sub-clause: the subject comes first and the verb goes to the end.'), ', ligt in mijn tas.'] },
-      { en: 'The sheep that stands on the cycle path does not want to leave.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat: het schaap dat.'), FK(['op het fietspad staat', 'staat op het fietspad'], 0, 'bijzin',
-        'The verb of the dat clause goes to the end: dat op het fietspad staat.'), ', wil niet weg.'] },
-      { en: 'Is this the bus that goes to De Koog?', parts: ['Is dit de bus', FK(['die', 'dat'], 0, 'diedat',
-        'bus is a de-word, so die: de bus die.'), FK(['naar De Koog gaat', 'gaat naar De Koog'], 0, 'bijzin',
-        'die sends the verb to the end of its clause: die naar De Koog gaat.'), '?'] },
+      { en: 'The sheep that has been standing on the cycle path for hours does not want to leave.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so dat: het schaap dat.'), FK(['al uren op het fietspad staat', 'staat al uren op het fietspad'], 0, 'bijzin',
+        'The verb of the dat clause goes to the end: dat al uren op het fietspad staat.'), ', wil niet weg.'] },
+      { en: 'Is this the bus that goes to De Koog tonight?', parts: ['Is dit de bus', FK(['die', 'dat'], 0, 'diedat',
+        'bus is a de-word, so die: de bus die.'), FK(['vanavond naar De Koog gaat', 'gaat vanavond naar De Koog'], 0, 'bijzin',
+        'die sends the verb to the end of its clause: die vanavond naar De Koog gaat.'), '?'] },
 
       // ---- builds: te and om ... te
       { en: 'I do not feel like waiting all day.', parts: ['Ik heb geen zin', FK(['om', 'dat'], 0, 'omte',

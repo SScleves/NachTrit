@@ -50,9 +50,9 @@
       { en: 'The bitterballen that Paola ordered are already gone.', parts: ['De bitterballen', FK(['die', 'dat'], 0, 'diedat',
         'bitterballen is a plural, and a plural always takes die, whatever the singular is.'), 'Paola', FK(['bestelde', 'bestelden'], 0, 'imp',
         'Paola is one person: bestelde. bestel ends in l, which is no ketchup letter, so -de.'), ', zijn al op.'] },
-      { en: 'The terrace that lies by the harbour is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
-        'terras is a het-word, so dat.'), FK(['aan de haven ligt', 'ligt aan de haven'], 0, 'bijzin',
-        'The verb of a dat-clause stands at the end: dat aan de haven ligt.'), ', is al vol.'] },
+      { en: 'The terrace here by the harbour is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
+        'terras is a het-word, so dat.'), FK(['hier aan de haven ligt', 'ligt hier aan de haven'], 0, 'bijzin',
+        'The verb of a dat-clause stands at the end: dat hier aan de haven ligt.'), ', is al vol.'] },
 
       // ---- builds: te plus infinitive and om te
       { en: 'I go to the market in Den Burg to buy fresh fish.', parts: ['Ik ga naar de markt in Den Burg', FK(['om verse vis te kopen', 'om verse vis kopen', 'om te verse vis kopen'], 0, 'omte',

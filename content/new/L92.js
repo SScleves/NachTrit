@@ -76,8 +76,8 @@
       // ---- builds: review of earlier tiers
       { en: 'This is the tastiest lamb on the island.', parts: ['Dit is het', FK(['lekkerste', 'lekkerst', 'lekkerder'], 0, 'vergelijk',
         'The superlative in front of a noun takes -e: het lekkerste lamsvlees. lekkerder is the comparative and means tastier than something.'), 'lamsvlees van het eiland.'] },
-      { en: 'I am looking for a warm cardigan of Texel wool.', parts: ['Ik zoek een', FK(['warm', 'warme'], 0, 'adj',
-        'vest is a het-word and the article is een: no -e. Een warm vest.'), 'vest van', FK(['Texelse', 'Texels'], 0, 'adj',
+      { en: 'I am looking for a warm duvet of Texel wool.', parts: ['Ik zoek een', FK(['warm', 'warme'], 0, 'adj',
+        'dekbed is a het-word and the article is een: no -e. Een warm dekbed.'), 'dekbed van', FK(['Texelse', 'Texels'], 0, 'adj',
         'wol is a de-word with no article before it, and the adjective still takes -e: Texelse wol.'), 'wol.'] },
       { en: 'We came over on the ferry this morning.', parts: ['We', FK(['zijn', 'hebben'], 0, 'aux',
         'Coming is movement to a place, so zijn: we zijn gekomen.'), 'vanochtend met de veerboot', FK(['gekomen', 'gekomt', 'gekommen'], 0, 'perf',
