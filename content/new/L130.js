@@ -121,8 +121,8 @@
         'A question inside a sentence becomes a sub-clause: the verb goes to the end.'), FK(['dat', 'die'], 0, 'diedat',
         'woord is a het-word, so the relative pronoun is dat.'), 'je leerde.'] },
       { en: 'Of course: the dog. The dogs had to go out.', parts: ['Natuurlijk: de hond. De honden', FK(['moesten', 'moeste', 'moetten'], 0, 'imp',
-        'moeten is irregular: moest, moesten. The plural takes -en.'), FK(['uit', 'buiten'], 0, 'woord',
-        'A dog that has to go out moet uit: de honden moeten uit was the first sentence of the whole ride. buiten needs naar in front of it.'), '.'] },
+        'moeten is irregular: moest, moesten. The plural takes -en.'), FK(['uit', 'uitlaten'], 0, 'woord',
+        'A dog that has to go out moet uit: de honden moeten uit was the first sentence of the whole ride. uitlaten is what you do to the dogs, so it needs you as the subject.'), '.'] },
 
       // ---- words: the canals, the dawn, the end, four replayed from the first Amsterdam level
       { w: 'the canal ring', nl: 'de grachtengordel' }, { w: 'the widest of the canals', nl: 'de Keizersgracht' },

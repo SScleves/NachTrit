@@ -61,7 +61,7 @@
       // ---- builds: the figures in words
       { en: 'Turnover rose by three point five percent, to one million two hundred thousand euros.', parts: ['De omzet', FK(['steeg', 'stijgde', 'stoog'], 0, 'imp',
         'stijgen is irregular: steeg, gestegen.'), FK(['met', 'op'], 0, 'woord',
-        'Rising by an amount is stijgen met. stijgen tot is rising to a level.'), FK(['drie komma vijf', 'drie punt vijf'], 0, 'getal',
+        'Rising by an amount is stijgen met: met drie komma vijf procent. stijgen op is not said.'), FK(['drie komma vijf', 'drie punt vijf'], 0, 'getal',
         'Dutch writes and says a decimal comma: drie komma vijf, 3,5.'), 'procent, tot een miljoen tweehonderdduizend euro.'] },
       { en: 'The meeting is on Thursday 12 March at half past two.', parts: ['De vergadering is', FK(['op donderdag', 'in donderdag'], 0, 'datum',
         'Days take op: op donderdag.'), '12 maart om', FK(['half drie', 'half twee'], 0, 'klok',

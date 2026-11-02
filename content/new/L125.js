@@ -67,8 +67,8 @@
         'koffiedik kijken, reading the coffee grounds, means pure guesswork. The tea leaves are English.'), '.'] },
       { en: 'Putting the bitterballen next to the dogs is asking for trouble.', parts: ['De bitterballen naast de honden zetten is', FK(['de kat op het spek binden', 'de hond op het spek binden', 'de kat bij het spek binden'], 0, 'idioom',
         'de kat op het spek binden: tie the cat to the bacon, and see what happens. Even with dogs it stays a cat.'), '.'] },
-      { en: "I'm full, I really can't eat another thing.", parts: [FK(['Ik zit vol', 'Ik ben vol'], 0, 'woord',
-        'Full after a meal is ik zit vol. ik ben vol is English.'), ',', FK(['ik kan echt niks meer op', 'ik kan echt niks op meer'], 0, 'sep',
+      { en: "I'm full, I really can't eat another thing.", parts: [FK(['Ik zit vol', 'Ik heb vol'], 0, 'woord',
+        'Full after a meal is ik zit vol, with zitten. ik heb vol is not Dutch.'), ',', FK(['ik kan echt niks meer op', 'ik kan echt niks op meer'], 0, 'sep',
         'opkunnen keeps its op at the very end: ik kan niks meer op.'), '.'] },
 
       // ---- builds: the snack wall, the rijsttafel, patat
@@ -81,8 +81,8 @@
       { en: 'When the rijsttafel came, we had already eaten all the krupuk.', parts: ['Toen de rijsttafel kwam,', FK(['hadden we', 'we hadden'], 0, 'v2',
         'After a toen-clause the main clause starts with its verb: hadden we.'), 'alle kroepoek al', FK(['opgegeten', 'opgeëten', 'geopgeten'], 0, 'sep',
         'opeten is separable: op + gegeten, with the ge in the middle.'), '.'] },
-      { en: 'In Amsterdam they say patat; two hundred kilometres further south it is called friet.', parts: ['In Amsterdam zeggen ze patat, tweehonderd kilometer', FK(['zuidelijker', 'meer zuidelijk', 'zuidelijkst'], 0, 'vergelijk',
-        'Further south is the comparative: zuidelijker.'), FK(['heet het', 'het heet'], 0, 'v2',
+      { en: 'In Amsterdam they say patat; two hundred kilometres further south it is called friet.', parts: ['In Amsterdam zeggen ze patat, tweehonderd kilometer', FK(['zuidelijker', 'zuidelijkere', 'zuidelijkst'], 0, 'vergelijk',
+        'Further south is the comparative: zuidelijker. With no noun after it, it takes no -e.'), FK(['heet het', 'het heet'], 0, 'v2',
         'The distance fills slot 1, so the verb comes second: heet het friet.'), 'friet.'] },
 
       // ---- builds: review of earlier tiers
