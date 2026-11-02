@@ -50,7 +50,7 @@
         { w: 'the station', nl: 'het station', wrong: 'de station' }, { w: 'the ticket', nl: 'het kaartje', wrong: 'de kaartje' },
         { w: 'now', nl: 'nu' }, { w: 'in a bit', nl: 'straks' }, { w: 'the hour', nl: 'het uur', wrong: 'de uur' },
         { w: 'the café', nl: 'het café' }, { w: 'the street', nl: 'de straat' },
-        { read: true, nl: 'De bus is laat.', en: 'The bus is late.' },
+        { read: true, nl: 'De bus is te laat.', en: 'The bus is late.' },
         { read: true, nl: 'Daar is de pont.', en: "There's the ferry." },
         { read: true, nl: 'Hoe laat is het?', en: 'What time is it?' },
         { read: true, nl: 'Er is hier geen station.', en: "There's no station here." },
