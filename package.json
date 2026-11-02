@@ -7,7 +7,11 @@
     "serve": "python3 serve.py 8765",
     "qa": "node qa/run.mjs",
     "build:content": "node qa/build-content.mjs",
-    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs"
+    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs",
+    "voice": "node qa/voice-batch.mjs && ../venv/bin/python qa/voice-render.py && node qa/voice-check.mjs",
+    "voice:lines": "node qa/voice-batch.mjs",
+    "voice:render": "../venv/bin/python qa/voice-render.py",
+    "voice:check": "node qa/voice-check.mjs"
   },
   "devDependencies": {
     "playwright": "^1.47.2"
