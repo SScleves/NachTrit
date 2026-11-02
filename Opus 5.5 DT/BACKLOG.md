@@ -21,6 +21,28 @@ technical and player suggestions and an acceptance list. Points 1, 2, 4, 5, 6 an
 index.html and fit before the code split if done as one branch; point 3 is the map task
 (HANDOVER section 4); point 7 is backlog B2.
 
+## A0b. Reading time is a rule: language difficulty stays doable at every tier. Branch `dt/reading-time`. Right after A0.
+Santi (2 Nov 2026): "as the levels progress it can be too fast between words; game difficulty yes, but
+language difficulty has to stay doable." Today the tier presets in levels.js raise speed from 11 to 18
+and cut forkSlow from 0.25 to 0.2 while sentences grow from 6 to 18 words, so at tier 10+ a build
+fork with two options of five words each is on screen for under two seconds. Make the time to read
+a fork independent of tier:
+- Define a reading budget per fork from its text: about 0.35 s per word across all options plus
+  1.2 s to decide, minimum 3 s, cap 7 s. At the fork's approach, the slow-down (forkSlow) and the
+  gate distance are chosen so the signs are legible (text at readable size on screen) for at least
+  that budget at that tier's speed. Speed between forks, obstacles, wisps and the lamp keep scaling
+  with tier; the fork itself does not get faster than the budget allows.
+- Card text appears as soon as the fork is planned, before the signs are readable, so the player
+  reads the English first; the Dutch voice reads it (speakSeq) at the same time.
+- Filler distance between forks scales with the previous fork's word count, so long sentences are
+  never back to back.
+- Listen and read items get a 1.5x budget; dehet and word items the minimum.
+- Measure with qa/lampbot.js style bots at tiers 1, 7, 10 and 13: log the seconds each fork's signs
+  were legible; every fork must meet its budget. Put the numbers in the report.
+- Keep the lamp balance (HANDOVER section 6): rerun the bot and retune TUNE only if a tier changes.
+Files: levels.js (TIER_PRESET), the fork planning and placeFork in index.html, the card. Also update
+CONTENT-BRIEF.md: the word limit per tier is a readability limit, not a speed target.
+
 ## A. Engine (heaviest, one branch at a time in index.html)
 
 ### A1. The code split, with JSDoc types. Branch `dt/split`. DO THIS FIRST.
