@@ -48,7 +48,7 @@
         'dat sends all the verbs to the end, the modal first: kan vinden.'), '.'] },
       { en: 'The herring is sold out, because the tourists bought everything.', parts: ['De haring is op, omdat de toeristen alles', FK(['hebben gekocht', 'hebben gekoopt', 'hebben gekopen'], 0, 'perf',
         'kopen is irregular: gekocht. In the sub-clause hebben stands before the participle at the very end.'), '.'] },
-      { en: 'I see that the fish is fresher here than in the supermarket.', parts: ['Ik zie dat de vis op Urk', FK(['verser', 'versder', 'versere'], 0, 'vergelijk',
+      { en: 'I see that the fish on Urk is fresher than in the supermarket.', parts: ['Ik zie dat de vis op Urk', FK(['verser', 'versder', 'versere'], 0, 'vergelijk',
         'vers gets -er for the comparative: verser. After is the adjective takes no -e, so not versere.'), 'is dan in de supermarkt.'] },
       { en: 'This is the best herring on Urk because the cutters are moored close by.', parts: ['Dit is de', FK(['beste', 'best', 'goedste'], 0, 'vergelijk',
         'goed is irregular: goed, beter, best. After de the superlative takes -e: de beste.'), 'haring van Urk, omdat de kotters vlakbij', FK(['liggen', 'ligt'], 0, 'bijzin',

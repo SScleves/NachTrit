@@ -73,7 +73,7 @@
       { en: 'The dogs got bored while we waited for the bill.', parts: ['De honden verveelden', FK(['zich', 'zij'], 0, 'refl',
         'A third person (de honden) takes zich: zich vervelen.'), FK(['terwijl wij op de rekening wachtten', 'terwijl wachtten wij op de rekening'], 0, 'bijzin',
         'terwijl sends the verb to the end: wij op de rekening wachtten.'), '.'] },
-      { en: 'On Sunday everything on Urk is closed because everybody is in church.', parts: ['Op zondag is alles op Urk dicht', FK(['omdat iedereen in de kerk zit', 'omdat iedereen zit in de kerk'], 0, 'bijzin',
+      { en: 'On Sunday everything on Urk is closed because everybody is in church.', parts: ['Op zondag is alles op Urk dicht', FK(['omdat iedereen in de kerk zit', 'omdat zit iedereen in de kerk'], 0, 'bijzin',
         'omdat sends the verb to the end: in de kerk zit.'), '.'] },
       { en: 'The waiter says the eel is sold out.', parts: ['De ober zegt', FK(['dat de paling op is', 'dat de paling is op'], 0, 'bijzin',
         'dat opens a sub-clause, so is goes to the end: op is.'), '.'] },
