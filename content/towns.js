@@ -276,8 +276,8 @@ window.TOWNS = [
     pos: [0.838, 0.118], // 53.219 N, 6.567 E
     blurb: 'Far north, full of students, with a tower they call the old grey one. Er gaat niets boven Groningen, which is also true on the map.',
     blurbNl: 'Ver in het noorden, vol studenten, met een toren die ze d\'Olle Grieze noemen. Er gaat niets boven Groningen, en op de kaart klopt dat ook.',
-    joke: 'For years the ground shook here because of the gas. The gas was turned off in 2023. The ground still shakes. That is not the gas.',
-    jokeNl: 'Jarenlang beefde de grond hier door de gaswinning. In 2023 ging de gaskraan dicht. De grond beeft nog steeds. Dat is niet het gas.',
+    joke: 'The Martinitoren has watched students cycle home late for five hundred years. The dead are just the latest intake.',
+    jokeNl: 'De Martinitoren ziet al vijfhonderd jaar studenten laat naar huis fietsen. De doden zijn gewoon de nieuwste lichting.',
     look: 'Narrow streets of old brick houses with stepped gables, a ring of canals around the centre, bikes piled on every bridge and wall. The wide Grote Markt, half rebuilt after 1945, with the grey Martinitoren on its corner. Student houses with lit windows everywhere, and beyond the ring road flat farmland with big farmhouses and churches on mounds.',
     landmarks: [
       { name: 'De Martinitoren', look: 'Grey stone church tower of about 97 metres on the corner of the Grote Markt, called d\'Olle Grieze, still the tallest thing in town.' },
