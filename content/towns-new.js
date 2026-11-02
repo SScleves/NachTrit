@@ -7332,8 +7332,8 @@
         'After kunnen the other verb stays a bare infinitive, no te and no ge.'), '?'] },
 
       // ---- builds: review, perfectum, reflexive, time, hoeven, imperative
-      { en: 'I lost my OV chip card at the station.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
-        'Losing something is not going anywhere, so hebben: ik heb.'), 'mijn ov-chipkaart op het station', FK(['verloren', 'geverloren'], 0, 'perf',
+      { en: 'I lost my OV chip card at the station.', parts: ['Ik', FK(['heb', 'heeft'], 0, 'aux',
+        'verliezen runs on hebben, and with ik that is heb. heeft is for hij and zij.'), 'mijn ov-chipkaart op het station', FK(['verloren', 'geverloren'], 0, 'perf',
         'Verbs that start with ver- never take ge: verloren.'), '.'] },
       { en: 'Sorry, I got the time wrong.', parts: ['Sorry, ik heb', FK(['me', 'zich'], 0, 'refl',
         'The self-word matches the subject: ik heb me vergist.'), 'in de tijd', FK(['vergist', 'gevergist'], 0, 'perf',
