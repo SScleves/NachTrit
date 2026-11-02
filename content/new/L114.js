@@ -93,7 +93,7 @@
       { en: 'We came to Maastricht to eat vlaai.', parts: ['We kwamen naar Maastricht', FK(['om', 'omdat'], 0, 'omte',
         'A purpose with a verb is om ... te. omdat gives a reason and needs a subject and a verb.'), 'vlaai', FK(['te eten', 'eten'], 0, 'omte',
         'om needs te before the infinitive at the end: te eten.'), '.'] },
-      { en: 'I think chips taste better than patat.', parts: ['Ik vind', FK(['dat', 'of'], 0, 'mening',
+      { en: 'I think friet tastes better than patat.', parts: ['Ik vind', FK(['dat', 'of'], 0, 'mening',
         'ik vind dat opens the opinion. of would turn it into a question.'), 'friet', FK(['beter smaakt', 'smaakt beter'], 0, 'bijzin',
         'dat sends the verb to the end: beter smaakt dan patat.'), 'dan patat.'] },
       { en: 'Yesterday we walked the dogs along the Maas.', parts: ['Gisteren', FK(['hebben we', 'we hebben'], 0, 'v2',
