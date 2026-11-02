@@ -129,6 +129,9 @@
       // the near street is set by hand: the props, trees and walkers the town put round both set-ups are hidden, and given back at the
       // end, so nothing random stands in front of the table; the near ground mist goes too, so it does not sit in front of him
       const box = new THREE.Box3(), size = new THREE.Vector3();
+      // a house the camera stands in is hidden too: from inside, its culled walls leave only the backs of its shutters, a green slab
+      // over the frame (the square's row on the right has its front at x 9.4, the terrace camera stands at x 10)
+      const eyes = [CAM1, [0.35, 1.92, Z2 - 7.8], [0.15, 1.94, Z2 - 5.3]].map(p => new THREE.Vector3(...p));
       const isLamp = o => { let y = false; o.traverse(m => { if (m.material === W.PM.lampHead) y = true; }); return y; };
       for (const o of W.scene.children) {
         if (!o.visible || o.userData.cineWorld != null || o === W.bike) continue;
@@ -136,6 +139,7 @@
         if (o.isSprite && o.userData.band) { if (o.userData.band.side && z > -12) { o.visible = false; hidden.push(o); } continue; }
         if (!o.isGroup || Math.abs(x) > 13 || z < -24 || z > 36 || isLamp(o)) continue;
         box.setFromObject(o).getSize(size);
+        if (eyes.some(e => box.distanceToPoint(e) < 0.4)) { o.visible = false; hidden.push(o); continue; }
         if (!o.userData.bill && (Math.max(size.x, size.z) > 5 || size.y > 7)) continue;   // houses, rows, the church and the tower stay
         o.visible = false; hidden.push(o);
       }

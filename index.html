@@ -15,11 +15,15 @@
   #vignette { position:fixed; inset:0; pointer-events:none; opacity:0;
     background:radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(120,0,0,.55) 80%, rgba(40,0,0,.95) 100%); transition:opacity .3s; }
   #flash { position:fixed; inset:0; pointer-events:none; opacity:0; background:#fff; }
-  #hud { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:12px; right:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
-  .pill { background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:6px 10px; font-size:14px; line-height:1.2; }
-  .pill small { color:var(--dim); display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
-  #lampwrap { width:min(44vw,220px); }
-  #lampbar { height:8px; border-radius:4px; background:#1b1f2a; overflow:hidden; margin-top:4px; }
+  /* the HUD is one row: the lamp first and widest, the wallet second, the rest only when it says something */
+  #hud { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:12px; right:12px; display:flex; flex-wrap:nowrap; justify-content:flex-start; align-items:stretch; gap:10px; }
+  .pill { background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:7px 12px; font-size:18px; line-height:1.2; }
+  .pill small { color:var(--dim); display:block; font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+  #hud .pill { font-variant-numeric:tabular-nums; }
+  #lampwrap { width:min(42vw,300px); flex:0 1 auto; }
+  #streakpill { display:none; } #streakpill.on { display:block; }
+  #hud:not(.endless) #distpill { display:none; }
+  #lampbar { height:11px; border-radius:4px; background:#1b1f2a; overflow:hidden; margin-top:4px; }
   #lampfill { height:100%; width:70%; background:linear-gradient(90deg,#b9c9d1,#eef5f8); box-shadow:0 0 10px #cfe0e8; transition:width .25s; }
   #card { position:absolute; left:50%; top:calc(72px + env(safe-area-inset-top)); transform:translateX(-50%); width:min(92vw,560px); background:var(--card); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:12px 16px; text-align:center; opacity:0; transition:opacity .25s; }
   #card .who { color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
@@ -75,11 +79,34 @@
   .cinesay::after { content:''; position:absolute; left:50%; bottom:-7px; margin-left:-6px; border:6px solid transparent; border-top-color:#f2efe6; border-bottom:0; }
   #summary { display:none; }
   #map .box::-webkit-scrollbar { display:none; }
-  .place { pointer-events:auto; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:8px; cursor:pointer; text-align:left; font-size:13px; }
-  .place small { display:block; color:var(--dim); font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+  /* the town card: what is done as a row of stars, then the places in order, the next one lit and focused (Enter rides) */
+  #t_places { display:flex; flex-direction:column; gap:6px; }
+  #t_places .tlater { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:6px; }
+  #t_places .tdone { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:2px; }
+  #t_places .star { pointer-events:auto; background:rgba(255,210,122,.05); border:1px solid rgba(255,210,122,.25); color:#ffd27a; border-radius:8px; padding:4px 9px; font:13px "Segoe UI",system-ui,sans-serif; letter-spacing:.06em; cursor:pointer; }
+  #t_places .star span { color:#c9cfd8; letter-spacing:0; margin-left:5px; font-size:12px; }
+  .place { pointer-events:auto; display:block; width:100%; color:var(--ink); font:14px/1.35 "Segoe UI",system-ui,sans-serif; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:8px 12px; cursor:pointer; text-align:left; }
+  .place small { color:var(--dim); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-right:8px; }
+  .place b { font-weight:600; }
+  .place.later { opacity:.62; padding:6px 12px; }
+  .place.next { border-color:#ffd27a; background:rgba(255,210,122,.09); padding:11px 14px; }
+  .place.next b { font-size:19px; }
+  .place.next small { display:block; color:#ffd27a; margin-bottom:2px; }
+  .place .go { display:block; color:#c9cfd8; font-size:13px; margin-top:4px; }
+  .place .go i { color:#ffd27a; font-style:normal; }
+  .place:focus { outline:none; } .place:focus-visible, .place.next:focus { outline:2px solid rgba(255,210,122,.8); outline-offset:2px; }
+  .place.bonus { border-color:rgba(255,210,122,.4); }
   .place.locked { opacity:.35; cursor:default; }
-  .place .st { color:#ffd27a; font-size:11px; letter-spacing:.1em; }
-  .place .lv { display:inline-block; margin:3px 4px 0 0; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; font-size:12px; }
+  .place .st { color:#ffd27a; font-size:12px; letter-spacing:.1em; margin-left:8px; }
+  .place .lv em { color:var(--dim); font-style:normal; font-size:11px; margin-left:4px; }
+  /* the mission card's three words, and the end-of-ride word list */
+  .wchips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .wchip { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:6px 12px 6px 8px; text-align:left; }
+  .wchip .pic { font-size:26px; line-height:1; width:32px; text-align:center; }
+  .wchip b { display:block; color:#ffd27a; font-size:16px; font-weight:600; } .wchip span { color:var(--dim); font-size:12px; }
+  #s_words { max-width:520px; margin:0 auto 10px; max-height:22vh; overflow-y:auto; font-size:13px; line-height:1.7; color:#c9d6ff; touch-action:pan-y; }
+  #s_words .ok { color:var(--good); } #s_words .no { color:#ff8b84; }
+  #lanes .side { display:block; color:#ffd27a; font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:2px; }
   #nl .town { cursor:pointer; pointer-events:auto; }
   #nl text { font-family:"Segoe UI",system-ui,-apple-system,sans-serif; }
   #nl text.nm { font-weight:600; fill:#f0f1f3; letter-spacing:.14em; paint-order:stroke; stroke:rgba(8,11,16,.85); stroke-width:3px; stroke-linejoin:round; }
@@ -97,6 +124,7 @@
   #map #town { background:rgba(9,12,18,.97) !important; max-height:76vh; overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; scrollbar-width:thin; }
   #map .maplegend .tp { display:none; }
   #map .maplegend span, #map .mapsub span { white-space:nowrap; }
+  @media (max-width: 600px) { #map #town { max-height:64vh; } }
   @media (max-width: 600px) { #map .maplegend .kb { display:none; } #map .maplegend .tp { display:inline; } }
   @media (max-width: 420px) { #map .mapsub span { display:block; } }
   #mapnorth { position:absolute; z-index:1; left:clamp(12px,4.5vw,60px); top:calc(70px + env(safe-area-inset-top)); width:20px; height:60px; pointer-events:none; }
@@ -125,13 +153,14 @@
   #card .fare i { color:#9fb0cc; }
   #card .fare s { color:#ff8b84; }
   #card .fare .no { color:#ff8b84; }
-  .place .lv em { color:var(--dim); font-style:normal; font-size:11px; margin-left:4px; }
   #summary .money { color:var(--dim); font-size:13px; margin:-4px 0 10px; line-height:1.5; }
   @media (max-width: 520px) {
     #distpill { display:none; }
     /* phone: keep the pills clear of the sound button, and let the wallet flash sit under the pill so the row never grows */
     #hud { padding-right:48px; gap:6px; }
-    #hud .pill { padding:6px 7px; }
+    #hud .pill { padding:6px 8px; font-size:16px; }
+    #hud .pill small { font-size:10px; }
+    #lampwrap { width:auto; flex:1 1 auto; min-width:38vw; }
     #walletpill { position:relative; }
     #walletfx { position:absolute; left:0; right:0; top:100%; margin:3px 0 0; text-align:center; text-shadow:0 1px 4px #000; }
   }
@@ -145,9 +174,9 @@
   <div id="flash"></div>
   <div id="hud">
     <div class="pill" id="lampwrap"><small>Lamp</small><div id="lampbar"><div id="lampfill"></div></div></div>
-    <div class="pill"><small>Delivered</small><span id="souls">0</span></div>
     <div class="pill" id="walletpill"><small>Wallet</small><span id="wallet">€ 0,00</span><span id="walletfx"></span></div>
-    <div class="pill"><small>Streak</small><span id="streak">0</span></div>
+    <div class="pill"><small>Delivered</small><span id="souls">0</span></div>
+    <div class="pill" id="streakpill"><small>Streak</small><span id="streak">0</span></div>
     <div class="pill" id="distpill"><small>Distance</small><span id="dist">0 m</span></div>
   </div>
   <div id="topright"><button class="ico" id="snd" title="Dutch voice">🔊</button></div>
@@ -199,7 +228,7 @@
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div><div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="t_tier"></div><h1 style="font-size:28px;margin:0" id="t_name"></h1></div><button class="ico" id="t_close">✕</button></div>
         <div id="t_blurb" style="color:#d8d4c8;margin:6px 0 2px;font-size:14px"></div>
         <div id="t_blurbnl" style="color:#9fb0cc;margin:0 0 10px;font-size:13px;font-style:italic"></div>
-        <div id="t_places" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px"></div>
+        <div id="t_places"></div>
       </div>
     </div>
   </div>
@@ -229,6 +258,7 @@
         <div class="pill"><small>Best</small><span id="s_best">0</span></div>
       </div>
       <div class="money" id="s_money"></div>
+      <div id="s_words"></div>
       <textarea id="log" readonly></textarea>
       <div id="stars" style="font-size:34px;letter-spacing:.2em;margin:4px 0 10px"></div>
       <div><button class="btn ghost" id="copy">Copy mistakes</button><button class="btn ghost" id="tomap">Map</button><button class="btn" id="again">Again</button></div>
@@ -237,66 +267,67 @@
   </div>
 </div>
 
+<script>window.NR_VERSION = 29;   /* the release: every local script tag below carries it as ?v=, so a release never mixes a new index.html with old cached files. Bump with node qa/check-versions.mjs --bump */</script>
 <script>window.onerror=(m,src,l,c)=>{document.getElementById('err').textContent+=`${m} (${l}:${c})\n`;};</script>
-<script src="data.js"></script>
-<script src="levels.js"></script>
-<script src="content/district2.js"></script>
-<script src="content/district3.js"></script>
-<script src="content/town-alblasserdam.js"></script>
-<script src="content/town-kinderdijk.js"></script>
-<script src="content/town-gouda.js"></script>
-<script src="content/towns.js"></script>
-<script src="content/towns-new.js"></script>
-<script src="fares.js"></script>
-<script src="map-art.js"></script>
-<script src="content/extra.js"></script>
-<script src="intro/art.js"></script>
-<script src="intro/panel-1.js"></script>
-<script src="intro/panel-2.js"></script>
-<script src="intro/panel-3.js"></script>
-<script src="intro/panel-4.js"></script>
-<script src="intro/panel-5.js"></script>
-<script src="intro/panel-6.js"></script>
-<script src="intro/panel-7.js"></script>
-<script src="intro/panel-8.js"></script>
-<script src="intro/panel-9.js"></script>
-<script src="intro/panel-10.js"></script>
-<script src="intro/panel-11.js"></script>
-<script src="intro/panel-12.js"></script>
-<script src="intro/panel-13.js"></script>
-<script src="intro/panel-14.js"></script>
-<script src="intro/scene-street.js"></script>
-<script src="intro/scene-dyke.js"></script>
-<script src="intro/scene-square.js"></script>
-<script src="intro/scene-nightshop.js"></script>
-<script src="intro/scene-shops.js"></script>
-<script src="intro3d/shot-1.js"></script>
-<script src="intro3d/shot-2.js"></script>
-<script src="intro3d/shot-3.js"></script>
-<script src="intro3d/shot-4.js"></script>
-<script src="intro3d/shot-5.js"></script>
-<script src="intro3d/shot-6.js"></script>
-<script src="intro3d/shot-7.js"></script>
-<script src="intro3d/shot-8.js"></script>
-<script src="intro3d/shot-9.js"></script>
-<script src="intro3d/shot-10.js"></script>
-<script src="intro3d/shot-11.js"></script>
-<script src="intro3d/shot-12.js"></script>
-<script src="intro3d/shot-13.js"></script>
-<script src="intro3d/shot-14.js"></script>
-<script src="towns3d/alblasserdam.js"></script>
-<script src="towns3d/kinderdijk.js"></script>
-<script src="towns3d/gouda.js"></script>
-<script src="towns3d/zeeland.js"></script>
-<script src="towns3d/utrecht.js"></script>
-<script src="towns3d/denhaag.js"></script>
-<script src="towns3d/rotterdam.js"></script>
-<script src="towns3d/urk.js"></script>
-<script src="towns3d/texel.js"></script>
-<script src="towns3d/groningen.js"></script>
-<script src="towns3d/maastricht.js"></script>
-<script src="towns3d/nijmegen.js"></script>
-<script src="towns3d/amsterdam.js"></script>
+<script src="data.js?v=29"></script>
+<script src="levels.js?v=29"></script>
+<script src="content/district2.js?v=29"></script>
+<script src="content/district3.js?v=29"></script>
+<script src="content/town-alblasserdam.js?v=29"></script>
+<script src="content/town-kinderdijk.js?v=29"></script>
+<script src="content/town-gouda.js?v=29"></script>
+<script src="content/towns.js?v=29"></script>
+<script src="content/towns-new.js?v=29"></script>
+<script src="fares.js?v=29"></script>
+<script src="map-art.js?v=29"></script>
+<script src="content/extra.js?v=29"></script>
+<script src="intro/art.js?v=29"></script>
+<script src="intro/panel-1.js?v=29"></script>
+<script src="intro/panel-2.js?v=29"></script>
+<script src="intro/panel-3.js?v=29"></script>
+<script src="intro/panel-4.js?v=29"></script>
+<script src="intro/panel-5.js?v=29"></script>
+<script src="intro/panel-6.js?v=29"></script>
+<script src="intro/panel-7.js?v=29"></script>
+<script src="intro/panel-8.js?v=29"></script>
+<script src="intro/panel-9.js?v=29"></script>
+<script src="intro/panel-10.js?v=29"></script>
+<script src="intro/panel-11.js?v=29"></script>
+<script src="intro/panel-12.js?v=29"></script>
+<script src="intro/panel-13.js?v=29"></script>
+<script src="intro/panel-14.js?v=29"></script>
+<script src="intro/scene-street.js?v=29"></script>
+<script src="intro/scene-dyke.js?v=29"></script>
+<script src="intro/scene-square.js?v=29"></script>
+<script src="intro/scene-nightshop.js?v=29"></script>
+<script src="intro/scene-shops.js?v=29"></script>
+<script src="intro3d/shot-1.js?v=29"></script>
+<script src="intro3d/shot-2.js?v=29"></script>
+<script src="intro3d/shot-3.js?v=29"></script>
+<script src="intro3d/shot-4.js?v=29"></script>
+<script src="intro3d/shot-5.js?v=29"></script>
+<script src="intro3d/shot-6.js?v=29"></script>
+<script src="intro3d/shot-7.js?v=29"></script>
+<script src="intro3d/shot-8.js?v=29"></script>
+<script src="intro3d/shot-9.js?v=29"></script>
+<script src="intro3d/shot-10.js?v=29"></script>
+<script src="intro3d/shot-11.js?v=29"></script>
+<script src="intro3d/shot-12.js?v=29"></script>
+<script src="intro3d/shot-13.js?v=29"></script>
+<script src="intro3d/shot-14.js?v=29"></script>
+<script src="towns3d/alblasserdam.js?v=29"></script>
+<script src="towns3d/kinderdijk.js?v=29"></script>
+<script src="towns3d/gouda.js?v=29"></script>
+<script src="towns3d/zeeland.js?v=29"></script>
+<script src="towns3d/utrecht.js?v=29"></script>
+<script src="towns3d/denhaag.js?v=29"></script>
+<script src="towns3d/rotterdam.js?v=29"></script>
+<script src="towns3d/urk.js?v=29"></script>
+<script src="towns3d/texel.js?v=29"></script>
+<script src="towns3d/groningen.js?v=29"></script>
+<script src="towns3d/maastricht.js?v=29"></script>
+<script src="towns3d/nijmegen.js?v=29"></script>
+<script src="towns3d/amsterdam.js?v=29"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
@@ -2481,6 +2512,18 @@ function puddle() {
 // a wisp is the lamp's fuel: a hot golden core in a soft halo, and its reflection on the wet road; update() bobs it and keeps the reflection down
 const WISP_HALO_MAT = GlowMat(glowTex, 0xffc65a, 1, true); WISP_HALO_MAT.userData.shared = true;
 const WISP_REFL_MAT = GlowMat(streakTex, 0xffb848, 0.8); WISP_REFL_MAT.userData.shared = true;
+// the first ride's training wheels: an arrow painted on the road into each option's lane, a halo behind the right sign.
+// One texture, one geometry, two shared materials, made once; the same glow shader as the wisps, so nothing new compiles.
+const arrowTex = (() => {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 128; const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.beginPath(); g.moveTo(32, 4); g.lineTo(60, 44); g.lineTo(42, 44); g.lineTo(42, 124); g.lineTo(22, 124); g.lineTo(22, 44); g.lineTo(4, 44); g.closePath(); g.fill();
+  return new THREE.CanvasTexture(c);
+})();
+const ARROW_MAT = GlowMat(arrowTex, 0xffd27a, 0.55); ARROW_MAT.userData.shared = true;
+const TEACH_HALO_MAT = GlowMat(glowTex, 0xffc870, 0.8, true); TEACH_HALO_MAT.userData.shared = true;   // a teaching fork: the right sign lit
+const HINT_HALO_MAT = GlowMat(glowTex, 0xffc870, 0.4, true); HINT_HALO_MAT.userData.shared = true;     // hint 'glow' (tier 1): a softer light
+PG.arrow = new THREE.PlaneGeometry(0.9, 2.6).rotateX(-Math.PI / 2);
+function roadArrow() { const m = new THREE.Mesh(PG.arrow, ARROW_MAT); m.position.y = 0.03; m.renderOrder = 2; return m; }
 function wisp() {
   const g = new THREE.Group(); g.position.y = 1.0;
   g.add(new THREE.Mesh(G.wisp, M.wisp));
@@ -2492,7 +2535,7 @@ function wisp() {
 
 // ---------- warm-up: compile every material variant once so nothing stalls mid-ride ----------
 function warmUp() {
-  const tmp = [signpost('warm'), bigSign('warm'), ghostFigure(), fence(), cart(), puddle(), wisp()];
+  const tmp = [signpost('warm'), bigSign('warm'), ghostFigure(), fence(), cart(), puddle(), wisp(), roadArrow(), new THREE.Sprite(TEACH_HALO_MAT)];
   tmp.forEach(o => { o.position.set(0, -50, -5); scene.add(o); });
   follower.visible = true;
   renderer.compile(scene, camera);
@@ -2599,7 +2642,9 @@ function planFiller(len) {
   while (d < end - 8) {
     const gap = 11 + S.speed * 0.5;
     const obRate = !L ? 0.72 : L.obstacles === 'none' ? 0 : L.obstacles === 'puddles' ? 0.35 : L.obstacles === 'light' ? 0.5 : 0.72;
-    if (Math.random() < obRate) {
+    if (S.wispEasy && d < 200) {   // tier 1, the first 200 m: the first wisps are unmissable, in the lane he starts in
+      for (let i = 0; i < 5; i++) add(wisp(), d + i * 2.2, LANE_X.length === 2 ? 0 : 1, 'wisp');
+    } else if (Math.random() < obRate) {
       const lane = Math.floor(Math.random() * LANE_X.length);
       const kind = Math.random(); const ob = L ? L.obstacles : 'normal';
       if (ob === 'puddles') { if (kind < 0.55) add(puddle(), d, lane, 'puddle'); else add(zombie(), d, lane, 'obstacle', { zombie: true }); }
@@ -2665,6 +2710,7 @@ function placeFork(fork, d) {
     const o = keep.map(i => fork.o[i]); fork.a = 0; fork.o = o;
   }
   const n = fork.o.length;
+  const teach = S.teachPlan > 0; if (teach) S.teachPlan--;
   const allLanes = [...Array(NL).keys()];
   const lanes = fork.fixed ? allLanes.slice(0, n) : allLanes.slice().sort(() => Math.random() - 0.5).slice(0, n);
   const order = fork.fixed ? fork.o.map((t, i) => i) : fork.o.map((t, i) => i).sort(() => Math.random() - 0.5);
@@ -2673,10 +2719,14 @@ function placeFork(fork, d) {
     const oi = order[k];
     const sp = signpost(fork.o[oi]);
     if (L && L.hint === 'glow') sp.userData.board.material.emissiveIntensity = oi === fork.a ? 0.75 : 0.12;
+    if (S.fareTier === 1 && L) sp.scale.setScalar(1.3);   // tier 1: bigger boards, readable from further off
+    // the right sign glows: a warm glow card just in front of its board, so the light lies over the board itself
+    if (oi === fork.a && (teach || (L && L.hint === 'glow'))) { const h = new THREE.Sprite(teach ? TEACH_HALO_MAT : HINT_HALO_MAT); h.scale.set(4.6, 2.6, 1); h.position.set(0, 1.7, 0.3); sp.add(h); }
     posts.push(add(sp, d, lane, 'sign', { fork, oi }));
+    if (teach) for (const k of [5, 15]) add(roadArrow(), d - k, lane, 'decal');   // arrows on the road into each option's lane
   });
   for (const lane of allLanes) if (!lanes.includes(lane)) add(fence(), d, lane, 'obstacle', { forkFence: true, fork });
-  const gate = { fork, d, posts, armed: false, resolved: false };
+  const gate = { fork, d, posts, armed: false, resolved: false, teach };
   S.objs.push({ mesh: null, d, lane: null, type: 'gate', gate });
 }
 function plan() {
@@ -3224,7 +3274,7 @@ function rideTo(target) {   // ride the road to an open town, through the towns 
     if (k >= 1) { mapAt = target; mapAnim = null; mapBike.side = -dir; mapBike.from = mapBike.to = -1; placeBike(target); openTown(T[target]); return; }
     mapAnim = requestAnimationFrame(step);
   };
-  $('town').style.transform = 'translate(-50%,105%)';
+  closeTown();
   mapAnim = requestAnimationFrame(step);
 }
 addEventListener('keydown', e => {
@@ -3232,7 +3282,12 @@ addEventListener('keydown', e => {
   const T = towns();
   if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { const n = T.findIndex((t, i) => i > mapAt && townOpen(t)); if (n >= 0) rideTo(n); e.preventDefault(); }
   else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { let n = -1; for (let i = mapAt - 1; i >= 0; i--) if (townOpen(T[i])) { n = i; break; } if (n >= 0) rideTo(n); e.preventDefault(); }
-  else if (e.key === 'Enter' || e.key === ' ') { openTown(T[mapAt]); e.preventDefault(); }
+  else if (e.key === 'Enter' || e.key === ' ') {
+    const a = document.activeElement, inCard = townCardUp && a && a.tagName === 'BUTTON' && $('town').contains(a) && a.id !== 't_close';
+    if (townCardUp && (inCard || townNext)) (inCard ? a : townNext).click(); else openTown(T[mapAt]);
+    e.preventDefault();
+  }
+  else if (e.key === 'Escape' && townCardUp) closeTown();
 });
 // a de/het bonus level per town, built from every noun with an article in that town and the towns before it
 function dehetBonus(t) {
@@ -3257,38 +3312,59 @@ function openTown(t) {
   { const i = towns().findIndex(x => x.id === t.id); if (open && i >= 0 && i !== mapAt && !mapAnim && mapLay) { mapAt = i; mapBike.side = 0; placeBike(i); } }   // an open town opened directly (a link, ?map=id): the rider is there
   $('t_tier').textContent = `Tier ${t.tier} · ${t.cefr}` + (open ? '' : ` · ${Math.max(0, DISTRICT_NEED - townStars(towns().find(x => x.tier === t.tier - 1) || t))} more stars in the town before`);
   $('t_name').textContent = t.name; $('t_blurb').textContent = t.blurb || ''; $('t_blurbnl').innerHTML = (t.blurbNl || '') + (t.rumour ? `<div style="margin-top:6px;color:#9fb0cc;font-style:normal"><span style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase">What they say here</span><br>${t.rumour}<br><i>${t.rumourNl}</i></div>` : '');
+  // one list in story order: what is done collapses to a row of stars, the first place not played yet is lit and focused so
+  // Enter rides it, the rest follow quietly; places that do not exist yet ("Alleen hier" in most towns) are not shown
   const box = $('t_places'); box.innerHTML = '';
-  for (const [pid, pname] of PLACES) {
-    const lvls = townLevels(t).filter(l => (l.place || PLACE_OF[l.id]) === pid && !l.soon);
-    const el = document.createElement('div'); el.className = 'place' + (open && lvls.length ? '' : ' locked');
-    const st = lvls.reduce((n, l) => n + (progress[l.id] || 0), 0);
-    el.innerHTML = `<small>${pname}</small>` + (lvls.length ? lvls.map(l => `<span class="lv">${l.name}${progress[l.id] ? ' ★' + progress[l.id] : ''}${scores[l.id] ? `<em>${scores[l.id]}</em>` : ''}</span>`).join('') : `<span style="color:var(--dim);font-size:12px">soon</span>`);
-    if (open && lvls.length) { if (lvls.length === 1) el.onclick = () => openMission(lvls[0]); else el.querySelectorAll('.lv').forEach((b, i) => { b.style.cursor = 'pointer'; b.onclick = (e) => { e.stopPropagation(); openMission(lvls[i]); }; }); }
-    box.appendChild(el);
+  const rows = []; for (const [pid, pname] of PLACES) for (const l of townLevels(t)) if ((l.place || PLACE_OF[l.id]) === pid && !l.soon) rows.push({ l, pname });
+  const bonus = dehetBonus(t); rows.push({ l: bonus, pname: 'Bonus', bonus: true });
+  const stars = n => '★'.repeat(n) + '☆'.repeat(3 - n);
+  const done = rows.filter(r => progress[r.l.id] > 0), todo = rows.filter(r => !(progress[r.l.id] > 0));
+  if (done.length) {
+    const strip = document.createElement('div'); strip.className = 'tdone';
+    for (const r of done) {
+      const b = document.createElement('button'); b.className = 'star'; b.title = `${r.pname} · ${r.l.name}` + (scores[r.l.id] ? ` · best ${scores[r.l.id]}` : '');
+      b.innerHTML = `${stars(progress[r.l.id])}<span>${r.l.name}</span>`; b.onclick = () => openMission(r.l); strip.appendChild(b);
+    }
+    box.appendChild(strip);
   }
-  const bonus = dehetBonus(t); const bel = document.createElement('div'); bel.className = 'place' + (open ? '' : ' locked'); bel.style.borderColor = 'rgba(255,210,122,.4)';
-  bel.innerHTML = `<small>Bonus</small><span class="lv">De of het · ${bonus.items.length}${progress[bonus.id] ? ' ★' + progress[bonus.id] : ''}${scores[bonus.id] ? `<em>${scores[bonus.id]}</em>` : ''}</span>`;
-  if (open) bel.onclick = () => openMission(bonus);
-  box.appendChild(bel);
-  $('town').style.transform = 'translate(-50%,0)';
+  const tier = t.tier, later = document.createElement('div'); later.className = 'tlater'; townNext = null;
+  todo.forEach((r, i) => {
+    const b = document.createElement('button'), next = open && i === 0, words = r.bonus ? `, ${r.l.items.length} words` : '';
+    b.className = 'place' + (next ? ' next' : ' later') + (r.bonus ? ' bonus' : '') + (open ? '' : ' locked');
+    b.innerHTML = next
+      ? `<small>${r.pname}${r.bonus ? '' : ' · next'}</small><b>${r.l.name}${words}</b><span class="go">${r.l.mission ? r.l.mission.where : ''}${missionFares(r.l, tier) ? ` <i>${missionFares(r.l, tier)}</i>` : ''}</span>`
+      : `<small>${r.pname}</small>${r.l.name}${words}`;
+    if (open) b.onclick = () => openMission(r.l); else b.disabled = true;
+    if (next) townNext = b;
+    (next ? box : later).appendChild(b);
+  });
+  if (later.children.length) box.appendChild(later);
+  $('town').style.transform = 'translate(-50%,0)'; townCardUp = true; $('town').scrollTop = 0;
+  if (townNext) townNext.focus({ preventScroll: true });
 }
-$('t_close').onclick = () => { $('town').style.transform = 'translate(-50%,105%)'; };
+let townNext = null, townCardUp = false;
+function closeTown() { $('town').style.transform = 'translate(-50%,105%)'; townCardUp = false; if (document.activeElement && $('town').contains(document.activeElement)) document.activeElement.blur(); }
+$('t_close').onclick = closeTown;
 
 function openMap() {
   startArt.off(); warmUp(); initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   for (const id of ['start', 'summary', 'mission']) $(id).style.display = 'none';
-  $('map').style.display = 'flex'; drawWorld(); $('town').style.transform = 'translate(-50%,105%)';
+  $('map').style.display = 'flex'; drawWorld(); closeTown();
   S.mode = 'start';
 }
 let pendingLevel = null;
 function openMission(lv) {
-  pendingLevel = lv; $('map').style.display = 'none';
+  pendingLevel = lv; $('map').style.display = 'none'; townCardUp = false;
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); const pl = PLACES.find(p => p[0] === (lv.place || PLACE_OF[lv.id]));
   $('m_act').textContent = `${t ? t.name : ''} · ${pl ? pl[1] : ''} · tier ${t ? t.tier : lv.act}`; $('m_name').textContent = lv.name;
   $('m_fare').textContent = missionFares(lv, t ? t.tier : (lv.act || 1));
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
-  const words = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w || i.read || i.listen).map(i => `<b>${i.nl}</b> ${i.read ? (i.en || (i.o && i.o[i.a])) : (i.w || i.en)}`).filter((v, i, a) => a.indexOf(v) === i).slice(0, 24);
-  $('m_words').innerHTML = words.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Words on this road</div>` + words.join(' · ') : '';
+  // three words as a teaser, the new ones first (not met on a road already starred); the full list comes at the end of the ride
+  const met = new Set(); for (const l of LEVELS) if (progress[l.id] > 0 && l.id !== lv.id && l.items) for (const i of l.items) if (i.nl) met.add(i.nl);
+  const cand = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w && i.nl && !/^\d+$/.test(i.w)).filter((v, i, a) => a.findIndex(x => x.nl === v.nl) === i);
+  const fresh = cand.filter(i => !met.has(i.nl)), three = (fresh.length ? fresh : cand).slice(0, 3);
+  $('m_words').innerHTML = three.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;text-align:center">${fresh.length ? 'New tonight' : 'Tonight'}</div><div class="wchips">`
+    + three.map(i => `<div class="wchip"><span class="pic">${pictogram(i.nl)}</span><div><b>${i.nl}</b><span>${i.w}</span></div></div>`).join('') + '</div>' : '';
   $('mission').style.display = 'flex'; $('mission').scrollTop = 0;
 }
 // 'Fares here € 1,00 to € 2,90 · best 1284': every fare on this road, signposts and look forks included
@@ -3308,6 +3384,7 @@ function start(lv) {
   townStyle = townStyleOf(townId);
   buildScenery(THEMES[qs.get('theme') || (L && L.theme) || 'polder'] || THEMES.polder);   // ?town= and ?theme= dress any level as another place, for looking at a town's art
   setRoadLook(LANE_X.length, theme);
+  $('hud').classList.toggle('endless', !L);
   reset(); S.mode = 'intro'; S.introT = 0;
 }
 // the town's tier prices the rides; endless rides as tier 6
@@ -3320,12 +3397,24 @@ function reset() {
   for (const o of S.objs) if (o.mesh) scene.remove(o.mesh);
   Object.assign(S, { t: 0, dist: 0, speed: BASE, slow: 1, slowTarget: 1, lane: LANE_X.length === 2 ? 0 : 1, x: 0, lean: 0, lamp: L ? 85 : 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
     objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, grade: 0, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100,
+    met: new Map(), teachPlan: L && !taughtBefore() ? 3 : 0, taught: 0, wispEasy: !!L && fareTier() === 1,
     cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: fareTier(), score: 0, fxT: 0, paid: 0, walletLast: 0, tickT: -1 });
   $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
   follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); rackGhost = null; }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
   hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0;
   plan();
+}
+// the first three forks of a player's first ride teach the move (nachtrit.taught is set once they are done)
+function taughtBefore() { try { return localStorage.getItem('nachtrit.taught') === '1'; } catch (e) { return true; } }
+let lampHinted = (() => { try { return localStorage.getItem('nachtrit.lamphint') === '1'; } catch (e) { return true; } })();
+// pictograms for the mission card's three words: the game's own drawn pictograms (PICTO, the graffiti ones), painted once per word
+const pictoCache = {};
+function pictogram(nl) {
+  const bare = String(nl).replace(/^(de|het|een)\s+/i, '').toLowerCase().trim(), key = PICTO[bare] ? bare : PICTO_ALIAS[bare];
+  if (!key) return '<span style="color:var(--dim)">·</span>';
+  if (!pictoCache[key]) { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'); g.scale(0.5, 0.5); g.fillStyle = g.strokeStyle = '#ffd27a'; g.lineCap = 'round'; PICTO[key](g); pictoCache[key] = c.toDataURL(); }
+  return `<img src="${pictoCache[key]}" width="32" height="32" alt="">`;
 }
 function die() {
   S.mode = 'dying'; S.dieT = 0; hideCard(); setFace('scream', 9);
@@ -3349,6 +3438,9 @@ function showSummary(won) {
   $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.mistakes.length} mistake${S.mistakes.length === 1 ? '' : 's'} to practise.`)
     : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (S.deliveriesTotal >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
   $('again').textContent = L && won && stars ? 'Next place' : 'Again';
+  const wl = [...S.met.entries()];
+  $('s_words').innerHTML = wl.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase">Words tonight · ${wl.filter(w => w[1].ok).length} of ${wl.length} right</div>`
+    + wl.map(([nl, w]) => `<span class="${w.ok ? 'ok' : 'no'}">${w.ok ? '✓' : '✗'}</span> <b>${nl}</b> ${w.en}`).join(' · ') : '';
   $('log').value = S.mistakes.map(m => `- ${today()} — ${m.said} → ${m.should} → [[${m.note}]]`).join('\n') || '(no mistakes)';
   // money: score, best per level (levels only when home, endless on every death), the wallet line
   S.score = S.delivered * 100 + S.cents / 10 + Math.round(clamp(S.lampMin, 0, 100));
@@ -3375,6 +3467,10 @@ function resolveFork(gate) {
   const post = gate.posts.find(p => p.lane === S.lane);
   const chosenIdx = post ? post.oi : -1;
   const ok = chosenIdx === fork.a;
+  if (L && (fork.read || (fork.st && fork.st.forks.length === 1))) {   // the words of the ride, for the end card: words met, words right
+    const k = fork.entry.nl, was = S.met.get(k); S.met.set(k, { en: fork.read ? fork.o[fork.a] : fork.entry.en, ok: ok && (!was || was.ok) });
+  }
+  if (gate.teach && ++S.taught >= 3) { try { localStorage.setItem('nachtrit.taught', '1'); } catch (e) {} }
   const rule = RULES[fork.r] || { name: fork.r, note: fork.r };
   if (ok) {
     S.good++; S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
@@ -3470,7 +3566,7 @@ function update(dt) {
   if (S.mode === 'intro') {
     S.introT += dt; const k = smooth(clamp(S.introT / 3.6, 0, 1));
     camera.position.set(0, lerp(22, 2.85, k), lerp(14, 6.4, k));
-    const look = new THREE.Vector3(0, lerp(0, 1.25, k), lerp(-30, -8, k)); camera.lookAt(look);
+    camera.lookAt(0, lerp(0, 1.25, k), lerp(-30, -8, k));
     if (S.introT > 3.6) { S.mode = 'ride'; say(L ? L.mission.where : 'Ride through the right sign.', 'good', null, 2.2); }
   }
   if (S.mode === 'dying') {
@@ -3502,6 +3598,7 @@ function update(dt) {
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
     if (S.lamp <= 0) { S.lamp = 0; die(); return; }
+    if (!lampHinted && L && S.lamp < 50 && toastT <= 0) { lampHinted = true; try { localStorage.setItem('nachtrit.lamphint', '1'); } catch (e) {} say('The lamp is going.', 'bad', 'Ride through the lights to fill it.', 3.6); }
     plan();
   }
   S.speedNorm = MAXS > BASE ? (S.speed - BASE) / (MAXS - BASE) : 0;
@@ -3626,10 +3723,15 @@ function update(dt) {
       else if (f.entry.listen) { showCard('Listen', '🔊 …', assembled(f.st, f.idx), fr); speak(f.entry.nl); }
       else showCard('The passenger says', f.entry.en, assembled(f.st, f.idx) + (L && L.hint === 'letter' && firstLetterHint(f.o[f.a]) ? ` <span style="color:#9fb0cc">(${firstLetterHint(f.o[f.a])})</span>` : ''), fr);
       for (const p of g.posts) p.mesh.userData.board.material.emissiveIntensity = (L && L.hint === 'glow') ? (p.oi === g.fork.a ? 1.0 : 0.25) : 0.6;
-      const cells = $('lanes').children; for (let i = 0; i < 3; i++) { const p = g.posts.find(q => q.lane === i); cells[i].style.display = i < LANE_X.length ? '' : 'none'; cells[i].textContent = p ? p.fork.o[p.oi] : '✕'; }
+      const cells = $('lanes').children, NLn = LANE_X.length;
+      for (let i = 0; i < 3; i++) {
+        const p = g.posts.find(q => q.lane === i); cells[i].style.display = i < NLn ? '' : 'none'; cells[i].textContent = p ? p.fork.o[p.oi] : '✕';
+        if (g.teach && i < NLn) { const s = document.createElement('span'); s.className = 'side'; s.textContent = i === 0 ? '◀ left lane' : i === NLn - 1 ? 'right lane ▶' : '▲ middle'; cells[i].prepend(s); }
+      }
+      if (g.teach && S.taught === 0) say('Ride through the right word.', 'good', 'The lit sign is the answer, this once.', 3.4);
       $('lanes').style.opacity = 1;
     }
-    if (g.armed) S.slowTarget = z > -13 ? (L ? L.forkSlow : 0.55) : (L ? 0.85 : 0.9);
+    if (g.armed) S.slowTarget = z > (g.teach ? -30 : S.fareTier === 1 && L ? -22 : -13) ? (L ? L.forkSlow : 0.55) : (L ? 0.85 : 0.9);
     if (g.armed) { const cells = $('lanes').children; for (let i = 0; i < 3; i++) cells[i].classList.toggle('here', i === S.lane); }
     S.forkZoom = lerp(S.forkZoom, g.armed ? clamp(1 - (-z) / 46, 0, 1) : 0, dt * 4);
   } else S.forkZoom = lerp(S.forkZoom, 0, dt * 4);
@@ -3655,7 +3757,7 @@ function update(dt) {
   }
 
   // HUD
-  const hud = `${S.souls}|${S.streak}|${Math.round(S.dist)}`; if (hud !== S.hudLast) { S.hudLast = hud; $('souls').textContent = S.souls; $('streak').textContent = S.streak; $('dist').textContent = Math.round(S.dist) + ' m'; }
+  const hud = `${S.souls}|${S.streak}|${Math.round(S.dist)}`; if (hud !== S.hudLast) { S.hudLast = hud; $('souls').textContent = S.souls; $('streak').textContent = S.streak; $('streakpill').classList.toggle('on', S.streak >= 3); $('dist').textContent = Math.round(S.dist) + ' m'; }
   // wallet: counts toward the real amount, a tick per whole euro crossed, written only when the shown amount changes
   if (S.walletShown !== S.cents) {
     const diff = S.cents - S.walletShown, step = Math.max(100, Math.abs(diff) / 0.5) * dt, prev = S.walletShown;

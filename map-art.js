@@ -317,29 +317,34 @@
     });
     // the vignette of each town: as large as the room allows, above its badge or slid to one side of it,
     // never over another town's badge, label or vignette, never into the title
-    const vx = nodes.map(p => p[0]), vw = nodes.map(() => f * 4.4), placed = [];
+    // a crowded town (the Randstad) may hang its vignette under its label instead, when there is more room there
+    const vx = nodes.map(p => p[0]), vw = nodes.map(() => f * 4.4), vy = nodes.map(p => p[1] - f * 1.25), placed = [];
     const order = nodes.map((p, i) => i).sort((a, b) => (raw[a][1] - raw[b][1]));
-    const hits = (i, cx, w) => {
-      const x0 = cx - w / 2, x1 = cx + w / 2, y1 = nodes[i][1] - f * 1.2, y0 = y1 - w * 0.62;
-      if (y0 < box.y - f * 0.5 || x0 < box.x - f * 2 || x1 > box.x + box.w + f * 2) return true;
-      for (let j = 0; j < n; j++) if (j !== i) { const q = nodes[j]; if (q[0] + blk[j].w * 0.46 > x0 && q[0] - blk[j].w * 0.46 < x1 && q[1] + blk[j].bot > y0 && q[1] - f * 2.6 < y1) return true; }
-      for (const o of placed) { const ox = Math.min(x1, o.x1) - Math.max(x0, o.x0), oy = Math.min(y1, o.y1) - Math.max(y0, o.y0); if (ox > 0 && oy > 0 && ox * oy > 0.12 * Math.min((x1 - x0) * (y1 - y0), (o.x1 - o.x0) * (o.y1 - o.y0))) return true; }
+    const hits = (i, cx, w, y1) => {
+      const x0 = cx - w / 2, x1 = cx + w / 2, y0 = y1 - w * 0.62;
+      if (y0 < box.y - f * 0.5 || y1 > box.y + box.h + f * 0.5 || x0 < box.x - f * 2 || x1 > box.x + box.w + f * 2) return true;
+      for (let j = 0; j < n; j++) if (j !== i) { const q = nodes[j]; if (q[0] + blk[j].w * 0.4 > x0 && q[0] - blk[j].w * 0.4 < x1 && q[1] + blk[j].bot > y0 && q[1] - f * 2.6 < y1) return true; }
+      for (const o of placed) { const ox = Math.min(x1, o.x1) - Math.max(x0, o.x0), oy = Math.min(y1, o.y1) - Math.max(y0, o.y0); if (ox > 0 && oy > 0 && ox * oy > 0.2 * Math.min((x1 - x0) * (y1 - y0), (o.x1 - o.x0) * (o.y1 - o.y0))) return true; }
       return false;
     };
     for (const i of order) {
       let best = null;
-      for (let w = f * 10; w >= f * 4.4 && !best; w -= f * 0.25)
-        for (const k of [0, -0.18, 0.18, -0.32, 0.32, -0.45, 0.45]) { const cx = nodes[i][0] + k * w; if (!hits(i, cx, w)) { best = [cx, w]; break; } }
-      if (!best) best = [nodes[i][0], f * 4.4];
-      vx[i] = best[0]; vw[i] = best[1];
-      const y1 = nodes[i][1] - f * 1.2; placed.push({ x0: vx[i] - vw[i] / 2, x1: vx[i] + vw[i] / 2, y0: y1 - vw[i] * 0.62, y1 });
+      // above the badge first, down to 7 f wide; then, for a crowded town, above or close under its label, centred, at most 9 f
+      const KS = [0, -0.18, 0.18, -0.32, 0.32, -0.45, 0.45, -0.6, 0.6];
+      const tryAt = (w, below, ks) => { const y1 = below ? nodes[i][1] + blk[i].bot + f * 0.4 + w * 0.82 : nodes[i][1] - f * 1.2;   // its towers reach about 0.8 w up
+        for (const k of ks) { const cx = nodes[i][0] + k * w; if (!hits(i, cx, w, y1)) return [cx, w, below ? y1 : y1 - f * 0.05]; } return null; };
+      for (let w = f * 14; w >= f * 7 && !best; w -= f * 0.25) best = tryAt(w, false, KS);
+      for (let w = f * 9; w >= f * 4.4 && !best; w -= f * 0.25) best = tryAt(w, false, KS) || tryAt(w, true, [0, -0.18, 0.18]);
+      if (!best) best = [nodes[i][0], f * 4.4, nodes[i][1] - f * 1.25];
+      vx[i] = best[0]; vw[i] = best[1]; vy[i] = best[2];
+      placed.push({ x0: vx[i] - vw[i] / 2, x1: vx[i] + vw[i] / 2, y0: vy[i] - vw[i] * 0.62, y1: vy[i] });
     }
-    const lay = { W, H, box, sc, ky, f, P, S, nodes, raw, blk, vw, vx, geo, onLand };
+    const lay = { W, H, box, sc, ky, f, P, S, nodes, raw, blk, vw, vx, vy, geo, onLand };
     // label blocks that still overlap after the push and the snap (the test reads this; it should be 0)
     lay.overlaps = 0;
     for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const dx = Math.abs(nodes[j][0] - nodes[i][0]), dy = nodes[j][1] - nodes[i][1]; if (dx < (blk[i].w + blk[j].w) / 2 && Math.abs(dy) < (dy >= 0 ? blk[i].bot + blk[j].top : blk[j].bot + blk[i].top)) lay.overlaps++; }
     lay.route = buildRoute(lay, towns);
-    NRMAP.last = { overlaps: lay.overlaps, snapped, f, ky: +ky.toFixed(2) };
+    NRMAP.last = { overlaps: lay.overlaps, snapped, f, ky: +ky.toFixed(2) }; NRMAP.lastLay = lay;
     return lay;
   };
 
@@ -411,7 +416,7 @@
   function farm(c, x, y, s, r, lights) {
     const w = s * (0.7 + r() * 0.4), h = s * 0.42; c.fillStyle = SIL2; c.fillRect(x - w / 2, y - h, w, h);
     c.fillStyle = SIL; c.beginPath(); c.moveTo(x - w / 2 - s * 0.06, y - h); c.lineTo(x - w * 0.1, y - h - s * 0.5); c.lineTo(x + w / 2 + s * 0.06, y - h); c.fill();
-    if (r() < 0.25) { c.fillStyle = '#f0a848'; c.fillRect(x - s * 0.08, y - h * 0.7, s * 0.09, s * 0.11); lights.push([x - s * 0.03, y - h * 0.6, s * 0.9, 0.28]); }
+    if (r() < 0.5) { c.fillStyle = '#f0a848'; c.fillRect(x - s * 0.08, y - h * 0.7, s * 0.09, s * 0.11); lights.push([x - s * 0.03, y - h * 0.6, s * 1.1, 0.34]); }
   }
   function chapel(c, x, y, s, r, lights) {
     c.fillStyle = SIL2; c.fillRect(x - s * 0.1, y - s * 0.45, s * 0.65, s * 0.45); c.fillStyle = SIL; c.beginPath(); c.moveTo(x - s * 0.1, y - s * 0.45); c.lineTo(x + s * 0.22, y - s * 0.75); c.lineTo(x + s * 0.55, y - s * 0.45); c.fill();
@@ -809,7 +814,7 @@
     const md = m.getImageData(0, 0, mw, mh).data;
     const Bc = document.createElement('canvas'); Bc.width = mw; Bc.height = mh; const bm = Bc.getContext('2d', { willReadFrequently: true }); bm.setTransform(ms, 0, 0, ms, 0, 0);
     bm.fillStyle = bm.strokeStyle = '#fff';
-    nodes.forEach((p, i) => { const vw = lay.vw[i]; bm.fillRect(lay.vx[i] - vw * 0.48, p[1] - f * 1.2 - vw * 0.6, vw * 0.96, vw * 0.6 + f * 0.9); bm.beginPath(); bm.arc(p[0], p[1], f * 1.7, 0, TAU); bm.fill(); bm.fillRect(p[0] - lay.blk[i].w * 0.36, p[1] + f * 1.7, lay.blk[i].w * 0.72, f * 2.4); });
+    nodes.forEach((p, i) => { const vw = lay.vw[i]; bm.fillRect(lay.vx[i] - vw * 0.48, lay.vy[i] - vw * 0.6, vw * 0.96, vw * 0.6 + f * 0.9); bm.beginPath(); bm.arc(p[0], p[1], f * 1.7, 0, TAU); bm.fill(); bm.fillRect(p[0] - lay.blk[i].w * 0.36, p[1] + f * 1.7, lay.blk[i].w * 0.72, f * 2.4); });
     bm.lineWidth = f * 0.8; bm.lineCap = bm.lineJoin = 'round'; if (R.pts.length > 1) { bm.beginPath(); line(bm, R.pts); bm.stroke(); }
     const bd = bm.getImageData(0, 0, mw, mh).data;
     const cell = (x, y) => { const xi = (x * ms) | 0, yi = (y * ms) | 0; return xi < 0 || yi < 0 || xi >= mw || yi >= mh ? -1 : (yi * mw + xi) * 4; };
@@ -842,6 +847,7 @@
     c.save(); c.beginPath(); c.rect(0, 0, W, H); for (const p of geo.land) poly(c, p); c.clip('evenodd');
     c.filter = `blur(${(D * 0.4).toFixed(1)}px)`; c.fillStyle = 'rgba(2,5,8,.62)'; c.beginPath(); for (const p of geo.land) poly(c, p, 0, D * 2.0); c.fill(); c.filter = 'none';
     c.strokeStyle = 'rgba(120,150,180,.10)'; c.lineWidth = 1; c.beginPath(); for (const p of geo.land) poly(c, p, 0, D + 1.5); c.stroke();
+    c.filter = `blur(${(D * 0.7).toFixed(1)}px)`; c.strokeStyle = 'rgba(150,175,200,.10)'; c.lineWidth = D * 1.6; c.beginPath(); for (const p of geo.land) poly(c, p, 0, D * 2.6); c.stroke(); c.filter = 'none';
     c.restore();
 
     // ---- the land layer
@@ -851,7 +857,7 @@
       l.beginPath(); geo.land.forEach((p, i) => { if (k <= thick[i] + 0.5) poly(l, p, 0, k); }); l.fill();
     }
     const top = l.createLinearGradient(box.x, box.y, box.x + box.w * 0.45, box.y + box.h);
-    top.addColorStop(0, '#333d48'); top.addColorStop(0.5, '#29313b'); top.addColorStop(1, '#222932');
+    top.addColorStop(0, '#3a4552'); top.addColorStop(0.5, '#303945'); top.addColorStop(1, '#283039');
     l.fillStyle = top; l.beginPath(); for (const p of geo.land) poly(l, p); l.fill();
     // texture: polder parcels, ditches, speckle
     l.save(); l.beginPath(); for (const p of geo.land) poly(l, p); l.clip();
@@ -907,12 +913,13 @@
       let k = null;
       if (wad) k = q < 0.34 ? 'sheep' : q < 0.42 ? 'tree' : null;
       else if (reg === 'forest') k = q < 0.42 ? 'pine' : q < 0.68 ? 'tree' : null;
-      else if (reg === 'tulips') { if (q < 0.22) fields.push([px, py]); else if (q < 0.3) k = 'farm'; else if (q < 0.35) k = 'mill'; }
-      else if (reg === 'mills') k = q < 0.2 ? 'mill' : q < 0.32 ? 'cow' : q < 0.38 ? 'farm' : q < 0.46 ? 'tree' : null;
+      else if (reg === 'tulips') { if (q < 0.32) fields.push([px, py]); else if (q < 0.4) k = 'farm'; else if (q < 0.47) k = 'mill'; }
+      else if (reg === 'mills') k = q < 0.24 ? 'mill' : q < 0.38 ? 'cow' : q < 0.45 ? 'farm' : q < 0.56 ? 'tree' : null;
       else if (reg === 'glass') k = q < 0.5 ? 'glass' : null;
       else if (reg === 'orchard') k = q < 0.45 ? 'orchard' : q < 0.5 ? 'farm' : null;
       else if (id === 12) { if (q < 0.18) fields.push([px, py]); else if (q < 0.26) k = 'farm'; else if (q < 0.32) k = 'poplar'; }
-      else k = q < 0.13 ? 'tree' : q < 0.18 ? 'poplar' : q < 0.25 ? 'cow' : q < 0.31 ? 'farm' : q < 0.335 ? 'mill' : q < 0.345 ? 'chapel' : q < 0.355 ? 'sheep' : null;
+      else k = q < 0.18 ? 'tree' : q < 0.24 ? 'poplar' : q < 0.32 ? 'cow' : q < 0.39 ? 'farm' : q < 0.43 ? 'mill' : q < 0.445 ? 'chapel' : q < 0.46 ? 'sheep' : q < 0.48 ? 'tulipf' : null;
+      if (k === 'tulipf') { fields.push([px, py]); k = null; }
       if (k) items.push({ k, x: px, y: py, s: s * (0.8 + r() * 0.45), a: r() * 6, f: r() < 0.5 });
     }
     for (const [x, y] of fields) tulips(l, x, y, s, r);
@@ -921,7 +928,7 @@
       const { x, y } = it, z = it.s;
       if (it.k === 'tree') tree(l, x, y, z * 1.1, r); else if (it.k === 'pine') { pine(l, x, y, z); if (r() < 0.5) pine(l, x + z * 0.35, y + z * 0.12, z * 0.85); }
       else if (it.k === 'poplar') { poplar(l, x, y, z); poplar(l, x + z * 0.32, y + z * 0.08, z * 0.9); poplar(l, x + z * 0.64, y + z * 0.16, z * 0.85); }
-      else if (it.k === 'mill') mill(l, x, y, z * 1.05, it.a, r() < 0.15, lights);
+      else if (it.k === 'mill') mill(l, x, y, z * 1.2, it.a, r() < 0.4, lights);
       else if (it.k === 'cow') { cow(l, x, y, z, it.f); if (r() < 0.5) cow(l, x + z * 0.6, y + z * 0.2, z * 0.9, !it.f); }
       else if (it.k === 'sheep') { sheep(l, x, y, z); sheep(l, x + z * 0.4, y + z * 0.15, z); }
       else if (it.k === 'farm') farm(l, x, y, z, r, lights); else if (it.k === 'chapel') chapel(l, x, y, z * 0.9, r, lights);
@@ -937,7 +944,7 @@
     }
     // boats on the sea near the coast, and on the lake
     let nb = 0;
-    for (let i = 0; i < 4000 && nb < 20; i++) {
+    for (let i = 0; i < 6000 && nb < 30; i++) {
       const x = box.x - f * 3 + r() * (box.w + f * 6), y = box.y + r() * box.h;
       if (isLand(x, y) || isLand(x, y - s) || isLand(x, y + s * 0.4) || isRiver(x, y) || busy(x, y)) continue;
       const near = [[-1, 0], [1, 0], [0, 1], [0, -1], [0.7, 0.7], [-0.7, -0.7]].some(([dx, dy]) => isLand(x + dx * s * 3, y + dy * s * 3));
@@ -973,8 +980,8 @@
       if (on) { l.save(); l.globalCompositeOperation = 'lighter'; for (const [w, run] of runs) { if (w || run.length < 2) continue; l.strokeStyle = 'rgba(255,168,70,.09)'; l.lineWidth = f * 1.3; l.beginPath(); line(l, run); l.stroke(); l.strokeStyle = 'rgba(255,190,100,.13)'; l.lineWidth = f * 0.55; l.beginPath(); line(l, run); l.stroke(); } l.restore(); }
       for (const [w, run] of runs) {
         if (run.length < 2) continue;
-        if (w) { l.setLineDash([f * 0.1, f * 0.42]); l.strokeStyle = on ? 'rgba(255,214,150,.85)' : 'rgba(140,132,116,.45)'; l.lineWidth = f * 0.17; }
-        else { l.setLineDash(on ? [f * 0.62, f * 0.55] : [f * 0.4, f * 0.75]); l.strokeStyle = on ? '#ffd896' : 'rgba(150,140,122,.34)'; l.lineWidth = on ? f * 0.2 : f * 0.12; }
+        if (w) { l.setLineDash([f * 0.1, f * 0.42]); l.strokeStyle = on ? 'rgba(255,214,150,.85)' : 'rgba(214,170,110,.55)'; l.lineWidth = f * 0.17; }
+        else { l.setLineDash(on ? [f * 0.62, f * 0.55] : [f * 0.45, f * 0.7]); l.strokeStyle = on ? '#ffd896' : 'rgba(222,178,116,.55)'; l.lineWidth = on ? f * 0.22 : f * 0.15; }
         l.beginPath(); line(l, run); l.stroke();
       }
       l.setLineDash([]);
@@ -983,26 +990,26 @@
       for (let q = 0; q <= n; q++) {
         const sp = n ? s0 + (s1 - s0) * q / n : (s0 + s1) / 2; if (s1 < s0) break;
         const p = NRMAP.at(R, sp);
-        if (nodes.some((m_, j) => { const vw = lay.vw[j], B = lay.blk[j], dx = Math.abs(p.x - m_[0]), dy = p.y - m_[1], dv = Math.abs(p.x - lay.vx[j]); return Math.hypot(dx, dy) < f * 2.3 || (dx < B.w * 0.42 && dy > f * 1.6 && dy < f * 4.3) || (dv < vw * 0.4 && dy > -f * 1.25 - vw * 0.5 && dy < -f * 1.25); })) continue;
+        if (nodes.some((m_, j) => { const vw = lay.vw[j], B = lay.blk[j], dx = Math.abs(p.x - m_[0]), dy = p.y - m_[1], dv = Math.abs(p.x - lay.vx[j]); return Math.hypot(dx, dy) < f * 2.3 || (dx < B.w * 0.42 && dy > f * 1.6 && dy < f * 4.3) || (dv < vw * 0.4 && p.y > lay.vy[j] - vw * 0.5 && p.y < lay.vy[j]); })) continue;
         const water = !isLand(p.x, p.y) && !isRiver(p.x, p.y);
-        if (on) lamps.push({ x: p.x, y: p.y, r: f * 1.25, c: Math.max(0.9, f * 0.17), w: 1.5 + r() * 2.5, ph: r() * TAU, water });
-        else { l.fillStyle = 'rgba(122,112,92,.75)'; l.beginPath(); l.arc(p.x, p.y, Math.max(0.8, f * 0.13), 0, TAU); l.fill(); }
+        lamps.push(on ? { x: p.x, y: p.y, r: f * 1.6, c: Math.max(1, f * 0.19), w: 1.5 + r() * 2.5, ph: r() * TAU, water, k: 1 }
+          : { x: p.x, y: p.y, r: f * 1.05, c: Math.max(0.8, f * 0.13), w: 0.8 + r() * 1.2, ph: r() * TAU, water, k: 0.45 });
       }
     }
 
     // ---- the towns, back to front; each is also kept as a sprite so the cyclist can pass behind it
     const order = nodes.map((p, i) => i).sort((a, b) => nodes[a][1] - nodes[b][1]), sprs = [];
     for (const i of order) {
-      const t = towns[i], nx = lay.vx[i], ny = nodes[i][1], vw = lay.vw[i], u = vw / 16, gy = ny - f * 1.25, st = states[i];
-      const x0 = nx - vw * 0.62, x1 = nx + vw * 0.62, y0 = gy - vw * 0.88, y1 = ny + f * 0.9;
+      const t = towns[i], nx = lay.vx[i], ny = nodes[i][1], vw = Math.max(lay.vw[i], f * 6), u = vw / 16, gy = lay.vy[i], st = states[i];   // the smallest still read: drawn at 6 f at least
+      const x0 = nx - vw * 0.62, x1 = nx + vw * 0.62, y0 = gy - vw * 0.88, y1 = Math.max(ny, gy) + f * 0.9;
       const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.ceil((x1 - x0) * dpr)); cv.height = Math.max(1, Math.ceil((y1 - y0) * dpr));
       const v = cv.getContext('2d'); v.setTransform(dpr, 0, 0, dpr, -x0 * dpr, -y0 * dpr);
-      const tl = [], L = { r: mulberry(77 + i * 131), lit: st === 'saved' ? 0.92 : st === 'open' ? 0.6 : 0.2, hot: st === 'saved', lights: tl, beams, state: st };
+      const tl = [], L = { r: mulberry(77 + i * 131), lit: st === 'saved' ? 0.95 : st === 'open' ? 0.75 : 0.5, hot: st === 'saved', lights: tl, beams, state: st };
       const sh = v.createRadialGradient(nx, gy, 0, nx, gy, vw * 0.55); sh.addColorStop(0, 'rgba(6,9,13,.42)'); sh.addColorStop(1, 'rgba(6,9,13,0)');
       v.save(); v.translate(0, gy * 0.6); v.scale(1, 0.4); v.fillStyle = sh; v.fillRect(nx - vw * 0.6, gy - vw * 0.6, vw * 1.2, vw * 1.2); v.restore();
       (V[t.id] || genericTown)(v, nx, gy, u, L);
-      if (st === 'locked') { v.globalCompositeOperation = 'source-atop'; v.fillStyle = 'rgba(52,62,74,.42)'; v.fillRect(x0, y0, x1 - x0, y1 - y0); v.globalCompositeOperation = 'source-over'; }
-      for (const q of tl) lights.push(st === 'locked' ? [q[0], q[1], q[2], q[3] * 0.3, q[4], q[5]] : q);
+      if (st === 'locked') { v.globalCompositeOperation = 'source-atop'; v.fillStyle = 'rgba(52,62,74,.16)'; v.fillRect(x0, y0, x1 - x0, y1 - y0); v.globalCompositeOperation = 'source-over'; }
+      for (const q of tl) lights.push(st === 'locked' ? [q[0], q[1], q[2], q[3] * 0.75, q[4], q[5]] : [q[0], q[1], q[2] * 1.2, Math.min(0.7, q[3] * 1.25), q[4], q[5]]);
       l.drawImage(cv, x0, y0, x1 - x0, y1 - y0);
       sprs.push({ cv, x: x0, y: y0, w: x1 - x0, h: y1 - y0, gy, i });
     }
@@ -1012,8 +1019,8 @@
     c.save(); c.globalCompositeOperation = 'lighter';
     for (const q of lights) {
       const [x, y, rr, a, col] = q; if (a < 0.14) continue;
-      const len = Math.min(f * 4.2, rr * 1.8 + f * 1.0), cc = col || '255,168,76';
-      for (let k = 0; k < 6; k++) { const w = Math.max(1, rr * (0.55 - k * 0.07)); c.fillStyle = `rgba(${cc},${(a * 0.62 * (1 - k / 6)).toFixed(3)})`; c.fillRect(x - w / 2 + ((k % 2) - 0.5) * 1.6, y + D * 0.25 + k * len / 6, w, Math.max(1, len / 13)); }
+      const len = Math.min(f * 6.5, rr * 2.4 + f * 1.4), cc = col || '255,168,76';
+      for (let k = 0; k < 6; k++) { const w = Math.max(1, rr * (0.6 - k * 0.07)); c.fillStyle = `rgba(${cc},${(a * 0.85 * (1 - k / 6)).toFixed(3)})`; c.fillRect(x - w / 2 + ((k % 2) - 0.5) * 1.6, y + D * 0.25 + k * len / 6, w, Math.max(1, len / 13)); }
     }
     c.restore();
     c.drawImage(BASE.land, 0, 0, W, H); c.drawImage(Lc, 0, 0, W, H);
@@ -1025,10 +1032,10 @@
       for (let k = 0; k < 6; k++) { const xb = box.x + r() * box.w, rx = box.w * (0.08 + r() * 0.12), ry = Math.max(5, box.h * 0.026); c.save(); c.translate(xb, yb + (r() - 0.5) * ry * 2); c.scale(1, ry / rx); const gr = c.createRadialGradient(0, 0, 0, 0, 0, rx); gr.addColorStop(0, 'rgba(118,138,158,.06)'); gr.addColorStop(1, 'rgba(118,138,158,0)'); c.fillStyle = gr; c.fillRect(-rx, -rx, rx * 2, rx * 2); c.restore(); }
     }
     c.restore(); c.save();
-    nodes.forEach((p, i) => { if (states[i] !== 'locked') return; const vw = lay.vw[i]; c.save(); c.translate(lay.vx[i], p[1] - f * 1.25 - vw * 0.25); c.scale(1, 0.6); const gr = c.createRadialGradient(0, 0, 0, 0, 0, vw * 0.8); gr.addColorStop(0, 'rgba(112,128,146,.16)'); gr.addColorStop(1, 'rgba(112,128,146,0)'); c.fillStyle = gr; c.fillRect(-vw, -vw, vw * 2, vw * 2); c.restore(); });
+    nodes.forEach((p, i) => { if (states[i] !== 'locked') return; const vw = lay.vw[i]; c.save(); c.translate(lay.vx[i], lay.vy[i] - vw * 0.25); c.scale(1, 0.6); const gr = c.createRadialGradient(0, 0, 0, 0, 0, vw * 0.8); gr.addColorStop(0, 'rgba(112,128,146,.05)'); gr.addColorStop(1, 'rgba(112,128,146,0)'); c.fillStyle = gr; c.fillRect(-vw, -vw, vw * 2, vw * 2); c.restore(); });
     c.restore();
 
-    const glows = nodes.map((p, i) => { const st = states[i], vw = lay.vw[i]; return { x: lay.vx[i], y: p[1] - f * 1.25 - vw * 0.22, rx: vw * 0.8, ry: vw * 0.45, a: st === 'saved' ? 0.3 : st === 'open' ? 0.18 : 0.06, spr: st === 'locked' ? 'cold' : 'warm', w: 1.1 + r() * 0.9, ph: r() * TAU }; });
+    const glows = nodes.map((p, i) => { const st = states[i], vw = lay.vw[i]; return { x: lay.vx[i], y: lay.vy[i] - vw * 0.22, rx: vw * 0.8, ry: vw * 0.45, a: st === 'saved' ? 0.34 : st === 'open' ? 0.24 : 0.13, spr: 'warm', w: 1.1 + r() * 0.9, ph: r() * TAU }; });
     FX = { cw, ch, dpr, f, glows, lamps, glints: BASE.glints, beams: beams.filter(b => b[3] !== 'locked'), sprites: sprs, nodes: nodes.map(p => p.slice()) };
     lay.fx = FX;
     NRMAP.ms = { paint: Math.round(performance.now() - t0), lights: lights.length, lamps: lamps.length, items: BASE.items };
@@ -1073,16 +1080,16 @@
     for (const g of F.glows) { c.globalAlpha = Math.max(0, Math.min(1, g.a * (0.76 + 0.24 * Math.sin(t * g.w + g.ph)))); c.drawImage(SP[g.spr], g.x - g.rx, g.y - g.ry, g.rx * 2, g.ry * 2); }
     if (bike && !bike.moving && F.nodes[bike.cur]) { const p = F.nodes[bike.cur]; c.globalAlpha = 0.4 + 0.18 * Math.sin(t * 2.2); c.drawImage(SP.green, p[0] - f * 3.2, p[1] - f * 3.2, f * 6.4, f * 6.4); }
     for (const p of F.lamps) {
-      c.globalAlpha = 0.72 + 0.28 * Math.sin(t * p.w + p.ph) * Math.sin(t * p.w * 0.43 + p.ph * 1.7);
+      c.globalAlpha = p.k * (0.72 + 0.28 * Math.sin(t * p.w + p.ph) * Math.sin(t * p.w * 0.43 + p.ph * 1.7));
       c.drawImage(SP.lamp, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
-      if (p.water) for (let k = 0; k < 4; k++) { const sh = Math.sin(t * 3.3 + p.ph + k * 1.9); c.globalAlpha = 0.3 * (1 - k / 4) * (0.55 + 0.45 * sh); c.drawImage(SP.lamp, p.x - p.r * 0.32 + sh * 1.3, p.y + f * 0.4 + k * f * 0.34, p.r * 0.64, Math.max(1.5, f * 0.16)); }
+      if (p.water) for (let k = 0; k < 4; k++) { const sh = Math.sin(t * 3.3 + p.ph + k * 1.9); c.globalAlpha = p.k * 0.3 * (1 - k / 4) * (0.55 + 0.45 * sh); c.drawImage(SP.lamp, p.x - p.r * 0.32 + sh * 1.3, p.y + f * 0.4 + k * f * 0.34, p.r * 0.64, Math.max(1.5, f * 0.16)); }
     }
     for (const b of F.beams) {
       const [x, y, len] = b, a = t * 0.8 + x * 0.013;
       for (const off of [0, Math.PI]) { const ang = a + off, cs = Math.cos(ang); c.save(); c.translate(x, y); c.rotate(Math.atan2(Math.sin(ang) * 0.3, cs)); c.globalAlpha = 0.25 + 0.4 * Math.abs(cs); c.drawImage(SP.beam, 0, -len * 0.08, len * (0.45 + 0.55 * Math.abs(cs)), len * 0.16); c.restore(); }
     }
     c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
-    if (F.lamps.length) { c.fillStyle = '#fff3d2'; c.beginPath(); for (const p of F.lamps) { c.moveTo(p.x + p.c, p.y); c.arc(p.x, p.y, p.c, 0, TAU); } c.fill(); }
+    if (F.lamps.length) { c.fillStyle = '#fff3d2'; c.beginPath(); for (const p of F.lamps) if (p.k === 1) { c.moveTo(p.x + p.c, p.y); c.arc(p.x, p.y, p.c, 0, TAU); } c.fill(); c.fillStyle = '#e6b878'; c.beginPath(); for (const p of F.lamps) if (p.k !== 1) { c.moveTo(p.x + p.c, p.y); c.arc(p.x, p.y, p.c, 0, TAU); } c.fill(); }
     if (bike && bike.x != null) {
       const dir = bike.flip ? -1 : 1, k = f / 13;
       c.globalCompositeOperation = 'lighter'; c.globalAlpha = 0.55; c.drawImage(SP.lamp, bike.x + dir * (9.6 * k + f * 0.9) - f * 1.4, bike.y - 18.2 * k - f * 0.9, f * 2.8, f * 1.8); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
