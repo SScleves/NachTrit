@@ -35,9 +35,9 @@
       want: 'Since the mist the dead have become neighbours: they chat, they gossip, they argue about the fence. Every sentence has a trap: a die or a dat, an om te, an als and a zou, an er that points back. The women are still taller than you. The sheep know. The sheep are not talking.' },
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the very end of the clause
-      { en: 'The sheep that lives next to us knows everyone.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so the pointer is dat: het schaap dat.'), FK(['naast ons woont', 'woont naast ons'], 0, 'bijzin',
-        'A relative clause is a sub-clause: the verb goes to the end, naast ons woont.'), ', kent iedereen.'] },
+      { en: 'The sheep that has lived next to us for years knows everyone.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so the pointer is dat: het schaap dat.'), FK(['al jaren naast ons woont', 'woont al jaren naast ons'], 0, 'bijzin',
+        'A relative clause is a sub-clause: the verb goes to the end, al jaren naast ons woont.'), ', kent iedereen.'] },
       { en: 'The man I met yesterday is a farmer.', parts: ['De man', FK(['die', 'dat'], 0, 'diedat',
         'man is a de-word, so die.'), 'ik gisteren', FK(['ontmoette', 'ontmoetde', 'ontmoetten'], 0, 'imp',
         'ontmoet ends in a t, a ketchup letter, so the imperfectum takes -te: ontmoette. With ik it stays singular.'), ', is boer.'] },

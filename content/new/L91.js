@@ -41,12 +41,12 @@
       want: 'Since the mist everyone who spoke Dutch has changed, and on Texel they changed into sheep, or into someone who talks to sheep. They fill every room and explain which one, why and what if: die and dat, om te, als dan, and the little words er, erop and ermee. Paola, still taller than you, checks where you put the verb. The sheep know. The sheep are not talking.' },
     items: [
       // ---- builds: relative clauses, die for de-words, dat for het-words, the verb at the very end
-      { en: 'The dog that sleeps on the couch is not allowed to lie there.', parts: ['De hond', FK(['die', 'dat'], 0, 'diedat',
-        'hond is a de-word, so die. dat is for het-words.'), FK(['op de bank slaapt', 'slaapt op de bank'], 0, 'bijzin',
-        'A die-clause is a sub-clause, so the verb goes to the very end: op de bank slaapt.'), ', mag daar niet liggen.'] },
-      { en: 'The sheep that stands behind the barn is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat.'), FK(['achter de schapenboet staat', 'staat achter de schapenboet'], 0, 'bijzin',
-        'The verb of the dat-clause goes last: achter de schapenboet staat.'), ', is niet van ons.'] },
+      { en: 'The dog that always sleeps on the couch is not allowed to lie there.', parts: ['De hond', FK(['die', 'dat'], 0, 'diedat',
+        'hond is a de-word, so die. dat is for het-words.'), FK(['altijd op de bank slaapt', 'slaapt altijd op de bank'], 0, 'bijzin',
+        'A die-clause is a sub-clause, so the verb goes to the very end: altijd op de bank slaapt.'), ', mag daar niet liggen.'] },
+      { en: 'The sheep that is still standing behind the barn is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so dat.'), FK(['nog achter de schapenboet staat', 'staat nog achter de schapenboet'], 0, 'bijzin',
+        'The verb of the dat-clause goes last: nog achter de schapenboet staat.'), ', is niet van ons.'] },
       { en: 'The chair that Paola bought is now in the guest room.', parts: ['De stoel', FK(['die Paola kocht', 'dat Paola kocht', 'die kocht Paola'], 0, 'diedat',
         'stoel is a de-word, so die, and inside the clause the verb goes last: Paola kocht.'), ', staat nu in de logeerkamer.'] },
 

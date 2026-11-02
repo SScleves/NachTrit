@@ -42,8 +42,8 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that stands by the door wants to join the standup.', parts: ['Het schaap', FK(['dat bij de deur staat', 'dat staat bij de deur', 'dat bij de deur'], 0, 'bijzin',
-        'A dat-clause is a sub-clause: the verb goes to the very end, bij de deur staat.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already standing by the door wants to join the standup.', parts: ['Het schaap', FK(['dat al bij de deur staat', 'dat staat al bij de deur', 'dat al bij de deur'], 0, 'bijzin',
+        'A dat-clause is a sub-clause: the verb goes to the very end, al bij de deur staat.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
       { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte',
