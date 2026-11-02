@@ -125,13 +125,16 @@ Santi wants to write Dutch, not only steer. ROADMAP.md section 3 has the design;
 - Ambience: wind, water near canals, a distant church bell per town, zombie groans, bike ticks,
   all synthesised in `src/audio.js` with the Web Audio API (no files), with a mute setting.
 
-### A6. Neural voice. LAPTOP for the key, yours for the code. Branch `dt/voice`.
-- Azure Speech, voice nl-NL (pick one warm male, one female for passengers), reading every Dutch
-  line in the content into small MP3 or OGG files under `voice/<hash>.ogg` through a batch script
-  `qa/voice-batch.mjs` that reads the key from `~/.config/nachtrit/azure.env` and never prints it.
-  The game plays the file when it exists and falls back to the browser voice otherwise.
-- Santi has to recover his Azure account first; write the script and the fallback now, and run
-  the batch when the key appears.
+### A6. Voice files without Azure. Branches `dt/voice-files` (render) then `dt/voice-hook` (playback). Decided 2 Nov 2026.
+Azure's free tier gave Santi trouble, so the Dutch lines are rendered once with Microsoft's neural
+Dutch voices (Maarten, Fenna, Colette) through the Edge read-aloud service via the open-source
+edge-tts package: no account, no key, one batch into voice/<hash>.mp3 committed to the repo
+(about 3,950 lines, 123k characters). The game plays the file for a line and falls back to the
+device voice when a file is missing. The render is unofficial, so it is a one-time batch, never a
+live dependency. Second part, after the render lands: the playback hook replaces speak/speakSeq
+(lookup by hash of voice plus text, small audio cache, mute setting honoured), plus a better
+device-voice fallback (prefer Google Nederlands, Siri Xander or Ellen, Android Google TTS nl-NL by
+name; set rate and pitch). npm run voice re-renders only missing lines when content changes.
 
 ## B. World and map art (the quality jump Santi keeps asking for)
 
