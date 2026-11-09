@@ -118,6 +118,7 @@ Source: grammar notes bijzin, die vs dat, imperfectum, reflexieve werkwoorden, z
 - Signs: single words in act 1-2, chunks in act 2, clauses from act 4. Board size grows with text.
 - Hints: full hint in act 1 (the right word glows faintly), first letter in act 2, none after.
 - Speed: fixed in act 1, ramps per act. Act 5 ramps within the level.
+- Reading time does not get faster with speed (2 Nov 2026): at every fork the bike slows so the signs stay legible for the fork's reading budget (0.35 s a word over all options plus 1.2 s, 3 to 7 s, listen and read 1.5x). Speed between forks, obstacles, wisps and the lamp keep rising with the tier. See CONTENT-BRIEF.md, "Word limits are reading limits".
 - Lamp: decays slower early. Correct answers give more lamp early, less later.
 - Obstacles: none, puddles, fences, carts, then dense.
 - Forks per delivery: 1, 1, 1-2, 2-3, 3-4.

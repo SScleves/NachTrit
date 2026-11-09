@@ -2736,7 +2736,7 @@ function planSentence(entry) {
     const d0 = S.planCursor + 14;
     add(bigSign(entry.nl), d0, null, 'readsign', { nl: entry.nl }).mesh.position.x = 0;
     const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true, fare: FARES.FLAT.read || 0 };
-    const dF = d0 + Math.max(34, planFork(fork).armD - 10);
+    const dF = d0 + Math.max(34, planFork(fork).slowD + 6);
     placeFork(fork, dF);
     S.planCursor = dF + 10;
     return;
@@ -2760,12 +2760,12 @@ function planSentence(entry) {
   const d0 = S.planCursor + 12;
   const forks = st.forks.map((f, i) => ({ entry, st, idx: i, o: f.o, a: f.a, r: f.r, w: f.w, read: false, fixed: !!f.fixed }));
   forks.forEach(planFork);
-  // the passenger stands where the first card comes up; each later gate far enough on to slow for its own signs
+  // the passenger stands before the slow zone; each later gate far enough on to slow for its own signs
   const g = ghostFigure(); add(g, d0, null, 'passenger', { st, bx: ROAD_W / 2 + 1.0 });
-  let d = d0 + Math.max(L ? 38 : 54, forks[0].plan.armD + 2);
+  let d = d0 + Math.max(L ? 38 : 54, forks[0].plan.slowD + 10);   // the card may come up before the pickup (armD reaches back into the filler)
   forks.forEach((fork, i) => {
     placeFork(fork, d);
-    if (i < forks.length - 1) d += Math.max(forkGap, forks[i + 1].plan.slowD + forks[i + 1].plan.vc * 1.2);
+    if (i < forks.length - 1) d += Math.max(forkGap, forks[i + 1].plan.slowD + 8);
   });
   S.planCursor = d + 12;
 }
@@ -2795,7 +2795,7 @@ function placeFork(fork, d) {
 function plan() {
   while (S.planCursor < S.dist + LOOK) {
     if (!L) { planFiller(rnd(55, 85)); planSentence(nextEntry()); continue; }
-    if (S.queue.length) { planFiller(rnd(L.filler[0], L.filler[1]) + Math.max(0, (S.lastWords || 0) - 4) * 0.2 * BASE); planSentence(S.queue.shift()); continue; }   // 0.2 s a word over four at the level's speed: long sentences never back to back
+    if (S.queue.length) { planFiller(rnd(L.filler[0], L.filler[1]) + Math.max(0, (S.lastWords || 0) - 4) * 0.1 * BASE); planSentence(S.queue.shift()); continue; }   // 0.1 s a word over four at the level's speed: long sentences never back to back
     if (!S.finishPlanned) { S.finishPlanned = true; planFiller(30); const d = S.planCursor + 10; add(bigSign('THUIS'), d, null, 'finish', {}).mesh.position.x = 0; S.planCursor = d + 60; }
     else S.planCursor += 60;
   }
