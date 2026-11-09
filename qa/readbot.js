@@ -4,10 +4,10 @@
 // then __read(collectWisps, msBudget) in chunks until mode !== 'ride'; __readLog() gives one row per fork.
 // Legible: the smallest sign of the fork shows its letters (the em of the drawn font) at least READ_THR of the
 // viewport height (1.25 percent: 10 px on an 800 px window, the smallest UI text size that reads; the boards are bold light-on-dark), its centre
-// is on screen, and it is still READ_AHEAD m or more in front of the bike (room to change lane).
+// is on screen, and it is still READ_AHEAD (3) m or more in front of the bike (room to change lane; closer, the boards leave the top of the frame).
 (() => {
   const THREE = NRpost().THREE, cam = NRcam(), v = new THREE.Vector3();
-  const READ_THR = window.READ_THR || 0.0125, READ_AHEAD = 2;
+  const READ_THR = window.READ_THR || 0.0125, READ_AHEAD = 3;
   const emOf = p => { const b = p.mesh.userData.board; return ((b.material.map && b.material.map.userData.fontPx) || 60) / 250 * 1.02 * p.mesh.scale.y; };   // G.board is 2.1 x 1.02 m over a 512 x 250 canvas
   const frac = p => {   // projected em height as a fraction of the viewport height
     const m = p.mesh, y = m.position.y + m.userData.board.position.y * m.scale.y;

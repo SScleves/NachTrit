@@ -2073,13 +2073,13 @@ const G = {
 // ---------- labels ----------
 // the largest font that fits: at most four lines; grow also shrinks a word that is wider than the board
 function fitLabel(g, text, H, start, grow, plain) {
-  const W = 512, pad = 30; let size = start, lines;
+  const W = 512, pad = 30, room = (W - pad * 2) / (grow ? 0.8 : 1); let size = start, lines;   // grow: lines may be set 0.8 narrow
   const wrap = (sz) => {
     g.font = `${plain ? 'italic 900' : 'bold'} ${sz}px "Segoe UI", system-ui, sans-serif`;
     const words = text.split(' '); const out = []; let cur = '';
     for (const w of words) {
       const t = cur ? cur + ' ' + w : w;
-      if (g.measureText(t).width > W - pad * 2 && cur) { out.push(cur); cur = w; } else cur = t;
+      if (g.measureText(t).width > room && cur) { out.push(cur); cur = w; } else cur = t;
     }
     if (cur) out.push(cur); return out;
   };
@@ -2695,8 +2695,8 @@ function signFrac(p) {
 }
 // ---------- reading time: every fork's signs stay legible for its budget, at any tier's speed ----------
 // legible: the letters (the em of the drawn font) are at least READ_THR of the viewport height (1.25 percent, 10 px on an
-// 800 px window) and the sign is still READ_AHEAD m in front of the bike. qa/readbot.js measures the same thing.
-const READ_THR = 0.0125, READ_AHEAD = 2, HOLD_AT = 7;
+// 800 px window) and the sign is still READ_AHEAD (3) m in front of the bike. qa/readbot.js measures the same thing.
+const READ_THR = 0.0125, READ_AHEAD = 3, HOLD_AT = 7;
 const wordsIn = list => { let n = 0; for (const t of list) n += String(t).trim().split(/\s+/).length; return n; };
 // seconds to read a fork: 0.35 s a word over all options plus 1.2 s to decide, 3 to 7 s; listen and read 1.5x; de/het and word items the minimum
 function readBudget(fork) {
@@ -3877,10 +3877,10 @@ function update(dt) {
       }
       // the approach: cruise, then slow from slowD so the signs stay legible for the budget at this speed (forkSlow is the ceiling)
       let k = z > -g.slowD ? (L ? L.forkSlow : 0.55) : (L ? 0.85 : 0.9);
-      const need = g.budget * 1.08 + 0.25 - g.legT;   // a little over, so the eased speed never comes up short
+      const need = g.budget * (g.legD < 6 ? 1.35 : 1.08) + (g.legD < 6 ? 0.5 : 0.25) - g.legT;   // a little over, so the eased speed never comes up short; more where the letters only read close, at the edge of the threshold
       if (z > -g.slowD && need > 0) {
         const room = (g.legT > 0 ? -z : Math.min(-z, g.legD)) - READ_AHEAD - 1;   // stop 1 m short of the last legible point if it must
-        k = Math.min(k, room > 0 ? room / need / Math.max(1, S.speed * hillK) : g.legNow ? 0 : g.legT > 0 || -z > READ_AHEAD + 4 ? k : 0.6 / Math.max(1, S.speed * hillK));   // small letters: creep until they read, then wait   // never waits on a sign that does not read
+        k = Math.min(k, room > 0 ? room / need / Math.max(1, S.speed * hillK) : g.legNow ? 0 : g.legT === 0 && -z > READ_AHEAD + 4 ? k : 0.6 / Math.max(1, S.speed * hillK));   // small letters: creep until they read, then wait   // never waits on a sign that does not read
       }
       // the very first gate of a first ride waits, just off the signs, until he steers (a key, a swipe, or NR.lane set by the harness)
       if (g.hold && S.laneN !== g.laneN0) { g.hold = false; if (S.held) { S.held = false; toastT = Math.min(toastT, 1.2); } }
