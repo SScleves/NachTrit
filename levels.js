@@ -3,7 +3,7 @@
 //             {read:true, nl:'Hallo', en:'Hello'} reading (Dutch on the board, English signs)
 //             {listen:true, nl:'de hond', en:'the dog'} listening (you hear it, Dutch signs)
 //             {en:'I am', parts:[...]} build, same shape as data.js
-// Level knobs: lanes, speed, maxSpeed, ramp, lampDecay, forkSlow (fraction of speed at a fork), hint, obstacles, filler [min,max]
+// Level knobs: lanes, speed, maxSpeed, ramp, lampDecay, forkSlow (the most of its speed the bike keeps at a fork; it slows further when the signs need more reading time, see readBudget in index.html), hint, obstacles, filler [min,max]
 
 window.RULES.woord = { name: 'Vocabulary', note: 'MOC Woordenschat' };
 window.RULES.getal = { name: 'Numbers', note: 'MOC Getallen' };
