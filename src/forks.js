@@ -26,12 +26,17 @@ export function itemToEntry(item, pool, lanes) {
     const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, lanes - 1)];
     return { en: item.w || item.en, nl: item.nl, listen: !!item.listen, word: !item.listen, parts: [{ o, a: 0, r: item.listen ? 'woord' : (/^\d+$/.test(item.w || '') ? 'getal' : 'woord'), w: `${item.nl} = ${item.w || item.en}` }] };
   }
-  return item.nl ? item : Object.assign({}, item, { nl: item.parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').replace(/\s+([,.?])/g, '$1') }); // build entry
+  return item.nl ? item : Object.assign({}, item, { nl: sentenceOf(item.parts) }); // build entry
 }
+/** a build item's sentence with every right form in place @param {(string | import('./types.js').Fork)[]} parts */
+export const sentenceOf = parts => parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').replace(/\s+([,.?])/g, '$1');
+/** the Dutch text of the entry an item becomes (its nl after itemToEntry): the learner model keys items by it (src/learn.js)
+ * @param {import('./types.js').AnyItem} item @returns {string} */
+export const entryText = item => item.dehet ? `${item.art} ${item.nl}` : item.nl || (item.parts ? sentenceOf(item.parts) : '');
 // the level's deliveries in ride order: the items shuffled, repeated when the level has more deliveries than items
 /** @param {import('./types.js').Level} lv @param {number} lanes @returns {import('./types.js').Entry[]} */
 export function levelQueue(lv, lanes) {
   const items = lv.items.slice().sort(() => Math.random() - 0.5);
   const q = []; while (q.length < lv.deliveries) q.push(...items.slice(0, lv.deliveries - q.length));
-  return q.map(i => itemToEntry(i, lv.items, lanes));
+  return q.map(i => itemToEntry(i, (lv.pools && lv.pools.get(i)) || lv.items, lanes));   // pools: a practice or trophy ride takes each item's wrong options from its own level
 }

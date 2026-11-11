@@ -21,20 +21,23 @@
 /**
  * What the planner rides: an item turned into forks by itemToEntry (src/forks.js). A build item is its own entry, with nl
  * filled in from its parts. A missed item that comes back (src/review.js) is a copy with again (1 or 2: its first or second
- * return) and origin (the entry it was missed as).
+ * return) and origin (the entry it was missed as). An item from an earlier ride that is due for review (src/learn.js) rides
+ * with again 1 and due: it looks and pays like a return, and its first try moves its box.
  * @typedef {{ nl?: string, en?: string, parts?: (string | Fork)[], o?: string[], a?: number, r?: string, w?: string, task?: string,
  *   read?: boolean, dehet?: boolean, look?: boolean, listen?: boolean, word?: boolean, side?: string, prop?: string, value?: number,
- *   again?: number, origin?: object }} Entry
+ *   again?: number, origin?: object, due?: boolean }} Entry
  */
 
 /** @typedef {{ where: string, carry: string, want: string }} Mission */
 
 /**
- * A level (levels.js and the content bundles). soon: a slot on the map that is not playable yet.
+ * A level (levels.js and the content bundles). soon: a slot on the map that is not playable yet. The game builds three more
+ * kinds in src/book.js: practice (the player's weakest items, no stars, tier 1 fares), trophy (a whole town, no hints,
+ * fareK 2: double fares); pools gives each of their items the wrong options of its own level.
  * @typedef {{ id: number, act: number, name: string, town?: string, place?: string, theme: string, lanes: 2 | 3, speed: number,
  *   maxSpeed: number, ramp: boolean, lampDecay: number, forkSlow: number, hint: string | null, obstacles: 'none' | 'puddles' | 'light' | 'normal',
  *   filler: [number, number], deliveries: number, cefr: string, maxWords: number, intro?: string, introNl?: string, mission: Mission,
- *   items: AnyItem[], soon?: boolean }} Level
+ *   items: AnyItem[], soon?: boolean, practice?: boolean, trophy?: boolean, fareK?: number, pools?: Map<AnyItem, AnyItem[]> }} Level
  */
 
 /**
