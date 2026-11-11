@@ -176,7 +176,7 @@ export function stem(w) {
   for (const p of PARTICLES) if (s.startsWith(p + 'ge') && s.length > p.length + 4) { s = p + s.slice(p.length + 2); break; }
   if (s.startsWith('ge') && s.length > 5 && /[dtn]$/.test(s)) s = s.slice(2);
   const strip = ['heden', 'etjes', 'tjes', 'pjes', 'jes', 'etje', 'tje', 'pje', 'ste', 'sten', 'ten', 'den', 'ere', 'ers', 'er', 'en', 'te', 'de', 'st', 'je', 'e', 's', 't', 'd', 'n'];
-  for (const suf of strip) if (s.endsWith(suf) && s.length - suf.length >= 3 && !(suf === 'n' && /([aeou])\1n$/.test(s))) { s = s.slice(0, -suf.length); break; }   // woon is a stem, not woo + n
+  for (const suf of strip) if (s.endsWith(suf) && s.length - suf.length >= 3 && !(suf.length === 1 && /([aeou])\1[tdns]$/.test(s))) { s = s.slice(0, -suf.length); break; }   // woon is a stem, not woo + n
   s = s.replace(/([bcdfgklmnprstvz])\1$/, '$1').replace(/([aeou])\1([^aeiou])$/, '$1$2').replace(/z$/, 's').replace(/v$/, 'f');
   return s;
 }
