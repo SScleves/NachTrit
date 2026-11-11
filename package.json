@@ -12,7 +12,9 @@
     "voice": "node qa/voice-batch.mjs && ../venv/bin/python qa/voice-render.py && node qa/voice-check.mjs",
     "voice:lines": "node qa/voice-batch.mjs",
     "voice:render": "../venv/bin/python qa/voice-render.py",
-    "voice:check": "node qa/voice-check.mjs"
+    "voice:check": "node qa/voice-check.mjs",
+    "audit:content": "node qa/audit-forks.mjs && node qa/audit-distractors.mjs && node qa/audit-threads.mjs && node qa/audit-vocab.mjs",
+    "review": "node qa/make-review.mjs"
   },
   "devDependencies": {
     "@gltf-transform/core": "^3.10.1",

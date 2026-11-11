@@ -46,7 +46,7 @@ levels.forEach((lv, i) => {
 });
 
 // ---- frequency coverage ----
-const freq = fs.readFileSync(path.join(ROOT, 'qa', 'data', 'nl-freq-top5000.txt'), 'utf8').split('\n').filter(l => l && !l.startsWith('#')).map(l => l.split(' ')[0]);
+const freq = fs.readFileSync(path.join(ROOT, 'qa', 'data', 'nl-freq-top5000.txt'), 'utf8').split('\n').filter(l => l && !l.startsWith('#')).map(l => l.split(' ')[0]).filter(w => w.length > 1 && !w.includes("'") && !['mr', 'oh', 'hé', 'o', 'ok', 'oké', 'god'].includes(w));
 const gameStems = new Set(seenAt.keys());
 const topStems = []; const seenStem = new Set();
 for (const w of freq) { const s = stem(w); if (!seenStem.has(s)) { seenStem.add(s); topStems.push([s, w]); } }
