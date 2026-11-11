@@ -7,7 +7,7 @@ import { PG, PM, WIN_GLOW_MAT } from './props.js?v=38';
 import { kadd, kbuild, KG, kit, kmerge, MODELS } from './kit.js?v=38';
 import { brickMat, WIN_LIT } from './houses.js?v=38';
 import './scenery.js?v=38';   // keeps the order the game's code runs in
-import { bike, riderModel } from './main.js?v=38';   // later modules, through the hub
+import { riderModel } from './main.js?v=38';   // later modules, through the hub
 
 // ---------- models ----------
 // The .glb files in assets/models are written by tools/models (npm run models) and committed. One loader fetches them all at start;
@@ -87,7 +87,5 @@ const modelsReady = (async () => {
   if (MODELS.rider) riderModel();
   return MODELS;
 })();
-window.NRmodels = () => ({ loaded: Object.keys(MODELS), rider: !!bike.userData.model, t: Math.round(performance.now()) });   // which models arrived (qa)
-modelsReady.then(() => { window.NRmodelsAt = Math.round(performance.now()); });
 
 export { kGable, kModel, modelClone, modelsReady, windmillModel };

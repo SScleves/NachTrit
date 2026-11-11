@@ -2,14 +2,14 @@
 // code ran when it was one script, and re-exports them. A module imports what comes before it directly and what comes after it
 // from here, so every module is evaluated once, in that order, and the random draws and scene objects are made as before.
 // The pure rules (tasks, reading, lamp, forks, voice) are shared with the unit tests in qa/test.
-import { HOLD_AT, legDist, READ_AHEAD, READ_THR } from './reading.js?v=38';
+import { HOLD_AT, READ_AHEAD, READ_THR } from './reading.js?v=38';
 import { lampLoss, lampReadK, TUNE } from './lamp.js?v=38';
 import { VOICES } from './voice.js?v=38';
 import { $, clamp, FARES, lerp, NODES, rnd, ROAD_W, smooth, THREE } from './engine.js?v=38';
 export * from './engine.js?v=38';
 import { MSAA, setMSAA } from './render-nodes.js?v=38';
 export * from './render-nodes.js?v=38';
-import { bloomPass, camera, clueLight, composer, DPR, gradePass, hemiLight, inkPass, lampLight, nodePost, postSize, render, renderer, scene, setDPR } from './render.js?v=38';
+import { camera, clueLight, composer, DPR, gradePass, hemiLight, lampLight, nodePost, postSize, render, renderer, scene, setDPR } from './render.js?v=38';
 export * from './render.js?v=38';
 import { aurora, skyDome } from './sky.js?v=38';
 export * from './sky.js?v=38';
@@ -28,9 +28,9 @@ import { scenery, sceneryPlace, theme, wieven } from './scenery.js?v=38';
 export * from './scenery.js?v=38';
 import { modelsReady } from './models.js?v=38';
 export * from './models.js?v=38';
-import { beam, bike, dogs, drawFace, faceState, follower, mountPassenger, rackGhost, riderTick, setFace, setFaceState } from './rider.js?v=38';
+import { beam, bike, drawFace, faceState, follower, mountPassenger, rackGhost, riderTick, setFace, setFaceState } from './rider.js?v=38';
 export * from './rider.js?v=38';
-import { bigSign, G, signFit, signpost } from './signs.js?v=38';
+import { bigSign, G, signpost } from './signs.js?v=38';
 export * from './signs.js?v=38';
 import { ghostFigure } from './cast.js?v=38';
 export * from './cast.js?v=38';
@@ -46,18 +46,19 @@ import { bark, chime, thump, tick } from './audio.js?v=38';
 export * from './audio.js?v=38';
 import { speak } from './speech.js?v=38';
 export * from './speech.js?v=38';
-import { goKnown, goNow, TOUCH } from './input.js?v=38';
+import { goKnown, TOUCH } from './input.js?v=38';
 export * from './input.js?v=38';
 import { setIntroSeen, showIntro, startArt } from './intro.js?v=38';
 export * from './intro.js?v=38';
 import { cineBegin, cineTick, setCineFrozen } from './cine.js?v=38';
 export * from './cine.js?v=38';
-import { openMap, openMission, openTown, towns } from './map.js?v=38';
+import { openMap, openTown, towns } from './map.js?v=38';
 export * from './map.js?v=38';
 import { die, lampHinted, levelDone, resolveFork, setLampHinted, showSummary, start } from './flow.js?v=38';
 export * from './flow.js?v=38';
-import { paidLine, payTikkie } from './wallet.js?v=38';
+import { payTikkie } from './wallet.js?v=38';
 export * from './wallet.js?v=38';
+export * from './debug.js?v=38';
 // ---------- the rest of the game: not yet in its own module ----------
 let frameAcc = 0, frameN = 0, rideFrames = 0;
 
@@ -72,32 +73,6 @@ function warmUp() {
   tmp.forEach(o => { scene.remove(o); o.traverse(m => { if (m.material && m.material.map && !m.material.userData.shared) { m.material.map.dispose(); m.material.dispose(); } }); });
 }
 
-// the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
-window.NRTUNE = TUNE;
-window.NR = S; // debug handle
-window.NRsetDPR = v => { setDPR(v); renderer.setPixelRatio(DPR); postSize(); };
-window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
-window.NRface = (n, secs) => setFace(n, secs || 3);
-window.NRbike = () => ({ bike, faceState, dogs });   // dogs: the pair that runs beside him (qa/intro-sheet.mjs checks where they show)
-window.NRsnap = async () => { render(); const url = renderer.domElement.toDataURL('image/png'); const r = await fetch('http://localhost:8766/shot', { method: 'POST', body: url }); return r.text(); };
-window.NRstep = (n, each) => { for (let i = 0; i < (n || 60); i++) { update(1 / 60); if (each) each(); } render(); };   // each: qa bots sample every frame
-window.NRcam = () => camera;
-window.NRbright = () => { render(); const c = renderer.domElement, t = document.createElement('canvas'); t.width = 64; t.height = 36; const g = t.getContext('2d'); g.drawImage(c, 0, 0, 64, 36); const d = g.getImageData(0, 0, 64, 36).data; let sum = 0; for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2]; return Math.round(sum / (d.length / 4) / 3); };
-// which backend really runs, and on what: 'webgpu', 'webgl2 (WebGPURenderer fallback)' or 'webgl2 (WebGLRenderer)'
-window.NRbackend = async () => {
-  const glName = gl => { const e = gl.getExtension('WEBGL_debug_renderer_info'); return e ? gl.getParameter(e.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER); };
-  if (!NODES) return { backend: 'webgl2 (WebGLRenderer)', adapter: glName(renderer.getContext()) };
-  const b = renderer.backend;
-  if (b.isWebGPUBackend) { const i = b.device.adapterInfo || {}; return { backend: 'webgpu', adapter: [i.vendor, i.architecture, i.device, i.description].filter(Boolean).join(' ') || 'unknown adapter' }; }
-  return { backend: 'webgl2 (WebGPURenderer fallback)', adapter: glName(b.gl) };
-};
-window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: (renderer.info.programs || []).length, calls: renderer.info.render.drawCalls != null ? renderer.info.render.drawCalls : renderer.info.render.calls, dpr: DPR, post: !!composer, msaa: NODES ? MSAA : 0 });
-window.NRfare = () => ({ cents: S.cents, missed: S.missed, tips: S.tips, tikkie: S.tikkie, cleanRow: S.cleanRow, score: S.score, paid: S.paid });
-window.NRfareFns = { paidLine, payTikkie };   // qa: the toast line and the Tikkie, called directly
-window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
-
-window.NRread = { signFit, legDist, READ_THR, READ_AHEAD };   // qa: how far off a sign text reads (em = signFit(t).px / 250 * 1.02, x1.3 on tier 1)
-window.NRgo = goNow;   // qa
 
 // ---------- update ----------
 const clock = { last: performance.now(), getDelta() { const n = performance.now(), d = (n - this.last) / 1000; this.last = n; return d; } };   // THREE.Clock is deprecated since r183
@@ -384,6 +359,7 @@ if (q.has('shot')) {
 }
 startArt.on3d();   // the title screen in 3D, now the world and the shots are up (only while the start screen is still showing)
 loop();
+
 
 
 
