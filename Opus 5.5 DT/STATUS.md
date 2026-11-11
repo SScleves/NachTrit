@@ -41,6 +41,16 @@ The combined branch `dt/all` is merged into `main` and live.
   the rider's head, ground mist costs 17 fewer draw calls. GPU run of 1, 12, 58, 75, 123 with 0 errors at
   59-60 fps; all 14 intro shots checked.
 
+## On branch `dt/learning-core`, waiting for the GPU check and merge (NR_VERSION 40)
+
+Phase 3a and 3d, the engine half of the learning core (`reports/dt-learning-core.md`).
+- A wrong answer keeps the card up: what you rode struck out, the right form in its sentence, the why line, for the
+  line's reading time (3 s or more). The bike crawls, the lamp holds, ↑ or W rides on.
+- A missed item comes back 3 forks later with an AGAIN tag at half fare, on a quiet stretch where the lamp does not
+  drain; missed twice, once more near the end; at most 6 a ride. Returns never count for stars or the delivery total.
+- The end card lists the misses by rule, names the weakest rule in one line, and has a speaker button per item.
+- A ride with no misses is unchanged to the frame (seeded rides of 1, 11, 58, 75, with and without wisps).
+
 ## On branch `dt/split`, waiting for the GPU check and merge (NR_VERSION 39)
 
 Phase 2, the code split (`reports/dt-split.md`). No change a player can see.

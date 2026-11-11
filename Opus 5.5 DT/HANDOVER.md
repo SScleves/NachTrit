@@ -237,3 +237,33 @@ Rules for working in it:
   `intro3d/README.md`. A shot that wants the dogs says `dogs: true`. `restore()` runs after every shot's `dispose`. After a
   change to the rider, still shoot all 14 (`node qa/intro-sheet.mjs`).
 - `qa/voice-batch.mjs` reads the fallback panels and the `speak('...')` lines from `src/` too.
+
+## 11. The learning core, engine half (phase 3a and 3d, branch `dt/learning-core`, 11 Nov 2026)
+
+Report: `reports/dt-learning-core.md`. What a wrong answer now does, and the rules to keep when you touch it:
+- **Returns** (`src/review.js`, pure; wired in `src/flow.js` `sendBack`): when the ride of a missed item is over, a copy of
+  it (`again: 1 | 2`, `origin`) goes back in `S.queue` after 3 to 5 other forks (`returnSlot`: the unanswered gates on the
+  road count first, then the queued entries). A second miss of the same item comes back in the last quarter of the ride.
+  At most twice per item, at most 6 a ride (`AGAIN`). A miss on the last entry comes back right away (the queue is empty).
+  If the finish sign is already planned, `unplanFinish` (`src/plan.js`) takes it away and the planner goes on from its
+  run-in, so the return rides before THUIS.
+- **A return never counts and never kills.** It pays half fare (`FARES.halfFare`), carries the "again" tag on the card,
+  and does not touch `S.good`, `S.bad`, `S.delivered`, `S.souls`, `S.wrongRow`, the words list or the stars (its verdicts
+  are in `S.learn`). Answered wrong it costs no lamp. Its road is review road (`S.reviewRoad`, [from, to) spans): the
+  filler there is empty (no wisps, no obstacles), the lamp does not drain (`readK` 0), a hit that drifts onto it costs no
+  lamp, and the night does not deepen (`nightDepth` uses `S.dist - S.reviewM`). Keep these when you add power-ups or
+  hazards: the lamp balance is only unchanged because a ride with no misses never makes review road.
+- **The why card** (`whyCard`, `endWhy` in `src/hud.js`): a wrong answer (first ride or return, every task) keeps the card
+  up with what he rode struck out, the right form in its sentence, the why line and the fare, for `whyBudget(w)` s
+  (`src/reading.js`: 0.35 s a word, 3 s floor). While `S.whyT > 0` the bike targets `L.forkSlow`, stops 1 m short of the
+  next gate's `legD`, the next gate does not arm and a passenger pickup does not show its card (the gate shows it after),
+  and the lamp does not drain. The go key ends it (`goNow` in `src/input.js`). A right answer keeps the short toast.
+- **The end card** (`missedHtml` in `src/flow.js`, `groupMisses` and `weakLine` in `src/review.js`): every missed fork
+  once (`S.missList`), grouped by task label, the weakest rule first and named in one line (misses x share missed on
+  first rides, from `S.tally`), each with a speaker button (`speak(..., force)` plays even with the voice off), the
+  sentence with the right form marked, what he rode, the why line, and how its return went. When it shows, the vault log
+  textarea hides; "Copy mistakes" still copies it.
+- **Checks.** `node qa/ride.mjs <levels> --miss K` prints the returns (forks between, full and paid fare, verdict), metres
+  of review road, lamp lost on it and under the why cards (both must be 0), and each fork's legible time against its budget
+  split by "right after a why card". `--shots --gpu` saves the first why card and the first "again" card. A ride with no
+  misses must stay identical to the frame: compare the report JSON field by field, not only the table.
