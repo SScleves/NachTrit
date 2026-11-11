@@ -1,35 +1,35 @@
 // The loop: update(dt), one step of the world (the ride, the bend, the lamp and the night, forks and their reading time, the
 // dead, the camera, the HUD), the animation loop that lowers the resolution on a slow GPU, the warm-up that compiles every
 // material first, and the boot: ?map, ?cine, ?shot and ?level, then the title.
-import { HOLD_AT, READ_AHEAD, READ_THR } from './reading.js?v=39';
-import { lampLoss, lampReadK, TUNE } from './lamp.js?v=39';
-import { VOICES } from './voice.js?v=39';
-import { $, clamp, FARES, lerp, NODES, rnd, ROAD_W, smooth, THREE } from './engine.js?v=39';
-import { MSAA, setMSAA } from './render-nodes.js?v=39';
-import { camera, clueLight, composer, DPR, gradePass, hemiLight, lampLight, nodePost, postSize, render, renderer, scene, setDPR } from './render.js?v=39';
-import { aurora, skyDome } from './sky.js?v=39';
+import { HOLD_AT, READ_AHEAD, READ_THR } from './reading.js?v=40';
+import { lampLoss, lampReadK, TUNE } from './lamp.js?v=40';
+import { VOICES } from './voice.js?v=40';
+import { $, clamp, FARES, lerp, NODES, rnd, ROAD_W, smooth, THREE } from './engine.js?v=40';
+import { MSAA, setMSAA } from './render-nodes.js?v=40';
+import { camera, clueLight, composer, DPR, gradePass, hemiLight, lampLight, nodePost, postSize, render, renderer, scene, setDPR } from './render.js?v=40';
+import { aurora, skyDome } from './sky.js?v=40';
 import { bend, hillAt, hills, keepBehind, KERB_W, kerbL, kerbR, landL, landR, RIB_STEP, rise, roadRib, setHillPhase, updateRibbon, verge, vergeL,
-  vergeR, waterRib } from './road.js?v=39';
-import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PG, WIN_GLOW_MAT } from './props.js?v=39';
-import { skyBands, tintFar } from './backdrop.js?v=39';
-import { scenery, sceneryPlace, theme, wieven } from './scenery.js?v=39';
-import { modelsReady } from './models.js?v=39';
-import { beam, bike, drawFace, faceState, follower, mountPassenger, rackGhost, riderTick, setFace, setFaceState } from './rider.js?v=39';
-import { bigSign, G, signpost } from './signs.js?v=39';
-import { ghostFigure } from './cast.js?v=39';
-import { cart, fence, puddle, roadArrow, TEACH_HALO_MAT, wisp } from './zombies.js?v=39';
-import { BASE, L, LANE_X, MAXS, nightDepth, S } from './state.js?v=39';
-import { plan, signFrac } from './plan.js?v=39';
-import { card, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=39';
-import { bark, chime, thump, tick } from './audio.js?v=39';
-import { speak } from './speech.js?v=39';
-import { goKnown, TOUCH } from './input.js?v=39';
-import { setIntroSeen, showIntro, startArt } from './intro.js?v=39';
-import { cineBegin, cineTick, setCineFrozen } from './cine.js?v=39';
-import { openMap, openTown, towns } from './map.js?v=39';
-import { die, lampHinted, levelDone, resolveFork, setLampHinted, showSummary, start } from './flow.js?v=39';
-import { payTikkie } from './wallet.js?v=39';
-import './debug.js?v=39';   // keeps the order the game's code runs in
+  vergeR, waterRib } from './road.js?v=40';
+import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PG, WIN_GLOW_MAT } from './props.js?v=40';
+import { skyBands, tintFar } from './backdrop.js?v=40';
+import { scenery, sceneryPlace, theme, wieven } from './scenery.js?v=40';
+import { modelsReady } from './models.js?v=40';
+import { beam, bike, drawFace, faceState, follower, mountPassenger, rackGhost, riderTick, setFace, setFaceState } from './rider.js?v=40';
+import { bigSign, G, signpost } from './signs.js?v=40';
+import { ghostFigure } from './cast.js?v=40';
+import { cart, fence, puddle, roadArrow, TEACH_HALO_MAT, wisp } from './zombies.js?v=40';
+import { BASE, L, LANE_X, MAXS, nightDepth, S } from './state.js?v=40';
+import { plan, signFrac } from './plan.js?v=40';
+import { card, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=40';
+import { bark, chime, thump, tick } from './audio.js?v=40';
+import { speak } from './speech.js?v=40';
+import { goKnown, TOUCH } from './input.js?v=40';
+import { setIntroSeen, showIntro, startArt } from './intro.js?v=40';
+import { cineBegin, cineTick, setCineFrozen } from './cine.js?v=40';
+import { openMap, openTown, towns } from './map.js?v=40';
+import { die, lampHinted, levelDone, resolveFork, setLampHinted, showSummary, start } from './flow.js?v=40';
+import { payTikkie } from './wallet.js?v=40';
+import './debug.js?v=40';   // keeps the order the game's code runs in
 
 let frameAcc = 0, frameN = 0, rideFrames = 0;
 

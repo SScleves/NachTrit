@@ -1,9 +1,9 @@
 // The wallet during a ride: what the passenger says when paying (fares.js has the amounts and the words), settling a ride on
 // its last fork, tips for clean rides in a row, refusals, the wallet's float-up and the zombie's Tikkie.
-import { $, FARES, pick } from './engine.js?v=39';
-import { L, S } from './state.js?v=39';
-import { card, cardSeq, hideCard } from './hud.js?v=39';
-import './flow.js?v=39';   // keeps the order the game's code runs in
+import { $, FARES, pick } from './engine.js?v=40';
+import { L, S } from './state.js?v=40';
+import { card, cardSeq, hideCard } from './hud.js?v=40';
+import './flow.js?v=40';   // keeps the order the game's code runs in
 
 // ---------- fares ----------
 const whyLine = (...parts) => parts.filter(Boolean).join(' · ');

@@ -1,8 +1,8 @@
 // The shared materials: Mat (toon bands with a cool or warm shadow tint, Lambert with ?post=0, the cel node material on the
 // node path), GlowMat and glowTex for light that is not a light, and M, the materials every builder shares.
-import { NODES, POST, THREE } from './engine.js?v=39';
-import { NODEFX } from './render-nodes.js?v=39';
-import './sky.js?v=39';   // keeps the order the game's code runs in
+import { NODES, POST, THREE } from './engine.js?v=40';
+import { NODEFX } from './render-nodes.js?v=40';
+import './sky.js?v=40';   // keeps the order the game's code runs in
 
 // materials: toon bands when the look pipeline is on, plain Lambert otherwise
 const toonRamp = (() => { const data = new Uint8Array([80, 80, 80, 255, 140, 140, 140, 255, 205, 205, 205, 255, 255, 255, 255, 255]); const t = new THREE.DataTexture(data, 4, 1, THREE.RGBAFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();

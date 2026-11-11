@@ -1,11 +1,11 @@
 // The intro and the title: the painted panels (intro/panel-N.js, with the pixel paintings here as their fallback), captions
 // and their Dutch line read aloud, the level card with the town's rumour, and the live title painting (startArt).
-import { $ } from './engine.js?v=39';
-import { THEMES } from './scenery.js?v=39';
-import { S } from './state.js?v=39';
-import { speak, voiceTalking } from './speech.js?v=39';
-import './input.js?v=39';   // keeps the order the game's code runs in
-import { CINE, cineBegin, cineEnd, cineShot, TOWN_OF, towns } from './main.js?v=39';   // later modules, through the hub
+import { $ } from './engine.js?v=40';
+import { THEMES } from './scenery.js?v=40';
+import { S } from './state.js?v=40';
+import { speak, voiceTalking } from './speech.js?v=40';
+import './input.js?v=40';   // keeps the order the game's code runs in
+import { CINE, cineBegin, cineEnd, cineShot, TOWN_OF, towns } from './main.js?v=40';   // later modules, through the hub
 
 // ---------- the intro: six pixel panels ----------
 const PANELS = [
