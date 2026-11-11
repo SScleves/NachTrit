@@ -1,4 +1,4 @@
-# Status: what is live, what is pending (2 November 2026)
+# Status: what is live, what is pending (11 November 2026)
 
 Play: https://sscleves.github.io/NachTrit/ (hard-refresh once after a release; the version number is
 in index.html as NR_VERSION). Santi is testing this week; the live site is frozen after the
@@ -21,21 +21,23 @@ reading-time change lands, until his feedback.
   lamp hint toast, the Endless night link.
 - Cache versioning on every script.
 
-## Landing today, then frozen
+## Built, not live yet (11 November 2026)
 
-- Reading time as a rule (backlog A0b): every fork keeps a reading budget from its word count at
-  every tier; the first gate of a first ride holds until the player moves; a dog bark on the right
-  side for the teaching forks.
+Branch `dt/all` on GitHub holds the best version (NR_VERSION 34). It is not on the live site.
+- New 3D models: the rider on the omafiets, two dogs, gabled houses, windmills, street props.
+- Reading time: every fork keeps a reading budget at every tier.
+- The go key: up arrow, W or swipe up ends the wait once the player has chosen.
+- Clear forks: a task label per fork, the gap marked on the card, level 75 split into one thing per fork.
+- three.js 0.187. The WebGPU renderer is opt-in with `?renderer=webgpu` and stays parked.
+- Fixed on 11 Nov: pale strips beside the rider's head, the 03:00 alarm clock in the intro, dogs in the
+  wrong intro scenes, the missing torso in the sofa scene. The wheels tumble the old way on purpose.
 
-## Pending, in order, after Santi's feedback
+## Pending
 
-1. A1 The code split into modules with type checks (the base for the rest).
-2. A2 Writing mode: type the Dutch, tolerant matcher, dictation, plus 50 percent fare.
-3. A3 Jump, slide, power-ups (slow motion, shield, magnet, double fare), trams and canal edges.
-4. A4 Save that travels between devices, vocabulary book, practice and trophy rides.
-5. A5 Saved-town dawn, the Amsterdam ending, phone polish, ambience.
-6. Smaller: Gouda and Kinderdijk map vignettes stay compact (layout limit); passenger-style place
-   sentences on the town card; the LEVELS.md and in-game help; unit tests and CI (D2, D3).
+The plan and its order are in `PLAN.md` in this folder. In short: land `dt/all`, tests, the code split,
+the learning core (missed items return, one thing per fork everywhere, real Dutch wrong options, a why
+line that is seen), save with a word book and spaced review, the story payoff, writing mode, moves and
+hazards, then phone, native-speaker review and release.
 
 ## How to give feedback (what helps most)
 
