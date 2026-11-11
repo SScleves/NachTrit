@@ -103,7 +103,7 @@ cache, only the glow pulse and the cyclist animate.
 
 ## 6. Lamp and night mechanic, as measured
 
-`TUNE = { drain: 2.8, wisp: 2.0, right: 3, cap: 0.6, fast: 1 }` in index.html (drain was 2.5 until 11 Nov). Drain per
+`TUNE = { drain: 2.8, wisp: 2.0, right: 3, cap: 0.6, fast: 1 }` in `src/lamp.js` (drain was 2.5 until 11 Nov; `qa/test/lamp.test.mjs` checks this line against the code). Drain per
 second is `readK * min(lampDecay, cap) * drain * (0.6 + 1.1 * nightDepth())`, where `nightDepth()` runs 0 to 1 over the
 level and `readK` is 1 on open road and `S.slow / 0.85` while a fork is armed (slowing to read costs lamp in proportion
 to the speed; 0 while the first gate holds). Right answer refuels `right + min(streak,4)*0.3` (+`fast` after the go key);
@@ -119,7 +119,8 @@ two runs each; ignore runs vary a lot):
 | 75 (Rotterdam) | finishes, 73 and 51 | dies 17/20 twice |
 
 Keep this balance when you add power-ups or hazards; re-run the bot (load `qa/lampbot.js` in the
-page, then `__sim(name, collectWisps, msBudget)` in chunks under 30 s per call).
+page, then `__sim(name, collectWisps, msBudget)` in chunks under 30 s per call). `node qa/ride.mjs 1,75`
+and `node qa/ride.mjs 58,75 --ignore` give the same rides step by step, seeded, on any machine.
 
 ## 7. The art briefs the stopped artists were working from
 
@@ -172,3 +173,17 @@ no per-frame allocations in update(); ribbons untouched; draw calls under 2x.
 - "Writing mode so we can also write" (backlog A2).
 - Netherlands Dutch; no exclamation marks; dry humour; Santi's own life in the content.
 - Back up constantly; push every verified change; keep the laptop playable at 60 fps.
+
+## 9. The safety net (phase 1, branch `dt/tests`, 11 Nov 2026)
+
+- `npm test`: the version check, `npm run validate` (bundles, validator, fork, distractor and thread audits) and the
+  unit tests in `qa/test` (`node --test`, no browser). About 10 s. CI (`.github/workflows/ci.yml`) runs it on every
+  push to `main` and `dt/*`, then rides levels 1 and 75 on SwiftShader.
+- `node qa/ride.mjs <levels>`: the step-driven ride. It serves its own tree, seeds `Math.random`, holds the game's
+  loop and runs timers on a virtual clock, so a seed gives the same ride on a slow or busy machine. Compare numbers
+  from the same browser: Chrome (`--gpu`) and Playwright's Chromium measure sign text a little differently.
+- `node qa/intro-sheet.mjs`: the 14 intro shots at t=2 and t=6 on the GPU, one contact sheet, checks for errors, the
+  riding dogs (8 and 14 only), his torso in shot 9 and a luma band per frame (`qa/intro-bands.json`). Run it after any
+  change to the rider, the dogs or `bike` children, and look at the sheet.
+- `src/`: the pure rules index.html imports and the tests share (`tasks.js`, `reading.js`, `lamp.js`, `forks.js`,
+  `voice.js`). Change a rule there, not in a copy. Phase 2 moves the rest of the engine next to them.
