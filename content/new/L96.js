@@ -46,8 +46,7 @@
         'A clause with die or dat sends its verb to the end: dat mijn lunch steelt.'), '.'] },
 
       // ---- builds: te plus infinitive, om te
-      { en: 'I am going to the beach to walk the dogs.', parts: ['Ik ga naar het strand', FK(['om de honden uit te laten', 'om de honden te uitlaten'], 0, 'omte',
-        'om ... te closes with the infinitive. With a separable verb the te sits in the middle: uit te laten.'), '.'] },
+      { en: 'I am going to the beach to walk the dogs.', parts: ['Ik ga naar het strand om de honden', FK(['uit te laten', 'te uitlaten'], 0, 'omte', 'With a separable verb te sits in the middle: uit te laten.'), '.'] },
       { en: 'It is lovely to cycle on Texel.', parts: ['Het is heerlijk om op Texel', FK(['te fietsen', 'fietsen'], 0, 'omte',
         'After om the infinitive comes with te: om op Texel te fietsen.'), '.'] },
       { en: 'Paola forgot to take the lead.', parts: ['Paola vergat de riem', FK(['mee te nemen', 'te meenemen'], 0, 'omte',
@@ -56,10 +55,8 @@
         'beginnen takes te plus the infinitive: het begint te regenen.'), ', maar de wedstrijd gaat door.'] },
 
       // ---- builds: als ... dan and zou
-      { en: 'If you miss the last ferry, you live here from now on.', parts: ['Als je de laatste boot mist,', FK(['dan woon je', 'dan je woont'], 0, 'alsdan',
-        'After an als-clause the main clause opens with dan, and the verb comes straight after it: dan woon je.'), 'hier voortaan.'] },
-      { en: 'If the wind did not blow so hard, I would play golf.', parts: ['Als het niet zo hard', FK(['waaide', 'waaite'], 0, 'kof',
-        'waai does not end in a letter of \'t kofschip, so the past is waaide with a d.'), ',', FK(['zou ik', 'ik zou'], 0, 'alsdan',
+      { en: 'If you miss the last ferry, you live here from now on.', parts: ['Als je de laatste boot mist, dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
+      { en: 'If the wind did not blow so hard, I would play golf.', parts: ['Als het niet zo hard', FK(['waaide', 'waaite'], 0, 'kof', 'waai does not end in a letter of t kofschip, so the past is waaide.', 'spell'), ',', FK(['zou ik', 'ik zou'], 0, 'alsdan',
         'The als-clause fills slot 1, so zou comes before ik.'), 'golfen.'] },
       { en: 'If I had more time, I would go to the gym more often.', parts: ['Als ik meer tijd', FK(['had', 'hadden'], 0, 'imp',
         'ik takes had. hadden is for wij, jullie and zij.'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
@@ -76,16 +73,14 @@
       { en: 'My dog has found a golf ball and is playing with it.', parts: ['Mijn hond heeft een golfbal gevonden en speelt', FK(['ermee', 'met het'], 0, 'vnwadv',
         'met plus a thing becomes ermee: er + met, glued together. met het cannot stand alone.'), '.'] },
       { en: "I've been talking about it with Paola all week.", parts: ['Ik praat', FK(['er', 'het'], 0, 'vnwadv',
-        'over plus a thing becomes er ... over: er comes early, over waits at the end. het cannot go with over.'), 'al de hele week met Paola over.'] },
+        'over plus a thing becomes er ... over, with er early and over at the end.'), 'al de hele week met Paola over.'] },
       { en: 'Fancy a match? I feel like it.', parts: ['Zin in een wedstrijd? Ik heb', FK(['er zin in', 'het zin in'], 0, 'vnwadv',
-        'zin hebben in plus a thing: er stands before zin and in stays behind: ik heb er zin in.'), '.'] },
-      { en: 'I love it when it blows.', parts: ['Ik hou', FK(['ervan', 'van er'], 0, 'vnwadv',
-        'houden van plus a thing becomes ervan: er + van, glued together as one word.'), 'als het waait.'] },
+        'zin hebben in a thing: er goes before zin and in stays behind.'), '.'] },
+      { en: 'I love it when it blows.', parts: ['Ik hou', FK(['ervan', 'van er'], 0, 'vnwadv', 'houden van a thing becomes ervan: er and van glued together as one word.', 'order'), 'als het waait.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday I walked the dogs along the beach.', parts: ['Gisteren', FK(['heb ik', 'ik heb'], 0, 'v2',
-        'Gisteren takes slot 1, so the verb comes second, then ik.'), 'de honden langs het strand', FK(['uitgelaten', 'geuitlaten'], 0, 'sep',
-        'The ge goes inside a separable verb: uit + gelaten, one word at the end.'), '.'] },
+        'Gisteren takes slot 1, so the verb comes second, then ik.'), 'de honden langs het strand', FK(['uitgelaten', 'uitlaten'], 0, 'sep', 'A separable verb takes ge in the middle: uit + gelaten, one word.'), '.'] },
       { en: 'I used to play golf every Saturday.', parts: ['Vroeger', FK(['speelde ik', 'ik speelde'], 0, 'v2',
         'Vroeger takes slot 1, so the verb comes second: speelde ik.'), 'elke zaterdag golf.'] },
       { en: 'This is the most beautiful beach in the Netherlands, say the sheep.', parts: ['Dit is het', FK(['mooiste', 'mooist'], 0, 'vergelijk',

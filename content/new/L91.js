@@ -47,24 +47,18 @@
       { en: 'The sheep that is still standing behind the barn is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
         'schaap is a het-word, so dat.'), FK(['nog achter de schapenboet staat', 'staat nog achter de schapenboet'], 0, 'bijzin',
         'The verb of the dat-clause goes last: nog achter de schapenboet staat.'), ', is niet van ons.'] },
-      { en: 'The chair that Paola bought is now in the guest room.', parts: ['De stoel', FK(['die Paola kocht', 'dat Paola kocht', 'die kocht Paola'], 0, 'diedat',
-        'stoel is a de-word, so die, and inside the clause the verb goes last: Paola kocht.'), ', staat nu in de logeerkamer.'] },
+      { en: 'The chair that Paola bought is now in the guest room.', parts: ['De stoel', FK(['die', 'dat'], 0, 'diedat', 'stoel is a de-word, so the relative word is die.'), 'Paola kocht, staat nu in de logeerkamer.'] },
 
       // ---- builds: te plus infinitive and om ... te
-      { en: 'We take the ferry to see the seals.', parts: ['We nemen de veerboot', FK(['om de zeehonden te zien', 'om de zeehonden zien te', 'om te zien de zeehonden'], 0, 'omte',
-        'om opens the purpose and te sits right before the infinitive, which closes the clause: om de zeehonden te zien.'), '.'] },
-      { en: 'I get up early to walk the dogs.', parts: ['Ik sta vroeg op', FK(['om de honden uit te laten', 'om de honden te uitlaten', 'om de honden te laten uit'], 0, 'omte',
-        'A separable verb takes te in the middle: uit te laten, written as three little words at the end.'), '.'] },
-      { en: 'Do you feel like going to the beach with the dogs?', parts: ['Heb je zin om met de honden', FK(['naar het strand te gaan', 'te naar het strand gaan', 'naar het strand gaan te'], 0, 'omte',
-        'zin om ... te: te goes right before the infinitive at the end, gaan.'), '?'] },
+      { en: 'We take the ferry to see the seals.', parts: ['We nemen de veerboot om de zeehonden', FK(['te zien', 'zien te'], 0, 'omte', 'te stands right before the infinitive, which closes the clause: om de zeehonden te zien.'), '.'] },
+      { en: 'I get up early to walk the dogs.', parts: ['Ik sta vroeg op om de honden', FK(['uit te laten', 'te uitlaten', 'te laten uit'], 0, 'omte', 'A separable verb takes te in the middle: uit te laten.'), '.'] },
+      { en: 'Do you feel like going to the beach with the dogs?', parts: ['Heb je zin om met de honden naar het strand', FK(['te gaan', 'gaan te'], 0, 'omte', 'zin om ... te: te goes right before the infinitive at the end, gaan.'), '?'] },
 
       // ---- builds: als ... dan and zou
       { en: 'If I had time, I would walk to the lighthouse with the dogs.', parts: ['Als ik tijd had,', FK(['zou ik', 'ik zou'], 0, 'v2',
-        'The als-clause fills slot 1, so the verb comes next: zou ik.'), 'met de honden naar de vuurtoren', FK(['lopen', 'liep', 'gelopen'], 0, 'voorwaarde',
-        'zou is followed by the bare infinitive at the end: zou lopen. liep would be the plain past, not a wish.'), '.'] },
+        'The als-clause fills slot 1, so the verb comes next: zou ik.'), 'met de honden naar de vuurtoren', FK(['lopen', 'liep', 'gelopen'], 0, 'voorwaarde', 'zou is followed by the bare infinitive at the end: zou lopen.', 'verb'), '.'] },
       { en: 'If you miss the last ferry, you live here from now on.', parts: [FK(['Als je de laatste boot mist,', 'Als je mist de laatste boot,'], 0, 'bijzin',
-        'als opens the condition and sends mist to the end of its clause. dan opens the result.'), 'dan', FK(['woon je', 'je woont'], 0, 'v2',
-        'dan is slot 1 of the main clause, so the verb comes next: woon je.'), 'hier voortaan.'] },
+        'als opens the condition and sends mist to the end of its clause. dan opens the result.'), 'dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
       { en: 'Could you walk the dogs for a moment?', parts: ['Zou je de honden even', FK(['kunnen uitlaten', 'te kunnen uitlaten', 'kan uitlaten'], 0, 'zou',
         'zou asks politely, kunnen follows as an infinitive and uitlaten closes: kunnen uitlaten.'), '?'] },
 
@@ -74,26 +68,21 @@
       { en: 'How many sheep do you see? I see a hundred.', parts: ['Hoeveel schapen zie je? Ik zie', FK(['er', 'ervan', 'het'], 0, 'er',
         'When you count something already named, Dutch needs er: ik zie er honderd.'), 'wel honderd.'] },
       { en: 'There are more sheep than people here.', parts: [FK(['Er zijn', 'Ze zijn'], 0, 'er',
-        'er announces something new in the scene, and schapen is a plural, so zijn. ze would point at sheep we already named.'), 'hier meer schapen', FK(['dan', 'dat', 'van'], 0, 'vergelijk',
+        'er announces something new, and schapen is plural: er zijn; ze points back at known things.'), 'hier meer schapen', FK(['dan', 'dat', 'van'], 0, 'vergelijk',
         'After meer or any comparative, Dutch says dan.'), 'mensen.'] },
 
       // ---- builds: pronominal adverbs
       { en: 'On Saturday we go to Texel. I am looking forward to it.', parts: ['Zaterdag gaan we naar Texel. Ik verheug me', FK(['erop', 'ermee', 'eraan'], 0, 'erop',
-        'verheugen takes op, and op plus it becomes erop. ermee would be with it and eraan would be to it.'), '.'] },
-      { en: 'The neighbour has a new shed and talks about it all day.', parts: ['De buurman heeft een nieuwe schuur en praat', FK(['er de hele dag over', 'het de hele dag over', 'zich de hele dag over'], 0, 'erop',
-        'praten over a thing becomes er ... over. er comes early and over waits at the end.'), '.'] },
+        'verheugen takes op, and op plus it becomes erop.'), '.'] },
+      { en: 'The neighbour has a new shed and talks about it all day.', parts: ['De buurman heeft een nieuwe schuur en praat', FK(['er', 'het', 'zich'], 0, 'erop', 'praten over a thing becomes er ... over: er early, over at the end.'), 'de hele dag over.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'I stay home because the ferry is not sailing.', parts: ['Ik blijf thuis', FK(['omdat de veerboot niet vaart', 'omdat de veerboot vaart niet', 'omdat vaart de veerboot niet'], 0, 'bijzin',
-        'omdat sends vaart to the end: niet vaart.'), '.'] },
-      { en: 'Before we go to bed, I give the dogs one more biscuit.', parts: [FK(['Voordat we naar bed gaan,', 'Voordat we gaan naar bed,'], 0, 'bijzin',
-        'voordat sends gaan to the end of its clause.'), FK(['geef ik', 'ik geef'], 0, 'v2',
+      { en: 'I stay home because the ferry is not sailing.', parts: ['Ik blijf thuis omdat de veerboot', FK(['niet vaart', 'vaart niet'], 0, 'bijzin', 'omdat sends vaart to the end: niet vaart.'), '.'] },
+      { en: 'Before we go to bed, I give the dogs one more biscuit.', parts: ['Voordat we', FK(['naar bed gaan,', 'gaan naar bed,'], 0, 'bijzin', 'voordat sends gaan to the end of its clause.'), FK(['geef ik', 'ik geef'], 0, 'v2',
         'The sub-clause is slot 1, so the verb comes first in the main clause: geef ik.'), 'de honden nog een koekje.'] },
-      { en: 'My father-in-law has the biggest sheep on the island.', parts: ['Mijn schoonvader heeft', FK(['het grootste', 'de grootste', 'het groter'], 0, 'vergelijk',
-        'The superlative is -ste: grootste. schaap is a het-word, so het.'), 'schaap van het eiland.'] },
+      { en: 'My father-in-law has the biggest sheep on the island.', parts: ['Mijn schoonvader heeft het', FK(['grootste', 'groter', 'groot'], 0, 'vergelijk', 'The biggest of all takes -ste, and before a noun the -e stays: het grootste.'), 'schaap van het eiland.'] },
       { en: 'Yesterday we took the ferry to Texel.', parts: ['Gisteren', FK(['zijn we', 'we zijn'], 0, 'v2',
-        'Gisteren is slot 1, so the verb comes second.'), 'met de veerboot naar Texel', FK(['gevaren', 'gevaard'], 0, 'perf',
-        'varen is irregular, gevaren, and sailing to a place takes zijn.'), '.'] },
+        'Gisteren is slot 1, so the verb comes second.'), 'met de veerboot naar Texel', FK(['gevaren', 'varen'], 0, 'perf', 'varen is irregular: gevaren, and sailing to a place takes zijn.'), '.'] },
 
       // ---- words: rooms, furniture, the family, the dogs, the island
       { w: 'the guest room', nl: 'de logeerkamer' }, { w: 'the extractor hood', nl: 'de afzuigkap' },

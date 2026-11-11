@@ -42,30 +42,22 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that is already standing by the door wants to join the standup.', parts: ['Het schaap', FK(['dat al bij de deur staat', 'dat staat al bij de deur', 'dat al bij de deur'], 0, 'bijzin',
-        'A dat-clause is a sub-clause: the verb goes to the very end, al bij de deur staat.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already standing by the door wants to join the standup.', parts: ['Het schaap', FK(['dat al bij de deur staat', 'dat staat al bij de deur'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, staat.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
-      { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte',
-        'om ... te means in order to: om opens the clause and te stands in front of the last verb.'), 'de dashboards in de gaten', FK(['te houden', 'houden te', 'te houd'], 0, 'omte',
-        'te sits right in front of the infinitive: te houden.'), '.'] },
+      { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte', 'om ... te means in order to: om opens the clause, te comes before the last verb.', 'word'), 'de dashboards in de gaten', FK(['te houden', 'houden te'], 0, 'omte', 'te sits right in front of the infinitive: te houden.'), '.'] },
       { en: 'I forgot to switch on the alerts.', parts: ['Ik ben vergeten de alerts', FK(['aan te zetten', 'te aanzetten', 'aanzetten te'], 0, 'omte',
         'A separable verb takes te in the middle: aan + te + zetten.'), '.'] },
-      { en: 'I do not feel like cycling to the office in this wind.', parts: ['Ik heb geen zin', FK(['om', 'van', 'te'], 0, 'omte',
-        'geen zin om ... te: om opens the clause and te goes in front of the last verb.'), 'met deze wind naar kantoor', FK(['te fietsen', 'fietsen te', 'te fiets'], 0, 'omte',
-        'te goes in front of the infinitive: te fietsen.'), '.'] },
-      { en: 'I need two hours to solve the problem.', parts: ['Ik heb twee uur nodig', FK(['om', 'te'], 0, 'omte',
-        'nodig hebben takes om ... te: om opens the clause and te goes inside the verb at the end.'), 'het probleem', FK(['op te lossen', 'te oplossen', 'op lossen te'], 0, 'omte',
+      { en: 'I do not feel like cycling to the office in this wind.', parts: ['Ik heb geen zin', FK(['om', 'van', 'te'], 0, 'omte', 'geen zin om ... te: om opens the clause and te goes in front of the last verb.', 'word'), 'met deze wind naar kantoor', FK(['te fietsen', 'fietsen te'], 0, 'omte', 'te goes in front of the infinitive: te fietsen.'), '.'] },
+      { en: 'I need two hours to solve the problem.', parts: ['Ik heb twee uur nodig', FK(['om', 'te'], 0, 'omte', 'nodig hebben takes om ... te, and om opens the clause.', 'word'), 'het probleem', FK(['op te lossen', 'te oplossen', 'op lossen te'], 0, 'omte',
         'oplossen is separable, so te goes between the parts: op te lossen.'), '.'] },
       { en: 'You do not have to come to the office today.', parts: ['Je', FK(['hoeft', 'moet', 'mag'], 0, 'mag',
-        'hoeven is the verb for not needed and it takes te: je hoeft niet te komen. moeten and mogen never take te.'), 'vandaag niet naar kantoor te komen.'] },
+        'Not needed is niet hoeven te; moeten and mogen never take te.'), 'vandaag niet naar kantoor te komen.'] },
 
       // ---- builds: conditionals with als ... dan and zou
-      { en: 'If the wifi were better, I would work at home.', parts: ['Als de wifi beter', FK(['was', 'waren', 'zou'], 0, 'conditie',
-        'For something that is not the case now, the clause with als takes the imperfectum: de wifi was. waren is for several.'), ', dan', FK(['zou ik', 'ik zou'], 0, 'v2',
+      { en: 'If the wifi were better, I would work at home.', parts: ['Als de wifi beter', FK(['was', 'waren'], 0, 'conditie', 'Something not true now takes the imperfectum after als, and one wifi takes was.', 'past'), ', dan', FK(['zou ik', 'ik zou'], 0, 'v2',
         'dan takes slot 1, so the verb comes next: dan zou ik.'), 'thuis werken.'] },
-      { en: 'If I missed the last ferry, I would stay on Texel.', parts: ['Als ik de laatste boot', FK(['miste', 'missen', 'gemist'], 0, 'conditie',
-        'An imagined situation uses the imperfectum: ik miste. The answer part then has zou: dan zou ik blijven.'), ', dan zou ik op Texel blijven.'] },
+      { en: 'If I missed the last ferry, I would stay on Texel.', parts: ['Als ik de laatste boot', FK(['miste', 'missen', 'gemist'], 0, 'conditie', 'An imagined situation takes the imperfectum after als: ik miste.', 'past'), ', dan zou ik op Texel blijven.'] },
 
       // ---- builds: er for quantity and the pronominal adverbs
       { en: 'How many colleagues do you have? I have seven.', parts: ["Hoeveel collega's heb je? Ik heb", FK(['er', 'het', 'hen'], 0, 'er',
@@ -79,7 +71,7 @@
 
       // ---- builds: review (sub-clause, imperfectum, zou)
       { en: 'Because the ferry was late, the standup started without me.', parts: ['Omdat de boot', FK(['te laat was', 'was te laat'], 0, 'bijzin',
-        'omdat sends the verb to the end: te laat was.'), ',', FK(['begon de standup', 'de standup begon'], 0, 'bijzin',
+        'omdat sends the verb to the end: te laat was.'), ',', FK(['begon de standup', 'de standup begon'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: begon de standup.'), 'zonder mij.'] },
       { en: 'Yesterday I had to take the first ferry for the meeting.', parts: ['Gisteren', FK(['moest ik', 'ik moest'], 0, 'v2',
         'Gisteren takes slot 1, so the verb comes next: moest ik.'), 'de eerste boot', FK(['nemen', 'te nemen'], 0, 'modal',
