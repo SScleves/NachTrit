@@ -22,7 +22,7 @@ import { bend, hillAt, hills, keepBehind, KERB_W, kerbL, kerbR, landL, landR, mi
 export * from './road.js?v=38';
 import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PG, PM, streakTex, WIN_GLOW_MAT } from './props.js?v=38';
 export * from './props.js?v=38';
-import { kadd, kb, kbuild, KG, kit, kmerge, ktube, MODELS, PK } from './kit.js?v=38';
+import { kadd, kb, kbuild, KG, kit, kmerge, ktube, PK } from './kit.js?v=38';
 export * from './kit.js?v=38';
 import { bikeRow, bins, crates, ducks, lamppost, moorings, setTownId, setTownStyle, T3, TOWN3D, townId, townStyleOf, windmill } from './furniture.js?v=38';
 export * from './furniture.js?v=38';
@@ -32,178 +32,14 @@ import { backRow, canalBridge, flagNL, LANDMARK, skyBands, terrace, tintFar, tow
 export * from './backdrop.js?v=38';
 import { buildScenery, footprint, scenery, sceneryPlace, theme, THEMES, townKit, wieven } from './scenery.js?v=38';
 export * from './scenery.js?v=38';
-import { modelClone, modelsReady } from './models.js?v=38';
+import { modelsReady } from './models.js?v=38';
 export * from './models.js?v=38';
+import { beam, bike, dogs, drawFace, dropPassenger, faceState, follower, mountPassenger, rackGhost, riderTick, setCineDogs, setFace, setFaceState,
+  setRackGhost } from './rider.js?v=38';
+export * from './rider.js?v=38';
 // ---------- the rest of the game: not yet in its own module ----------
 let LANE_X = LANES3;
 let frameAcc = 0, frameN = 0, rideFrames = 0;
-// ---------- the bike ----------
-// Santi's retro-future omafiets (concept-art/G-omafiets-retro-future.png): a black frame, a sprung leather saddle, a round warm
-// headlamp, amber light strips on the chain case, fork and pedals, a red light bar on the rack. Every glow is a self-lit
-// strip with an additive halo and the bloom pass: no light is added. The wheels and their spin are as they were.
-const bike = new THREE.Group();
-{
-  const steel = Mat({ color: 0x3b4a56 });
-  const frameMat = Mat({ color: 0x16181e });
-  const leather = Mat({ color: 0x5a3420 }, TINT.warm);
-  const NEON = new THREE.MeshBasicMaterial({ color: 0xffe2a8 });                                      // the strips' hot cores
-  const NEON_HALO = GlowMat(glowTex, 0xff9a2e, 0.6, false, { side: THREE.DoubleSide });              // their amber spill
-  const TAIL = new THREE.MeshBasicMaterial({ color: 0xffb0a0 }), TAIL_HALO = GlowMat(glowTex, 0xff2a14, 0.95, true);
-  const HEAD_HALO = GlowMat(glowTex, 0xffcf86, 0.7, true);
-  const tube = (a, b, r = 0.035) => { const d = new THREE.Vector3().subVectors(b, a); const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, d.length(), 6), frameMat); m.position.copy(a).add(b).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize()); return m; };
-  const P = (x, y, z) => new THREE.Vector3(x, y, z);
-  const rear = P(0, 0.34, 0.62), front = P(0, 0.34, -0.62), crank = P(0, 0.36, 0.08), seat = P(0, 0.98, 0.3), head = P(0, 0.95, -0.5);
-  [tube(rear, seat), tube(rear, crank), tube(crank, head, 0.03), tube(seat, head, 0.03), tube(head, front), tube(seat, P(0, 1.02, 0.3), 0.02)].forEach(t => bike.add(t));
-  const wg = new THREE.TorusGeometry(0.34, 0.035, 8, 22);
-  const w1 = new THREE.Mesh(wg, steel); w1.position.copy(front); bike.add(w1);
-  const w2 = new THREE.Mesh(wg, steel); w2.position.copy(rear); bike.add(w2);
-  bike.userData.wheels = [w1, w2];
-  for (const w of [w1, w2]) { const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.08, 8), steel); hub.rotation.z = Math.PI / 2; hub.position.copy(w.position); bike.add(hub); for (let i = 0; i < 6; i++) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.62, 0.01), steel); sp.position.copy(w.position); sp.rotation.x = i * Math.PI / 6; w.add(sp); sp.position.set(0, 0, 0); } }
-  for (const w of [w1, w2]) { const mg = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 6, 16, Math.PI * 0.9), M.dark); mg.position.copy(w.position); mg.rotation.y = Math.PI / 2; mg.rotation.z = Math.PI * 0.05; bike.add(mg); }
-  const bars = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.025, 6, 12, Math.PI), steel); bars.position.set(0, 1.0, -0.5); bars.rotation.x = Math.PI / 2; bars.rotation.z = Math.PI; bike.add(bars);
-  // the static parts go through the kit: one mesh per material
-  const k = kit(), springG = new THREE.TorusGeometry(0.022, 0.006, 4, 10);
-  kb(k, frameMat, 0.06, 0.34, 0.35, 0.04, 0.13, 0.62);                                                  // the chain case, crank to rear axle
-  kb(k, NEON, 0.085, 0.35, 0.36, 0.012, 0.018, 0.44); kadd(k, KG.plane, NEON_HALO, 0.092, 0.35, 0.36, 0, Math.PI / 2, 0, 0.62, 0.16);
-  ktube(k, NEON, 0.035, 0.86, -0.53, 0.035, 0.46, -0.6, 0.008);                                          // down the fork
-  kb(k, leather, 0, 1.03, 0.3, 0.17, 0.06, 0.27);                                                        // the saddle, leather, on springs
-  for (const sx of [-1, 1]) for (let i = 0; i < 3; i++) kadd(k, springG, steel, sx * 0.05, 0.99 - i * 0.017, 0.4, Math.PI / 2, 0, 0);
-  kb(k, NEON, 0, 1.0, 0.44, 0.1, 0.01, 0.012); kadd(k, KG.plane, NEON_HALO, 0, 1.0, 0.452, 0, 0, 0, 0.2, 0.07);
-  for (const sx of [-1, 1]) {
-    kadd(k, KG.cyl, leather, sx * 0.3, 1.0, -0.48, Math.PI / 2, 0, 0, 0.055, 0.12, 0.055);               // grips
-    kb(k, frameMat, sx * 0.15, 0.4, 0.05, 0.1, 0.025, 0.07);                                            // pedals under his feet, a strip on each
-    kb(k, NEON, sx * 0.15, 0.4, 0.09, 0.08, 0.012, 0.012); kadd(k, KG.plane, NEON_HALO, sx * 0.15, 0.4, 0.096, 0, 0, 0, 0.2, 0.07);
-    kb(k, frameMat, sx * 0.08, 0.74, 0.74, 0.02, 0.02, 0.6);                                            // the rear rack
-    ktube(k, frameMat, sx * 0.08, 0.74, 0.98, sx * 0.05, 0.36, 0.64, 0.012);
-  }
-  kb(k, frameMat, 0, 0.74, 1.03, 0.18, 0.02, 0.02);
-  kb(k, frameMat, 0, 0.88, -0.74, 0.03, 0.03, 0.14);                                                     // the headlamp bracket
-  kadd(k, KG.cyl, frameMat, 0, 0.88, -0.82, Math.PI / 2, 0, 0, 0.17, 0.11, 0.17);                        // and its round housing
-  kbuild(k, bike); springG.dispose();
-  const tail = new THREE.Mesh(KG.box, TAIL); tail.scale.set(0.05, 0.16, 0.025); tail.position.set(0, 0.84, 1.04); bike.add(tail);   // the red light bar
-  const tailGlow = new THREE.Sprite(TAIL_HALO); tailGlow.scale.set(0.5, 0.7, 1); tailGlow.position.set(0, 0.84, 1.07); bike.add(tailGlow);
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 4, 8), M.shirt); torso.position.set(0, 1.42, 0.2); torso.rotation.x = -0.12; bike.add(torso);
-  const headG = new THREE.Group(); headG.position.set(0, 1.92, 0.1); bike.add(headG); bike.userData.head = headG;
-  const headM = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), Mat({ color: 0xd9b48c })); headG.add(headM);
-  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), M.rider); hair.position.y = 0.03; headG.add(hair);
-  const faceC = document.createElement('canvas'); faceC.width = faceC.height = 128; const faceTex = new THREE.CanvasTexture(faceC); faceTex.colorSpace = THREE.SRGBColorSpace;
-  const face = new THREE.Mesh(new THREE.PlaneGeometry(0.28, 0.28), new THREE.MeshBasicMaterial({ map: faceTex, transparent: true, depthTest: false })); face.position.set(0, -0.01, -0.17); face.rotation.y = Math.PI; face.renderOrder = 20; headG.add(face);
-  bike.userData.faceC = faceC; bike.userData.faceTex = faceTex;
-  for (const sx of [-1, 1]) { const arm = tube(P(sx * 0.2, 1.6, 0.15), P(sx * 0.26, 1.02, -0.45), 0.045); arm.material = M.shirt; bike.add(arm); const leg = tube(P(sx * 0.1, 1.05, 0.28), P(sx * 0.12, 0.42, 0.05), 0.055); leg.material = M.rider; bike.add(leg); }
-  // the headlamp's lens: its warmth follows the lamp meter (update() sets the colour), a soft halo round it
-  const lamp = new THREE.Mesh(new THREE.CircleGeometry(0.068, 16), new THREE.MeshBasicMaterial({ color: 0xffd28a })); lamp.position.set(0, 0.88, -0.877); lamp.rotation.y = Math.PI; bike.add(lamp);
-  const lampGlow = new THREE.Sprite(HEAD_HALO); lampGlow.scale.set(0.42, 0.42, 1); lampGlow.position.set(0, 0.88, -0.9); bike.add(lampGlow);
-  bike.userData.lampMesh = lamp; bike.userData.lampGlow = lampGlow;
-  // what the model replaces when it arrives (riderModel), and the materials it is drawn with
-  bike.userData.prim = bike.children.filter(c => ![headG, lamp, lampGlow, tail, tailGlow].includes(c)).concat([headM, hair]);
-  bike.userData.mats = { frame: frameMat, steel, leather, neon: NEON, tyre: M.dark, skin: headM.material, hair: M.rider, jacket: M.shirt };
-}
-// the beam fades in over its first metres and thins out at the far end: without the fade its narrow start drew two pale strips beside the rider's head
-const beamFade = (() => { const c = document.createElement('canvas'); c.width = 4; c.height = 64; const g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 64); gr.addColorStop(0, '#000'); gr.addColorStop(0.12, '#000'); gr.addColorStop(0.4, '#fff'); gr.addColorStop(1, '#555'); g.fillStyle = gr; g.fillRect(0, 0, 4, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
-const beam = new THREE.Mesh(new THREE.ConeGeometry(2.4, 26, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xffe2b4, map: beamFade, transparent: true, opacity: 0.05, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide }));
-beam.rotation.x = Math.PI / 2; beam.position.set(0, 0.9, -13.8); bike.add(beam);
-scene.add(bike);
-
-// the rider on his omafiets: the model takes the place of the primitive body and bike; the lamp lens, tail light, halos, beam and
-// face canvas stay the game's own. The legs follow the pedals (two-bone IK in the y-z plane), and two dogs run beside him
-const dogs = new THREE.Group(); dogs.visible = false; scene.add(dogs);
-function riderModel() {
-  const u = bike.userData, R = MODELS.rider.scene, md = modelClone(R, u.mats), head = md.getObjectByName('head');
-  for (const c of u.prim) c.visible = false;
-  for (const c of head.children.slice()) u.head.add(c);   // the head node sits where the face canvas's head is
-  head.parent.remove(head); bike.add(md);
-  const n = s => md.getObjectByName(s);
-  u.model = { wf: n('wheel_f'), wr: n('wheel_r'), crank: n('crank'), pL: n('pedal_L'), pR: n('pedal_R'), legs: ['R', 'L'].map(s => [n('thigh_' + s), n('shin_' + s), n('foot_' + s)]), dogs: [] };
-  u.model.wf.rotation.y = u.model.wr.rotation.y = Math.PI / 2;   // the wheels stand across the bike (see riderTick)
-  if (!MODELS.dog) return;
-  const dark = { dog: Mat({ color: 0x24201d }), dogDark: Mat({ color: 0x141210 }), dogPale: Mat({ color: 0x9a7a52 }) };
-  for (const [x, z, mats, ph] of [[-0.85, -0.1, null, 0], [0.85, 0.45, dark, 2.1]]) {
-    const d = modelClone(MODELS.dog.scene, mats), m = s => d.getObjectByName(s); d.position.set(x, 0, z); dogs.add(d);
-    u.model.dogs.push({ d, body: m('body'), tail: m('tail'), legs: [m('leg_fl'), m('leg_fr'), m('leg_bl'), m('leg_br')], ph, z });
-  }
-  dogs.visible = true;
-}
-const RL1 = 0.46, RL2 = 0.44;
-function legIK(L, a, s) {   // ankle onto the pedal at crank angle a; s: 1 right pedal, -1 left
-  const ty = 0.36 - 0.17 * s * Math.cos(a) + 0.07, tz = 0.08 - 0.17 * s * Math.sin(a) + 0.01, dy = ty - 1.07, dz = tz - 0.26;
-  const d = clamp(Math.hypot(dy, dz), 0.3, (RL1 + RL2) * 0.985), base = Math.atan2(-dz, -dy);
-  const hip = Math.acos(clamp((RL1 * RL1 + d * d - RL2 * RL2) / (2 * RL1 * d), -1, 1)), knee = Math.acos(clamp((RL1 * RL1 + RL2 * RL2 - d * d) / (2 * RL1 * RL2), -1, 1));
-  L[0].rotation.x = base + hip; L[1].rotation.x = -(Math.PI - knee); L[2].rotation.x = -(L[0].rotation.x + L[1].rotation.x) + 0.12;
-}
-let cineDogs = true;   // the dogs run beside him in the intro only where he rides (shots 8 and 14); indoors and beside the tall lady they stay out
-let _dogT = 0;
-function riderTick(dw, dt) {   // dw: how far the wheels turn this frame
-  const md = bike.userData.model;
-  if (!md) { const W = bike.userData.wheels; for (let i = 0; i < W.length; i++) W[i].rotation.x += dw; return; }
-  md.wf.rotation.x += dw; md.wr.rotation.x += dw;                        // Santi's call (11 Nov): the wheels face the eye and tumble end over end, as the first bike's did. It makes no sense and stays
-  const c = md.crank; c.rotation.x -= Math.min(dw / 2.4, 11 * dt); md.pL.rotation.x = md.pR.rotation.x = -c.rotation.x;
-  legIK(md.legs[0], c.rotation.x, 1); legIK(md.legs[1], c.rotation.x, -1);
-  // the dogs: they keep to his side with a little lag, gallop as fast as he rides, drift forward and back
-  dogs.visible = bike.visible && cineDogs; dogs.position.x += (bike.position.x - dogs.position.x) * Math.min(1, dt * 5); dogs.position.z = bike.position.z; dogs.rotation.x = bike.rotation.x;
-  _dogT += dt;
-  for (let i = 0; i < md.dogs.length; i++) {   // index loops: nothing allocated per frame
-    const D = md.dogs[i]; D.ph += dw * 0.42 + dt * 0.4; const p = D.ph, run = Math.min(1, dw / Math.max(dt, 1e-4) / 12);
-    D.d.position.z = D.z + Math.sin(_dogT * 0.37 + D.z * 5) * 0.35;
-    D.legs[0].rotation.x = Math.sin(p) * 0.75 * run; D.legs[1].rotation.x = Math.sin(p + 0.35) * 0.75 * run;
-    D.legs[2].rotation.x = Math.sin(p + Math.PI) * 0.65 * run; D.legs[3].rotation.x = Math.sin(p + Math.PI + 0.35) * 0.65 * run;
-    D.body.position.y = 0.46 + Math.abs(Math.sin(p)) * 0.045 * run; D.body.rotation.x = Math.sin(p) * 0.07 * run;
-    D.tail.rotation.z = Math.sin(_dogT * 9 + D.z * 3) * 0.45;
-  }
-}
-
-// expressions: deadpan by default, he looks back at you when something happens
-let faceState = { name: '', until: 0, look: 0 };
-function drawFace(name) {
-  const c = bike.userData.faceC, g = c.getContext('2d'); g.clearRect(0, 0, 128, 128);
-  g.fillStyle = '#c9a279'; g.beginPath(); g.arc(64, 68, 58, 0, 7); g.fill();   // an unlit skin disc so the face reads in the dark
-  g.fillStyle = '#1a1416'; g.lineCap = 'round'; g.strokeStyle = '#1a1416'; g.lineWidth = 11;
-  const eye = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
-  if (name === 'ouch') {
-    g.beginPath(); g.moveTo(22, 44); g.lineTo(54, 60); g.moveTo(106, 44); g.lineTo(74, 60); g.stroke();
-    g.beginPath(); g.moveTo(34, 100); g.quadraticCurveTo(64, 78, 94, 100); g.stroke();
-    g.fillStyle = '#b8282a'; g.beginPath(); g.arc(64, 112, 10, 0, 7); g.fill();
-  } else if (name === 'smug') {
-    eye(40, 58, 10); eye(88, 58, 10);
-    g.beginPath(); g.moveTo(20, 40); g.lineTo(56, 32); g.moveTo(72, 42); g.lineTo(108, 46); g.stroke();
-    g.beginPath(); g.moveTo(38, 90); g.quadraticCurveTo(70, 116, 100, 86); g.stroke();
-  } else if (name === 'worry') {
-    eye(40, 60, 15); eye(88, 60, 15); g.fillStyle = '#fff'; eye(45, 55, 5); eye(93, 55, 5); g.fillStyle = '#1a1416';
-    g.beginPath(); g.moveTo(16, 42); g.lineTo(56, 30); g.moveTo(112, 42); g.lineTo(72, 30); g.stroke();
-    g.beginPath(); g.arc(64, 100, 10, 0, 7); g.fill();
-  } else if (name === 'scream') {
-    eye(40, 54, 16); eye(88, 54, 16); g.beginPath(); g.ellipse(64, 100, 16, 22, 0, 0, 7); g.fill();
-  } else {
-    eye(40, 60, 10); eye(88, 60, 10);
-    g.beginPath(); g.moveTo(22, 42); g.lineTo(58, 42); g.moveTo(70, 42); g.lineTo(106, 42); g.stroke();
-    g.beginPath(); g.moveTo(40, 96); g.lineTo(88, 96); g.stroke();
-  }
-  bike.userData.faceTex.needsUpdate = true;
-}
-function setFace(name, secs, lookBack = true) { faceState = { name, until: S.t + secs, look: lookBack ? 1 : 0 }; drawFace(name); }
-drawFace('deadpan');
-
-// the passenger on the achterop (back rack), Dutch style, sitting sideways
-let rackGhost = null;
-function mountPassenger(variant, coat) {
-  if (rackGhost) bike.remove(rackGhost);
-  rackGhost = ghostFigure(true, variant, true, coat); rackGhost.scale.setScalar(0.6); rackGhost.position.set(0.1, 0.22, 0.78); rackGhost.rotation.y = Math.PI / 2; rackGhost.traverse(m => { if (m.material && m.material.transparent) m.material.opacity = 0.8; }); bike.add(rackGhost);
-}
-function dropPassenger() {
-  if (!rackGhost) return; const v = rackGhost.userData.variant, c = rackGhost.userData.coat; bike.remove(rackGhost); rackGhost = null;
-  const g = ghostFigure(true, v, false, c); g.scale.setScalar(0.9); const side = Math.random() < 0.5 ? -1 : 1;
-  add(g, S.dist + 2, null, 'dropped', { bx: side * (ROAD_W / 2 + 1.2), born: S.t });
-}
-
-// the follower, only shown at the end
-const follower = new THREE.Group();
-{
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.9, 4.2, 7), M.shade);
-  body.position.y = 2.1; follower.add(body);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), M.shade); head.position.y = 4.4; follower.add(head);
-  for (const s of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), M.eye); e.position.set(s * 0.14, 4.45, -0.35); follower.add(e); }
-  const glow = new THREE.PointLight(0xff2010, 0, 12); glow.position.y = 4.4; follower.add(glow); follower.userData.glow = glow;
-}
-follower.visible = false; scene.add(follower);
 
 // shared geometries for everything that spawns often
 const G = {
@@ -1416,7 +1252,7 @@ const W = {
 window.NRW = W;   // the world handle: the shots, QA camera shots and the console use it
 function cineBegin(i) {
   const shot = typeof i === 'object' ? i : CINE[i]; if (!shot) return false;   // an intro panel's index, or a shot object (the level cards)
-  cineEnd(); cineShot = shot; cineT = 0; cineTitleAt = Infinity; cineDogs = typeof i === 'object' || i === 7 || i === 13;
+  cineEnd(); cineShot = shot; cineT = 0; cineTitleAt = Infinity; setCineDogs(typeof i === 'object' || i === 7 || i === 13);
   try { shot.build(W); } catch (e) { console.error(`cine shot ${typeof i === 'object' ? 'card' : i + 1}: ${e && e.message}`); cineEnd(); return false; }
   $('intro').classList.add('cine'); document.body.classList.add('cine'); cineFrame(); return true;
 }
@@ -1425,7 +1261,7 @@ function cineEnd() {
   for (const p of cineProps) { scene.remove(p); p.traverse(m => { if (m.userData.ownTex && m.material) { if (m.material.map) m.material.map.dispose(); m.material.dispose(); } }); }
   cineProps.length = 0; for (const s of cineSays) s.el.remove(); cineSays.length = 0;
   for (const o of cineHidden) { o.mesh.visible = true; o.cineHidden = false; } cineHidden.length = 0;
-  $('cinetitle').style.opacity = 0; cineShot = null; cineDogs = true; cineFrozen = false; S.fogMul = 1; S.cineSpeed = 0; bike.visible = true; beam.visible = true; W.ride(0); bike.rotation.set(0, 0, 0);
+  $('cinetitle').style.opacity = 0; cineShot = null; setCineDogs(true); cineFrozen = false; S.fogMul = 1; S.cineSpeed = 0; bike.visible = true; beam.visible = true; W.ride(0); bike.rotation.set(0, 0, 0);
   setBehind(10, 20); cineDy = 0; camera.clearViewOffset();
   if (S.mode === 'cine') S.mode = 'start';
   $('intro').classList.remove('cine'); document.body.classList.remove('cine');
@@ -1675,7 +1511,7 @@ function reset() {
     met: new Map(), tasksSeen: new Set(), goHints: 0, teachPlan: L && !taughtBefore() ? 3 : 0, taught: 0, lastWords: 0, held: false, wispEasy: !!L && fareTier() === 1,
     cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: fareTier(), score: 0, fxT: 0, paid: 0, walletLast: 0, tickT: -1 });
   $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
-  follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); rackGhost = null; }
+  follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); setRackGhost(null); }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
   hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0;
   plan();
@@ -1888,7 +1724,7 @@ function update(dt) {
   bike.position.y = (S.stumble > 0 ? Math.sin(S.t * 40) * 0.05 * S.stumble : 0) + Math.sin(S.t * 6) * 0.01;
   if (rackGhost) rackGhost.position.y = 0.5 + Math.sin(S.t * 3) * 0.04;
   riderTick(S.speed * S.slow * hillK * dt * 1.4, dt);
-  if (faceState.name && S.t > faceState.until) { faceState = { name: '', until: 0, look: 0 }; drawFace('deadpan'); }
+  if (faceState.name && S.t > faceState.until) { setFaceState({ name: '', until: 0, look: 0 }); drawFace('deadpan'); }
   if (!faceState.name && riding && S.t > (S.nextGlance || 0)) { S.nextGlance = S.t + rnd(6, 11); setFace('deadpan', 1.4); }
   const headTarget = faceState.look ? Math.PI * 0.9 : (S.activeFork ? S.lean * 0.3 : Math.sin(S.t * 0.7) * 0.15);
   bike.userData.head.rotation.y = lerp(bike.userData.head.rotation.y, headTarget, dt * 6);
@@ -2134,4 +1970,5 @@ loop();
 
 
 
-export { bike, cart, deadPool, fence, G, ghostFigure, labelTexture, riderModel, S, TOWN_OF, wisp, zombie, ZOMBIE_VARIANTS, zombieParts };
+
+export { add, cart, deadPool, fence, G, ghostFigure, labelTexture, S, TOWN_OF, wisp, zombie, ZOMBIE_VARIANTS, zombieParts };
