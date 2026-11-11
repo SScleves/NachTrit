@@ -26,7 +26,9 @@ const browser = await chromium.launch(swift
   : { executablePath: '/usr/bin/google-chrome', headless: true, args: ['--headless=new', '--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl'] });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, acceptDownloads: true });
 const page = await ctx.newPage(); page.setDefaultTimeout(120000);
-const errors = []; page.on('pageerror', e => errors.push(String(e))); page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+const errors = []; await page.route('**/favicon.ico', r => r.fulfill({ status: 204, body: '' }));
+page.on('response', r => { if (r.status() >= 400) errors.push(`http ${r.status()}: ${r.url()}`); });
+page.on('pageerror', e => errors.push(String(e))); page.on('console', m => { if (m.type() === 'error' && !/favicon\.ico/.test(m.location().url || '')) errors.push(m.text() + ' ' + (m.location().url || '')); });
 const shots = [], shot = async name => { const f = path.join(out, name + '.png'); await page.waitForTimeout(250); await page.screenshot({ path: f }); shots.push(f); };
 const url = base + '?map=1';
 const ready = () => page.waitForFunction(() => window.NRsave && window.NRbook && document.getElementById('map').style.display === 'flex');
@@ -34,7 +36,8 @@ const save = () => page.evaluate(() => JSON.parse(JSON.stringify(NRsave())));
 const log = (...a) => console.log(...a);
 
 // 1. migration: the live keys, then the page
-await page.goto(base.replace(/index\.html.*$/, 'voice/ids.json'));
+const blank = base.replace(/index\.html.*$/, 'voice/ids.json');   // a page of the same origin that is not the game
+await page.goto(blank);
 await page.evaluate(live => { localStorage.clear(); for (const k in live) localStorage.setItem(k, live[k]); }, LIVE);
 await page.goto(url); await ready();
 let s = await save();
@@ -79,7 +82,8 @@ await shot('book-save-export-desktop');
 
 // 5. clear storage, import the file, check, reload, check
 const roundTrip = async (how) => {
-  await page.evaluate(() => localStorage.clear()); await page.goto(url); await ready();
+  // clear as the browser's "clear site data" does: with no game page open (a game page writes its save on pagehide)
+  await page.goto(blank); await page.evaluate(() => localStorage.clear()); await page.goto(url); await ready();
   const empty = await save(); assert.deepEqual(empty.stars, {}); assert.deepEqual(empty.items, {});
   await page.click('#bookbtn'); await page.click('.btabs button[data-tab="save"]');
   if (how === 'file') await page.setInputFiles('#b_input', file);
@@ -96,7 +100,7 @@ const roundTrip = async (how) => {
 };
 await roundTrip('file'); await roundTrip('code');
 await page.click('#bookbtn'); await page.click('.btabs button[data-tab="save"]'); await page.fill('#b_code', code.slice(0, code.length - 30)); await page.click('#b_usecode');
-log(`a cut code: "${await page.textContent('#b_msg')}"`);
+await page.waitForFunction(() => document.getElementById('b_msg').textContent); log(`a cut code: "${await page.textContent('#b_msg')}"`);
 // the town card of a saved town offers its trophy ride
 await page.click('#b_close');
 const trophy = await page.evaluate(() => { const t = window.TOWNS.find(x => x.id === 'alblasserdam'), lv = NRbook.trophyLevel(t); return { id: lv.id, deliveries: lv.deliveries, items: lv.items.length, fareK: lv.fareK, hint: lv.hint }; });

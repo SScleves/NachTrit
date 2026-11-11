@@ -267,3 +267,32 @@ Report: `reports/dt-learning-core.md`. What a wrong answer now does, and the rul
   of review road, lamp lost on it and under the why cards (both must be 0), and each fork's legible time against its budget
   split by "right after a why card". `--shots --gpu` saves the first why card and the first "again" card. A ride with no
   misses must stay identical to the frame: compare the report JSON field by field, not only the table.
+
+## 12. The save and the learner model (phase 4, branch `dt/save`, 11 Nov 2026)
+
+Report: `reports/dt-save.md`. What the game keeps about a player, and the rules to keep when you touch it:
+- **One save.** `nachtrit.save` holds `{ v, ride, stars, scores, flags, settings, items, rules }` (`src/save.js`, pure). It is read
+  once in `src/state.js` (`SAVE`); `progress` and `scores` are `SAVE.stars` and `SAVE.scores`, the same objects. Write with
+  `persist()`; a one-time flag with `flag(name)` / `setFlag(name, v)` (`intro` 1 short / 2 full, `taught`, `go`, `lamphint`,
+  `unlock`, `lost`). Nothing in `src/` touches `localStorage` except `src/save.js` through the store `state.js` passes in.
+- **Old keys, one version.** `nachtrit.progress`, `.scores`, `.intro`, `.taught`, `.go`, `.lamphint`, `.unlock`, `.lost` are
+  read on every load and merged in (higher number wins), and written next to the save, so an older page and the qa tools that
+  seed `nachtrit.progress` still work. In the next version: stop the mirror in `writeSave` and keep only the first migration.
+  Everything stays numbers.
+- **Learner model** (`src/learn.js`, pure): item key = 36 bits of `voiceId('', text)` in base 36, where text is the entry's
+  Dutch (`entryText` in `src/forks.js`, the same nl `itemToEntry` gives). Record `[box, seen, right, last ride]`; right on the
+  first try +1 box, wrong to box 1; intervals 1, 2, 4, 8, 16 rides. `SAVE.ride` counts level rides (in `start`). `noteLearn` in
+  `src/flow.js` notes every fork's rule and each item's first try once per ride, for first rides and review forks, never for
+  returns. The save is written at the end card (and on `pagehide`).
+- **Spaced review** (`addReview` in `src/flow.js`): only on levels below id 1000 with something in the model. Up to a quarter of
+  the deliveries become due items from earlier levels in play order (`selectDue`: box, share right, overdue, order; no
+  randomness), at `duePositions`. They are entries with `again: 1, due: true`: everything a return does (tag, half fare, review
+  road, no count, no lamp) applies, and `S.deliveriesTotal` drops by their number. With nothing due the ride is untouched to the
+  frame: keep `addReview` free of `Math.random` and hashing until it knows something is due.
+- **Practice and trophy rides** (`src/book.js`): synthetic levels, id 3000 (practice: no stars, no best score, tier 1 fares) and
+  2000 + tier (trophy: `fareK` 2 via `S.fareK` in `src/plan.js`, `hint: null`, 30 deliveries drawn from the whole town).
+  `lv.pools` gives each item the wrong options of its own level (`levelQueue`).
+- **Checks.** `qa/test/save.test.mjs` (migration from the live keys, junk, file and code round trips, size), `qa/test/learn.test.mjs`.
+  `node qa/ride.mjs 1,2,3,4,5 --keep --miss 3 --miss-only 3` rides in one profile and checks that every first-try miss comes
+  back as a tagged review fork within two rides. `node qa/dt/save-ui.mjs` does the migration, the word book count and the
+  file and code round trips in Chrome, with screenshots.
