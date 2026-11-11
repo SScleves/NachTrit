@@ -109,7 +109,7 @@
       { read: true, nl: 'Ondanks de drukte kregen we meteen een tafel.', o: ['Despite the crowd we got a table at once.', 'Because of the crowd we got a table at once.', 'After the crowd left we got a table.'], a: 0, r: 'hoewel',
         w: 'ondanks means despite and takes a noun. Because of would be door de drukte.' },
       { read: true, nl: 'De bezorger zal wel in de file staan.', o: ['The delivery driver is probably stuck in traffic.', 'The delivery driver will wait in line later.', 'The delivery driver has to stand in the queue.'], a: 0, r: 'fut',
-        w: 'zal wel is a guess about now: he is probably stuck in traffic. It is not a promise or a plan.' },
+        w: 'zal wel is a guess about now, not a promise: he is probably stuck in traffic.' },
       { read: true, nl: 'Volgens mij heeft de kok de soep al opgewarmd.', o: ['I think the cook has already warmed up the soup.', 'The cook says he will warm up the soup soon.', 'I asked the cook to warm up the soup.'], a: 0, r: 'perf',
         w: 'heeft ... opgewarmd is the finished past, and al means already. Volgens mij only gives the opinion.' },
       { read: true, nl: 'Hoewel de bediening traag was, gaf Paola toch fooi.', en: 'Although the service was slow, Paola tipped anyway.' },

@@ -94,13 +94,13 @@
 
       // ---- reads: five traps with their own options, one plain
       { read: true, nl: 'Mijn bomma werd uitgenodigd door de buurvrouw.', o: ['My grandma was invited by the neighbour.', 'My grandma invited the neighbour.', 'The neighbour was invited by my grandma.'], a: 0, r: 'passief',
-        w: 'werd uitgenodigd is the passive: the subject is the one who is invited. door introduces the one who does the inviting.' },
+        w: 'werd uitgenodigd is the passive, and door introduces the one who does the inviting.' },
       { read: true, nl: 'Paola zei dat ze me had gebeld.', o: ['Paola said she had called me.', 'Paola said I had called her.', 'Paola said she would call me.'], a: 0, r: 'indirect',
-        w: 'zei dat ze ... had gebeld is a report of something already done. Ze is most naturally Paola herself, and me is Santi.' },
+        w: 'zei dat ze ... had gebeld reports something already done. Ze is likely Paola, and me is Santi.' },
       { read: true, nl: 'Toen we aankwamen, was het feest al afgelopen.', o: ['When we arrived, the party had already ended.', 'When we arrived, the party was just starting.', 'When we arrive, the party will be over.'], a: 0, r: 'plusq',
         w: 'was ... afgelopen with al: it was over before they got there.' },
       { read: true, nl: 'Ze vroeg of de borrel was afgezegd.', o: ['She asked whether the borrel had been cancelled.', 'She said that the borrel had been cancelled.', 'She asked who had cancelled the borrel.'], a: 0, r: 'indirect',
-        w: 'vroeg of turns a yes-or-no question into a report. was afgezegd is the passive in the past: it had been cancelled.' },
+        w: 'vroeg of turns a yes-or-no question into a report. was afgezegd means had been cancelled.' },
       { read: true, nl: 'Noondezju. Het is weer carnaval.', o: ['Damn it. It is carnival again.', 'Welcome. Carnival is starting.', 'Sorry. Carnival is over.'], a: 0, r: 'cult',
         w: 'Noondezju is Maastricht dialect, a mild curse or a sigh of surprise. weer means again.' },
       { read: true, nl: 'Doe mij maar een stuk kersenvlaai.', en: 'I will have a piece of cherry tart.', o: ['I will have a piece of cherry tart.', 'I will bake a cherry tart.', 'Give me the whole cherry tart.'], a: 0, r: 'woord',

@@ -47,10 +47,10 @@
 
     // ---- words: the station, the counter and the road; four with the wrong article as the second sign
     { w: 'the train', nl: 'de trein' }, { w: 'the platform', nl: 'het perron', wrong: 'de perron' },
-    { w: 'the train ticket', nl: 'het treinkaartje', wrong: 'de treinkaartje' }, { w: 'the ticket counter', nl: 'het loket', wrong: 'de loket' },
-    { w: 'the traveller', nl: 'de reiziger' }, { w: 'the delay', nl: 'de vertraging' }, { w: 'the bike shed', nl: 'de fietsenstalling' },
+    { w: '€ 0,85', nl: 'vijfentachtig cent' }, { w: 'to know (a fact)', nl: 'weten' },
+    { w: 'to wait', nl: 'wachten' }, { w: 'the delay', nl: 'de vertraging' }, { w: 'the bike shed', nl: 'de fietsenstalling' },
     { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the corner', nl: 'de hoek' },
-    { w: 'to change (trains)', nl: 'overstappen' }, { w: 'to leave (a train, a bus)', nl: 'vertrekken' }, { w: 'direct (no changing)', nl: 'rechtstreeks' },
+    { w: 'the workday', nl: 'de werkdag' }, { w: 'to leave (a train, a bus)', nl: 'vertrekken' }, { w: 'to read', nl: 'lezen' },
 
     // ---- reads: three traps with their own options, two plain lines from the platform and the passer-by
     { read: true, nl: 'U hoeft niet te wachten.', en: "You don't have to wait.",

@@ -71,9 +71,9 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Als de winkel dicht is, kom ik morgen terug.', o: ['If the shop is closed, I will come back tomorrow.', 'Because the shop is closed, I came back yesterday.', 'When the shop opens, I will come back tomorrow.'], a: 0, r: 'bijzin',
-        w: 'als = if, dicht is = is closed at the end, and kom ik terug = I come back. Because would be omdat.' },
+        w: 'als = if, dicht is = is closed at the end. Because would be omdat.' },
       { read: true, nl: 'Ik heb geen pinpas, maar ik heb wel contant geld.', o: ['I have no card, but I do have cash.', 'I have no card, because I have no cash.', 'I have a card, but I have no cash.'], a: 0, r: 'neg',
-        w: 'geen pinpas = no card, maar = but, wel = I do have. Because would be omdat or want.' },
+        w: 'geen pinpas = no card, maar = but, wel = I do have. Because would be omdat.' },
       { read: true, nl: 'Voordat de winkel opengaat, staat er al een rij.', o: ['Before the shop opens, there is already a queue.', 'After the shop opens, there is a queue again.', 'The shop has opened and the queue has gone.'], a: 0, r: 'bijzin',
         w: 'voordat = before, and opengaat joins up at the end. After would be nadat.' },
       { read: true, nl: 'Heeft u dit ook in een andere maat?', en: 'Do you have this in another size too?' },

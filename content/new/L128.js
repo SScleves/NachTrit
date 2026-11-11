@@ -94,10 +94,10 @@
       { en: 'I am stiff because I warmed up too little.', parts: ['Ik ben stijf omdat ik te weinig heb', FK(['opgewarmd', 'opgewarmt'], 0, 'sep', 'warm ends in m, not a ketchup letter, so -d: opgewarmd.', 'spell'), '.'] },
 
       // ---- words: the river, the rink, the course, six replayed from Nijmegen
-      { w: 'the rower', nl: 'de roeier' }, { w: 'the rowing club', nl: 'de roeivereniging' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the attachment', nl: 'de bijlage' },
       { w: 'the skate', nl: 'de schaats' }, { w: 'the ice rink', nl: 'de ijsbaan' },
       { w: 'the treadmill', nl: 'de loopband' }, { w: 'the runner', nl: 'de loper' },
-      { w: 'the warm-up', nl: 'de warming-up' }, { w: 'the tracksuit', nl: 'het trainingspak', wrong: 'de trainingspak' },
+      { w: 'the ferry', nl: 'de veerpont' }, { w: 'the check-in pole', nl: 'de incheckpaal' },
       { w: 'the golf course', nl: 'de golfbaan' }, { w: 'the penalty stroke', nl: 'de strafslag' },
       { w: 'the stadium', nl: 'het stadion', wrong: 'de stadion' }, { w: 'the river through the city', nl: 'de Amstel' },
       { w: 'the supporter', nl: 'de supporter' }, { w: 'the referee', nl: 'de scheidsrechter' },
@@ -125,7 +125,7 @@
       { look: true, prop: 'molen', nl: 'de molen', en: 'the windmill' },
 
       // ---- de of het
-      { dehet: true, nl: 'trainingsschema', art: 'het', en: 'the training plan', w: 'The last part decides: het schema, so het trainingsschema.' },
-      { dehet: true, nl: 'roeien', art: 'het', en: 'rowing (the sport)', w: 'A verb used as a noun is het: het roeien, het schaatsen.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
+      { dehet: true, nl: 'stationsklok', art: 'de', en: 'the station clock', w: 'The last part decides: de klok, so de stationsklok.' },
     ] }]);
 })();

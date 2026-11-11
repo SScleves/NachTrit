@@ -99,7 +99,7 @@
       { read: true, nl: 'Ondanks de korting kost de jas nog honderd euro.', o: ['Even with the discount the jacket still costs a hundred euros.', 'Because of the discount the jacket costs a hundred euros.', 'The discount on the jacket is a hundred euros.'], a: 0, r: 'hoewel',
         w: 'ondanks = despite, and nog = still. Because of would be door or vanwege.' },
       { read: true, nl: 'Ik vind het jammer dat de winkel zo vroeg dichtgaat.', o: ['I think it is a shame that the shop closes so early.', 'I think it is a shame that the shop opens so early.', 'I think the shop is closing for good.'], a: 0, r: 'mening',
-        w: 'ik vind het jammer dat = I think it is a shame that, and dichtgaat = closes. Opens would be opengaat.' },
+        w: 'ik vind het jammer dat = I think it is a shame that. dichtgaat means closes.' },
       { read: true, nl: 'Hoewel het regent, is de markt vol.', en: 'Although it is raining, the market is full.' },
       { read: true, nl: 'Dit jasje is mij te klein, maar de rits is nog goed.', en: 'This little jacket is too small for me, but the zip is still fine.' },
 
@@ -229,7 +229,7 @@
       { read: true, nl: 'Ondanks de drukte kregen we meteen een tafel.', o: ['Despite the crowd we got a table at once.', 'Because of the crowd we got a table at once.', 'After the crowd left we got a table.'], a: 0, r: 'hoewel',
         w: 'ondanks means despite and takes a noun. Because of would be door de drukte.' },
       { read: true, nl: 'De bezorger zal wel in de file staan.', o: ['The delivery driver is probably stuck in traffic.', 'The delivery driver will wait in line later.', 'The delivery driver has to stand in the queue.'], a: 0, r: 'fut',
-        w: 'zal wel is a guess about now: he is probably stuck in traffic. It is not a promise or a plan.' },
+        w: 'zal wel is a guess about now, not a promise: he is probably stuck in traffic.' },
       { read: true, nl: 'Volgens mij heeft de kok de soep al opgewarmd.', o: ['I think the cook has already warmed up the soup.', 'The cook says he will warm up the soup soon.', 'I asked the cook to warm up the soup.'], a: 0, r: 'perf',
         w: 'heeft ... opgewarmd is the finished past, and al means already. Volgens mij only gives the opinion.' },
       { read: true, nl: 'Hoewel de bediening traag was, gaf Paola toch fooi.', en: 'Although the service was slow, Paola tipped anyway.' },
@@ -487,7 +487,7 @@
       { read: true, nl: 'Ondanks de werkdruk neemt Mark toch een pauze.', o: ['Despite the workload Mark still takes a break.', 'Because of the workload Mark takes a break.', 'Mark has no workload, so he takes a break.'], a: 0, r: 'hoewel',
         w: 'ondanks means despite: the workload does not stop the break. Because of would be door or vanwege.' },
       { read: true, nl: 'Volgens mij heeft Mark gelijk.', o: ['I think Mark is right.', 'Mark thinks I am right.', 'I know for sure that Mark is wrong.'], a: 0, r: 'mening',
-        w: 'volgens mij is a soft opinion: the speaker is the one who thinks it. Mark giving his opinion would be volgens hem.' },
+        w: 'volgens mij is a soft opinion, the speaker\'s own. Mark giving his opinion would be volgens hem.' },
       { read: true, nl: 'Heb je even? Ik heb een korte vraag.', en: 'Got a minute? Quick question.' },
       { read: true, nl: 'Het apparaat doet het weer niet.', en: 'The machine is not working again.' },
 
@@ -719,7 +719,7 @@
 
       // ---- reads: four traps with their own options, two plain
       { read: true, nl: 'Volgens mij heeft hij een slecht humeur.', o: ['In my opinion he is in a bad mood.', 'He told me he is in a bad mood.', 'I am in a bad mood, he thinks.'], a: 0, r: 'mening',
-        w: 'Volgens mij is the speaker\'s opinion, and the verb comes right after it. The one in the bad mood is hij.' },
+        w: 'Volgens mij is the speaker\'s opinion, and the verb comes right after it.' },
       { read: true, nl: 'Hoewel het regent, gaan we naar de borrel.', o: ['Although it is raining, we are going to the borrel.', 'Because it is raining, we are going to the borrel.', 'It is raining, so we are not going to the borrel.'], a: 0, r: 'mening',
         w: 'hoewel means although. The rain is a reason to stay, and they go anyway.' },
       { read: true, nl: 'Hij zal wel moe zijn.', o: ['He is probably tired.', 'He will certainly be tired tomorrow.', 'He is not tired at all.'], a: 0, r: 'fut',
@@ -961,11 +961,11 @@
 
       // ---- reads: four traps with their own options, one dialect line
       { read: true, nl: 'Het huis wordt volgend jaar verbouwd.', o: ['The house will be renovated next year.', 'The house was renovated last year.', 'Next year the house will be sold.'], a: 0, r: 'passief',
-        w: 'wordt + verbouwd is a passive in the present, and volgend jaar points to the future. Last year would be werd verbouwd or is verbouwd.' },
+        w: 'wordt + verbouwd is a passive, and volgend jaar points ahead. The past is werd verbouwd.' },
       { read: true, nl: 'Toen ik thuiskwam, had Paola de honden al uitgelaten.', o: ['When I got home, Paola had already walked the dogs.', 'When I got home, Paola walked the dogs.', 'When I get home, Paola will walk the dogs.'], a: 0, r: 'plusq',
         w: 'had + uitgelaten: it was already done before I arrived. Without had it would be a plain past.' },
       { read: true, nl: 'De buurman zei dat hij de honden had gehoord.', o: ['The neighbour said that he had heard the dogs.', 'The neighbour said that the dogs had heard him.', 'The neighbour said that he would hear the dogs.'], a: 0, r: 'indirect',
-        w: 'zei dat + had gehoord: he reports what he heard earlier. hij is the one who heard, and de honden is what he heard.' },
+        w: 'zei dat + had gehoord: he reports what he heard earlier, and hij is the hearer.' },
       { read: true, nl: 'Noondezju, het regent weer.', en: 'Damn it, it is raining again (mild Maastricht dialect).' },
       { read: true, nl: 'Doe mij maar een stuk kersenvlaai.', en: 'I will have a piece of cherry tart.' },
 
@@ -1197,7 +1197,7 @@
       { read: true, nl: 'We hadden al betaald toen de band begon te spelen.', o: ['We had already paid when the band started to play.', 'We paid after the band started to play.', 'We will have paid when the band plays.'], a: 0, r: 'plusq',
         w: 'hadden plus betaald is the pluperfect: paying came before the band. Both things lie in the past.' },
       { read: true, nl: 'Hij zei dat de kok ziek was.', o: ['He said that the cook was ill.', 'He asked whether the cook was ill.', 'He told the cook he was ill.'], a: 0, r: 'indirect',
-        w: 'zei dat reports a statement. Asking would be vroeg of, and the cook is the one who is ill.' },
+        w: 'zei dat reports a statement, and the cook is the sick one. Asking would be vroeg of.' },
       { read: true, nl: 'Noondezju, de vlaai is op.', en: 'Damn it, the tart is sold out (Noondezju is Maastricht dialect).' },
       { read: true, nl: 'Kunnen we apart betalen? Ik had alleen de soep.', en: 'Can we pay separately? I only had the soup.' },
       { read: true, nl: 'Zonder dat verdrag hadden we de euro niet gehad.', en: 'Without that treaty we would not have had the euro.' },
@@ -1319,9 +1319,9 @@
 
       // ---- reads: four traps with their own options, two plain
       { read: true, nl: 'De conducteur had de deuren al gesloten toen we aankwamen.', o: ['The conductor had already closed the doors when we arrived.', 'The conductor closed the doors as soon as we arrived.', 'We had already arrived when the conductor closed the doors.'], a: 0, r: 'plusq',
-        w: 'had gesloten is the pluperfect: the conductor closed the doors before we aankwamen. The conductor is the one who closed them.' },
+        w: 'had gesloten is the pluperfect: the conductor closed the doors before we aankwamen.' },
       { read: true, nl: 'Door de mist worden alle treinen vertraagd.', o: ['All trains are being delayed by the mist.', 'The trains are delaying the mist.', 'All trains were delayed by the mist yesterday.'], a: 0, r: 'passief',
-        w: 'worden plus vertraagd is the passive: the trains are the ones delayed, door de mist says by what. Yesterday would be werden.' },
+        w: 'worden plus vertraagd is the passive, and door de mist says by what. Yesterday would be werden.' },
       { read: true, nl: 'De conducteur zei dat de trein vertraagd was.', o: ['The conductor said that the train was delayed.', 'The conductor asked whether the train was delayed.', 'The conductor said that the train would be delayed.'], a: 0, r: 'indirect',
         w: 'zei dat reports a statement, and was keeps it in the past. Asking would be vroeg of.' },
       { read: true, nl: 'Deze trein rijdt niet verder dan Maastricht.', o: ['This train does not go any further than Maastricht.', 'This train does not go to Maastricht.', 'This train goes further than Maastricht.'], a: 0, r: 'woord',
@@ -1429,11 +1429,11 @@
 
       // ---- reads: four traps with their own options, two lines from the office and the city
       { read: true, nl: 'De vergadering werd naar vrijdag verplaatst.', o: ['The meeting was moved to Friday.', 'The meeting is being moved to Friday.', 'The meeting will be moved to Friday.'], a: 0, r: 'passief',
-        w: 'werd is the past of worden, so it was done. Happening right now would be wordt verplaatst, and a later move would need a future form.' },
+        w: 'werd is the past of worden, so it was done. Right now would be wordt verplaatst.' },
       { read: true, nl: 'Toen ik belde, had Mark het probleem al opgelost.', o: ['When I called, Mark had already solved the problem.', 'When I called, Mark solved the problem.', 'Mark will solve the problem when I call.'], a: 0, r: 'plusq',
-        w: 'had plus opgelost is the plusquamperfectum: it was already done before I called. Plain solved would be loste op.' },
+        w: 'had plus opgelost is the plusquamperfectum: done before I called. Plain solved would be loste op.' },
       { read: true, nl: 'Ze zei dat ze later zou bellen.', o: ['She said she would call later.', 'She said she called later.', 'She asked me to call later.'], a: 0, r: 'indirect',
-        w: 'zei dat reports what was said, and zou bellen is would call, the future seen from the past. Asking someone to call would be vroeg of ik later wilde bellen.' },
+        w: 'zei dat reports what was said, and zou bellen is would call, the future seen from the past.' },
       { read: true, nl: 'Hij vroeg of ik de melding had gezien.', o: ['He asked whether I had seen the alert.', 'He said that I had seen the alert.', 'He asked me to look at the alert.'], a: 0, r: 'indirect',
         w: 'vroeg of reports a yes-or-no question. Reporting a statement would be zei dat.' },
       { read: true, nl: 'Noondezju, mijn laptop is alweer leeg.', en: 'Damn it, my laptop is empty again. (Noondezju is Maastricht dialect.)' },
@@ -1544,7 +1544,7 @@
       { read: true, nl: 'De wedstrijd was al begonnen toen wij aankwamen.', o: ['The match had already started when we arrived.', 'The match started because we arrived.', 'The match will start when we arrive.'], a: 0, r: 'plusq',
         w: 'was begonnen is the past perfect: it happened before we arrived. al means already.' },
       { read: true, nl: 'De trainer zei dat wij te laat waren.', o: ['The trainer said that we were late.', 'The trainer asked whether we were late.', 'The trainer said that we would be late.'], a: 0, r: 'indirect',
-        w: 'zei dat reports a statement, and waren is the plain past: we were late. Asking would be vroeg of.' },
+        w: 'zei dat reports a statement, and waren is the plain past. Asking would be vroeg of.' },
       { read: true, nl: 'Hij vroeg of ik mee wilde fietsen.', o: ['He asked if I wanted to cycle along.', 'He said that I had to cycle along.', 'He asked why I was cycling along.'], a: 0, r: 'indirect',
         w: 'vroeg of reports a yes-or-no question. mee wilde fietsen is the wish, not an order.' },
       { read: true, nl: 'Noondezju, het regent weer.', en: 'Damn it (Maastricht dialect), it is raining again.' },
@@ -1661,13 +1661,13 @@
 
       // ---- reads: five traps with their own options, one plain
       { read: true, nl: 'Mijn bomma werd uitgenodigd door de buurvrouw.', o: ['My grandma was invited by the neighbour.', 'My grandma invited the neighbour.', 'The neighbour was invited by my grandma.'], a: 0, r: 'passief',
-        w: 'werd uitgenodigd is the passive: the subject is the one who is invited. door introduces the one who does the inviting.' },
+        w: 'werd uitgenodigd is the passive, and door introduces the one who does the inviting.' },
       { read: true, nl: 'Paola zei dat ze me had gebeld.', o: ['Paola said she had called me.', 'Paola said I had called her.', 'Paola said she would call me.'], a: 0, r: 'indirect',
-        w: 'zei dat ze ... had gebeld is a report of something already done. Ze is most naturally Paola herself, and me is Santi.' },
+        w: 'zei dat ze ... had gebeld reports something already done. Ze is likely Paola, and me is Santi.' },
       { read: true, nl: 'Toen we aankwamen, was het feest al afgelopen.', o: ['When we arrived, the party had already ended.', 'When we arrived, the party was just starting.', 'When we arrive, the party will be over.'], a: 0, r: 'plusq',
         w: 'was ... afgelopen with al: it was over before they got there.' },
       { read: true, nl: 'Ze vroeg of de borrel was afgezegd.', o: ['She asked whether the borrel had been cancelled.', 'She said that the borrel had been cancelled.', 'She asked who had cancelled the borrel.'], a: 0, r: 'indirect',
-        w: 'vroeg of turns a yes-or-no question into a report. was afgezegd is the passive in the past: it had been cancelled.' },
+        w: 'vroeg of turns a yes-or-no question into a report. was afgezegd means had been cancelled.' },
       { read: true, nl: 'Noondezju. Het is weer carnaval.', o: ['Damn it. It is carnival again.', 'Welcome. Carnival is starting.', 'Sorry. Carnival is over.'], a: 0, r: 'cult',
         w: 'Noondezju is Maastricht dialect, a mild curse or a sigh of surprise. weer means again.' },
       { read: true, nl: 'Doe mij maar een stuk kersenvlaai.', en: 'I will have a piece of cherry tart.', o: ['I will have a piece of cherry tart.', 'I will bake a cherry tart.', 'Give me the whole cherry tart.'], a: 0, r: 'woord',
@@ -1921,13 +1921,13 @@
 
       // ---- reads: four traps with their own options, two plain lines
       { read: true, nl: 'Ik doe de afwas wel.', o: ['I will do the washing-up, do not worry.', 'I am doing the washing-up well.', 'I have already done the washing-up.'], a: 0, r: 'soft',
-        w: 'wel here means leave it to me. Doing it well would be goed, and already done would be al gedaan.' },
+        w: 'wel here means leave it to me. Doing it well would be goed. Already done is al gedaan.' },
       { read: true, nl: 'De huisbaas kijkt de kat uit de boom.', o: ['The landlord is waiting to see what happens.', 'The landlord is looking at a cat in a tree.', 'The landlord is getting the cat out of the tree.'], a: 0, r: 'idioom',
-        w: 'de kat uit de boom kijken is a fixed phrase: wait and see before you act. There is no cat.' },
+        w: 'de kat uit de boom kijken is a fixed phrase: wait and see before you act.' },
       { read: true, nl: 'Wij verzoeken u de vuilniszak pas op dinsdag buiten te zetten.', o: ['We ask you not to put the rubbish bag out before Tuesday.', 'We ask you to put the rubbish bag out before Tuesday.', 'We will pick up your rubbish bag on Tuesday.'], a: 0, r: 'formeel',
-        w: 'pas op dinsdag means not until Tuesday. verzoeken is the formal word for asking, and u is the reader.' },
+        w: 'pas op dinsdag means not until Tuesday. verzoeken is the formal word for asking.' },
       { read: true, nl: 'Kom maar eens langs, hoor.', o: ['Do drop by some time.', 'Come by right now.', 'Do not drop by again.'], a: 0, r: 'soft',
-        w: 'maar and eens make it an open invitation for some time, and hoor makes it warm. Right now would be nu meteen.' },
+        w: 'maar and eens make it an open invitation, and hoor makes it warm. Right now is nu meteen.' },
       { read: true, nl: 'Oost west, thuis best.', en: 'East, west, home is best.' },
       { read: true, nl: 'Bij de verbouwing vonden we een Romeinse munt onder de vloer.', en: 'During the renovation we found a Roman coin under the floor.' },
 
@@ -2062,7 +2062,7 @@
       { read: true, nl: 'Dat is wel duur, hè?', o: ["That is quite expensive, isn't it?", 'That is not expensive at all.', "That is cheap, isn't it?"], a: 0, r: 'soft',
         w: 'wel here makes duur a little stronger, and hè asks you to agree. Nothing in it says cheap.' },
       { read: true, nl: 'Kunt u mij vertellen waar de paskamers zijn?', o: ['Could you tell me where the fitting rooms are?', 'Could you take me to the fitting rooms?', 'Can I tell you where the fitting rooms are?'], a: 0, r: 'formeel',
-        w: 'u is the one you ask and mij is you: can you tell me. vertellen is tell, not take.' },
+        w: 'u is the one asked and mij is the speaker. vertellen is tell, not take.' },
       { read: true, nl: 'De verkoop van wandelschoenen loopt als een trein.', o: ['Walking shoes are selling extremely well.', 'Walking shoes are sold at the station.', 'Walking shoes sell as slowly as a train.'], a: 0, r: 'idioom',
         w: 'als een trein lopen is a fixed phrase: it goes smoothly and fast. Nobody takes a train.' },
       { read: true, nl: 'In de uitverkoop vlogen de schoenen de deur uit.', o: ['In the sale the shoes sold very fast.', 'In the sale the shoes were thrown out of the shop.', 'In the sale the door was left open.'], a: 0, r: 'idioom',
@@ -2335,7 +2335,7 @@
       { read: true, nl: 'Neem maar gewoon de volgende trein, hoor.', o: ['Just take the next train, it is fine.', 'Do not take the next train.', 'Listen to the next train.'], a: 0, r: 'soft',
         w: 'maar and gewoon soften the advice, and hoor reassures. Nothing is forbidden, and nobody has to listen.' },
       { read: true, nl: 'Die trein is al lang en breed vertrokken.', o: ['That train left ages ago.', 'That train is long and wide.', 'That train leaves in a long while.'], a: 0, r: 'idioom',
-        w: 'lang en breed is a fixed phrase: well and truly, long ago. It says nothing about the size of the train.' },
+        w: 'lang en breed is a fixed phrase: well and truly, long ago. It is not about size.' },
       { read: true, nl: 'Geachte reizigers, wij verzoeken u de trein te verlaten.', o: ['Dear passengers, we ask you to leave the train.', 'Dear passengers, we ask you to board the train.', 'Dear passengers, we thank you for travelling with us.'], a: 0, r: 'formeel',
         w: 'verlaten means to leave. Boarding would be instappen, and verzoeken is the formal word for asking.' },
       { read: true, nl: 'Je kunt de trein nog wel halen, als je even doorloopt.', o: ['You can still catch the train if you hurry a bit.', 'You cannot catch the train any more, even if you run.', 'You can still walk through the train.'], a: 0, r: 'soft',
@@ -2467,7 +2467,7 @@
       { read: true, nl: 'Het voorstel viel in het water.', o: ['The proposal fell through.', 'The proposal fell into the river.', 'The proposal was soaked.'], a: 0, r: 'idioom',
         w: 'in het water vallen means a plan does not go ahead. Nothing got wet, not even in Nijmegen.' },
       { read: true, nl: 'Mocht u verhinderd zijn, dan verzoeken wij u dit tijdig te melden.', o: ['If you cannot come, please let us know in good time.', 'If you can come, please tell us in good time.', 'You may not come late, please be on time.'], a: 0, r: 'formeel',
-        w: 'Mocht u ... zijn is a formal if, and verhinderd means unable to come. tijdig means in good time.' },
+        w: 'Mocht u ... zijn is a formal if, and verhinderd means unable to come. tijdig means in time.' },
       { read: true, nl: 'Dat is wel even wat anders.', o: ['That is really something else.', 'That is the same thing for a moment.', 'That will change in a minute.'], a: 0, r: 'soft',
         w: 'wel even does not mean a moment here: it stresses how different it is.' },
       { read: true, nl: 'Tot morgen, werk ze nog.', en: 'See you tomorrow, good luck with the rest of the work (a fixed goodbye between colleagues).' },
@@ -2590,7 +2590,7 @@
 
       // ---- reads: four traps with their own options, two plain lines
       { read: true, nl: 'We liepen ons de benen uit het lijf.', o: ['We walked ourselves off our feet.', 'Our legs fell off on the way.', 'We walked very slowly.'], a: 0, r: 'idioom',
-        w: 'zich de benen uit het lijf lopen is a fixed phrase for walking or running yourself into the ground. The legs stay on.' },
+        w: 'zich de benen uit het lijf lopen is a fixed phrase for exhausting yourself. The legs stay on.' },
       { read: true, nl: 'Rustig aan, hoor. Het is geen wedstrijd.', o: ['Take it easy, it is not a race.', 'Hurry up, it is a race.', 'Listen, the race is quiet.'], a: 0, r: 'soft',
         w: 'rustig aan means slow down, and hoor makes it friendly. It has nothing to do with listening.' },
       { read: true, nl: 'Deelnemers worden verzocht hun startbewijs zichtbaar te dragen.', o: ['Participants are asked to wear their start card where it can be seen.', 'Participants are asked to hide their start card.', 'Participants have to hand in their start card at the end.'], a: 0, r: 'formeel',
@@ -2720,11 +2720,11 @@
       { read: true, nl: 'Hij praat je de oren van het hoofd.', o: ['He talks your ears off.', 'He pulls your ears.', 'He never listens to you.'], a: 0, r: 'idioom',
         w: 'iemand de oren van het hoofd praten means to talk without stopping. Nobody touches your ears.' },
       { read: true, nl: 'Nou, ik ga maar eens.', o: ['Well, I had better be off.', 'Well, I am going only once.', 'Well, I will go later.'], a: 0, r: 'soft',
-        w: 'ik ga maar eens is the soft Dutch way to say it is time to leave. eens does not count anything here.' },
+        w: 'ik ga maar eens is the soft Dutch way to say it is time to leave.' },
       { read: true, nl: 'U bent van harte uitgenodigd voor de nieuwjaarsborrel.', o: ['You are warmly invited to the New Year drinks.', 'You have invited us to the New Year drinks.', 'You are invited, but not warmly.'], a: 0, r: 'formeel',
         w: 'bent uitgenodigd: you are the one who is invited. van harte means warmly.' },
       { read: true, nl: 'De buurvrouw zei dat ze de Vierdaagse al twintig keer had gelopen.', o: ['The neighbour said she had walked the Vierdaagse twenty times already.', 'The neighbour said she would walk the Vierdaagse twenty times.', 'The neighbour asked whether I had walked the Vierdaagse twenty times.'], a: 0, r: 'plusq',
-        w: 'had gelopen is the plusquamperfectum: it was done before she said it. zei dat reports, it does not ask.' },
+        w: 'had gelopen is the plusquamperfectum: it was done before she said it. zei dat reports, not asks.' },
       { read: true, nl: 'Nijmegenaren zeggen dat hun stad de oudste van Nederland is.', en: 'People from Nijmegen say their city is the oldest in the Netherlands.' },
       { read: true, nl: 'Tijdens de Vierdaagse staan de mensen langs de route en delen ze snoep uit aan de wandelaars.', en: 'During the Vierdaagse people line the route and hand out sweets to the walkers.' },
 
@@ -2848,9 +2848,9 @@
 
       // ---- words: the walk, the route, the city, six replayed from earlier places
       { w: 'the walker', nl: 'de wandelaar' }, { w: 'the gladiolus, handed to the finishers', nl: 'de gladiool' },
-      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the pontoon bridge', nl: 'de pontonbrug' },
+      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the person from Nijmegen', nl: 'de Nijmegenaar' },
       { w: 'the field where the walk starts and ends', nl: 'de Wedren' }, { w: 'the crowd', nl: 'het publiek', wrong: 'de publiek' },
-      { w: 'the soldier', nl: 'de militair' }, { w: 'the rest stop', nl: 'de rustpost' },
+      { w: 'the soldier', nl: 'de militair' }, { w: 'the local resident', nl: 'de buurtbewoner' },
       { w: 'the Roman', nl: 'de Romein' }, { w: 'the oldest city', nl: 'de oudste stad' },
       { w: 'the Valkhof (the park on the hill by the river)', nl: 'het Valkhof', wrong: 'de Valkhof' }, { w: 'the rucksack', nl: 'de rugzak' },
       { w: 'the walking shoe', nl: 'de wandelschoen' }, { w: 'the blister', nl: 'de blaar' },
@@ -2870,7 +2870,7 @@
       { read: true, nl: 'Op de laatste dag lopen de wandelaars bij Cuijk over een pontonbrug die het leger over de Maas legt.', en: 'On the last day the walkers cross the Maas at Cuijk on a pontoon bridge laid by the army.' },
 
       // ---- listens: the last stretch, the crowd of walkers, the flowers, the river land
-      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'tienduizenden wandelaars', en: 'tens of thousands of walkers' },
+      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'de bovenburen', en: 'the upstairs neighbours' },
       { listen: true, nl: 'de gladiolen', en: 'the gladioli' }, { listen: true, nl: 'de Betuwe', en: 'the river land north of the Waal' },
 
       // ---- looks: the dog, a lamp on the dyke, a tree on the route
@@ -2878,8 +2878,8 @@
       { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
 
       // ---- de of het
-      { dehet: true, nl: 'kruisje', art: 'het', en: 'the small cross', w: 'Every -je word is het: het kruisje.' },
-      { dehet: true, nl: 'wandeltocht', art: 'de', en: 'the long walk', w: 'The last part decides: de tocht, so de wandeltocht.' },
+      { dehet: true, nl: 'eindsprint', art: 'de', en: 'the final sprint', w: 'The last part decides: de sprint, so de eindsprint.' },
+      { dehet: true, nl: 'inlogscherm', art: 'het', en: 'the login screen', w: 'The last part decides: het scherm, so het inlogscherm.' },
     ] }]);
 })();
 
@@ -3126,7 +3126,7 @@
       { read: true, nl: 'Mag ik een half pond gehakt?', o: ['May I have 250 grams of mince?', 'May I have 500 grams of mince?', 'May I have 50 grams of mince?'], a: 0, r: 'getal',
         w: 'In a Dutch shop een pond is 500 grams, so half a pond is 250.' },
       { read: true, nl: 'Zeg het maar, schat.', o: ['What can I get you, love?', 'Tell me the price, darling.', 'Say that again, love.'], a: 0, r: 'cult',
-        w: 'Zeg het maar is how the market asks what you want, and schat is what the traders call everyone.' },
+        w: 'Zeg het maar is how market stalls ask what you want, and schat is what traders call everyone.' },
       { read: true, nl: 'In Amsterdam zeggen ze het Singel, niet de Singel.', en: 'In Amsterdam they say het Singel, not de Singel.' },
       { read: true, nl: 'De Albert Cuypmarkt bestaat sinds 1905.', en: 'The Albert Cuyp market has been there since 1905.' },
 
@@ -3249,7 +3249,7 @@
 
       // ---- reads: four subtle pairs, two plain lines
       { read: true, nl: 'Ik heb geen trek meer.', o: ['I am not hungry any more.', 'I am not hungry yet.', 'I have no more money left.'], a: 0, r: 'woord',
-        w: 'geen ... meer means no longer. Not yet would be nog geen trek, and trek is appetite, not money.' },
+        w: 'geen ... meer means no longer. Not yet would be nog geen, and trek is appetite.' },
       { read: true, nl: 'Zullen we samsam doen?', o: ['Shall we split it fifty-fifty?', 'Shall we do it again?', 'Shall we pay together later?'], a: 0, r: 'cult',
         w: 'samsam doen means sharing the cost equally. It is the oldest Dutch habit there is.' },
       { read: true, nl: 'Laat maar, ik trakteer.', o: ['Leave it, it is on me.', 'Leave it, I will pay for myself.', 'Leave it, I am being treated.'], a: 0, r: 'woord',
@@ -3387,7 +3387,7 @@
       { read: true, nl: 'Deze tram rijdt niet verder.', o: ['This tram goes no further.', 'This tram is not running today.', 'This tram does not go far.'], a: 0, r: 'woord',
         w: 'niet verder means this is the end of the line. Not running today would be rijdt vandaag niet.' },
       { read: true, nl: 'Het pontje is gratis, maar je moet wel even wachten.', o: ['The ferry is free, but you do have to wait a bit.', 'The ferry is free, so you never have to wait.', 'The ferry costs a little, but you can get on at once.'], a: 0, r: 'soft',
-        w: 'gratis means it costs nothing, and maar je moet wel even wachten means you still have to wait a while.' },
+        w: 'gratis means it costs nothing, and je moet wel even wachten means you still have to wait.' },
       { read: true, nl: 'De trein van 17.34 uur vertrekt vandaag van spoor 15b.', o: ['The 17:34 train leaves from platform 15b today.', 'The 7:34 train leaves from platform 15b today.', 'The 17:34 train arrives at platform 15b today.'], a: 0, r: 'getal',
         w: '17.34 uur is in the evening, and vertrekt means leaves, not arrives.' },
       { read: true, nl: 'Amsterdam Centraal werd in 1889 geopend en staat op bijna negenduizend houten palen.', en: 'Amsterdam Centraal opened in 1889 and stands on almost nine thousand wooden piles.' },
@@ -3517,9 +3517,9 @@
 
       // ---- words: the office, the figures, five replayed from Nijmegen
       { w: 'the business district of Amsterdam', nl: 'de Zuidas' }, { w: 'the report', nl: 'het rapport', wrong: 'de rapport' },
-      { w: 'the turnover', nl: 'de omzet' }, { w: 'the quarter (three months)', nl: 'het kwartaal', wrong: 'de kwartaal' },
-      { w: 'the annual report', nl: 'het jaarverslag', wrong: 'de jaarverslag' }, { w: 'the attachment', nl: 'de bijlage' },
-      { w: 'the open-plan office', nl: 'de kantoortuin' }, { w: 'the head office', nl: 'het hoofdkantoor', wrong: 'de hoofdkantoor' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the ferry', nl: 'de veerpont' },
+      { w: 'the check-in pole', nl: 'de incheckpaal' }, { w: 'the attachment', nl: 'de bijlage' },
+      { w: 'the wooden pile', nl: 'de paal' }, { w: 'the jenever tasting room', nl: 'het proeflokaal', wrong: 'de proeflokaal' },
       { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the colleague', nl: 'de collega' },
       { w: 'the figure, the number', nl: 'het cijfer', wrong: 'de cijfer' }, { w: 'the meeting', nl: 'de vergadering' },
       { w: 'the signature', nl: 'de handtekening' }, { w: 'the quote (for a client)', nl: 'de offerte' },
@@ -3534,12 +3534,12 @@
       { read: true, nl: 'Ik ben eindelijk klaar.', o: ['I am finally done.', 'I am actually done.', 'I am almost done.'], a: 0, r: 'woord',
         w: 'eindelijk means at last. eigenlijk means actually, and almost would be bijna.' },
       { read: true, nl: 'Wij nemen zo spoedig mogelijk contact met u op.', o: ['We will contact you as soon as possible.', 'Please contact us as soon as possible.', 'We contacted you as quickly as we could.'], a: 0, r: 'formeel',
-        w: 'wij nemen contact op: we are the ones who will get in touch. zo spoedig mogelijk is formal for as soon as possible.' },
+        w: 'wij nemen contact op: we will get in touch. zo spoedig mogelijk is as soon as possible.' },
       { read: true, nl: 'Aan de Herengracht woonden vroeger de rijke kooplieden; nu zitten er banken en advocaten.', en: 'The rich merchants used to live on the Herengracht; now it is banks and lawyers.' },
       { read: true, nl: 'In Amsterdam was de voertaal op kantoor jarenlang Engels.', en: 'In Amsterdam the working language in the office was English for years.' },
 
       // ---- listens: a figure, the canal of the merchants, a sum, a letter ending
-      { listen: true, nl: 'drie komma vijf procent', en: '3,5 %' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
+      { listen: true, nl: 'samsam', en: 'fifty-fifty, each pays half' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
       { listen: true, nl: 'een miljoen euro', en: '€ 1.000.000' }, { listen: true, nl: 'met vriendelijke groet', en: 'kind regards' },
 
       // ---- looks: the dog, the desk lamp, the bike outside
@@ -3548,7 +3548,7 @@
 
       // ---- de of het
       { dehet: true, nl: 'budget', art: 'het', en: 'the budget', w: 'het budget. Learn it with its article: there is no rule.' },
-      { dehet: true, nl: 'functie', art: 'de', en: 'the job title', w: 'Nouns ending in -tie are de: de functie, de informatie.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
     ] }]);
 })();
 
@@ -3649,10 +3649,10 @@
       { en: 'I am stiff because I warmed up too little.', parts: ['Ik ben stijf omdat ik te weinig heb', FK(['opgewarmd', 'opgewarmt'], 0, 'sep', 'warm ends in m, not a ketchup letter, so -d: opgewarmd.', 'spell'), '.'] },
 
       // ---- words: the river, the rink, the course, six replayed from Nijmegen
-      { w: 'the rower', nl: 'de roeier' }, { w: 'the rowing club', nl: 'de roeivereniging' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the attachment', nl: 'de bijlage' },
       { w: 'the skate', nl: 'de schaats' }, { w: 'the ice rink', nl: 'de ijsbaan' },
       { w: 'the treadmill', nl: 'de loopband' }, { w: 'the runner', nl: 'de loper' },
-      { w: 'the warm-up', nl: 'de warming-up' }, { w: 'the tracksuit', nl: 'het trainingspak', wrong: 'de trainingspak' },
+      { w: 'the ferry', nl: 'de veerpont' }, { w: 'the check-in pole', nl: 'de incheckpaal' },
       { w: 'the golf course', nl: 'de golfbaan' }, { w: 'the penalty stroke', nl: 'de strafslag' },
       { w: 'the stadium', nl: 'het stadion', wrong: 'de stadion' }, { w: 'the river through the city', nl: 'de Amstel' },
       { w: 'the supporter', nl: 'de supporter' }, { w: 'the referee', nl: 'de scheidsrechter' },
@@ -3680,8 +3680,8 @@
       { look: true, prop: 'molen', nl: 'de molen', en: 'the windmill' },
 
       // ---- de of het
-      { dehet: true, nl: 'trainingsschema', art: 'het', en: 'the training plan', w: 'The last part decides: het schema, so het trainingsschema.' },
-      { dehet: true, nl: 'roeien', art: 'het', en: 'rowing (the sport)', w: 'A verb used as a noun is het: het roeien, het schaatsen.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
+      { dehet: true, nl: 'stationsklok', art: 'de', en: 'the station clock', w: 'The last part decides: de klok, so de stationsklok.' },
     ] }]);
 })();
 
@@ -4103,7 +4103,7 @@
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'hem-haar' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -4128,7 +4128,7 @@
       { en: 'Can you help me? (polite)', parts: ['Kunt u', FK(['mij', 'ik', 'mijn'], 0, 'obj', 'You help me, I am the object: mij. mijn is my, before a noun.'),
         FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'Modal first, the infinitive at the end: helpen.'), '?'] },
       { en: 'There are mussels at the fishmonger.', parts: ['Bij de visboer', FK(['zijn er', 'er zijn'], 0, 'v2', 'Bij de visboer takes slot 1, so the verb comes next and er follows it.'), 'mosselen.'] },
-      { en: 'Is there a pharmacy here?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One pharmacy, so is, and the question starts with the verb: is er.', 'verb'), 'hier een apotheek?'] },
+      { en: 'Is there a pharmacy here?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One pharmacy, so is, and the question starts with the verb: is er.', 'verb'), 'hier een apotheek?'] },
       { en: "The bread is cheaper than at the baker's.", parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing two things with dan: the word plus -er, goedkoper.'), 'dan bij de bakker.'] },
       { en: 'This shop is the cheapest.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'winkel is a de-word, so deze winkel.'), 'winkel is',
         FK(['het goedkoopst', 'het goedkoper', 'het goedkoop'], 0, 'vergelijk', 'After is the superlative takes het: het goedkoopst.'), '.'] },
@@ -4153,7 +4153,7 @@
       { w: 'to exchange', nl: 'ruilen' }, { w: 'cheaper', nl: 'goedkoper' }, { w: 'more expensive', nl: 'duurder' },
 
       // ---- read
-      { read: true, nl: 'Er zijn geen broodjes meer.', o: ['There are no rolls left.', 'There are more rolls.', 'The rolls are not ready yet.'], a: 0, r: 'eris',
+      { read: true, nl: 'Er zijn geen broodjes meer.', o: ['There are no rolls left.', 'There are more rolls.', 'The rolls are not ready yet.'], a: 0, r: 'er',
         w: 'geen ... meer means none left. meer on its own would be more.' },
       { read: true, nl: 'Deze trui is te klein.', o: ['This sweater is too small.', 'This sweater is smaller.', 'This sweater is the smallest.'], a: 0, r: 'vergelijk',
         w: 'te klein is too small. Smaller would be kleiner, the smallest het kleinst.' },
@@ -4278,9 +4278,9 @@
 // (de stormvloedkering, het eiland, de zeedijk, Neeltje Jans, de Lange Jan, Het waait vandaag hard).
 // New rules: eris, obj, vgl. New props: none (fiets, water, brug).
 (() => {
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.vgl = window.RULES.vgl || { name: 'Comparing: groter dan, het grootst', note: 'dan' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
 
   const P = window.TIER_PRESET[4];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -4293,12 +4293,12 @@
       want: 'They ask what is faster, what costs more and who is taller. The women are still taller than you. The grammar book you never opened has a page on this.' },
     items: [
       // ---- builds: er is / er zijn
-      { en: 'There is no train tonight.', parts: ['Er', FK(['is', 'zijn'], 0, 'eris', 'One train, so er is.', 'verb'), 'vannacht',
+      { en: 'There is no train tonight.', parts: ['Er', FK(['is', 'zijn'], 0, 'er', 'One train, so er is.', 'verb'), 'vannacht',
         FK(['geen', 'niet'], 0, 'neg', 'een trein turns into geen trein.'), 'trein.'] },
-      { en: 'There are three dead people at the bus stop.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Three of them, plural: er zijn.', 'verb'), 'drie doden bij de bushalte.'] },
-      { en: 'Is there a toilet at the station?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One toilet, so is er. In a question the verb comes first.', 'verb'), 'een toilet op',
+      { en: 'There are three dead people at the bus stop.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Three of them, plural: er zijn.', 'verb'), 'drie doden bij de bushalte.'] },
+      { en: 'Is there a toilet at the station?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One toilet, so is er. In a question the verb comes first.', 'verb'), 'een toilet op',
         FK(['het', 'de'], 0, 'dehet', 'station is a het-word: het station. Learn it with its article.'), 'station?'] },
-      { en: 'Is there still a bus to Zierikzee?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One bus, so is er. In a question the verb comes first.', 'verb'), 'nog een bus naar Zierikzee?'] },
+      { en: 'Is there still a bus to Zierikzee?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One bus, so is er. In a question the verb comes first.', 'verb'), 'nog een bus naar Zierikzee?'] },
       // ---- builds: object pronouns
       { en: 'No ticket. The conductor is looking at me.', parts: ['Geen kaartje. De conducteur kijkt naar', FK(['me', 'ik', 'mijn'], 0, 'obj', 'After naar you need the object form: me. ik only does things.'), '.'] },
       { en: 'Excuse me, can you help us?', parts: ['Pardon, kunt u', FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get the help, so the object form: ons. onze goes before a noun.'), 'helpen?'] },
@@ -4328,8 +4328,8 @@
       { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the stopping train', nl: 'de stoptrein' }, { w: 'the exit', nl: 'de uitgang' },
       // ---- reads
       { read: true, nl: 'De trein naar Vlissingen rijdt vandaag niet.', o: ['The train to Vlissingen is not running today.', 'The train to Vlissingen is late today.', 'The train to Vlissingen is full today.'], a: 0, r: 'neg' },
-      { read: true, nl: 'Er zijn geen bussen meer.', o: ['There are no more buses.', 'There are more buses.', 'The buses are not here yet.'], a: 0, r: 'eris' },
-      { read: true, nl: 'De fiets is hier sneller dan de bus.', o: ['The bike is faster than the bus here.', 'The bike is slower than the bus here.', 'The bike is as fast as the bus here.'], a: 0, r: 'vgl' },
+      { read: true, nl: 'Er zijn geen bussen meer.', o: ['There are no more buses.', 'There are more buses.', 'The buses are not here yet.'], a: 0, r: 'er' },
+      { read: true, nl: 'De fiets is hier sneller dan de bus.', o: ['The bike is faster than the bus here.', 'The bike is slower than the bus here.', 'The bike is as fast as the bus here.'], a: 0, r: 'vergelijk' },
       { read: true, nl: 'Is deze plek nog vrij?', en: 'Is this seat free?' },
       { read: true, nl: 'De kering is vannacht dicht.', en: 'The barrier is closed tonight.' },
       { read: true, nl: 'De bus komt over tien minuten.', en: 'The bus comes in ten minutes.' },
@@ -4353,8 +4353,8 @@
 // de zeedijk, de stormvloedkering, het eiland, 62 gates, Het waait vandaag hard.).
 // New rules: objpron, eris, vergelijk (declared below only if missing). New props: none.
 (() => {
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
@@ -4372,30 +4372,30 @@
       // ---- build: object pronouns
       { en: "I'll call him after the standup.", parts: ['Na de standup',
         FK(['bel ik', 'ik bel'], 0, 'v2', 'Na de standup takes slot 1, so the verb comes next, then ik.'),
-        FK(['hem', 'hij', 'zijn'], 0, 'objpron', 'He is on the receiving end of the call, so hem. hij only does things.'), '.'] },
+        FK(['hem', 'hij', 'zijn'], 0, 'obj', 'He is on the receiving end of the call, so hem. hij only does things.'), '.'] },
       { en: 'Can you help me?', parts: ['Kun je',
-        FK(['me', 'ik', 'mijn'], 0, 'objpron', 'The help goes to me, so me. ik only does things, mijn needs a noun after it.'),
+        FK(['me', 'ik', 'mijn'], 0, 'obj', 'The help goes to me, so me. ik only does things, mijn needs a noun after it.'),
         FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'After kun the verb goes whole to the end, no te: helpen.'), '?'] },
       { en: 'Every morning the customers call us.', parts: ['Elke ochtend',
         FK(['bellen de klanten', 'de klanten bellen'], 0, 'v2', 'Elke ochtend in slot 1: the verb second, then de klanten.'),
-        FK(['ons', 'wij', 'onze'], 0, 'objpron', 'We get called, so ons. wij is us doing the calling.'), '.'] },
+        FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get called, so ons. wij is us doing the calling.'), '.'] },
       { en: 'Sorry, the dogs need me.', parts: ['Sorry, de honden',
         FK(['hebben', 'heeft'], 0, 'presens', 'Two dogs, plural: hebben.'),
-        FK(['me', 'ik', 'mijn'], 0, 'objpron', 'The dogs need someone, and that someone is me. Object, so me.'), 'nodig.'] },
+        FK(['me', 'ik', 'mijn'], 0, 'obj', 'The dogs need someone, and that someone is me. Object, so me.'), 'nodig.'] },
       { en: "Later I'll send her the link.", parts: ['Straks',
         FK(['stuur ik', 'ik stuur'], 0, 'v2', 'Straks takes slot 1, so the verb jumps ahead of ik.'),
-        FK(['haar', 'zij'], 0, 'objpron', 'She gets the link, so haar. zij is she doing the sending.'), 'de link.'] },
+        FK(['haar', 'zij'], 0, 'obj', 'She gets the link, so haar. zij is she doing the sending.'), 'de link.'] },
       { en: 'You have to call him tonight.', parts: ['Je moet',
-        FK(['hem', 'hij'], 0, 'objpron', 'Him, the one you call: hem.'), 'vannacht',
+        FK(['hem', 'hij'], 0, 'obj', 'Him, the one you call: hem.'), 'vannacht',
         FK(['bellen', 'belt', 'te bellen'], 0, 'modal', 'moet sends the infinitive to the end: bellen.'), '.'] },
       // ---- build: er is, er zijn
       { en: "Tonight there's an outage on the server.", parts: ['Vannacht',
         FK(['is er', 'er is'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it.'), 'een storing op de server.'] },
       { en: 'There are two new alerts.', parts: ['Er',
-        FK(['zijn', 'is'], 0, 'eris', 'Two alerts, plural: er zijn.', 'verb'), 'twee',
+        FK(['zijn', 'is'], 0, 'er', 'Two alerts, plural: er zijn.', 'verb'), 'twee',
         FK(['nieuwe', 'nieuw'], 0, 'adj', 'Before a plural noun the adjective takes -e: nieuwe meldingen.'), 'meldingen.'] },
       { en: 'There are no blockers.', parts: ['Er',
-        FK(['zijn', 'is'], 0, 'eris', 'blockers is plural, so er zijn.', 'verb'),
+        FK(['zijn', 'is'], 0, 'er', 'blockers is plural, so er zijn.', 'verb'),
         FK(['geen', 'niet'], 0, 'neg', 'geen cancels a noun that has no article: geen blockers, never niet blockers.'), 'blockers.'] },
       // ---- build: comparing
       { en: 'My laptop is older than the intern.', parts: ['Mijn laptop is',
@@ -4514,11 +4514,11 @@
 
       // ---- words: the sea, the wind, the gym, the course
       { w: 'the sea', nl: 'de zee' }, { w: 'the beach', nl: 'het strand', wrong: 'de strand' }, { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
-      { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the storm', nl: 'de storm' }, { w: 'the gust of wind', nl: 'de windstoot' },
-      { w: 'the headwind', nl: 'de tegenwind' }, { w: 'the golf club', nl: 'de golfclub' }, { w: 'the gym', nl: 'de sportschool' },
+      { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the storm', nl: 'de storm' }, { w: 'the Zeeland sticky bun', nl: 'de Zeeuwse bolus' },
+      { w: 'the mouse', nl: 'de muis' }, { w: 'the headphones', nl: 'de koptelefoon' }, { w: 'the gym', nl: 'de sportschool' },
       { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
       { w: 'the match', nl: 'de wedstrijd' }, { w: 'the coach', nl: 'de trainer' }, { w: 'the weight', nl: 'het gewicht', wrong: 'de gewicht' },
-      { w: 'the running shoes', nl: 'de hardloopschoenen' }, { w: 'the raincoat', nl: 'de regenjas' }, { w: 'the bike ride', nl: 'de fietstocht' },
+      { w: 'the department', nl: 'de afdeling' }, { w: 'the lunch', nl: 'de lunch' }, { w: 'the intern', nl: 'de stagiair' },
       { w: 'the helmet', nl: 'de helm' }, { w: 'the muscle ache', nl: 'de spierpijn' }, { w: 'faster', nl: 'sneller' },
 
       // ---- reads
@@ -4535,7 +4535,7 @@
       { read: true, nl: 'Er zijn geen golfballen meer.', en: 'There are no golf balls left.' },
 
       // ---- listen
-      { listen: true, nl: 'windkracht acht', en: 'wind force 8' }, { listen: true, nl: 'het snelst', en: 'the fastest' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' }, { listen: true, nl: 'het snelst', en: 'the fastest' },
       { listen: true, nl: 'de stormvloedkering', en: 'the storm surge barrier' },
 
       // ---- look
@@ -4543,8 +4543,8 @@
       { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'nummer', value: 62, nl: 'tweeënzestig', en: '62' },
 
       // ---- de of het
-      { dehet: true, nl: 'zand', art: 'het', en: 'the sand' },
-      { dehet: true, nl: 'golftas', art: 'de', en: 'the golf bag', w: 'A compound takes the article of its last part: de tas, so de golftas.' },
+      { dehet: true, nl: 'stokbrood', art: 'het', en: 'the baguette', w: 'brood is het, and so is every bread built on it: het stokbrood.' },
+      { dehet: true, nl: 'wachtwoord', art: 'het', en: 'the password', w: 'A compound takes the article of its last part: het woord, so het wachtwoord.' },
     ] }]);
 })();
 
@@ -4568,7 +4568,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[4];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -4605,7 +4605,7 @@
         w: 'waaien is what the wind does. Het waait hard: a lot of wind, no rain in it.' },
       { read: true, nl: 'Ik zie je vrijdag.', en: 'See you on Friday.',
         o: ['See you on Friday.', 'You see me on Friday.', "I'm free on Friday."], a: 0, r: 'obj',
-        w: 'ik does the seeing, je is the one seen. Ik zie je is literally I see you, and Dutch says it as a goodbye.' },
+        w: 'Ik zie je is literally I see you, and Dutch says it as a goodbye.' },
       { read: true, nl: 'Gefeliciteerd met je vrouw.', en: "Congratulations on your wife's birthday.",
         o: ["Congratulations on your wife's birthday.", 'Say hi to your wife.', 'Your wife is very nice.'], a: 0, r: 'cult',
         w: 'At a Dutch birthday you congratulate the whole room, so the husband hears Gefeliciteerd met je vrouw.' },
@@ -4637,9 +4637,9 @@
         FK(['je', 'jij'], 0, 'obj', 'jij is the one who acts, and ik is already doing the seeing. The one seen is je.'), 'op de borrel.'] },
       // ---- builds: er is, er zijn
       { en: "There's a borrel at the harbour tonight.", parts: ['Vanavond', FK(['is er', 'er is'], 0, 'v2', 'Vanavond takes slot 1, so the verb comes next and er follows it.'), 'een borrel bij de haven.'] },
-      { en: 'There are a lot of tourists on the island.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'toeristen is plural, so er zijn.', 'verb'), 'veel toeristen op',
+      { en: 'There are a lot of tourists on the island.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'toeristen is plural, so er zijn.', 'verb'), 'veel toeristen op',
         FK(['het', 'de'], 0, 'dehet', 'eiland is a het-word: het eiland.'), 'eiland.'] },
-      { en: 'Is there one more bitterbal?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One bitterbal, so is er. A question puts the verb first.', 'verb'), 'nog een bitterbal?'] },
+      { en: 'Is there one more bitterbal?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One bitterbal, so is er. A question puts the verb first.', 'verb'), 'nog een bitterbal?'] },
       // ---- builds: comparing
       { en: 'The women here are even taller.', parts: ['De vrouwen hier zijn nog',
         FK(['langer', 'langst'], 0, 'vergelijk', 'nog plus a comparative means even more: nog langer.'), '.'] },
@@ -4672,8 +4672,8 @@
 
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem / haar' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -4690,8 +4690,8 @@
       // ---- words
       { w: 'the sea', nl: 'de zee', wrong: 'het zee' },
       { w: 'the storm surge barrier', nl: 'de stormvloedkering' },
-      { w: 'the pillar', nl: 'de pijler' },
-      { w: 'the gate (of a barrier)', nl: 'de schuif' },
+      { w: 'the tourist', nl: 'de toerist' },
+      { w: 'the feeling', nl: 'het gevoel', wrong: 'de gevoel' },
       { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
       { w: 'the sea dyke', nl: 'de zeedijk' },
       { w: 'the flood disaster of 1953', nl: 'de watersnoodramp' },
@@ -4705,13 +4705,13 @@
       { w: 'the tower', nl: 'de toren' },
       { w: 'the rising tide', nl: 'de vloed' },
       { w: 'low tide', nl: 'de eb' },
-      { w: 'the seagull', nl: 'de meeuw' },
+      { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' },
       { w: 'the museum', nl: 'het museum', wrong: 'de museum' },
-      { w: 'the concrete', nl: 'het beton', wrong: 'de beton' },
+      { w: 'the coach', nl: 'de trainer' },
       { w: 'the helmet', nl: 'de helm' },
 
       // ---- builds: er is / er zijn
-      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
+      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
       { en: 'There is a museum in Ouwerkerk.', parts: ['In Ouwerkerk', FK(['is er', 'er is'], 0, 'v2', 'In Ouwerkerk takes slot 1, so the verb comes next and er follows it.'), 'een museum.'] },
       { en: 'Tonight there is a storm at sea.', parts: ['Vannacht', FK(['is er', 'er is'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it.'), 'een storm op zee.'] },
 
@@ -4729,22 +4729,22 @@
       { en: 'Neeltje Jans is a big island.', parts: ['Neeltje Jans is een', FK(['groot', 'grote'], 0, 'adj', 'een plus a het-word is the one cell without -e: een groot eiland.'), 'eiland.'] },
 
       // ---- builds: object pronouns
-      { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'objpron', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
+      { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'obj', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
       { en: "In the mist I can't see her.", parts: ['In de mist', FK(['zie ik', 'ik zie'], 0, 'v2', 'In de mist takes slot 1, so the verb comes second, then ik.'), 'haar niet.'] },
-      { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'objpron', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
-      { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'objpron', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
-      { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'objpron', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },
+      { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'obj', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
+      { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
+      { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'obj', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },
 
       // ---- reading
       { read: true, nl: 'Het waait vandaag hard.', en: 'It is blowing hard today.' },
       { read: true, nl: 'De kering is dicht.', o: ['The barrier is closed.', 'The barrier is close by.', 'The barrier is broken.'], a: 0, r: 'woord', w: 'dicht means shut. Close by is dichtbij, broken is kapot.' },
-      { read: true, nl: 'De golven zijn hoog.', o: ['The waves are high.', 'The golfers are high.', 'The gulls are high.'], a: 0, r: 'woord', w: 'de golf is a wave, de golven the waves. The sport is het golf and has no plural. Gulls are meeuwen.' },
+      { read: true, nl: 'De golven zijn hoog.', o: ['The waves are high.', 'The golfers are high.', 'The gulls are high.'], a: 0, r: 'woord', w: 'de golf is a wave, de golven the waves. The sport is het golf. Gulls are meeuwen.' },
       { read: true, nl: 'Het is eb.', o: ['The tide is out.', 'It is evening.', 'It is over.'], a: 0, r: 'woord', w: 'eb is low tide, vloed is the rising tide. Evening is de avond.' },
       { read: true, nl: 'Er is geen gevaar.', en: 'There is no danger.' },
       { read: true, nl: 'Mosselen zijn hier het lekkerst.', en: 'Mussels taste best here.' },
 
       // ---- listening
-      { listen: true, nl: 'negentien drieënvijftig', en: '1953' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' },
       { listen: true, nl: 'tweeënzestig deuren', en: '62 doors' },
       { listen: true, nl: 'de Zeeuwse bolus', en: 'the Zeeland bolus' },
 
@@ -4836,7 +4836,7 @@
         { read: true, nl: 'Het is half acht.', o: ['It is half past seven.', 'It is half past eight.', 'It is quarter to eight.'], a: 0, r: 'klok',
           w: 'half acht is half way to eight, so 7:30. Dutch counts towards the next hour.' },
         { read: true, nl: 'De honden moeten nog uit.', o: ['The dogs still need to go out.', 'The dogs are still out.', 'The dogs must not go out.'], a: 0, r: 'modal',
-          w: 'moeten nog uit: they still have to go out. After a modal Dutch can leave out the verb of motion. They are still inside.' },
+          w: 'moeten nog uit: they still have to go out. A modal can drop the verb of motion.' },
         { read: true, nl: 'Ik ben de keuken aan het opruimen.', o: ['I am tidying the kitchen.', 'I have tidied the kitchen.', 'I am going to tidy the kitchen.'], a: 0, r: 'aanhet',
           w: 'zijn + aan het is busy right now. Not done yet, not later.' },
         { read: true, nl: 'Ik laat de honden wel even uit.', en: "I'll walk the dogs." },
@@ -4876,7 +4876,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[5];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -4915,7 +4915,7 @@
         { en: 'Just pay at the checkout. (polite)', parts: [FK(['Betaalt u', 'Betaal u', 'Betalen u'], 0, 'gebod', 'With u the command keeps its t: Betaalt u maar.'), 'maar bij de kassa.'] },
         { en: 'Go ahead and put the trousers on.', parts: [FK(['Trek', 'Trekt', 'Trekken'], 0, 'gebod', 'A command is the bare stem: trek; aan still goes to the end.'), 'de broek maar even aan.'] },
         // ---- tier 4 kept alive
-        { en: "The jumper is nice. I'll take it.", parts: ['De trui is mooi. Ik neem', FK(['hem', 'hij'], 0, 'objpron', 'trui is a de-word, and as the object it is hem. hij only does the doing.'), '.'] },
+        { en: "The jumper is nice. I'll take it.", parts: ['De trui is mooi. Ik neem', FK(['hem', 'hij'], 0, 'obj', 'trui is a de-word, and as the object it is hem. hij only does the doing.'), '.'] },
         { en: 'The market is cheaper than the Albert Heijn.', parts: ['De markt is', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing with dan: add -er, goedkoop becomes goedkoper.'), 'dan de Albert Heijn.'] },
 
         // ---- words, all with their article
@@ -5213,10 +5213,10 @@
       { w: 'the screen', nl: 'het scherm', wrong: 'de scherm' }, { w: 'the keyboard', nl: 'het toetsenbord', wrong: 'de toetsenbord' },
       { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' },
       { w: 'the calendar', nl: 'de agenda' }, { w: 'the deadline', nl: 'de deadline' }, { w: 'the cause', nl: 'de oorzaak' },
-      { w: 'the flex desk', nl: 'de flexplek' }, { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the server', nl: 'de server' },
-      { w: 'the update', nl: 'de update' }, { w: 'the canteen', nl: 'de kantine' }, { w: 'the floor (of a building)', nl: 'de verdieping' },
-      { w: 'the email', nl: 'de e-mail' }, { w: 'the report', nl: 'het verslag', wrong: 'de verslag' },
-      { w: 'the salary', nl: 'het salaris', wrong: 'de salaris' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
+      { w: 'public transport', nl: 'het openbaar vervoer' }, { w: 'the ticket gate', nl: 'het poortje' }, { w: 'the server', nl: 'de server' },
+      { w: 'to get off', nl: 'uitstappen' }, { w: 'the wheat beer', nl: 'het witbiertje', wrong: 'de witbiertje' }, { w: 'the floor (of a building)', nl: 'de verdieping' },
+      { w: 'the starter', nl: 'het voorgerecht', wrong: 'de voorgerecht' }, { w: 'the report', nl: 'het verslag', wrong: 'de verslag' },
+      { w: 'the salary', nl: 'het salaris', wrong: 'de salaris' }, { w: 'the dessert', nl: 'het nagerecht' },
       { w: 'the bike garage', nl: 'de fietsenstalling' },
 
       // ---- read
@@ -5259,7 +5259,6 @@
 // New rules: imper (imperative; the existing imp is the imperfectum) and klok (telling the time). Both guarded.
 // New props: none. Only fiets, hond, brug and water are used.
 (() => {
-  window.RULES.imper = window.RULES.imper || { name: 'Imperative: the bare stem', note: 'De imperatief · commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
@@ -5400,7 +5399,7 @@
           'gaan sends the real verb to the end, whole, no te.'), 'op de werf.'] },
         { en: "I'm going to invite the new neighbours.", parts: ['Ik', FK(['ga', 'gaat', 'gaan'], 0, 'fut',
           'ik ga. The t is for jij and hij.'), 'de nieuwe buren', FK(['uitnodigen', 'uitnodigt', 'uit te nodigen'], 0, 'fut', 'After gaan the separable verb goes whole to the end, without te: uitnodigen.'), '.'] },
-        { en: 'Are you going to call her?', parts: [FK(['Ga je', 'Gaat je'], 0, 'presens', 'When je comes right after the verb, the t drops: ga je.'), FK(['haar', 'zij'], 0, 'objpron',
+        { en: 'Are you going to call her?', parts: [FK(['Ga je', 'Gaat je'], 0, 'presens', 'When je comes right after the verb, the t drops: ga je.'), FK(['haar', 'zij'], 0, 'obj',
           'She is the one being called, so haar. zij is only for the one doing it.'), 'bellen?'] },
 
         // ---- builds: the imperative
@@ -5934,7 +5933,7 @@
       { read: true, nl: 'De trein is al vertrokken.', o: ['The train has already left.', 'The train is leaving now.', 'The train leaves later.'], a: 0, r: 'perf',
         w: 'is plus a participle is the past: vertrokken means it has gone.' },
       { read: true, nl: 'Ik ben mijn kaartje vergeten.', o: ['I forgot my ticket.', 'I bought my ticket.', 'I am looking for my ticket.'], a: 0, r: 'perf',
-        w: 'vergeten is to forget. Here ben is only the helper of the perfectum, it does not mean I am.' },
+        w: 'vergeten is to forget. Here ben only helps form the perfectum, it does not mean I am.' },
       { read: true, nl: 'We zijn naar het strand gefietst.', o: ['We cycled to the beach.', 'We are cycling to the beach.', 'We are going to cycle to the beach.'], a: 0, r: 'aux',
         w: 'zijn plus a participle is the past. Cycling to a place takes zijn.' },
       { read: true, nl: 'Heb je al uitgecheckt?', o: ['Have you checked out yet?', 'Are you checking in now?', 'Are you going to check out?'], a: 0, r: 'sep',
@@ -6049,7 +6048,7 @@
         w: 'heb plus a participle at the end is something done: gefixt. Found would be gevonden.' },
       { read: true, nl: 'Je hoeft je camera niet aan te zetten.', en: "You don't have to turn your camera on.",
         o: ["You don't have to turn your camera on.", "You mustn't turn your camera on.", "Your camera isn't on."], a: 0, r: 'mag',
-        w: 'Je hoeft niet te means you don\'t have to. You mustn\'t would be je mag je camera niet aanzetten.' },
+        w: 'hoeft niet te means you don\'t have to. You mustn\'t would be je mag je camera niet aanzetten.' },
       { read: true, nl: 'De Kamer heeft weer drie uur vergaderd.', en: 'Parliament met for three hours again.',
         o: ['Parliament met for three hours again.', 'Parliament will meet for three hours.', 'Parliament has three rooms again.'], a: 0, r: 'perf',
         w: 'heeft plus vergaderd is done and over. ver- words take no ge-: vergaderd.' },
@@ -6153,7 +6152,7 @@
 
       // ---- reading
       { read: true, nl: 'Goed weekend gehad?', o: ['Did you have a good weekend?', 'Have a good weekend.', 'Is it a long weekend?'], a: 0, r: 'perf',
-        w: 'gehad is the participle of hebben, so the weekend is already over. Have a good weekend is Fijn weekend.' },
+        w: 'gehad is the participle of hebben, so the weekend is over. Have a good weekend is Fijn weekend.' },
       { read: true, nl: 'Heb je de wedstrijd gezien?', o: ['Did you see the match?', 'Are you going to watch the match?', 'Did you win the match?'], a: 0, r: 'perf',
         w: 'gezien is the participle of zien, to see. Winning would be gewonnen.' },
       { read: true, nl: "'s Zomers mogen honden niet op het strand.", o: ['In summer dogs are not allowed on the beach.', 'In summer dogs do not have to go on the beach.', 'In summer dogs must stay on the beach.'], a: 0, r: 'mag',
@@ -6196,7 +6195,7 @@
 // New rules: none. objpron is declared below only if missing; aux, kof, perf, sep, v2, mag and woord already exist.
 // New props: none. Only deur, tuin and hond are used.
 (() => {
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -6245,7 +6244,7 @@
         FK(['gepraat', 'gepraatd'], 0, 'kof', 'praat already ends in t, and Dutch adds nothing after it: gepraat.', 'spell'), '.'] },
       { en: 'Paola chatted with the neighbour for an hour.', parts: ['Paola heeft een uur met de buurvrouw',
         FK(['gekletst', 'gekletsd'], 0, 'kof', 'klets ends in s, a ketchup letter, so the participle ends in t.', 'spell'), '.'] },
-      { en: 'I thanked her for the flowers.', parts: ['Ik heb', FK(['haar', 'zij'], 0, 'objpron',
+      { en: 'I thanked her for the flowers.', parts: ['Ik heb', FK(['haar', 'zij'], 0, 'obj',
         'She is the one being thanked, so haar. zij is only for the one doing the thanking.'), 'voor de bloemen',
         FK(['bedankt', 'bedankd'], 0, 'kof', 'bedank ends in k, a ketchup letter, so the participle ends in t.', 'spell'), '.'] },
       { en: 'I congratulated my colleague on his birthday.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
@@ -6258,7 +6257,7 @@
         'Crying is something you do, nothing moves: hebben.'), 'in het debat',
         FK(['gehuild', 'gehuilt'], 0, 'kof', 'huil ends in l, not a ketchup letter, so the participle ends in d: gehuild.', 'spell'), '.'] },
       { en: 'The neighbour smiled at me.', parts: ['De buurvrouw heeft naar',
-        FK(['me', 'ik'], 0, 'objpron', 'After a preposition you need the object form: naar me. ik is for the one doing it.'),
+        FK(['me', 'ik'], 0, 'obj', 'After a preposition you need the object form: naar me. ik is for the one doing it.'),
         FK(['geglimlacht', 'geglimlachd'], 0, 'kof', 'glimlach ends in ch, a ketchup sound, so the participle ends in t.', 'spell'), '.'] },
       { en: 'What did you think of the debate?', parts: ['Hoe', FK(['heb je', 'hebt je'], 0, 'presens', 'When je comes right after the verb, the t drops: heb je.'), 'het debat',
         FK(['gevonden', 'vond', 'vindt'], 0, 'perf', 'vinden is irregular: the participle is gevonden.'), '?'] },
@@ -6270,11 +6269,11 @@
 
       // ---- reading
       { read: true, nl: 'Je hoeft niet te komen, hoor.', o: ["You don't have to come.", "You shouldn't come.", "You're not allowed to come."], a: 0, r: 'mag',
-        w: 'Je hoeft niet te means you do not have to. You should not is je moet niet, and not allowed is je mag niet.' },
+        w: 'Je hoeft niet te means you do not have to. Not allowed is je mag niet.' },
       { read: true, nl: 'Druk geweest op het werk?', o: ['Are you busy at work?', 'Have you been busy at work?', 'Will you be busy at work?'], a: 1, r: 'perf',
         w: 'geweest is the participle of zijn, so the question is about busy time that has already happened.' },
-      { read: true, nl: 'Ik heb hem gisteren niet gezien.', o: ["He didn't see me yesterday.", "I won't see him tomorrow.", "I didn't see him yesterday."], a: 2, r: 'objpron',
-        w: 'hem is the one being seen, ik is the one who did not see him. gezien and gisteren both put it in the past.' },
+      { read: true, nl: 'Ik heb hem gisteren niet gezien.', o: ["He didn't see me yesterday.", "I won't see him tomorrow.", "I didn't see him yesterday."], a: 2, r: 'obj',
+        w: 'hem is the one seen, ik the one who did not see: gezien and gisteren mean past.' },
       { read: true, nl: 'Volgens mij heeft de minister gelijk.', o: ['The minister thinks I am right.', 'I told the minister he is right.', 'In my opinion the minister is right.'], a: 2, r: 'woord',
         w: 'volgens mij is according to me, so it is my opinion. gelijk hebben is to be right.' },
       { read: true, nl: 'Zullen we snel een keer koffie drinken?', en: 'Shall we grab a coffee sometime soon?' },
@@ -6378,7 +6377,7 @@
       { read: true, nl: 'Je mag hier niet fietsen.', o: ["You're not allowed to cycle here.", "You don't have to cycle here.", 'You have to cycle here.'], a: 0, r: 'mag',
         w: 'mag niet: not allowed. No need would be hoeft niet te.' },
       { read: true, nl: 'Heb je het debat gezien?', o: ['Have you seen the debate?', 'Do you want to see the debate?', 'Is the debate on tonight?'], a: 0, r: 'perf',
-        w: 'heb + gezien: it is about something already seen. Wanting to see it would be wil je het debat zien.' },
+        w: 'heb + gezien: already seen. Wanting to see it would be wil je het debat zien.' },
       { read: true, nl: 'Dat is geen antwoord op mijn vraag.', en: 'That is not an answer to my question.' },
       { read: true, nl: 'Wat kost een bakje aardbeien?', en: 'How much is a punnet of strawberries?' },
       { read: true, nl: 'Volgens mij heeft de minister niks gedaan.', en: 'If you ask me, the minister has done nothing.' },
@@ -6499,9 +6498,9 @@
       { read: true, nl: 'Paola kocht gisteren een nieuwe bank.', o: ['Paola bought a new couch yesterday.', 'Paola is buying a new couch tomorrow.', 'Paola has to buy a new couch.'], a: 0, r: 'imp',
         w: 'kocht is the past of kopen, and gisteren says it is done.' },
       { read: true, nl: 'Zou je even de afwas kunnen doen?', o: ['Could you do the dishes for a moment?', 'Did you do the dishes?', 'You have to do the dishes now.'], a: 0, r: 'zou',
-        w: 'zou plus kunnen and an infinitive is a polite request, and even keeps it light. It is not a question about the past.' },
+        w: 'zou plus kunnen and an infinitive is a polite request, and even keeps it light.' },
       { read: true, nl: 'Ik voel me hier thuis.', o: ['I feel at home here.', 'I feel unwell at home.', 'I am going home from here.'], a: 0, r: 'refl',
-        w: 'zich voelen plus thuis is to feel at home. thuis says how you feel, not where you are going.' },
+        w: 'zich voelen plus thuis is to feel at home: thuis says how you feel, not where you go.' },
       { read: true, nl: 'Hoe was jouw dag?', en: 'How was your day?' },
       { read: true, nl: 'Het huis was kouder dan buiten.', en: 'The house was colder than outside.' },
       { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
@@ -6848,9 +6847,9 @@
 
       // ---- reads: three traps with their own options, three plain lines from the station and from the city
       { read: true, nl: 'Mijn trein had een uur vertraging.', o: ['My train was an hour late.', 'My train will be an hour late.', 'My train leaves in an hour.'], a: 0, r: 'imp',
-        w: 'had is the past of hebben, so it already happened. A train that is late right now says heeft, and one that will be late says krijgt.' },
+        w: 'had is the past of hebben, so it already happened. Now would be heeft, later krijgt.' },
       { read: true, nl: 'Zou je even kunnen opschuiven?', o: ['Could you move over a bit?', 'Did you move over?', 'You have to move over.'], a: 0, r: 'modal',
-        w: 'zou plus kunnen is the polite way to ask. It is a question, not a past and not an order.' },
+        w: 'zou plus kunnen is the polite way to ask. It is not a past tense or an order.' },
       { read: true, nl: 'De metro is sneller dan de tram, maar de bus is goedkoper.', o: ['The metro is faster than the tram, but the bus is cheaper.', 'The metro is faster than the bus, but the tram is cheaper.', 'The metro is cheaper than the tram, but the bus is faster.'], a: 0, r: 'vergelijk',
         w: 'sneller dan is faster than, and goedkoper is cheaper. Read which vehicle sits on each side of dan.' },
       { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },
@@ -7086,7 +7085,7 @@
 
       // ---- reads: three traps with their own options, three lines from the road and the course
       { read: true, nl: 'We liepen langs de Maas.', o: ['We walked along the Maas.', 'We are walking along the Maas.', 'We will walk along the Maas.'], a: 0, r: 'imp',
-        w: 'liepen is the past of lopen, so it is over. Walking now would be we lopen, and later we gaan lopen.' },
+        w: 'liepen is the past of lopen, so it is over. Now would be we lopen.' },
       { read: true, nl: 'Zou u mijn fiets even in de gaten kunnen houden?', o: ['Could you keep an eye on my bike for a moment?', 'Did you keep an eye on my bike?', 'I will keep an eye on your bike.'], a: 0, r: 'zou',
         w: 'zou plus kunnen is a polite request. A question about the past would use heeft u ... gehouden.' },
       { read: true, nl: 'De tegenwind was erger dan gisteren.', o: ['The headwind was worse than yesterday.', 'The headwind is the worst of the week.', 'The headwind will be worse than yesterday.'], a: 0, r: 'vergelijk',
@@ -7408,7 +7407,7 @@
 
       // ---- reads: three traps with their own options, two plain
       { read: true, nl: 'Als de kotters binnen zijn, is het stil in de haven.', o: ['When the cutters are in, it is quiet in the harbour.', 'The cutters are in because it is quiet in the harbour.', 'If the harbour is quiet, the cutters come in.'], a: 0, r: 'bijzin',
-        w: 'als means when here: the cutters are in first, then the quiet. The verb zijn sits at the end of the als-clause.' },
+        w: 'als means when here, and the verb zijn sits at the end of the als-clause.' },
       { read: true, nl: 'Voordat Paola thuis is, ruimen we de rommel op.', o: ['Before Paola gets home, we clear up the mess.', 'After Paola got home, we cleared up the mess.', 'Paola comes home because we clear up the mess.'], a: 0, r: 'bijzin',
         w: 'voordat is before. After would be nadat, and because would be omdat.' },
       { read: true, nl: 'Terwijl de buurvrouw praat, kijkt Paola op haar telefoon.', o: ['While the neighbour talks, Paola looks at her phone.', 'Because the neighbour talks, Paola looks at her phone.', 'After the neighbour talks, Paola looks at her phone.'], a: 0, r: 'bijzin',
@@ -7504,9 +7503,9 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Als de winkel dicht is, kom ik morgen terug.', o: ['If the shop is closed, I will come back tomorrow.', 'Because the shop is closed, I came back yesterday.', 'When the shop opens, I will come back tomorrow.'], a: 0, r: 'bijzin',
-        w: 'als = if, dicht is = is closed at the end, and kom ik terug = I come back. Because would be omdat.' },
+        w: 'als = if, dicht is = is closed at the end. Because would be omdat.' },
       { read: true, nl: 'Ik heb geen pinpas, maar ik heb wel contant geld.', o: ['I have no card, but I do have cash.', 'I have no card, because I have no cash.', 'I have a card, but I have no cash.'], a: 0, r: 'neg',
-        w: 'geen pinpas = no card, maar = but, wel = I do have. Because would be omdat or want.' },
+        w: 'geen pinpas = no card, maar = but, wel = I do have. Because would be omdat.' },
       { read: true, nl: 'Voordat de winkel opengaat, staat er al een rij.', o: ['Before the shop opens, there is already a queue.', 'After the shop opens, there is a queue again.', 'The shop has opened and the queue has gone.'], a: 0, r: 'bijzin',
         w: 'voordat = before, and opengaat joins up at the end. After would be nadat.' },
       { read: true, nl: 'Heeft u dit ook in een andere maat?', en: 'Do you have this in another size too?' },
@@ -7585,9 +7584,9 @@
         'zou makes it polite and the next verb is an infinitive: kunnen zeggen.'), 'wanneer', FK(['de keuken sluit', 'sluit de keuken'], 0, 'bijzin', 'Inside a sentence wanneer opens a sub-clause, so the verb goes to the end.'), '?'] },
       { en: 'I think this is the tastiest kibbeling of Urk.', parts: ['Ik denk dat dit de', FK(['lekkerste', 'lekkerder', 'lekkerst'], 0, 'vergelijk',
         'The best of all is the adjective plus -ste after de: de lekkerste. lekkerder only compares two.'), 'kibbeling van Urk is.'] },
-      { en: 'The dogs got bored while we waited for the bill.', parts: ['De honden verveelden', FK(['zich', 'zij'], 0, 'refl',
-        'A third person (de honden) takes zich: zich vervelen.'), FK(['terwijl wij op de rekening wachtten', 'terwijl wachtten wij op de rekening'], 0, 'bijzin',
-        'terwijl sends the verb to the end: wij op de rekening wachtten.'), '.'] },
+      { en: 'The dogs got bored while we waited.', parts: ['De honden verveelden', FK(['zich', 'zij'], 0, 'refl',
+        'A third person (de honden) takes zich: zich vervelen.'), 'terwijl', FK(['wij wachtten', 'wachtten wij'], 0, 'bijzin',
+        'terwijl sends the verb to the end: wij wachtten.'), '.'] },
       { en: 'On Sunday everything on Urk is closed because everybody is in church.', parts: ['Op zondag is alles op Urk dicht omdat iedereen in de kerk', FK(['zit', 'zitten'], 0, 'bijzin', 'iedereen takes a singular verb, at the end of the omdat clause: zit.', 'verb'), '.'] },
       { en: 'The waiter says the eel is sold out.', parts: ['De ober zegt dat de paling', FK(['op is', 'is op'], 0, 'bijzin', 'dat opens a sub-clause, so is goes to the end: op is.'), '.'] },
       { en: 'We ordered the dish of the day before the kitchen closed.', parts: ['Wij', FK(['bestelden', 'bestelde'], 0, 'kof',
@@ -7607,11 +7606,11 @@
 
       // ---- reads: three traps with their own options, three lines from the table
       { read: true, nl: 'Ik betaal contant omdat de pinautomaat stuk is.', o: ['I pay cash because the card machine is broken.', 'I pay by card because the cash machine is broken.', 'I will pay cash if the card machine breaks.'], a: 0, r: 'bijzin',
-        w: 'omdat gives the reason, and the verb is goes to the end after stuk: the machine is broken now. contant means cash.' },
+        w: 'omdat gives the reason, so is goes to the end after stuk. contant means cash.' },
       { read: true, nl: 'Ik neem nog een koffie voordat ik naar huis ga.', o: ['I am having another coffee before I go home.', 'I am having another coffee after I get home.', 'I have had coffee, so I am going home.'], a: 0, r: 'bijzin',
         w: 'voordat means before. The coffee comes first, going home second.' },
       { read: true, nl: 'Toen wij binnenkwamen, zat de hele kerk al aan tafel.', o: ['When we came in, the whole church was already at the table.', 'When we come in, the whole church will be at the table.', 'The whole church came in while we sat at the table.'], a: 0, r: 'bijzin',
-        w: 'toen with an imperfectum is one moment in the past. zat is the past of zitten, and it opens the main clause.' },
+        w: 'toen with an imperfectum is one moment in the past. zat opens the main clause.' },
       { read: true, nl: 'Terwijl wij aten, belde de buurman drie keer.', en: 'While we were eating, the neighbour called three times.' },
       { read: true, nl: 'Het eten was koud, dus we zijn niet lang gebleven.', en: 'The food was cold, so we did not stay long.' },
       { read: true, nl: 'Kunnen we apart betalen, of delen we de rekening?', en: 'Can we pay separately, or do we split the bill?' },
@@ -7670,11 +7669,11 @@
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'de bus.'] },
       { en: 'When we got to the harbour, the cutter was already gone.', parts: ['Toen we bij de haven', FK(['kwamen', 'komen', 'kwam'], 0, 'bijzin', 'toen tells a past moment, and we takes kwamen at the end.', 'past'), ',', FK(['was de kotter', 'de kotter was'], 0, 'bijzin',
         'After the toen-clause the main clause starts with its verb: was de kotter al weg.'), 'al weg.'] },
-      { en: 'While I wait for the bus, I read my mail.', parts: ['Terwijl', FK(['ik op de bus wacht', 'wacht ik op de bus'], 0, 'bijzin',
-        'terwijl sends the verb to the end: ik op de bus wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'v2',
+      { en: 'While I wait, I read my mail.', parts: ['Terwijl', FK(['ik wacht', 'wacht ik'], 0, 'bijzin',
+        'terwijl sends the verb to the end: ik wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'v2',
         'The sub-clause came first, so the next clause starts with its verb: lees ik.'), 'mijn mail.'] },
-      { en: 'Before I walk to the bus stop, I first walk the dogs.', parts: ['Voordat', FK(['ik naar de bushalte loop', 'loop ik naar de bushalte'], 0, 'bijzin',
-        'voordat sends the verb to the end: ik naar de bushalte loop.'), ',', FK(['laat ik', 'ik laat'], 0, 'bijzin',
+      { en: 'Before I leave, I first walk the dogs.', parts: ['Voordat', FK(['ik vertrek', 'vertrek ik'], 0, 'bijzin',
+        'voordat sends the verb to the end: ik vertrek.'), ',', FK(['laat ik', 'ik laat'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: laat ik ... uit.'), 'eerst de honden uit.'] },
       { en: 'Because it is storming, nobody sails out.', parts: ['Omdat', FK(['het stormt', 'stormt het'], 0, 'bijzin',
         'omdat sends the verb to the end: het stormt.'), ',', FK(['vaart niemand', 'niemand vaart'], 0, 'v2',
@@ -7694,9 +7693,9 @@
         'maar keeps normal word order: the verb is second, de laatste bus is al weg.'), '.'] },
 
       // ---- builds: directions and the time
-      { en: 'If you are at the lighthouse, you turn right.', parts: ['Als', FK(['u bij de vuurtoren bent', 'bent u bij de vuurtoren'], 0, 'bijzin',
-        'als sends the verb to the end: u bij de vuurtoren bent.'), ',', FK(['gaat u', 'u gaat'], 0, 'v2',
-        'The sub-clause came first, so the main clause starts with its verb: gaat u rechtsaf.'), 'rechtsaf.'] },
+      { en: 'If you are there, you turn right at the lighthouse.', parts: ['Als', FK(['u daar bent', 'bent u daar'], 0, 'bijzin',
+        'als sends the verb to the end: u daar bent.'), ',', FK(['gaat u', 'u gaat'], 0, 'v2',
+        'The sub-clause came first, so the main clause starts with its verb: gaat u rechtsaf.'), 'bij de vuurtoren rechtsaf.'] },
       { en: 'The bus to Emmeloord leaves at half past eight.', parts: ['De bus naar Emmeloord vertrekt om', FK(['half negen', 'half acht'], 0, 'klok',
         'half counts towards the next hour: half negen is 8:30. half acht is 7:30.'), '.'] },
 
@@ -7719,11 +7718,11 @@
 
       // ---- reads: three traps with their own options, three plain lines from the bus stop
       { read: true, nl: 'Als de bus te laat is, mis ik mijn aansluiting.', o: ['If the bus is late, I miss my connection.', 'Because the bus was late, I missed my connection.', 'The bus is late, so I took another connection.'], a: 0, r: 'bijzin',
-        w: 'als plus is: it is not past and not certain yet. After the als-clause the main clause starts with its verb: mis ik.' },
+        w: 'als plus is: not past and not certain yet. The main clause starts with mis ik.' },
       { read: true, nl: 'Omdat het zondag is, rijdt er geen bus.', o: ['Because it is Sunday, no bus runs.', 'It is Sunday, but a bus runs anyway.', 'No bus runs unless it is Sunday.'], a: 0, r: 'bijzin',
         w: 'omdat is because. The clause after the comma is the result: rijdt er geen bus.' },
       { read: true, nl: 'Ik wacht al lang, want mijn bus heeft vertraging.', o: ['I have been waiting a long time, because my bus is delayed.', 'I waited a long time, but my bus was delayed.', 'My bus is waiting a long time, so I am delayed.'], a: 0, r: 'bijzin',
-        w: 'want is because and keeps normal word order. al lang with a present verb means a wait that is still going on.' },
+        w: 'want is because and keeps normal word order. al lang with a present verb means still going on.' },
       { read: true, nl: 'Ik moet nog een kaartje kopen voordat de bus komt.', en: 'I still have to buy a ticket before the bus comes.' },
       { read: true, nl: 'Op zondag vaart hier niemand uit.', en: 'On Sunday nobody sails out here.' },
       { read: true, nl: 'Let op: door een storing rijden er geen treinen.', en: 'Attention: because of a disruption no trains are running.' },
@@ -7811,9 +7810,9 @@
       { en: 'I would rather work on the cutter than at home, because the wifi is faster there.', parts: ['Ik werk', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk',
         'With dan you compare, and the comparative of graag is liever.'), 'op de kotter dan thuis, omdat de wifi daar', FK(['sneller is', 'is sneller'], 0, 'bijzin',
         'omdat sends the verb to the very end: sneller is.'), '.'] },
-      { en: "I have no time today because I'm in meetings all day.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
-        'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd', FK(['omdat ik de hele dag in vergaderingen zit', 'omdat ik zit de hele dag in vergaderingen', 'omdat zit ik de hele dag in vergaderingen'], 0, 'bijzin',
-        'omdat sends the verb to the end: omdat ik de hele dag in vergaderingen zit.'), '.'] },
+      { en: "I have no time today because I have meetings all day.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
+        'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd omdat ik de hele dag', FK(['vergaderingen heb', 'heb vergaderingen'], 0, 'bijzin',
+        'omdat sends the verb to the end: vergaderingen heb.'), '.'] },
       { en: 'On Sunday all the colleagues went to church, so there was nobody at the office.', parts: ['Zondag', FK(['zijn', 'hebben'], 0, 'aux',
         'Going somewhere takes zijn: zijn gegaan.'), "alle collega's naar de kerk", FK(['gegaan', 'gaan', 'gingen'], 0, 'perf', 'gaan has its own participle: gegaan.'), ', dus er was niemand op kantoor.'] },
 
@@ -7830,7 +7829,7 @@
 
       // ---- reads: three traps with their own options, three plain lines from the office and the island
       { read: true, nl: 'Omdat de wifi uitviel, ben ik naar huis gegaan.', o: ['Because the wifi went down, I went home.', 'I went home and then the wifi went down.', 'The wifi went down because I went home.'], a: 0, r: 'bijzin',
-        w: 'Omdat opens the first part, so the cause comes first and the main clause starts with its verb: ben ik.' },
+        w: 'Omdat opens the first part, so the main clause starts with its verb: ben ik.' },
       { read: true, nl: 'Voordat de standup begon, was iedereen al online.', o: ['Before the standup began, everyone was already online.', 'After the standup began, everyone went online.', 'The standup began because everyone was online.'], a: 0, r: 'bijzin',
         w: 'voordat means before, and was iedereen al online is the main clause after it.' },
       { read: true, nl: 'Terwijl Mark praatte, viel de verbinding uit.', o: ['While Mark was talking, the connection dropped.', 'Mark was talking after the connection dropped.', 'Mark dropped the connection while he was talking to me.'], a: 0, r: 'bijzin',
@@ -7913,8 +7912,8 @@
         'The toen-clause came first, so the main clause starts with its verb: wist ik. weten is irregular: wist.'), 'dat', FK(['ik verdwaald was', 'was ik verdwaald'], 0, 'bijzin', 'dat sends the verb to the end of its clause: dat ik verdwaald was.'), '.'] },
 
       // ---- builds: terwijl and voordat
-      { en: 'While I walk on the treadmill, I look at my dashboard.', parts: [FK(['Terwijl ik op de loopband loop,', 'Terwijl loop ik op de loopband,'], 0, 'bijzin',
-        'terwijl sends the verb to the end: terwijl ik op de loopband loop.'), FK(['kijk ik', 'ik kijk'], 0, 'bijzin',
+      { en: 'While I walk, I look at my dashboard.', parts: ['Terwijl', FK(['ik loop', 'loop ik'], 0, 'bijzin',
+        'terwijl sends the verb to the end: ik loop.'), ',', FK(['kijk ik', 'ik kijk'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: kijk ik.'), 'naar mijn dashboard.'] },
       { en: 'Before we start, I quickly put on my sports shoes.', parts: ['Voordat we beginnen,', FK(['trek ik even', 'ik trek even'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: trek ik even.'), 'mijn sportschoenen', FK(['aan', 'aantrek', 'aangetrokken'], 0, 'sep',
@@ -7955,7 +7954,7 @@
 
       // ---- reads: three traps with their own options, three lines from the island and the course
       { read: true, nl: 'Ik ga niet golfen als het stormt.', o: ['I am not going to play golf if it storms.', 'I did not play golf because it stormed.', 'I am not going to play golf, but it is stormy.'], a: 0, r: 'bijzin',
-        w: 'als is if or when, and gaan ... golfen looks ahead. omdat would give a reason, and maar a contrast.' },
+        w: 'als is if or when, and gaan ... golfen looks ahead. omdat would give a reason.' },
       { read: true, nl: 'Toen ik uit de kleedkamer kwam, begon de wedstrijd al.', o: ['When I came out of the changing room, the match was already starting.', 'When I come out of the changing room, the match will start.', 'The match began because I came out of the changing room.'], a: 0, r: 'bijzin',
         w: 'toen points at one moment in the past, and begon is past too. A reason would use omdat.' },
       { read: true, nl: 'Voordat de kotters uitvaren, drinken de mannen koffie.', o: ['Before the cutters sail out, the men drink coffee.', 'After the cutters have sailed out, the men drink coffee.', 'The cutters sail out while the men drink coffee.'], a: 0, r: 'bijzin',
@@ -8018,8 +8017,8 @@
     items: [
       // ---- builds: sub-clauses with the verb at the end (new at tier 8)
       { en: "I'm happy because the neighbours are giving a borrel.", parts: ['Ik ben blij omdat de buren', FK(['een borrel geven', 'geven een borrel'], 0, 'bijzin', 'omdat opens a sub-clause: the verb goes to the very end, geven.'), '.'] },
-      { en: 'When we got to Urk, the whole village was in church.', parts: ['Toen we op Urk', FK(['kwam', 'kwamen', 'komen'], 1, 'bijzin', 'Past and plural: we kwamen, at the end of the toen clause.', 'past'), ',', FK(['het hele dorp zat', 'zat het hele dorp'], 1, 'bijzin',
-        'The sub-clause came first, so the main clause starts with its verb: zat het hele dorp.'), 'in de kerk.'] },
+      { en: 'When we got to Urk, everyone was in church.', parts: ['Toen we op Urk', FK(['kwam', 'kwamen', 'komen'], 1, 'bijzin', 'Past and plural: we kwamen, at the end of the toen clause.', 'past'), ',', FK(['iedereen zat', 'zat iedereen'], 1, 'bijzin',
+        'The sub-clause came first, so the main clause starts with its verb: zat iedereen.'), 'in de kerk.'] },
       { en: 'If it rains on Sunday, we stay at home.', parts: ['Als', FK(['regent het zondag', 'het zondag regent'], 1, 'bijzin',
         'als opens a sub-clause: the verb goes to the end, so het zondag regent.'), ',', FK(['blijven we', 'we blijven'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: blijven we.'), 'thuis.'] },
@@ -8072,11 +8071,11 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Ik ben boos omdat je mijn fiets hebt meegenomen.', o: ['I am angry because you took my bike.', 'You are angry because I took your bike.', 'I took your bike because I was angry.'], a: 0, r: 'bijzin',
-        w: 'omdat gives the reason: you took the bike, so I am angry. The one who is angry is ik, the one who took the bike is je.' },
+        w: 'omdat gives the reason: you took the bike, so I am angry. The angry one is ik.' },
       { read: true, nl: 'Terwijl de honden slapen, drinken de buren koffie.', o: ['While the dogs sleep, the neighbours drink coffee.', 'After the dogs sleep, the neighbours drink coffee.', 'While the neighbours sleep, the dogs drink coffee.'], a: 0, r: 'bijzin',
         w: 'terwijl means while, both things happen at once. The dogs sleep, the neighbours drink. After would be nadat.' },
       { read: true, nl: 'Voordat je gaat, moet je even bij de buurvrouw langs.', o: ["Before you go, you have to stop by the neighbour's.", "After you go, you have to stop by the neighbour's.", 'When you go, the neighbour has to stop by.'], a: 0, r: 'bijzin',
-        w: 'voordat means before. Moet je langs means you are the one who has to stop by, not the neighbour.' },
+        w: 'voordat means before. Moet je langs means you are the one who has to stop by.' },
       { read: true, nl: 'Het was gezellig, maar ik moet nu echt naar huis.', en: 'It was lovely, but I really have to go home now.' },
       { read: true, nl: 'Omdat het zondag is, vaart hier niemand uit.', en: 'Because it is Sunday, nobody sails out here.' },
       { read: true, nl: 'Op Urk kent iedereen elkaar, dus de buren weten het al.', en: 'On Urk everyone knows each other, so the neighbours already know.' },
@@ -8146,8 +8145,8 @@
         'The sub-clause came first, so the main clause starts with its verb: was de deur dicht.'), 'dicht.'] },
       { en: 'The dogs wait at the stall while I buy kibbeling.', parts: ['De honden wachten bij de kraam terwijl ik', FK(['kibbeling koop', 'koop kibbeling'], 0, 'bijzin',
         'terwijl sends the verb to the end: terwijl ik kibbeling koop.'), '.'] },
-      { en: 'I eat kibbeling before I go home.', parts: ['Ik eet kibbeling voordat', FK(['ik naar huis ga', 'ga ik naar huis'], 0, 'bijzin',
-        'voordat is a sub-clause word: the verb goes last, voordat ik naar huis ga.'), '.'] },
+      { en: 'I eat kibbeling before I go home.', parts: ['Ik eet kibbeling voordat ik', FK(['naar huis ga', 'ga naar huis'], 0, 'bijzin',
+        'voordat is a sub-clause word: the verb goes last, naar huis ga.'), '.'] },
       { en: 'Before the cutter leaves, the fisherman checks the net.', parts: ['Voordat de kotter vertrekt,', FK(['controleert de visser', 'de visser controleert'], 0, 'bijzin',
         'The sub-clause fills slot 1, so the verb of the main clause comes right after the comma.'), 'het net.'] },
 
@@ -8182,15 +8181,15 @@
       { read: true, nl: 'Op zondag vaart hier niemand uit.', o: ['On Sunday nobody sails out here.', 'On Sunday everybody sails out here.', 'Nobody sails out here on Saturday.'], a: 0, r: 'cult',
         w: 'niemand is nobody, zondag is Sunday. The Urker Sunday rest in one line.' },
       { read: true, nl: 'Ik blijf thuis omdat het stormt.', o: ['I am staying home because it is storming.', 'I am staying home, so it is storming.', 'It is storming because I stay home.'], a: 0, r: 'bijzin',
-        w: 'omdat gives the reason, and the verb stormt sits at the end. The storm is the cause, not the result.' },
+        w: 'omdat gives the reason, and the verb stormt sits at the end. The storm is the cause.' },
       { read: true, nl: 'Als de vuurtoren draait, zijn de kotters veilig.', o: ['If the lighthouse turns, the cutters are safe.', 'When the cutters are safe, the lighthouse turns.', 'The lighthouse turns although the cutters are not safe.'], a: 0, r: 'bijzin',
-        w: 'als begins the sub-clause, draait goes last, and zijn starts the main clause. The light comes first, the safety follows.' },
+        w: 'als begins the sub-clause, draait goes last, and zijn starts the main clause.' },
       { read: true, nl: 'Oe got ut?', o: ['How are you? (Urker dialect)', 'Where are you going? (Urker dialect)', 'What is that? (Urker dialect)'], a: 0, r: 'cult',
-        w: 'Oe got ut is Urker for Hoe gaat het: the h drops, gaat becomes got and het becomes ut. Urkers say it on the quay all day.' },
+        w: 'Oe got ut is Urker for Hoe gaat het: the h drops, gaat becomes got, het becomes ut.' },
       { read: true, nl: 'Terwijl het regent, eten we kibbeling.', o: ['While it rains, we eat kibbeling.', 'Because it rains, we eat kibbeling.', 'After we eat kibbeling, it rains.'], a: 0, r: 'bijzin',
-        w: 'terwijl means while, two things at the same time. Its clause comes first, so the main clause starts with its verb: eten we.' },
+        w: 'terwijl means while, two things at once. The main clause then starts with its verb: eten we.' },
       { read: true, nl: 'Toen de mist kwam, gingen alle vissers naar de kerk.', o: ['When the mist came, all the fishermen went to church.', 'When the fishermen went to church, the mist came.', 'When the mist comes, all the fishermen go to church.'], a: 0, r: 'bijzin',
-        w: 'toen with kwam and gingen is one moment in the past, and the mist comes first. The sub-clause leads, so gingen starts the main clause.' },
+        w: 'toen with kwam is one moment in the past. The sub-clause leads, so gingen starts the main clause.' },
 
       // ---- listens: a skipper, a conjunction, the smokehouse, the gulls
       { listen: true, nl: 'de schipper', en: 'the skipper' }, { listen: true, nl: 'terwijl', en: 'while' },
@@ -8233,8 +8232,8 @@
 // hond, huis and fiets are not word items here either).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om ... te', note: 'Thuis met je vrouw' };
-  window.RULES.voorwaarde = window.RULES.voorwaarde || { name: 'If ... then: als ... dan, zou', note: 'zullen' };
-  window.RULES.erop = window.RULES.erop || { name: 'Pronominal adverbs: erop, er ... over', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er: place, quantity, there is', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
@@ -8250,12 +8249,12 @@
       want: 'Since the mist everyone who spoke Dutch has changed, and on Texel they changed into sheep, or into someone who talks to sheep. They fill every room and explain which one, why and what if: die and dat, om te, als dan, and the little words er, erop and ermee. Paola, still taller than you, checks where you put the verb. The sheep know. The sheep are not talking.' },
     items: [
       // ---- builds: relative clauses, die for de-words, dat for het-words, the verb at the very end
-      { en: 'The dog that always sleeps on the couch is not allowed to lie there.', parts: ['De hond', FK(['die', 'dat'], 0, 'diedat',
-        'hond is a de-word, so die. dat is for het-words.'), FK(['altijd op de bank slaapt', 'slaapt altijd op de bank'], 0, 'bijzin',
-        'A die-clause is a sub-clause, so the verb goes to the very end: altijd op de bank slaapt.'), ', mag daar niet liggen.'] },
-      { en: 'The sheep that is still standing behind the barn is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat.'), FK(['nog achter de schapenboet staat', 'staat nog achter de schapenboet'], 0, 'bijzin',
-        'The verb of the dat-clause goes last: nog achter de schapenboet staat.'), ', is niet van ons.'] },
+      { en: 'The dog that always sleeps is not allowed to lie on the couch.', parts: ['De hond', FK(['die', 'dat'], 0, 'diedat',
+        'hond is a de-word, so die. dat is for het-words.'), FK(['altijd slaapt', 'slaapt altijd'], 0, 'bijzin',
+        'A die-clause is a sub-clause, so the verb goes to the very end: altijd slaapt.'), ', mag niet op de bank liggen.'] },
+      { en: 'The sheep that is standing over there is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so dat.'), FK(['daar staat', 'staat daar'], 0, 'bijzin',
+        'The verb of the dat-clause goes last: daar staat.'), ', is niet van ons.'] },
       { en: 'The chair that Paola bought is now in the guest room.', parts: ['De stoel', FK(['die', 'dat'], 0, 'diedat', 'stoel is a de-word, so the relative word is die.'), 'Paola kocht, staat nu in de logeerkamer.'] },
 
       // ---- builds: te plus infinitive and om ... te
@@ -8265,9 +8264,9 @@
 
       // ---- builds: als ... dan and zou
       { en: 'If I had time, I would walk to the lighthouse with the dogs.', parts: ['Als ik tijd had,', FK(['zou ik', 'ik zou'], 0, 'v2',
-        'The als-clause fills slot 1, so the verb comes next: zou ik.'), 'met de honden naar de vuurtoren', FK(['lopen', 'liep', 'gelopen'], 0, 'voorwaarde', 'zou is followed by the bare infinitive at the end: zou lopen.', 'verb'), '.'] },
-      { en: 'If you miss the last ferry, you live here from now on.', parts: [FK(['Als je de laatste boot mist,', 'Als je mist de laatste boot,'], 0, 'bijzin',
-        'als opens the condition and sends mist to the end of its clause. dan opens the result.'), 'dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
+        'The als-clause fills slot 1, so the verb comes next: zou ik.'), 'met de honden naar de vuurtoren', FK(['lopen', 'liep', 'gelopen'], 0, 'cond', 'zou is followed by the bare infinitive at the end: zou lopen.', 'verb'), '.'] },
+      { en: 'If you miss the ferry, you live here from now on.', parts: ['Als je', FK(['de boot mist', 'mist de boot'], 0, 'bijzin',
+        'als sends the verb to the end of its clause: de boot mist.'), ', dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
       { en: 'Could you walk the dogs for a moment?', parts: ['Zou je de honden even', FK(['kunnen uitlaten', 'te kunnen uitlaten', 'kan uitlaten'], 0, 'zou',
         'zou asks politely, kunnen follows as an infinitive and uitlaten closes: kunnen uitlaten.'), '?'] },
 
@@ -8281,9 +8280,9 @@
         'After meer or any comparative, Dutch says dan.'), 'mensen.'] },
 
       // ---- builds: pronominal adverbs
-      { en: 'On Saturday we go to Texel. I am looking forward to it.', parts: ['Zaterdag gaan we naar Texel. Ik verheug me', FK(['erop', 'ermee', 'eraan'], 0, 'erop',
+      { en: 'On Saturday we go to Texel. I am looking forward to it.', parts: ['Zaterdag gaan we naar Texel. Ik verheug me', FK(['erop', 'ermee', 'eraan'], 0, 'pronadv',
         'verheugen takes op, and op plus it becomes erop.'), '.'] },
-      { en: 'The neighbour has a new shed and talks about it all day.', parts: ['De buurman heeft een nieuwe schuur en praat', FK(['er', 'het', 'zich'], 0, 'erop', 'praten over a thing becomes er ... over: er early, over at the end.'), 'de hele dag over.'] },
+      { en: 'The neighbour has a new shed and talks about it all day.', parts: ['De buurman heeft een nieuwe schuur en praat', FK(['er', 'het', 'zich'], 0, 'pronadv', 'praten over a thing becomes er ... over: er early, over at the end.'), 'de hele dag over.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'I stay home because the ferry is not sailing.', parts: ['Ik blijf thuis omdat de veerboot', FK(['niet vaart', 'vaart niet'], 0, 'bijzin', 'omdat sends vaart to the end: niet vaart.'), '.'] },
@@ -8307,10 +8306,10 @@
       // ---- reads: three traps with their own options, three lines from the island
       { read: true, nl: 'De schapen die op de dijk staan, kijken naar de veerboot.', o: ['The sheep that stand on the dyke look at the ferry.', 'The sheep stand on the dyke when they look at the ferry.', 'The ferry looks at the sheep on the dyke.'], a: 0, r: 'diedat',
         w: 'die points back to de schapen and the clause says which sheep. It is not a when.' },
-      { read: true, nl: 'Als het niet zo hard waaide, zouden de schapen buiten blijven.', o: ['If it did not blow so hard, the sheep would stay outside.', 'When it does not blow so hard, the sheep stay outside.', 'The sheep stayed outside because it blew so hard.'], a: 0, r: 'voorwaarde',
-        w: 'als plus the past waaide, then zouden plus the infinitive: a what-if, not something that happens. The plain past would be bleven.' },
-      { read: true, nl: 'Het dak is lek. Kun je er even naar kijken?', o: ['The roof leaks. Can you take a look at it?', 'The roof leaks. Can you look over there for a moment?', 'The roof leaks. Can you look it up later?'], a: 0, r: 'erop',
-        w: 'er ... naar kijken is look at it: er stands for het dak and naar waits at the end. Over there would be daar.' },
+      { read: true, nl: 'Als het niet zo hard waaide, zouden de schapen buiten blijven.', o: ['If it did not blow so hard, the sheep would stay outside.', 'When it does not blow so hard, the sheep stay outside.', 'The sheep stayed outside because it blew so hard.'], a: 0, r: 'cond',
+        w: 'als plus waaide, then zouden plus the infinitive: a what-if. The plain past would be bleven.' },
+      { read: true, nl: 'Het dak is lek. Kun je er even naar kijken?', o: ['The roof leaks. Can you take a look at it?', 'The roof leaks. Can you look over there for a moment?', 'The roof leaks. Can you look it up later?'], a: 0, r: 'pronadv',
+        w: 'er ... naar kijken is look at it: er stands for het dak. Over there would be daar.' },
       { read: true, nl: 'Een Skuumkoppe, graag.', en: "A Skuumkoppe, please (the island brewery's best-known beer)." },
       { read: true, nl: 'Hoe laat vertrekt de laatste boot terug?', en: 'What time does the last ferry back leave?' },
       { read: true, nl: 'De schapen weten ervan. De schapen zeggen niks.', en: 'The sheep know about it. The sheep are not saying anything.' },
@@ -8418,9 +8417,9 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Als u twee kazen koopt, krijgt u er een tasje bij.', o: ['If you buy two cheeses, you get a bag with them.', 'If you buy two bags, you get a cheese with them.', 'Because you bought two cheeses, you got a bag.'], a: 0, r: 'cond',
-        w: 'als = if, koopt at the end of the clause, and krijgt u comes first in the answer. er ... bij means with it.' },
+        w: 'als = if, koopt goes to the end, and krijgt u opens the answer.' },
       { read: true, nl: 'Het schaap dat in de rij staat, heeft geen pinpas.', o: ['The sheep that is standing in the queue has no debit card.', 'The sheep has no debit card, so it is not standing in the queue.', 'The queue that the sheep is in has no debit card.'], a: 0, r: 'diedat',
-        w: 'dat points back to het schaap, and staat waits at the end of the relative clause. The sheep is the one without a card.' },
+        w: 'dat points back to het schaap, and staat waits at the end of the clause.' },
       { read: true, nl: 'Dit pak melk is over de datum, ik ga ermee terug naar de winkel.', o: ['This carton of milk is past its date, I am taking it back to the shop.', 'This carton of milk is past its date, I am going back to the shop with her.', 'This milk is still good, so I am going to the shop for it.'], a: 0, r: 'pronadv',
         w: 'ermee is met plus the thing: with it. With a person it would be met haar.' },
       { read: true, nl: 'Wij splitsen de rekening altijd tot op de cent.', en: 'We always split the bill to the cent.' },
@@ -8469,7 +8468,6 @@
   window.RULES.cond = window.RULES.cond || { name: 'If ... then: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.pronadv = window.RULES.pronadv || { name: 'ermee, erop, erin: er plus preposition', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
@@ -8488,15 +8486,15 @@
       { en: 'The waiter who brings the soup is the cook\'s brother.', parts: ['De ober', FK(['die', 'dat'], 0, 'diedat',
         'ober is a de-word, so the relative pronoun is die.'), FK(['de soep brengt', 'brengt de soep'], 0, 'bijzin',
         'A die-clause sends its verb to the end: die de soep brengt.'), ', is de broer van de kok.'] },
-      { en: 'The beer they brew on Texel is called Skuumkoppe.', parts: ['Het bier', FK(['dat', 'die'], 0, 'diedat',
-        'bier is a het-word, so the relative pronoun is dat.'), FK(['ze op Texel brouwen', 'brouwen ze op Texel'], 0, 'bijzin',
-        'After dat the subject comes first and the verb stands at the end: dat ze op Texel brouwen.'), ', heet Skuumkoppe.'] },
+      { en: 'The beer they brew here is called Skuumkoppe.', parts: ['Het bier', FK(['dat', 'die'], 0, 'diedat',
+        'bier is a het-word, so the relative pronoun is dat.'), FK(['ze hier brouwen', 'brouwen ze hier'], 0, 'bijzin',
+        'After dat the subject comes first and the verb stands at the end: dat ze hier brouwen.'), ', heet Skuumkoppe.'] },
       { en: 'The bitterballen that Paola ordered are already gone.', parts: ['De bitterballen', FK(['die', 'dat'], 0, 'diedat',
         'bitterballen is a plural, and a plural always takes die, whatever the singular is.'), 'Paola', FK(['bestelde', 'bestelden'], 0, 'imp',
         'Paola is one person: bestelde. bestel ends in l, which is no ketchup letter, so -de.'), ', zijn al op.'] },
-      { en: 'The terrace here by the harbour is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
-        'terras is a het-word, so dat.'), FK(['hier aan de haven ligt', 'ligt hier aan de haven'], 0, 'bijzin',
-        'The verb of a dat-clause stands at the end: dat hier aan de haven ligt.'), ', is al vol.'] },
+      { en: 'The terrace that is here is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
+        'terras is a het-word, so dat.'), FK(['hier ligt', 'ligt hier'], 0, 'bijzin',
+        'The verb of a dat-clause stands at the end: dat hier ligt.'), ', is al vol.'] },
 
       // ---- builds: te plus infinitive and om te
       { en: 'I go to the market in Den Burg to buy fresh fish.', parts: ['Ik ga naar de markt in Den Burg om verse vis', FK(['te kopen', 'kopen'], 0, 'omte', 'A purpose takes om ... te, with te right before the infinitive: te kopen.'), '.'] },
@@ -8511,15 +8509,15 @@
       { en: 'If I had more money, I would order the lamb.', parts: ['Als ik meer geld', FK(['had', 'hadden'], 0, 'imp',
         'ik takes the singular past of hebben: had.'), ',', FK(['zou ik', 'ik zou'], 0, 'v2',
         'The als-clause fills the first slot, so zou comes before ik.'), 'het lamsvlees bestellen.'] },
-      { en: 'If we miss the last ferry, we order another dessert.', parts: ['Als we', FK(['de laatste boot missen', 'missen de laatste boot'], 0, 'bijzin',
-        'als sends the verb to the end: de laatste boot missen.'), ',', FK(['bestellen we', 'we bestellen'], 0, 'v2',
+      { en: 'If we miss the ferry, we order another dessert.', parts: ['Als we', FK(['de boot missen', 'missen de boot'], 0, 'bijzin',
+        'als sends the verb to the end: de boot missen.'), ',', FK(['bestellen we', 'we bestellen'], 0, 'v2',
         'The als-clause comes first, so the main clause starts with its verb: bestellen we.'), 'nog een toetje.'] },
 
       // ---- builds: er as quantity, er as the opener, and the pronominal adverbs
       { en: 'Another bitterbal? No thanks, I have already eaten five.', parts: ['Nog een bitterbal? Nee, dank je, ik heb', FK(['er', 'het'], 0, 'er',
         'When you only say how many, er stands for the thing: ik heb er al vijf.'), 'al vijf', FK(['gegeten', 'eten', 'aten'], 0, 'perf', 'eten is irregular, and after heb comes the participle: gegeten.'), '.'] },
-      { en: 'There is a sheep on the terrace.', parts: [FK(['Er', 'Het', 'Dat'], 0, 'eris',
-        'er opens a sentence about something new: Er staat een schaap.'), FK(['staat', 'staan'], 0, 'eris', 'The verb agrees with the one new thing, one sheep: staat.', 'verb'), 'een schaap op het terras.'] },
+      { en: 'There is a sheep on the terrace.', parts: [FK(['Er', 'Het', 'Dat'], 0, 'er',
+        'er opens a sentence about something new: Er staat een schaap.'), FK(['staat', 'staan'], 0, 'er', 'The verb agrees with the one new thing, one sheep: staat.', 'verb'), 'een schaap op het terras.'] },
       { en: 'What a big portion. I am very happy with it.', parts: ['Wat een grote portie. Ik ben', FK(['er', 'het'], 0, 'pronadv',
         'A thing after a preposition becomes er: blij met de portie turns into er ... blij mee.'), 'heel blij', FK(['mee', 'met'], 0, 'pronadv',
         'With er the preposition moves behind it as mee: ermee, not er met.'), '.'] },
@@ -8552,11 +8550,11 @@
 
       // ---- reads: three traps with their own options, two plain lines
       { read: true, nl: 'De serveerster die de koffie bracht, is de dochter van de eigenaar.', o: ['The waitress who brought the coffee is the owner\'s daughter.', 'The waitress brought the coffee to the owner\'s daughter.', 'The owner\'s daughter brought the waitress her coffee.'], a: 0, r: 'diedat',
-        w: 'die points back to the waitress, and bracht closes that clause. The main verb is is: she is the daughter.' },
+        w: 'die points back to the waitress, and bracht closes that clause: she is the daughter.' },
       { read: true, nl: 'Het is niet nodig om te reserveren.', o: ['You do not need to reserve.', 'You are not allowed to reserve.', 'It is not possible to reserve.'], a: 0, r: 'omte',
-        w: 'niet nodig om te: there is no need. Not allowed would be mag niet, and not possible niet mogelijk.' },
+        w: 'niet nodig om te: there is no need. Not allowed would be mag niet.' },
       { read: true, nl: 'Als ik jou was, zou ik het lamsvlees nemen.', o: ['If I were you, I would take the lamb.', 'When I was you, I took the lamb.', 'I was you, so I took the lamb.'], a: 0, r: 'cond',
-        w: 'Als ik jou was is the stock phrase for advice: was is the unreal past, not a story about the past. zou ik says what you would do.' },
+        w: 'Als ik jou was is the stock phrase for advice, and zou ik says what I would do.' },
       { read: true, nl: 'De pannenkoeken die ze hier maken, zijn zo groot als een fietswiel.', en: 'The pancakes they make here are as big as a bicycle wheel.' },
       { read: true, nl: 'Mag ik er wat mosterd bij?', en: 'May I have some mustard with it?' },
 
@@ -8599,8 +8597,8 @@
 // New rules: omte, conditie, vnwadv (all guarded below). New props: none (water, kerk, hond).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te and om ... te + infinitive', note: 'heb-je-zin-om-zaterdag-te-golfen' };
-  window.RULES.conditie = window.RULES.conditie || { name: 'als ... dan: if clauses', note: 'bijzin - werkwoord naar het einde' };
-  window.RULES.vnwadv = window.RULES.vnwadv || { name: 'erop, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[9];
@@ -8615,18 +8613,18 @@
       want: 'Since the mist came, everyone who spoke Dutch changed, and on Texel nobody noticed, because the sheep never spoke Dutch anyway. The dead in the queue now talk in long sentences: die for the de-words, dat for the het-words, the verb at the very end of the clause. They use om te, they say als ... dan, and they say erop and ermee instead of repeating themselves. The women are still taller than you. The sheep are not, but they act like it.' },
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the end
-      { en: 'The ferry that leaves at nine today is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
-        'boot is a de-word, so die: de boot die.'), FK(['vandaag om negen uur vertrekt', 'vertrekt vandaag om negen uur'], 0, 'bijzin',
-        'Inside a die clause the verb goes to the very end: om negen uur vertrekt.'), ', is vol.'] },
+      { en: 'The ferry that leaves today is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
+        'boot is a de-word, so die: de boot die.'), FK(['vandaag vertrekt', 'vertrekt vandaag'], 0, 'bijzin',
+        'Inside a die clause the verb goes to the very end: vandaag vertrekt.'), ', is vol.'] },
       { en: 'The ticket that I bought is in my bag.', parts: ['Het kaartje', FK(['dat', 'die'], 0, 'diedat',
         'kaartje is a het-word, so dat: het kaartje dat.'), FK(['ik gekocht heb', 'heb ik gekocht'], 0, 'bijzin',
         'A relative clause is a sub-clause: the subject comes first and the verb goes to the end.'), ', ligt in mijn tas.'] },
-      { en: 'The sheep that has been standing on the cycle path for hours does not want to leave.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat: het schaap dat.'), FK(['al uren op het fietspad staat', 'staat al uren op het fietspad'], 0, 'bijzin',
-        'The verb of the dat clause goes to the end: dat al uren op het fietspad staat.'), ', wil niet weg.'] },
-      { en: 'Is this the bus that goes to De Koog tonight?', parts: ['Is dit de bus', FK(['die', 'dat'], 0, 'diedat',
-        'bus is a de-word, so die: de bus die.'), FK(['vanavond naar De Koog gaat', 'gaat vanavond naar De Koog'], 0, 'bijzin',
-        'die sends the verb to the end of its clause: die vanavond naar De Koog gaat.'), '?'] },
+      { en: 'The sheep that has been standing for hours does not want to leave the cycle path.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so dat: het schaap dat.'), FK(['al uren staat', 'staat al uren'], 0, 'bijzin',
+        'The verb of the dat clause goes to the end: dat al uren staat.'), ', wil niet van het fietspad af.'] },
+      { en: 'Is this the bus to De Koog that leaves tonight?', parts: ['Is dit de bus naar De Koog', FK(['die', 'dat'], 0, 'diedat',
+        'bus is a de-word, so die: de bus die.'), FK(['vanavond vertrekt', 'vertrekt vanavond'], 0, 'bijzin',
+        'die sends the verb to the end of its clause: die vanavond vertrekt.'), '?'] },
 
       // ---- builds: te and om ... te
       { en: 'I do not feel like waiting all day.', parts: ['Ik heb geen zin', FK(['om', 'dat'], 0, 'omte', 'zin hebben takes om: geen zin om, then te and the infinitive at the end.', 'word'), 'de hele dag', FK(['te wachten', 'wachten'], 0, 'omte', 'te stands right in front of the infinitive: om te wachten.'), '.'] },
@@ -8638,13 +8636,13 @@
         'niet stands before te: om de veerboot niet te missen.'), '.'] },
 
       // ---- builds: conditionals with als ... dan and zou
-      { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'conditie',
+      { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'cond',
         'als sends the verb to the end of its clause: als de boot niet vaart.'), ',', FK(['dan blijven we', 'dan we blijven'], 0, 'v2',
         'dan takes slot 1 of the main clause, so the verb comes next: dan blijven we.'), 'hier.'] },
-      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'conditie', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
+      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'cond', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
         'After the als clause the main clause starts with its verb: zou ik.'), 'de fiets nemen.'] },
       { en: 'If the bus is late, we take the bikes.', parts: ['Als de bus te laat', FK(['is', 'zijn'], 0, 'presens',
-        'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'conditie',
+        'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'cond',
         'After the als clause the main clause starts with its verb: nemen we de fietsen.'), 'de fietsen.'] },
       { en: 'Could you tell me where the ferry leaves from?', parts: [FK(['Zou', 'Zouden'], 0, 'zou',
         'u takes the singular: zou u. zou plus kunnen makes the request polite.'), 'u mij kunnen zeggen waar', FK(['de veerboot vertrekt', 'vertrekt de veerboot'], 0, 'bijzin', 'An indirect question sends the verb to the end: waar de veerboot vertrekt.'), '?'] },
@@ -8655,10 +8653,10 @@
       { en: 'My sister lives on Texel. I cycle there every year.', parts: ['Mijn zus woont op Texel. Ik fiets', FK(['er', 'het'], 0, 'er',
         'A place that was just named becomes er: ik fiets er.'), 'elk jaar', FK(['naartoe', 'toe'], 0, 'er',
         'To a place just named, er takes naartoe: ik fiets er naartoe.'), '.'] },
-      { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'vnwadv',
+      { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'pronadv',
         'A question about a thing with a preposition starts with waar: waar wacht je op.'), 'wacht je op? Ik wacht', FK(['op', 'aan'], 0, 'woord',
         'wachten goes with op: wachten op de bus.'), 'de bus.'] },
-      { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'vnwadv',
+      { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'pronadv',
         'A preposition plus a thing becomes er plus the preposition, one word: ermee, erop, erin.'), 'naar het strand.'] },
 
       // ---- builds: review of earlier tiers
@@ -8729,8 +8727,8 @@
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om te', note: 'modale werkwoorden' };
-  window.RULES.conditie = window.RULES.conditie || { name: 'Conditionals: als ... dan, zou', note: 'modale werkwoorden' };
-  window.RULES.erop = window.RULES.erop || { name: 'Pronominal adverbs: erop, ermee, eraan', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -8749,7 +8747,7 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that is already standing by the door wants to join the standup.', parts: ['Het schaap', FK(['dat al bij de deur staat', 'dat staat al bij de deur'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, staat.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already waiting wants to join the standup.', parts: ['Het schaap', FK(['dat al wacht', 'dat wacht al'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, wacht.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
       { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte', 'om ... te means in order to: om opens the clause, te comes before the last verb.', 'word'), 'de dashboards in de gaten', FK(['te houden', 'houden te'], 0, 'omte', 'te sits right in front of the infinitive: te houden.'), '.'] },
@@ -8762,18 +8760,18 @@
         'Not needed is niet hoeven te; moeten and mogen never take te.'), 'vandaag niet naar kantoor te komen.'] },
 
       // ---- builds: conditionals with als ... dan and zou
-      { en: 'If the wifi were better, I would work at home.', parts: ['Als de wifi beter', FK(['was', 'waren'], 0, 'conditie', 'Something not true now takes the imperfectum after als, and one wifi takes was.', 'past'), ', dan', FK(['zou ik', 'ik zou'], 0, 'v2',
+      { en: 'If the wifi were better, I would work at home.', parts: ['Als de wifi beter', FK(['was', 'waren'], 0, 'cond', 'Something not true now takes the imperfectum after als, and one wifi takes was.', 'past'), ', dan', FK(['zou ik', 'ik zou'], 0, 'v2',
         'dan takes slot 1, so the verb comes next: dan zou ik.'), 'thuis werken.'] },
-      { en: 'If I missed the last ferry, I would stay on Texel.', parts: ['Als ik de laatste boot', FK(['miste', 'missen', 'gemist'], 0, 'conditie', 'An imagined situation takes the imperfectum after als: ik miste.', 'past'), ', dan zou ik op Texel blijven.'] },
+      { en: 'If I missed the last ferry, I would stay on Texel.', parts: ['Als ik de laatste boot', FK(['miste', 'missen', 'gemist'], 0, 'cond', 'An imagined situation takes the imperfectum after als: ik miste.', 'past'), ', dan zou ik op Texel blijven.'] },
 
       // ---- builds: er for quantity and the pronominal adverbs
       { en: 'How many colleagues do you have? I have seven.', parts: ["Hoeveel collega's heb je? Ik heb", FK(['er', 'het', 'hen'], 0, 'er',
         'er stands for the thing you counted: ik heb er zeven. het and hen cannot replace it here.'), 'zeven.'] },
-      { en: 'My laptop is not working. Can you help me with it?', parts: ['Mijn laptop doet het niet. Kun je me', FK(['ermee', 'met het', 'met dat'], 0, 'erop',
+      { en: 'My laptop is not working. Can you help me with it?', parts: ['Mijn laptop doet het niet. Kun je me', FK(['ermee', 'met het', 'met dat'], 0, 'pronadv',
         'After a preposition a thing becomes er, and er + met is written ermee. Not met het.'), 'helpen?'] },
-      { en: 'There is a borrel on Friday. I am looking forward to it.', parts: ['Vrijdag is er een borrel. Ik verheug me', FK(['erop', 'op het', 'op hem'], 0, 'erop',
+      { en: 'There is a borrel on Friday. I am looking forward to it.', parts: ['Vrijdag is er een borrel. Ik verheug me', FK(['erop', 'op het', 'op hem'], 0, 'pronadv',
         'verheugen takes op, and a thing after op becomes er: erop.'), '.'] },
-      { en: 'The new dashboard? I have been working on it for a week.', parts: ['Het nieuwe dashboard? Ik werk', FK(['er', 'het', 'hem'], 0, 'erop',
+      { en: 'The new dashboard? I have been working on it for a week.', parts: ['Het nieuwe dashboard? Ik werk', FK(['er', 'het', 'hem'], 0, 'pronadv',
         'A thing after a preposition becomes er, and er moves forward: ik werk er al een week aan.'), 'al een week aan.'] },
 
       // ---- builds: review (sub-clause, imperfectum, zou)
@@ -8799,11 +8797,11 @@
 
       // ---- reads: three traps with their own options, two plain lines from the office
       { read: true, nl: 'Het schaap dat mijn scherm leest, wil een baan.', o: ['The sheep that reads my screen wants a job.', 'The sheep reads my screen because it wants a job.', 'My screen reads the sheep that wants a job.'], a: 0, r: 'diedat',
-        w: 'dat belongs to het schaap, and the clause dat mijn scherm leest only says which sheep. The verb leest sits at the end of it.' },
-      { read: true, nl: 'Als dit schaap kon praten, zou het over de wifi klagen.', o: ['If this sheep could talk, it would complain about the wifi.', 'When this sheep talks, it complains about the wifi.', 'This sheep can talk because it complains about the wifi.'], a: 0, r: 'conditie',
-        w: 'kon after als plus zou in the answer part is an imagined case. A real habit would be als dit schaap praat, klaagt het.' },
+        w: 'dat belongs to het schaap, and the clause only says which sheep. leest sits at the end.' },
+      { read: true, nl: 'Als dit schaap kon praten, zou het over de wifi klagen.', o: ['If this sheep could talk, it would complain about the wifi.', 'When this sheep talks, it complains about the wifi.', 'This sheep can talk because it complains about the wifi.'], a: 0, r: 'cond',
+        w: 'kon after als plus zou in the answer is an imagined case, not a real habit.' },
       { read: true, nl: 'Ik heb geen zin om te vergaderen.', o: ['I do not feel like having a meeting.', 'I am not allowed to have a meeting.', 'I have no time for the meeting.'], a: 0, r: 'omte',
-        w: 'geen zin om ... te means no desire to do it. Not allowed would be mag niet, and no time would be geen tijd.' },
+        w: 'geen zin om ... te means no desire to do it. No time would be geen tijd.' },
       { read: true, nl: 'Dynatrace laat zien waar het probleem zit.', en: 'Dynatrace shows where the problem is.' },
       { read: true, nl: 'Sterkte ermee.', en: 'Good luck with it.' },
 
@@ -8843,8 +8841,8 @@
 // New props: none. Only hond, water and molen are used (not fiets: de huurfiets and het fietspad are in the word pool).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om te', note: 'modale werkwoorden' };
-  window.RULES.alsdan = window.RULES.alsdan || { name: 'als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
-  window.RULES.vnwadv = window.RULES.vnwadv || { name: 'ermee, erover, ervan: er + preposition', note: 'MOC Voorzetsels' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
@@ -8880,7 +8878,7 @@
 
       // ---- builds: als ... dan and zou
       { en: 'If you miss the last ferry, you live here from now on.', parts: ['Als je de laatste boot mist, dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
-      { en: 'If the wind did not blow so hard, I would play golf.', parts: ['Als het niet zo hard', FK(['waaide', 'waaite'], 0, 'kof', 'waai does not end in a letter of t kofschip, so the past is waaide.', 'spell'), ',', FK(['zou ik', 'ik zou'], 0, 'alsdan',
+      { en: 'If the wind did not blow so hard, I would play golf.', parts: ['Als het niet zo hard', FK(['waaide', 'waaite'], 0, 'kof', 'waai does not end in a letter of t kofschip, so the past is waaide.', 'spell'), ',', FK(['zou ik', 'ik zou'], 0, 'cond',
         'The als-clause fills slot 1, so zou comes before ik.'), 'golfen.'] },
       { en: 'If I had more time, I would go to the gym more often.', parts: ['Als ik meer tijd', FK(['had', 'hadden'], 0, 'imp',
         'ik takes had. hadden is for wij, jullie and zij.'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
@@ -8894,13 +8892,13 @@
         'When the noun was already named, er stands for it: ik heb er twee, right after the verb.'), ', ze moeten altijd uit.'] },
 
       // ---- builds: pronominal adverbs
-      { en: 'My dog has found a golf ball and is playing with it.', parts: ['Mijn hond heeft een golfbal gevonden en speelt', FK(['ermee', 'met het'], 0, 'vnwadv',
+      { en: 'My dog has found a golf ball and is playing with it.', parts: ['Mijn hond heeft een golfbal gevonden en speelt', FK(['ermee', 'met het'], 0, 'pronadv',
         'met plus a thing becomes ermee: er + met, glued together. met het cannot stand alone.'), '.'] },
-      { en: "I've been talking about it with Paola all week.", parts: ['Ik praat', FK(['er', 'het'], 0, 'vnwadv',
+      { en: "I've been talking about it with Paola all week.", parts: ['Ik praat', FK(['er', 'het'], 0, 'pronadv',
         'over plus a thing becomes er ... over, with er early and over at the end.'), 'al de hele week met Paola over.'] },
-      { en: 'Fancy a match? I feel like it.', parts: ['Zin in een wedstrijd? Ik heb', FK(['er zin in', 'het zin in'], 0, 'vnwadv',
+      { en: 'Fancy a match? I feel like it.', parts: ['Zin in een wedstrijd? Ik heb', FK(['er zin in', 'het zin in'], 0, 'pronadv',
         'zin hebben in a thing: er goes before zin and in stays behind.'), '.'] },
-      { en: 'I love it when it blows.', parts: ['Ik hou', FK(['ervan', 'van er'], 0, 'vnwadv', 'houden van a thing becomes ervan: er and van glued together as one word.', 'order'), 'als het waait.'] },
+      { en: 'I love it when it blows.', parts: ['Ik hou', FK(['ervan', 'van er'], 0, 'pronadv', 'houden van a thing becomes ervan: er and van glued together as one word.', 'order'), 'als het waait.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday I walked the dogs along the beach.', parts: ['Gisteren', FK(['heb ik', 'ik heb'], 0, 'v2',
@@ -8923,11 +8921,11 @@
 
       // ---- reads: a trap on dat, a trap on te, a trap on er zin in, then the island's own lines
       { read: true, nl: 'Het schaap dat op het fietspad staat, wil niet weg.', o: ['The sheep standing on the cycle path does not want to move.', 'The cyclist on the path does not want the sheep to move.', 'The sheep next to the path wants to leave.'], a: 0, r: 'diedat',
-        w: 'dat points back to het schaap and staat sits at the end of its clause: the sheep is the one standing there. wil niet weg is the main clause.' },
+        w: 'dat points back to het schaap, and staat sits at the end of its clause.' },
       { read: true, nl: 'Ik probeer elke dag een uur te sporten.', o: ['I try to exercise for an hour every day.', 'I tried to exercise for an hour yesterday.', 'I am not allowed to exercise for an hour every day.'], a: 0, r: 'omte',
-        w: 'probeer is present, and te sporten is what is being tried. Past would be probeerde, not allowed would be mag niet.' },
-      { read: true, nl: 'Ik heb er geen zin in.', o: ['I do not feel like it.', 'I have no time for it.', 'I have no sentence in it.'], a: 0, r: 'vnwadv',
-        w: 'zin hebben in means to feel like it, and er stands for the thing. zin is also sentence, but not here.' },
+        w: 'probeer is present, and te sporten is what is being tried. Past would be probeerde.' },
+      { read: true, nl: 'Ik heb er geen zin in.', o: ['I do not feel like it.', 'I have no time for it.', 'I have no sentence in it.'], a: 0, r: 'pronadv',
+        w: 'zin hebben in means to feel like it, and er stands for the thing.' },
       { read: true, nl: 'Hoe laat vertrekt de laatste boot terug?', en: 'What time does the last ferry back leave?' },
       { read: true, nl: 'Een buitje deert ons niet.', en: 'A little shower does not bother us.' },
       { read: true, nl: 'Een Skuumkoppe, graag.', en: "A Skuumkoppe, please (the island brewery's best-known beer)." },
@@ -8984,9 +8982,9 @@
       want: 'Since the mist the dead have become neighbours: they chat, they gossip, they argue about the fence. Every sentence has a trap: a die or a dat, an om te, an als and a zou, an er that points back. The women are still taller than you. The sheep know. The sheep are not talking.' },
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the very end of the clause
-      { en: 'The sheep that has lived next to us for years knows everyone.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so the pointer is dat: het schaap dat.'), FK(['al jaren naast ons woont', 'woont al jaren naast ons'], 0, 'bijzin',
-        'A relative clause is a sub-clause: the verb goes to the end, al jaren naast ons woont.'), ', kent iedereen.'] },
+      { en: 'The sheep that has lived here for years knows everyone.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so the pointer is dat: het schaap dat.'), 'al jaren', FK(['hier woont', 'woont hier'], 0, 'bijzin',
+        'A relative clause is a sub-clause: the verb goes to the end, hier woont.'), ', kent iedereen.'] },
       { en: 'The man I met yesterday is a farmer.', parts: ['De man', FK(['die', 'dat'], 0, 'diedat',
         'man is a de-word, so die.'), 'ik gisteren', FK(['ontmoette', 'ontmoetten', 'ontmoet'], 0, 'imp', 'ontmoet ends in t, so the past takes -te, and ik takes no -n: ontmoette.'), ', is boer.'] },
       { en: 'The tourists who come too late miss the boat.', parts: ['De toeristen', FK(['die', 'dat'], 0, 'diedat',
@@ -9088,7 +9086,7 @@
 // are in the word pool and could be taken for the prop).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
-  window.RULES.alsdan = window.RULES.alsdan || { name: 'Conditions: als ... dan, was, zouden', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erop, ermee, ernaar', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
@@ -9117,18 +9115,18 @@
         'With a separable verb te goes between the prefix and the verb: uit te laten.'), '.'] },
 
       // ---- builds: conditions with als ... dan, was and zouden, polite zou
-      { en: 'If it rains, we stay in the pub.', parts: ['Als het regent,', FK(['dan blijven we', 'dan we blijven', 'blijven dan we'], 0, 'alsdan',
+      { en: 'If it rains, we stay in the pub.', parts: ['Als het regent,', FK(['dan blijven we', 'dan we blijven', 'blijven dan we'], 0, 'cond',
         'After an als-clause the main verb comes first: dan blijven we, never dan we blijven.'), 'in de kroeg.'] },
       { en: 'If the ferry were not full, we would be home by now.', parts: ['Als de veerboot niet vol was,', FK(['zouden we', 'we zouden'], 0, 'v2', 'The als-clause came first, so the main clause starts with its verb: zouden we.'), 'nu thuis zijn.'] },
-      { en: 'If I lived here, I would buy a sheep.', parts: ['Als ik hier', FK(['woonde', 'woonden'], 0, 'alsdan', 'An imagined situation takes the imperfectum, and ik takes woonde without -n.', 'past'), ', zou ik een schaap kopen.'] },
+      { en: 'If I lived here, I would buy a sheep.', parts: ['Als ik hier', FK(['woonde', 'woonden'], 0, 'cond', 'An imagined situation takes the imperfectum, and ik takes woonde without -n.', 'past'), ', zou ik een schaap kopen.'] },
       { en: 'Would you hold my bike for a moment?', parts: ['Zou je mijn fiets even', FK(['willen vasthouden', 'te willen vasthouden'], 0, 'zou', 'zou is polite, and willen vasthouden stands at the end with no te.'), '?'] },
 
       // ---- builds: er as place and quantity
       { en: 'On Texel there are more sheep than people.', parts: ['Op Texel', FK(['zijn er', 'er zijn'], 0, 'v2', 'Op Texel takes slot 1, so the verb comes second: zijn er.'), 'meer schapen dan mensen.'] },
       { en: 'How many lambs? I have seen three.', parts: ['Hoeveel lammetjes? Ik heb', FK(['er drie', 'drie er'], 0, 'er',
         'er stands for the lambs you counted: ik heb er drie gezien.'), 'gezien.'] },
-      { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat', FK(['er veel zand op de weg ligt', 'er ligt veel zand op de weg', 'ligt er veel zand op de weg'], 0, 'bijzin',
-        'omdat sends the verb to the end, and er stays in front: er ... ligt.'), '.'] },
+      { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat er op de weg', FK(['veel zand ligt', 'ligt veel zand'], 0, 'bijzin',
+        'omdat sends the verb to the end: veel zand ligt.'), '.'] },
 
       // ---- builds: pronominal adverbs
       { en: 'The ferry is waiting and the dog is looking at it.', parts: ['De veerboot ligt klaar en de hond kijkt', FK(['ernaar', 'naar het'], 0, 'pronadv', 'For a thing, er and the preposition become one word: ernaar.'), '.'] },
@@ -9149,7 +9147,7 @@
       { w: 'the ticket', nl: 'het kaartje', wrong: 'de kaartje' }, { w: 'the lighthouse', nl: 'de vuurtoren' }, { w: 'the bird', nl: 'de vogel' },
 
       // ---- reads: five traps with their own options, one plain
-      { read: true, nl: 'Als het waait, blijven we thuis.', o: ['If it blows, we stay at home.', 'Because it blows, we stay at home.', 'When it blew, we stayed at home.'], a: 0, r: 'alsdan',
+      { read: true, nl: 'Als het waait, blijven we thuis.', o: ['If it blows, we stay at home.', 'Because it blows, we stay at home.', 'When it blew, we stayed at home.'], a: 0, r: 'cond',
         w: 'Als het waait is a condition, and the main clause starts with its verb: blijven we.' },
       { read: true, nl: 'De boot die om vijf uur vertrekt, is de laatste.', o: ['The boat that leaves at five is the last one.', 'The last boat left at five.', 'The boat leaves at five, so it is the last.'], a: 0, r: 'diedat',
         w: 'die om vijf uur vertrekt describes the boat. vertrekt is at the end of that clause.' },
@@ -9158,7 +9156,7 @@
       { read: true, nl: 'Hij zou graag blijven, maar de laatste boot vertrekt.', o: ['He would like to stay, but the last ferry is leaving.', 'He stayed gladly, but the last ferry left.', 'He wants to stay, so the last ferry leaves.'], a: 0, r: 'zou',
         w: 'zou graag is a wish, not a fact. maar keeps normal word order.' },
       { read: true, nl: 'Ik heb er niets mee te maken.', o: ['I have nothing to do with it.', 'I have nothing to do it with.', 'I have nothing left to make.'], a: 0, r: 'pronadv',
-        w: 'iets te maken hebben met: with the thing becomes er ... mee. A fixed phrase, not a literal one.' },
+        w: 'iets te maken hebben met: with the thing becomes er ... mee, a fixed phrase.' },
       { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.', o: ['Miss the last ferry and you live here from now on.', 'Take the last ferry and you live here from now on.', 'Miss the last ferry and you sleep here tonight.'], a: 0, r: 'woord',
         w: 'Mis je ..., dan ...: a verb first works like if. voortaan means from now on.' },
 
@@ -9292,7 +9290,7 @@
       { read: true, nl: 'Hoewel de keuken klein is, eten we er graag.', o: ['Although the kitchen is small, we like eating there.', 'Because the kitchen is small, we like eating there.', 'The kitchen is small, so we want a bigger one.'], a: 0, r: 'hoewel',
         w: 'hoewel means although: the small size is a fact and we eat there anyway. Because would be omdat.' },
       { read: true, nl: 'Paola zal nu wel moe zijn van de borrel.', o: ['Paola is probably tired from the drinks by now.', 'Paola will be tired from the drinks tomorrow.', 'Paola wants to be tired from the drinks.'], a: 0, r: 'zullen',
-        w: 'zal nu wel is a guess about now: she is probably tired. Tomorrow would need morgen, and wants would be wil.' },
+        w: 'zal nu wel is a guess about now: she is probably tired. Wants would be wil.' },
       { read: true, nl: 'Volgens Paola is de bank te groot.', o: ['According to Paola the couch is too big.', 'Paola thinks that I find the couch too big.', 'Paola says the couch is big enough.'], a: 0, r: 'mening',
         w: 'volgens Paola is according to Paola, and te groot is too big. Big enough would be groot genoeg.' },
       { read: true, nl: 'Er zit een scheur in de muur sinds de beving.', en: 'There has been a crack in the wall since the quake.' },

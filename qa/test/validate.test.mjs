@@ -72,6 +72,7 @@ test('read rules', () => {
   fires(withItem(7, { read: true, nl: 'x', o: ['a', 'a'], a: 0 }), /duplicate options/);
   fires(withItem(7, { read: true, nl: 'x', o: ['a', 'b'], a: 0, r: 'nope' }), /unknown rule nope/);
   fires(withItem(7, { read: true, nl: 'x', o: ['a', 'b!'], a: 0 }), /exclamation mark/);
+  fires(withItem(7, { read: true, nl: 'x', o: ['a', 'b'], a: 0, w: 'een twee drie vier vijf zes zeven acht negen tien elf twaalf dertien veertien vijftien zestien zeventien achttien negentien' }), /why line over 18 words/, 'W');
 });
 test('build rules', () => {
   const b = parts => withItem(8, { en: 'I ride home.', parts });

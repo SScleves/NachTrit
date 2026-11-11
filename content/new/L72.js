@@ -79,7 +79,7 @@
 
       // ---- reading
       { read: true, nl: 'Goed weekend gehad?', o: ['Did you have a good weekend?', 'Have a good weekend.', 'Is it a long weekend?'], a: 0, r: 'perf',
-        w: 'gehad is the participle of hebben, so the weekend is already over. Have a good weekend is Fijn weekend.' },
+        w: 'gehad is the participle of hebben, so the weekend is over. Have a good weekend is Fijn weekend.' },
       { read: true, nl: 'Heb je de wedstrijd gezien?', o: ['Did you see the match?', 'Are you going to watch the match?', 'Did you win the match?'], a: 0, r: 'perf',
         w: 'gezien is the participle of zien, to see. Winning would be gewonnen.' },
       { read: true, nl: "'s Zomers mogen honden niet op het strand.", o: ['In summer dogs are not allowed on the beach.', 'In summer dogs do not have to go on the beach.', 'In summer dogs must stay on the beach.'], a: 0, r: 'mag',

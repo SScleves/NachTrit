@@ -106,7 +106,7 @@
       { read: true, nl: 'Mag ik een half pond gehakt?', o: ['May I have 250 grams of mince?', 'May I have 500 grams of mince?', 'May I have 50 grams of mince?'], a: 0, r: 'getal',
         w: 'In a Dutch shop een pond is 500 grams, so half a pond is 250.' },
       { read: true, nl: 'Zeg het maar, schat.', o: ['What can I get you, love?', 'Tell me the price, darling.', 'Say that again, love.'], a: 0, r: 'cult',
-        w: 'Zeg het maar is how the market asks what you want, and schat is what the traders call everyone.' },
+        w: 'Zeg het maar is how market stalls ask what you want, and schat is what traders call everyone.' },
       { read: true, nl: 'In Amsterdam zeggen ze het Singel, niet de Singel.', en: 'In Amsterdam they say het Singel, not de Singel.' },
       { read: true, nl: 'De Albert Cuypmarkt bestaat sinds 1905.', en: 'The Albert Cuyp market has been there since 1905.' },
 

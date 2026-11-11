@@ -25,7 +25,6 @@
   window.RULES.cond = window.RULES.cond || { name: 'If ... then: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.pronadv = window.RULES.pronadv || { name: 'ermee, erop, erin: er plus preposition', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
@@ -44,15 +43,15 @@
       { en: 'The waiter who brings the soup is the cook\'s brother.', parts: ['De ober', FK(['die', 'dat'], 0, 'diedat',
         'ober is a de-word, so the relative pronoun is die.'), FK(['de soep brengt', 'brengt de soep'], 0, 'bijzin',
         'A die-clause sends its verb to the end: die de soep brengt.'), ', is de broer van de kok.'] },
-      { en: 'The beer they brew on Texel is called Skuumkoppe.', parts: ['Het bier', FK(['dat', 'die'], 0, 'diedat',
-        'bier is a het-word, so the relative pronoun is dat.'), FK(['ze op Texel brouwen', 'brouwen ze op Texel'], 0, 'bijzin',
-        'After dat the subject comes first and the verb stands at the end: dat ze op Texel brouwen.'), ', heet Skuumkoppe.'] },
+      { en: 'The beer they brew here is called Skuumkoppe.', parts: ['Het bier', FK(['dat', 'die'], 0, 'diedat',
+        'bier is a het-word, so the relative pronoun is dat.'), FK(['ze hier brouwen', 'brouwen ze hier'], 0, 'bijzin',
+        'After dat the subject comes first and the verb stands at the end: dat ze hier brouwen.'), ', heet Skuumkoppe.'] },
       { en: 'The bitterballen that Paola ordered are already gone.', parts: ['De bitterballen', FK(['die', 'dat'], 0, 'diedat',
         'bitterballen is a plural, and a plural always takes die, whatever the singular is.'), 'Paola', FK(['bestelde', 'bestelden'], 0, 'imp',
         'Paola is one person: bestelde. bestel ends in l, which is no ketchup letter, so -de.'), ', zijn al op.'] },
-      { en: 'The terrace here by the harbour is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
-        'terras is a het-word, so dat.'), FK(['hier aan de haven ligt', 'ligt hier aan de haven'], 0, 'bijzin',
-        'The verb of a dat-clause stands at the end: dat hier aan de haven ligt.'), ', is al vol.'] },
+      { en: 'The terrace that is here is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
+        'terras is a het-word, so dat.'), FK(['hier ligt', 'ligt hier'], 0, 'bijzin',
+        'The verb of a dat-clause stands at the end: dat hier ligt.'), ', is al vol.'] },
 
       // ---- builds: te plus infinitive and om te
       { en: 'I go to the market in Den Burg to buy fresh fish.', parts: ['Ik ga naar de markt in Den Burg om verse vis', FK(['te kopen', 'kopen'], 0, 'omte', 'A purpose takes om ... te, with te right before the infinitive: te kopen.'), '.'] },
@@ -67,15 +66,15 @@
       { en: 'If I had more money, I would order the lamb.', parts: ['Als ik meer geld', FK(['had', 'hadden'], 0, 'imp',
         'ik takes the singular past of hebben: had.'), ',', FK(['zou ik', 'ik zou'], 0, 'v2',
         'The als-clause fills the first slot, so zou comes before ik.'), 'het lamsvlees bestellen.'] },
-      { en: 'If we miss the last ferry, we order another dessert.', parts: ['Als we', FK(['de laatste boot missen', 'missen de laatste boot'], 0, 'bijzin',
-        'als sends the verb to the end: de laatste boot missen.'), ',', FK(['bestellen we', 'we bestellen'], 0, 'v2',
+      { en: 'If we miss the ferry, we order another dessert.', parts: ['Als we', FK(['de boot missen', 'missen de boot'], 0, 'bijzin',
+        'als sends the verb to the end: de boot missen.'), ',', FK(['bestellen we', 'we bestellen'], 0, 'v2',
         'The als-clause comes first, so the main clause starts with its verb: bestellen we.'), 'nog een toetje.'] },
 
       // ---- builds: er as quantity, er as the opener, and the pronominal adverbs
       { en: 'Another bitterbal? No thanks, I have already eaten five.', parts: ['Nog een bitterbal? Nee, dank je, ik heb', FK(['er', 'het'], 0, 'er',
         'When you only say how many, er stands for the thing: ik heb er al vijf.'), 'al vijf', FK(['gegeten', 'eten', 'aten'], 0, 'perf', 'eten is irregular, and after heb comes the participle: gegeten.'), '.'] },
-      { en: 'There is a sheep on the terrace.', parts: [FK(['Er', 'Het', 'Dat'], 0, 'eris',
-        'er opens a sentence about something new: Er staat een schaap.'), FK(['staat', 'staan'], 0, 'eris', 'The verb agrees with the one new thing, one sheep: staat.', 'verb'), 'een schaap op het terras.'] },
+      { en: 'There is a sheep on the terrace.', parts: [FK(['Er', 'Het', 'Dat'], 0, 'er',
+        'er opens a sentence about something new: Er staat een schaap.'), FK(['staat', 'staan'], 0, 'er', 'The verb agrees with the one new thing, one sheep: staat.', 'verb'), 'een schaap op het terras.'] },
       { en: 'What a big portion. I am very happy with it.', parts: ['Wat een grote portie. Ik ben', FK(['er', 'het'], 0, 'pronadv',
         'A thing after a preposition becomes er: blij met de portie turns into er ... blij mee.'), 'heel blij', FK(['mee', 'met'], 0, 'pronadv',
         'With er the preposition moves behind it as mee: ermee, not er met.'), '.'] },
@@ -108,11 +107,11 @@
 
       // ---- reads: three traps with their own options, two plain lines
       { read: true, nl: 'De serveerster die de koffie bracht, is de dochter van de eigenaar.', o: ['The waitress who brought the coffee is the owner\'s daughter.', 'The waitress brought the coffee to the owner\'s daughter.', 'The owner\'s daughter brought the waitress her coffee.'], a: 0, r: 'diedat',
-        w: 'die points back to the waitress, and bracht closes that clause. The main verb is is: she is the daughter.' },
+        w: 'die points back to the waitress, and bracht closes that clause: she is the daughter.' },
       { read: true, nl: 'Het is niet nodig om te reserveren.', o: ['You do not need to reserve.', 'You are not allowed to reserve.', 'It is not possible to reserve.'], a: 0, r: 'omte',
-        w: 'niet nodig om te: there is no need. Not allowed would be mag niet, and not possible niet mogelijk.' },
+        w: 'niet nodig om te: there is no need. Not allowed would be mag niet.' },
       { read: true, nl: 'Als ik jou was, zou ik het lamsvlees nemen.', o: ['If I were you, I would take the lamb.', 'When I was you, I took the lamb.', 'I was you, so I took the lamb.'], a: 0, r: 'cond',
-        w: 'Als ik jou was is the stock phrase for advice: was is the unreal past, not a story about the past. zou ik says what you would do.' },
+        w: 'Als ik jou was is the stock phrase for advice, and zou ik says what I would do.' },
       { read: true, nl: 'De pannenkoeken die ze hier maken, zijn zo groot als een fietswiel.', en: 'The pancakes they make here are as big as a bicycle wheel.' },
       { read: true, nl: 'Mag ik er wat mosterd bij?', en: 'May I have some mustard with it?' },
 

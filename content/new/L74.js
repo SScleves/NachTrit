@@ -79,7 +79,7 @@
       { read: true, nl: 'Je mag hier niet fietsen.', o: ["You're not allowed to cycle here.", "You don't have to cycle here.", 'You have to cycle here.'], a: 0, r: 'mag',
         w: 'mag niet: not allowed. No need would be hoeft niet te.' },
       { read: true, nl: 'Heb je het debat gezien?', o: ['Have you seen the debate?', 'Do you want to see the debate?', 'Is the debate on tonight?'], a: 0, r: 'perf',
-        w: 'heb + gezien: it is about something already seen. Wanting to see it would be wil je het debat zien.' },
+        w: 'heb + gezien: already seen. Wanting to see it would be wil je het debat zien.' },
       { read: true, nl: 'Dat is geen antwoord op mijn vraag.', en: 'That is not an answer to my question.' },
       { read: true, nl: 'Wat kost een bakje aardbeien?', en: 'How much is a punnet of strawberries?' },
       { read: true, nl: 'Volgens mij heeft de minister niks gedaan.', en: 'If you ask me, the minister has done nothing.' },

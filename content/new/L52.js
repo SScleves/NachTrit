@@ -13,7 +13,7 @@
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'hem-haar' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -38,7 +38,7 @@
       { en: 'Can you help me? (polite)', parts: ['Kunt u', FK(['mij', 'ik', 'mijn'], 0, 'obj', 'You help me, I am the object: mij. mijn is my, before a noun.'),
         FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'Modal first, the infinitive at the end: helpen.'), '?'] },
       { en: 'There are mussels at the fishmonger.', parts: ['Bij de visboer', FK(['zijn er', 'er zijn'], 0, 'v2', 'Bij de visboer takes slot 1, so the verb comes next and er follows it.'), 'mosselen.'] },
-      { en: 'Is there a pharmacy here?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One pharmacy, so is, and the question starts with the verb: is er.', 'verb'), 'hier een apotheek?'] },
+      { en: 'Is there a pharmacy here?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One pharmacy, so is, and the question starts with the verb: is er.', 'verb'), 'hier een apotheek?'] },
       { en: "The bread is cheaper than at the baker's.", parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing two things with dan: the word plus -er, goedkoper.'), 'dan bij de bakker.'] },
       { en: 'This shop is the cheapest.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'winkel is a de-word, so deze winkel.'), 'winkel is',
         FK(['het goedkoopst', 'het goedkoper', 'het goedkoop'], 0, 'vergelijk', 'After is the superlative takes het: het goedkoopst.'), '.'] },
@@ -63,7 +63,7 @@
       { w: 'to exchange', nl: 'ruilen' }, { w: 'cheaper', nl: 'goedkoper' }, { w: 'more expensive', nl: 'duurder' },
 
       // ---- read
-      { read: true, nl: 'Er zijn geen broodjes meer.', o: ['There are no rolls left.', 'There are more rolls.', 'The rolls are not ready yet.'], a: 0, r: 'eris',
+      { read: true, nl: 'Er zijn geen broodjes meer.', o: ['There are no rolls left.', 'There are more rolls.', 'The rolls are not ready yet.'], a: 0, r: 'er',
         w: 'geen ... meer means none left. meer on its own would be more.' },
       { read: true, nl: 'Deze trui is te klein.', o: ['This sweater is too small.', 'This sweater is smaller.', 'This sweater is the smallest.'], a: 0, r: 'vergelijk',
         w: 'te klein is too small. Smaller would be kleiner, the smallest het kleinst.' },

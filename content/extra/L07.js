@@ -21,15 +21,15 @@
 
   window.extendLevel(7, { deliveries: 20, items: [
     // ---- words: behind the counter
-    { w: 'the steak', nl: 'de biefstuk' }, { w: 'the meatball', nl: 'de gehaktbal', wrong: 'het gehaktbal' },
-    { w: 'the bacon', nl: 'het spek', wrong: 'de spek' }, { w: 'the ham', nl: 'de ham' },
+    { w: 'have a good trip', nl: 'goede reis' }, { w: 'the meatball', nl: 'de gehaktbal', wrong: 'het gehaktbal' },
+    { w: 'see you tomorrow', nl: 'tot morgen' }, { w: 'have a nice weekend', nl: 'fijn weekend' },
     { w: '300 grams', nl: 'drie ons' }, { w: '250 grams', nl: 'een half pond' },
     { w: 'the special offer', nl: 'de aanbieding' },
     // ---- words: cooking it at home
-    { w: 'the oven', nl: 'de oven' }, { w: 'the air fryer', nl: 'de airfryer' }, { w: 'the cook', nl: 'de kok' },
+    { w: 'you\'re welcome', nl: 'graag gedaan' }, { w: 'the basket', nl: 'het mandje' }, { w: 'the cook', nl: 'de kok' },
     // ---- words: the market
-    { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the tomatoes', nl: 'de tomaten' },
-    { w: 'the herring', nl: 'de haring' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'fresh', nl: 'vers' },
+    { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the butter', nl: 'de boter' },
+    { w: 'the banana', nl: 'de banaan' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'fresh', nl: 'vers' },
     // ---- words: the bill
     { w: 'the bill', nl: 'de rekening', wrong: 'het rekening' }, { w: 'the change (money back)', nl: 'het wisselgeld', wrong: 'de wisselgeld' },
     { w: 'the half', nl: 'de helft' }, { w: 'in cash', nl: 'contant' },
@@ -45,18 +45,18 @@
       w: 'Keep the change. You say it when you pay, and the rest becomes the tip.' },
 
     // ---- listens: a price by ear, and the oe, ei and uu sounds
-    { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'de aardbeien', en: 'the strawberries' },
+    { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'contactloos', en: 'contactless' },
     { listen: true, nl: 'de groenten', en: 'the vegetables' }, { listen: true, nl: 'duur', en: 'expensive' },
 
     // ---- looks: two prices in the window, the harbour behind the market
-    { look: true, prop: 'nummer', value: 45, nl: 'vijfenveertig', en: '45' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
+    { look: true, prop: 'nummer', value: 64, nl: 'vierenzestig', en: '64' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
     { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
     // ---- builds: one fork each
-    { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'pres', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
-    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'pres', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
+    { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'presens', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
+    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'presens', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
     { en: 'The waiter brings the food.', parts: ['De ober brengt', FK(['het', 'de'], 0, 'dehet', 'A verb used as a noun is a het-word: eten, het eten.'), 'eten.'] },
-    { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'pres', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
-    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'pres', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
+    { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'presens', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
+    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'presens', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
   ] });
 })();

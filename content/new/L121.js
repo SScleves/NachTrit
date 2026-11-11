@@ -103,11 +103,11 @@
       { read: true, nl: 'Hij praat je de oren van het hoofd.', o: ['He talks your ears off.', 'He pulls your ears.', 'He never listens to you.'], a: 0, r: 'idioom',
         w: 'iemand de oren van het hoofd praten means to talk without stopping. Nobody touches your ears.' },
       { read: true, nl: 'Nou, ik ga maar eens.', o: ['Well, I had better be off.', 'Well, I am going only once.', 'Well, I will go later.'], a: 0, r: 'soft',
-        w: 'ik ga maar eens is the soft Dutch way to say it is time to leave. eens does not count anything here.' },
+        w: 'ik ga maar eens is the soft Dutch way to say it is time to leave.' },
       { read: true, nl: 'U bent van harte uitgenodigd voor de nieuwjaarsborrel.', o: ['You are warmly invited to the New Year drinks.', 'You have invited us to the New Year drinks.', 'You are invited, but not warmly.'], a: 0, r: 'formeel',
         w: 'bent uitgenodigd: you are the one who is invited. van harte means warmly.' },
       { read: true, nl: 'De buurvrouw zei dat ze de Vierdaagse al twintig keer had gelopen.', o: ['The neighbour said she had walked the Vierdaagse twenty times already.', 'The neighbour said she would walk the Vierdaagse twenty times.', 'The neighbour asked whether I had walked the Vierdaagse twenty times.'], a: 0, r: 'plusq',
-        w: 'had gelopen is the plusquamperfectum: it was done before she said it. zei dat reports, it does not ask.' },
+        w: 'had gelopen is the plusquamperfectum: it was done before she said it. zei dat reports, not asks.' },
       { read: true, nl: 'Nijmegenaren zeggen dat hun stad de oudste van Nederland is.', en: 'People from Nijmegen say their city is the oldest in the Netherlands.' },
       { read: true, nl: 'Tijdens de Vierdaagse staan de mensen langs de route en delen ze snoep uit aan de wandelaars.', en: 'During the Vierdaagse people line the route and hand out sweets to the walkers.' },
 

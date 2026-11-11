@@ -22,8 +22,8 @@
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om te', note: 'modale werkwoorden' };
-  window.RULES.conditie = window.RULES.conditie || { name: 'Conditionals: als ... dan, zou', note: 'modale werkwoorden' };
-  window.RULES.erop = window.RULES.erop || { name: 'Pronominal adverbs: erop, ermee, eraan', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -42,7 +42,7 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that is already standing by the door wants to join the standup.', parts: ['Het schaap', FK(['dat al bij de deur staat', 'dat staat al bij de deur'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, staat.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already waiting wants to join the standup.', parts: ['Het schaap', FK(['dat al wacht', 'dat wacht al'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, wacht.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
       { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte', 'om ... te means in order to: om opens the clause, te comes before the last verb.', 'word'), 'de dashboards in de gaten', FK(['te houden', 'houden te'], 0, 'omte', 'te sits right in front of the infinitive: te houden.'), '.'] },
@@ -55,18 +55,18 @@
         'Not needed is niet hoeven te; moeten and mogen never take te.'), 'vandaag niet naar kantoor te komen.'] },
 
       // ---- builds: conditionals with als ... dan and zou
-      { en: 'If the wifi were better, I would work at home.', parts: ['Als de wifi beter', FK(['was', 'waren'], 0, 'conditie', 'Something not true now takes the imperfectum after als, and one wifi takes was.', 'past'), ', dan', FK(['zou ik', 'ik zou'], 0, 'v2',
+      { en: 'If the wifi were better, I would work at home.', parts: ['Als de wifi beter', FK(['was', 'waren'], 0, 'cond', 'Something not true now takes the imperfectum after als, and one wifi takes was.', 'past'), ', dan', FK(['zou ik', 'ik zou'], 0, 'v2',
         'dan takes slot 1, so the verb comes next: dan zou ik.'), 'thuis werken.'] },
-      { en: 'If I missed the last ferry, I would stay on Texel.', parts: ['Als ik de laatste boot', FK(['miste', 'missen', 'gemist'], 0, 'conditie', 'An imagined situation takes the imperfectum after als: ik miste.', 'past'), ', dan zou ik op Texel blijven.'] },
+      { en: 'If I missed the last ferry, I would stay on Texel.', parts: ['Als ik de laatste boot', FK(['miste', 'missen', 'gemist'], 0, 'cond', 'An imagined situation takes the imperfectum after als: ik miste.', 'past'), ', dan zou ik op Texel blijven.'] },
 
       // ---- builds: er for quantity and the pronominal adverbs
       { en: 'How many colleagues do you have? I have seven.', parts: ["Hoeveel collega's heb je? Ik heb", FK(['er', 'het', 'hen'], 0, 'er',
         'er stands for the thing you counted: ik heb er zeven. het and hen cannot replace it here.'), 'zeven.'] },
-      { en: 'My laptop is not working. Can you help me with it?', parts: ['Mijn laptop doet het niet. Kun je me', FK(['ermee', 'met het', 'met dat'], 0, 'erop',
+      { en: 'My laptop is not working. Can you help me with it?', parts: ['Mijn laptop doet het niet. Kun je me', FK(['ermee', 'met het', 'met dat'], 0, 'pronadv',
         'After a preposition a thing becomes er, and er + met is written ermee. Not met het.'), 'helpen?'] },
-      { en: 'There is a borrel on Friday. I am looking forward to it.', parts: ['Vrijdag is er een borrel. Ik verheug me', FK(['erop', 'op het', 'op hem'], 0, 'erop',
+      { en: 'There is a borrel on Friday. I am looking forward to it.', parts: ['Vrijdag is er een borrel. Ik verheug me', FK(['erop', 'op het', 'op hem'], 0, 'pronadv',
         'verheugen takes op, and a thing after op becomes er: erop.'), '.'] },
-      { en: 'The new dashboard? I have been working on it for a week.', parts: ['Het nieuwe dashboard? Ik werk', FK(['er', 'het', 'hem'], 0, 'erop',
+      { en: 'The new dashboard? I have been working on it for a week.', parts: ['Het nieuwe dashboard? Ik werk', FK(['er', 'het', 'hem'], 0, 'pronadv',
         'A thing after a preposition becomes er, and er moves forward: ik werk er al een week aan.'), 'al een week aan.'] },
 
       // ---- builds: review (sub-clause, imperfectum, zou)
@@ -92,11 +92,11 @@
 
       // ---- reads: three traps with their own options, two plain lines from the office
       { read: true, nl: 'Het schaap dat mijn scherm leest, wil een baan.', o: ['The sheep that reads my screen wants a job.', 'The sheep reads my screen because it wants a job.', 'My screen reads the sheep that wants a job.'], a: 0, r: 'diedat',
-        w: 'dat belongs to het schaap, and the clause dat mijn scherm leest only says which sheep. The verb leest sits at the end of it.' },
-      { read: true, nl: 'Als dit schaap kon praten, zou het over de wifi klagen.', o: ['If this sheep could talk, it would complain about the wifi.', 'When this sheep talks, it complains about the wifi.', 'This sheep can talk because it complains about the wifi.'], a: 0, r: 'conditie',
-        w: 'kon after als plus zou in the answer part is an imagined case. A real habit would be als dit schaap praat, klaagt het.' },
+        w: 'dat belongs to het schaap, and the clause only says which sheep. leest sits at the end.' },
+      { read: true, nl: 'Als dit schaap kon praten, zou het over de wifi klagen.', o: ['If this sheep could talk, it would complain about the wifi.', 'When this sheep talks, it complains about the wifi.', 'This sheep can talk because it complains about the wifi.'], a: 0, r: 'cond',
+        w: 'kon after als plus zou in the answer is an imagined case, not a real habit.' },
       { read: true, nl: 'Ik heb geen zin om te vergaderen.', o: ['I do not feel like having a meeting.', 'I am not allowed to have a meeting.', 'I have no time for the meeting.'], a: 0, r: 'omte',
-        w: 'geen zin om ... te means no desire to do it. Not allowed would be mag niet, and no time would be geen tijd.' },
+        w: 'geen zin om ... te means no desire to do it. No time would be geen tijd.' },
       { read: true, nl: 'Dynatrace laat zien waar het probleem zit.', en: 'Dynatrace shows where the problem is.' },
       { read: true, nl: 'Sterkte ermee.', en: 'Good luck with it.' },
 

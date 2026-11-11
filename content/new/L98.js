@@ -22,7 +22,7 @@
 // are in the word pool and could be taken for the prop).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
-  window.RULES.alsdan = window.RULES.alsdan || { name: 'Conditions: als ... dan, was, zouden', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erop, ermee, ernaar', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
@@ -51,18 +51,18 @@
         'With a separable verb te goes between the prefix and the verb: uit te laten.'), '.'] },
 
       // ---- builds: conditions with als ... dan, was and zouden, polite zou
-      { en: 'If it rains, we stay in the pub.', parts: ['Als het regent,', FK(['dan blijven we', 'dan we blijven', 'blijven dan we'], 0, 'alsdan',
+      { en: 'If it rains, we stay in the pub.', parts: ['Als het regent,', FK(['dan blijven we', 'dan we blijven', 'blijven dan we'], 0, 'cond',
         'After an als-clause the main verb comes first: dan blijven we, never dan we blijven.'), 'in de kroeg.'] },
       { en: 'If the ferry were not full, we would be home by now.', parts: ['Als de veerboot niet vol was,', FK(['zouden we', 'we zouden'], 0, 'v2', 'The als-clause came first, so the main clause starts with its verb: zouden we.'), 'nu thuis zijn.'] },
-      { en: 'If I lived here, I would buy a sheep.', parts: ['Als ik hier', FK(['woonde', 'woonden'], 0, 'alsdan', 'An imagined situation takes the imperfectum, and ik takes woonde without -n.', 'past'), ', zou ik een schaap kopen.'] },
+      { en: 'If I lived here, I would buy a sheep.', parts: ['Als ik hier', FK(['woonde', 'woonden'], 0, 'cond', 'An imagined situation takes the imperfectum, and ik takes woonde without -n.', 'past'), ', zou ik een schaap kopen.'] },
       { en: 'Would you hold my bike for a moment?', parts: ['Zou je mijn fiets even', FK(['willen vasthouden', 'te willen vasthouden'], 0, 'zou', 'zou is polite, and willen vasthouden stands at the end with no te.'), '?'] },
 
       // ---- builds: er as place and quantity
       { en: 'On Texel there are more sheep than people.', parts: ['Op Texel', FK(['zijn er', 'er zijn'], 0, 'v2', 'Op Texel takes slot 1, so the verb comes second: zijn er.'), 'meer schapen dan mensen.'] },
       { en: 'How many lambs? I have seen three.', parts: ['Hoeveel lammetjes? Ik heb', FK(['er drie', 'drie er'], 0, 'er',
         'er stands for the lambs you counted: ik heb er drie gezien.'), 'gezien.'] },
-      { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat', FK(['er veel zand op de weg ligt', 'er ligt veel zand op de weg', 'ligt er veel zand op de weg'], 0, 'bijzin',
-        'omdat sends the verb to the end, and er stays in front: er ... ligt.'), '.'] },
+      { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat er op de weg', FK(['veel zand ligt', 'ligt veel zand'], 0, 'bijzin',
+        'omdat sends the verb to the end: veel zand ligt.'), '.'] },
 
       // ---- builds: pronominal adverbs
       { en: 'The ferry is waiting and the dog is looking at it.', parts: ['De veerboot ligt klaar en de hond kijkt', FK(['ernaar', 'naar het'], 0, 'pronadv', 'For a thing, er and the preposition become one word: ernaar.'), '.'] },
@@ -83,7 +83,7 @@
       { w: 'the ticket', nl: 'het kaartje', wrong: 'de kaartje' }, { w: 'the lighthouse', nl: 'de vuurtoren' }, { w: 'the bird', nl: 'de vogel' },
 
       // ---- reads: five traps with their own options, one plain
-      { read: true, nl: 'Als het waait, blijven we thuis.', o: ['If it blows, we stay at home.', 'Because it blows, we stay at home.', 'When it blew, we stayed at home.'], a: 0, r: 'alsdan',
+      { read: true, nl: 'Als het waait, blijven we thuis.', o: ['If it blows, we stay at home.', 'Because it blows, we stay at home.', 'When it blew, we stayed at home.'], a: 0, r: 'cond',
         w: 'Als het waait is a condition, and the main clause starts with its verb: blijven we.' },
       { read: true, nl: 'De boot die om vijf uur vertrekt, is de laatste.', o: ['The boat that leaves at five is the last one.', 'The last boat left at five.', 'The boat leaves at five, so it is the last.'], a: 0, r: 'diedat',
         w: 'die om vijf uur vertrekt describes the boat. vertrekt is at the end of that clause.' },
@@ -92,7 +92,7 @@
       { read: true, nl: 'Hij zou graag blijven, maar de laatste boot vertrekt.', o: ['He would like to stay, but the last ferry is leaving.', 'He stayed gladly, but the last ferry left.', 'He wants to stay, so the last ferry leaves.'], a: 0, r: 'zou',
         w: 'zou graag is a wish, not a fact. maar keeps normal word order.' },
       { read: true, nl: 'Ik heb er niets mee te maken.', o: ['I have nothing to do with it.', 'I have nothing to do it with.', 'I have nothing left to make.'], a: 0, r: 'pronadv',
-        w: 'iets te maken hebben met: with the thing becomes er ... mee. A fixed phrase, not a literal one.' },
+        w: 'iets te maken hebben met: with the thing becomes er ... mee, a fixed phrase.' },
       { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.', o: ['Miss the last ferry and you live here from now on.', 'Take the last ferry and you live here from now on.', 'Miss the last ferry and you sleep here tonight.'], a: 0, r: 'woord',
         w: 'Mis je ..., dan ...: a verb first works like if. voortaan means from now on.' },
 

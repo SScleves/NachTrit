@@ -335,8 +335,8 @@
     { look: true, prop: 'nummer', value: 64, nl: 'vierenzestig', en: '64' },
 
     // ---- builds: one fork each
-    { en: 'You pay at the checkout.', parts: ['U', FK(['betaalt', 'betaal', 'betalen'], 0, 'pres', 'u takes stem plus t, just like jij: u betaalt.'), 'bij de kassa.'] },
-    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kostt'], 0, 'pres', 'The stem kost already ends in t, and Dutch never writes tt at the end.', 'spell'), 'drie euro.'] },
+    { en: 'You pay at the checkout.', parts: ['U', FK(['betaalt', 'betaal', 'betalen'], 0, 'presens', 'u takes stem plus t, just like jij: u betaalt.'), 'bij de kassa.'] },
+    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kostt'], 0, 'presens', 'The stem kost already ends in t, and Dutch never writes tt at the end.', 'spell'), 'drie euro.'] },
     { en: 'This jumper is too small.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'trui is a de-word, so deze trui. dit only goes with het-words: dit brood.'), 'trui is te klein.'] },
     { en: 'Can I have four rolls?', parts: ['Mag ik vier', FK(['broodjes', 'broodjen', 'broodje\'s'], 0, 'meervoud', 'Every -je word takes -s in the plural: het broodje, de broodjes.', 'spell'), '?'] },
     { en: 'It costs € 1,99.', parts: ['Het kost een euro', FK(['negenennegentig', 'negentien', 'negenentachtig'], 0, 'getal', 'Dutch says the units first, then en, then the tens: negen-en-negentig is 99.'), '.'] },
@@ -367,15 +367,15 @@
 
   window.extendLevel(7, { deliveries: 20, items: [
     // ---- words: behind the counter
-    { w: 'the steak', nl: 'de biefstuk' }, { w: 'the meatball', nl: 'de gehaktbal', wrong: 'het gehaktbal' },
-    { w: 'the bacon', nl: 'het spek', wrong: 'de spek' }, { w: 'the ham', nl: 'de ham' },
+    { w: 'have a good trip', nl: 'goede reis' }, { w: 'the meatball', nl: 'de gehaktbal', wrong: 'het gehaktbal' },
+    { w: 'see you tomorrow', nl: 'tot morgen' }, { w: 'have a nice weekend', nl: 'fijn weekend' },
     { w: '300 grams', nl: 'drie ons' }, { w: '250 grams', nl: 'een half pond' },
     { w: 'the special offer', nl: 'de aanbieding' },
     // ---- words: cooking it at home
-    { w: 'the oven', nl: 'de oven' }, { w: 'the air fryer', nl: 'de airfryer' }, { w: 'the cook', nl: 'de kok' },
+    { w: 'you\'re welcome', nl: 'graag gedaan' }, { w: 'the basket', nl: 'het mandje' }, { w: 'the cook', nl: 'de kok' },
     // ---- words: the market
-    { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the tomatoes', nl: 'de tomaten' },
-    { w: 'the herring', nl: 'de haring' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'fresh', nl: 'vers' },
+    { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the butter', nl: 'de boter' },
+    { w: 'the banana', nl: 'de banaan' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'fresh', nl: 'vers' },
     // ---- words: the bill
     { w: 'the bill', nl: 'de rekening', wrong: 'het rekening' }, { w: 'the change (money back)', nl: 'het wisselgeld', wrong: 'de wisselgeld' },
     { w: 'the half', nl: 'de helft' }, { w: 'in cash', nl: 'contant' },
@@ -391,19 +391,19 @@
       w: 'Keep the change. You say it when you pay, and the rest becomes the tip.' },
 
     // ---- listens: a price by ear, and the oe, ei and uu sounds
-    { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'de aardbeien', en: 'the strawberries' },
+    { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'contactloos', en: 'contactless' },
     { listen: true, nl: 'de groenten', en: 'the vegetables' }, { listen: true, nl: 'duur', en: 'expensive' },
 
     // ---- looks: two prices in the window, the harbour behind the market
-    { look: true, prop: 'nummer', value: 45, nl: 'vijfenveertig', en: '45' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
+    { look: true, prop: 'nummer', value: 64, nl: 'vierenzestig', en: '64' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
     { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
     // ---- builds: one fork each
-    { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'pres', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
-    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'pres', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
+    { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'presens', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
+    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'presens', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
     { en: 'The waiter brings the food.', parts: ['De ober brengt', FK(['het', 'de'], 0, 'dehet', 'A verb used as a noun is a het-word: eten, het eten.'), 'eten.'] },
-    { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'pres', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
-    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'pres', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
+    { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'presens', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
+    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'presens', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
   ] });
 })();
 
@@ -448,7 +448,7 @@
     { read: true, nl: 'Ik ga naar huis.', en: "I'm going home.",
       o: ["I'm going home.", "I'm at home.", "I'm going out."], a: 0, r: 'woord', w: 'naar huis is on your way home. Once you are there, you are thuis.' },
     { read: true, nl: 'Het eten is klaar.', en: 'Dinner is ready.',
-      o: ['Dinner is ready.', "We're done eating.", "I'm ready to eat."], a: 0, r: 'woord', w: 'klaar means ready, and here it is the food that is ready. Done eating would be Wij zijn klaar met eten.' },
+      o: ['Dinner is ready.', "We're done eating.", "I'm ready to eat."], a: 0, r: 'woord', w: 'klaar means ready: the food is ready. Done eating would be klaar met eten.' },
     { read: true, nl: 'Wij hebben geen tafel.', en: "We don't have a table." },
     { read: true, nl: 'Het licht doet het niet.', en: "The light isn't working.",
       o: ["The light isn't working.", "It isn't light yet.", "Don't turn on the light."], a: 0, r: 'woord', w: 'doen also means to work, for any light, machine or gadget: het doet het niet.' },
@@ -514,7 +514,7 @@
     { read: true, nl: 'Nog tien minuten.', en: 'Ten more minutes.',
       o: ['Ten more minutes.', 'Ten minutes ago.', 'Ten minutes late.'], a: 0, r: 'woord', w: 'Ten more minutes. nog is still or more. Ago is geleden, late is te laat.' },
     { read: true, nl: 'De pin doet het niet.', en: "The card machine isn't working.",
-      o: ["The card machine isn't working.", 'We only take cards.', 'Enter your PIN.'], a: 0, r: 'woord', w: "The card machine isn't working. doet het niet means does not work, and de pin is the card machine." },
+      o: ["The card machine isn't working.", 'We only take cards.', 'Enter your PIN.'], a: 0, r: 'woord', w: "doet het niet means does not work, and de pin is the card machine." },
     { read: true, nl: 'Ik trakteer.', en: "It's my treat.",
       o: ["It's my treat.", "Let's split it.", 'You pay this time.'], a: 0, r: 'woord', w: "It's my treat. trakteren means you pay for everyone, so nobody splits anything." },
 
@@ -531,7 +531,7 @@
     { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'De friet is one portion, so it takes is. Only de frieten would take zijn.'), 'koud.'] },
     { en: 'Two pizzas, please.', parts: ['Twee', FK(['pizza\'s', 'pizzas'], 0, 'spel', 'pizza ends in a long a, and the \'s keeps it long in the plural: pizza\'s.', 'spell'), ', alstublieft.'] },
     { en: 'The food is tasty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'eten here is a verb used as a noun, and those are always het: het eten.'), 'eten is lekker.'] },
-    { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'pres', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
+    { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'presens', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
   ] });
 })();
 
@@ -559,7 +559,7 @@
   // Trap reads carry their own o / a / r / w, and w starts with the meaning because the mission card shows it.
   // New props: none. Only fiets, water and molen. New rules: none. pres comes from district2.js and hebben from
   // the other extra files; both are set again below only if they are missing.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -603,13 +603,13 @@
 
     // ---- builds: one fork each
     { en: 'I take the train.', nl: 'Ik neem de trein.',
-      parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'pres', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de trein.'] },
+      parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'presens', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de trein.'] },
     { en: 'The station is on the left.', nl: 'Het station is links.',
       parts: [FK(['Het', 'De'], 0, 'dehet', 'station is a het-word: het station. Learn it with the het.'), 'station is links.'] },
     { en: 'We are going by bike.', nl: 'We gaan met de fiets.',
-      parts: ['We', FK(['gaan', 'gaat', 'ga'], 0, 'pres', 'we is plural, so the whole infinitive: gaan.'), 'met de fiets.'] },
+      parts: ['We', FK(['gaan', 'gaat', 'ga'], 0, 'presens', 'we is plural, so the whole infinitive: gaan.'), 'met de fiets.'] },
     { en: 'The water bus sails to Dordrecht.', nl: 'De waterbus vaart naar Dordrecht.',
-      parts: ['De waterbus', FK(['vaart', 'vaar', 'varen'], 0, 'pres', 'One boat is a hij: stem plus t. varen, vaar, vaart.'), 'naar Dordrecht.'] },
+      parts: ['De waterbus', FK(['vaart', 'vaar', 'varen'], 0, 'presens', 'One boat is a hij: stem plus t. varen, vaar, vaart.'), 'naar Dordrecht.'] },
     { en: 'The trains are delayed.', nl: 'De treinen hebben vertraging.',
       parts: ['De treinen', FK(['hebben', 'heeft', 'hebt'], 0, 'hebben', 'treinen is plural, so hebben. Dutch says the trains have delay.'), 'vertraging.'] },
   ] });
@@ -776,10 +776,10 @@
 
     // ---- words: the station, the counter and the road; four with the wrong article as the second sign
     { w: 'the train', nl: 'de trein' }, { w: 'the platform', nl: 'het perron', wrong: 'de perron' },
-    { w: 'the train ticket', nl: 'het treinkaartje', wrong: 'de treinkaartje' }, { w: 'the ticket counter', nl: 'het loket', wrong: 'de loket' },
-    { w: 'the traveller', nl: 'de reiziger' }, { w: 'the delay', nl: 'de vertraging' }, { w: 'the bike shed', nl: 'de fietsenstalling' },
+    { w: '€ 0,85', nl: 'vijfentachtig cent' }, { w: 'to know (a fact)', nl: 'weten' },
+    { w: 'to wait', nl: 'wachten' }, { w: 'the delay', nl: 'de vertraging' }, { w: 'the bike shed', nl: 'de fietsenstalling' },
     { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the corner', nl: 'de hoek' },
-    { w: 'to change (trains)', nl: 'overstappen' }, { w: 'to leave (a train, a bus)', nl: 'vertrekken' }, { w: 'direct (no changing)', nl: 'rechtstreeks' },
+    { w: 'the workday', nl: 'de werkdag' }, { w: 'to leave (a train, a bus)', nl: 'vertrekken' }, { w: 'to read', nl: 'lezen' },
 
     // ---- reads: three traps with their own options, two plain lines from the platform and the passer-by
     { read: true, nl: 'U hoeft niet te wachten.', en: "You don't have to wait.",
@@ -841,7 +841,7 @@
     { read: true, nl: 'Wat vind je van Gouda?', en: 'What do you think of Gouda?' },
     { read: true, nl: 'Ik vind het hier gezellig.', en: "I think it's cosy here.",
       o: ["I think it's cosy here.", 'I found it here.', "It's quiet here."], a: 0, r: 'woord',
-      w: "I think it's cosy here. vinden is to find, but ik vind het gezellig gives an opinion: I think it is cosy." },
+      w: "vinden is to find, but ik vind het gezellig gives an opinion: I think it is cosy." },
     { read: true, nl: 'Ik heb het druk.', en: "I'm busy.",
       o: ["I'm busy.", "I'm bored.", "It's crowded here."], a: 0, r: 'woord',
       w: "I'm busy. Dutch says I have it busy: ik heb het druk." },
@@ -911,10 +911,10 @@
       FK(['niet', 'geen'], 0, 'neg', 'There is no een or bare noun to cancel, so niet, before the place.'), 'naar de kaasmarkt.'] },
 
     // shop words, three with the wrong article as the second sign
-    { w: 'the cheese farmer', nl: 'de kaasboer' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },
-    { w: 'the wallet', nl: 'de portemonnee' }, { w: 'the banknote', nl: 'het biljet', wrong: 'de biljet' }, { w: 'the coin', nl: 'de munt' },
-    { w: 'the drugstore (Kruidvat, Etos)', nl: 'de drogist' }, { w: 'the plaster', nl: 'de pleister' }, { w: 'the shoes', nl: 'de schoenen' },
-    { w: 'the brand', nl: 'het merk', wrong: 'de merk' }, { w: 'to sell', nl: 'verkopen' },
+    { w: 'the age', nl: 'de leeftijd' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },
+    { w: 'the wallet', nl: 'de portemonnee' }, { w: 'the survivor', nl: 'de overlevende' }, { w: 'the map', nl: 'de plattegrond' },
+    { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the shoes', nl: 'de schoenen' },
+    { w: 'the corner', nl: 'de hoek' }, { w: 'to sell', nl: 'verkopen' },
 
     // reading: two meaning traps (hoeven, geen), then shop signs and answers
     { read: true, nl: 'Ik hoef geen tasje.', en: "I don't need a bag.",
@@ -925,7 +925,7 @@
     { read: true, nl: 'Op is op.', en: "When it's gone, it's gone." },
     { read: true, nl: 'Niet goed, geld terug.', en: 'Not happy? Money back.' },
 
-    { listen: true, nl: 'de stroopwafel', en: 'the syrup waffle' }, { listen: true, nl: 'de uitverkoop', en: 'the sale' },
+    { listen: true, nl: 'de stroopwafel', en: 'the syrup waffle' }, { listen: true, nl: 'wanneer', en: 'when' },
 
     { look: true, prop: 'nummer', value: 42, nl: 'tweeënveertig', en: '42' }, { look: true, prop: 'nummer', value: 38, nl: 'achtendertig', en: '38' },
     { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
@@ -1178,9 +1178,9 @@
     { w: 'at home', nl: 'thuis' }, { w: 'at the office', nl: 'op kantoor' }, { w: 'busy', nl: 'druk' }, { w: 'good afternoon', nl: 'goedemiddag' },
     { w: 'the sugar', nl: 'de suiker' }, { w: 'the small beer', nl: 'het biertje', wrong: 'de biertje' },
     { read: true, nl: 'Ik heb piket.', o: ["I'm on call.", "I'm on strike.", 'I have a ticket.'], a: 0, r: 'woord', w: 'piket is on-call duty. It looks like picket, but nobody is on strike.' },
-    { read: true, nl: 'De koffie is op.', o: ['The coffee has run out.', 'The coffee is on the table.', 'The coffee is upstairs.'], a: 0, r: 'woord', w: 'op after zijn means used up: de koffie is op, there is none left. On the table would be op tafel.' },
+    { read: true, nl: 'De koffie is op.', o: ['The coffee has run out.', 'The coffee is on the table.', 'The coffee is upstairs.'], a: 0, r: 'woord', w: 'op after zijn means used up: de koffie is op means there is none left.' },
     { read: true, nl: 'Ik ben klaar.', o: ["I'm done.", "I'm tired.", "I'm late."], a: 0, r: 'woord', w: 'klaar means done: you say it when the work is finished.' },
-    { read: true, nl: 'Werk ze nog.', o: ['Good luck with the rest.', 'Get back to work.', 'See you at work.'], a: 0, r: 'groet', w: 'Werk ze nog is what you say when you leave and the other person still has work to do. A goodbye, not an order.' },
+    { read: true, nl: 'Werk ze nog.', o: ['Good luck with the rest.', 'Get back to work.', 'See you at work.'], a: 0, r: 'groet', w: 'Werk ze nog is a goodbye said to someone who still has work to do.' },
     { read: true, nl: 'Sorry, ik ben te laat.', en: "Sorry, I'm late." },
     { read: true, nl: 'Fijn weekend alvast.', en: 'Have a nice weekend.' },
     { listen: true, nl: "de collega's", en: 'the colleagues' }, { listen: true, nl: 'de oorzaak', en: 'the cause' },
@@ -1265,7 +1265,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers here mean the same
   //   thing: no de meeting next to de vergadering, no stuk next to kapot, no het werk next to de baan, no de mail
   //   next to het mailtje. `wrong` sits only on het-nouns whose de form is wrong in every variety of Dutch.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -1286,7 +1286,7 @@
     { read: true, nl: 'Heb je even?', en: 'Got a minute?',
       o: ['Got a minute?', 'Have you got it?', 'Are you ready?'], a: 0, r: 'woord', w: 'Heb je even? asks for a moment of your time. Have you got it is Heb je het?' },
     { read: true, nl: 'Het apparaat doet het niet.', en: "The machine isn't working.",
-      o: ["The machine isn't working.", 'The machine is switched off.', 'The machine is new.'], a: 0, r: 'neg', w: 'Het doet het means it works. With niet the coffee machine is broken again. Switched off is staat uit.' },
+      o: ["The machine isn't working.", 'The machine is switched off.', 'The machine is new.'], a: 0, r: 'neg', w: 'Het doet het means it works; with niet the machine is broken again. Switched off is staat uit.' },
     { read: true, nl: 'Afspraak is afspraak.', en: 'A deal is a deal.',
       o: ['A deal is a deal.', 'Meeting after meeting.', 'The appointment is off.'], a: 0, r: 'cult', w: 'de afspraak is an appointment and an agreement, and a Dutch agreement holds.' },
     { read: true, nl: 'Druk vandaag?', en: 'Busy today?' },
@@ -1305,9 +1305,9 @@
     { en: 'The laptop is broken.', parts: ['De laptop', FK(['is', 'zijn', 'ben'], 0, 'zijn', 'One laptop is a hij, and hij is. zijn is for more than one, ben for ik.'), 'kapot.'] },
     { en: 'I have a question.', parts: ['Ik', FK(['heb', 'heeft', 'hebben'], 0, 'hebben', 'ik heb. heeft is only for hij, zij and het.'), 'een vraag.'] },
     { en: 'We have a meeting on Friday.', parts: ['We', FK(['hebben', 'heeft', 'heb'], 0, 'hebben', 'we is plural, so the whole verb: hebben.'), 'vrijdag een vergadering.'] },
-    { en: 'The customer calls on Monday.', parts: ['De klant', FK(['belt', 'bel', 'bellen'], 0, 'pres', 'One customer is a hij: stem plus t, belt.'), 'maandag.'] },
-    { en: 'The standup starts tomorrow.', parts: ['De standup', FK(['begint', 'begin', 'beginnen'], 0, 'pres', 'One standup is a hij: stem plus t, begint.'), 'morgen.'] },
-    { en: 'The system is running again.', parts: ['Het systeem', FK(['draait', 'draai', 'draaien'], 0, 'pres', 'One system is a het, so it takes the t: draait.'), 'weer.'] },
+    { en: 'The customer calls on Monday.', parts: ['De klant', FK(['belt', 'bel', 'bellen'], 0, 'presens', 'One customer is a hij: stem plus t, belt.'), 'maandag.'] },
+    { en: 'The standup starts tomorrow.', parts: ['De standup', FK(['begint', 'begin', 'beginnen'], 0, 'presens', 'One standup is a hij: stem plus t, begint.'), 'morgen.'] },
+    { en: 'The system is running again.', parts: ['Het systeem', FK(['draait', 'draai', 'draaien'], 0, 'presens', 'One system is a het, so it takes the t: draait.'), 'weer.'] },
   ] });
 })();
 
@@ -1329,7 +1329,7 @@
   //   thing: no de regen next to de bui, no de baan next to de golfbaan, no de bal next to het balletje, no de sloot
   //   next to the water prop. `wrong` sits only on nouns whose other article is wrong in every variety of Dutch.
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   window.extendLevel(47, { deliveries: 20, items: [
     // words: the golf club, the gym, the dog walk on the dyke, the bike, the weather, the weekend
@@ -1365,9 +1365,9 @@
     // builds: one fork each, on the number, the article or the present tense
     { en: 'My handicap is 20.', parts: ['Ik speel handicap', FK(['twintig', 'twaalf', 'tweeëntwintig'], 0, 'getal', '20 is twintig; twaalf is 12 and tweeëntwintig is 22.'), '.'] },
     { en: 'The subscription costs € 30.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Words ending in -ment are het: het abonnement, het moment.'), 'abonnement kost dertig euro.'] },
-    { en: 'The dogs always pull.', parts: ['De honden', FK(['trekken', 'trekt', 'trek'], 0, 'pres', 'Two dogs, plural: the whole infinitive, trekken.'), 'altijd.'] },
-    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt'], 0, 'pres', 'The stem sport already ends in t, and Dutch never writes tt at the end.', 'spell'), 'op zondag.'] },
-    { en: 'I cycle to the gym.', parts: ['Ik', FK(['fiets', 'fietst', 'fietsen'], 0, 'pres', 'ik takes the bare stem: fiets, the same word as de fiets.'), 'naar de sportschool.'] },
+    { en: 'The dogs always pull.', parts: ['De honden', FK(['trekken', 'trekt', 'trek'], 0, 'presens', 'Two dogs, plural: the whole infinitive, trekken.'), 'altijd.'] },
+    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt'], 0, 'presens', 'The stem sport already ends in t, and Dutch never writes tt at the end.', 'spell'), 'op zondag.'] },
+    { en: 'I cycle to the gym.', parts: ['Ik', FK(['fiets', 'fietst', 'fietsen'], 0, 'presens', 'ik takes the bare stem: fiets, the same word as de fiets.'), 'naar de sportschool.'] },
 
     // ---- second pass: the bike on the dyke path, the polder animals, the weather on the course, the sore legs after
     //   Sources: _site/dialogues/een-lekke-band (de band, de ketting, het stuur, Ik heb een lekke band, kept out of the reads because the adjective -e is tier 4),
@@ -1406,10 +1406,10 @@
     // builds: one fork each, on zijn, hebben, the article and the present tense
     { en: 'The course is open.', parts: ['De baan', FK(['is', 'zijn', 'ben'], 0, 'zijn', 'One course, singular: is.'), 'open.'] },
     { en: 'The dogs are wet.', parts: ['De honden', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'Two dogs, plural: zijn.'), 'nat.'] },
-    { en: 'We have a tee time.', parts: ['Wij', FK(['hebben', 'hebt', 'heeft'], 0, 'pres', 'wij is plural, so the whole infinitive: hebben.'), 'een starttijd.'] },
+    { en: 'We have a tee time.', parts: ['Wij', FK(['hebben', 'hebt', 'heeft'], 0, 'presens', 'wij is plural, so the whole infinitive: hebben.'), 'een starttijd.'] },
     { en: 'The cycle path is slippery.', parts: [FK(['Het', 'De'], 0, 'dehet', 'A compound takes the article of its last part: het pad, so het fietspad.'), 'fietspad is glad.'] },
-    { en: 'You cycle fast.', parts: ['Jij', FK(['fietst', 'fiets', 'fietsen'], 0, 'pres', 'jij before the verb takes stem plus t: jij fietst.'), 'snel.'] },
-    { en: 'The sun is shining.', parts: ['De zon', FK(['schijnt', 'schijn', 'schijnen'], 0, 'pres', 'One sun, singular: stem plus t, schijnt.'), '.'] },
+    { en: 'You cycle fast.', parts: ['Jij', FK(['fietst', 'fiets', 'fietsen'], 0, 'presens', 'jij before the verb takes stem plus t: jij fietst.'), 'snel.'] },
+    { en: 'The sun is shining.', parts: ['De zon', FK(['schijnt', 'schijn', 'schijnen'], 0, 'presens', 'One sun, singular: stem plus t, schijnt.'), '.'] },
   ] });
 })();
 
@@ -1431,7 +1431,7 @@
   //   no blij next to gelukkig, no de wijk next to de buurt, no feest or vrijmibo next to de borrel.
   // Read meanings are all different, so a plain read never gets a second right English sign.
   // `wrong` on a word item is the same noun with the wrong article, so that fork also tests de/het.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(48, { deliveries: 20, items: [
@@ -1448,9 +1448,9 @@
     { read: true, nl: 'Ik vind het leuk.', en: 'I like it.',
       o: ['I like it.', 'I found it.', "I'm looking for it."], a: 0, r: 'woord', w: 'vinden with an adjective gives your opinion: ik vind het leuk, I like it. Nothing was lost.' },
     { read: true, nl: 'Dat klopt.', en: "That's right.",
-      o: ["That's right.", 'Someone is knocking.', "That's enough."], a: 0, r: 'woord', w: 'kloppen is to knock on a door, but dat klopt means that is right. A bill klopt when it adds up.' },
+      o: ["That's right.", 'Someone is knocking.', "That's enough."], a: 0, r: 'woord', w: 'kloppen is to knock, but dat klopt means that is right: the bill adds up.' },
     { read: true, nl: 'Gefeliciteerd met je vrouw.', en: "Congratulations on your wife's birthday.",
-      o: ["Congratulations on your wife's birthday.", 'Your wife congratulates you.', 'Say congratulations to your wife.'], a: 0, r: 'cult', w: 'At a Dutch birthday you congratulate the whole room, so the guests say gefeliciteerd met je vrouw to her husband.' },
+      o: ["Congratulations on your wife's birthday.", 'Your wife congratulates you.', 'Say congratulations to your wife.'], a: 0, r: 'cult', w: 'At a Dutch birthday everyone is congratulated, so guests tell the husband gefeliciteerd met je vrouw.' },
     { read: true, nl: 'Proost, op de buren.', en: 'Cheers, to the neighbours.' },
     { read: true, nl: 'Fijn weekend.', en: 'Have a nice weekend.' },
     { read: true, nl: 'Sorry, ik begrijp het niet.', en: "Sorry, I don't understand." },
@@ -1464,9 +1464,9 @@
     { look: true, prop: 'nummer', value: 43, nl: 'drieënveertig', en: '43' },
 
     // builds: one fork each, present tense, zijn, de/het or a number
-    { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'pres', 'ik takes the bare stem: spreek, with ee to keep the sound long.'), 'een beetje Nederlands.'] },
-    { en: 'You live next door.', parts: ['U', FK(['woont', 'woon', 'wonen'], 0, 'pres', 'u is the polite you and works like jij: stem plus t, u woont.'), 'hiernaast.'] },
-    { en: 'Everyone finds it cosy.', parts: ['Iedereen', FK(['vindt', 'vinden', 'vind'], 0, 'pres', 'iedereen counts as one person: stem vind plus t gives vindt.'), 'het gezellig.'] },
+    { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'presens', 'ik takes the bare stem: spreek, with ee to keep the sound long.'), 'een beetje Nederlands.'] },
+    { en: 'You live next door.', parts: ['U', FK(['woont', 'woon', 'wonen'], 0, 'presens', 'u is the polite you and works like jij: stem plus t, u woont.'), 'hiernaast.'] },
+    { en: 'Everyone finds it cosy.', parts: ['Iedereen', FK(['vindt', 'vinden', 'vind'], 0, 'presens', 'iedereen counts as one person: stem vind plus t gives vindt.'), 'het gezellig.'] },
     { en: "It's Paola's birthday.", parts: ['Paola', FK(['is', 'heeft'], 0, 'zijn', 'jarig goes with zijn: Paola is jarig, today is her birthday.'), 'jarig.'] },
     { en: 'The little present is for Paola.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every -je word is het: het cadeautje, het biertje.'), 'cadeautje is voor Paola.'] },
     { en: 'That is €75 altogether.', parts: ['Dat is samen', FK(['vijfenzeventig', 'zevenenvijftig'], 0, 'getal', 'Dutch says the units first: vijfenzeventig is five and seventy.'), 'euro.'] },
@@ -1486,7 +1486,7 @@
 
     // reads: one meaning trap, seven plain lines; geen and niet only here
     { read: true, nl: 'Hoe heet je?', en: "What's your name?",
-      o: ["What's your name?", 'How hot is it?', 'How old are you?'], a: 0, r: 'woord', w: 'heten is to be called: hoe heet je asks your name. heet is also hot, but not in this line.' },
+      o: ["What's your name?", 'How hot is it?', 'How old are you?'], a: 0, r: 'woord', w: 'heten is to be called: hoe heet je asks your name. Hot is not meant here.' },
     { read: true, nl: 'Tot straks.', en: 'See you in a bit.' },
     { read: true, nl: 'Ik heb geen kinderen.', en: "I don't have children." },
     { read: true, nl: 'Het is niet erg.', en: "It doesn't matter." },
@@ -1505,8 +1505,8 @@
     // builds: one fork each, zijn and hebben in the present, heten, de/het and a number
     { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'wij takes zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
     { en: 'You are warmly welcome.', parts: ['U', FK(['bent', 'zijn', 'ben'], 0, 'zijn', 'u is the polite you and takes bent, like jij: u bent welkom.'), 'van harte welkom.'] },
-    { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'pres', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
-    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'pres', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
+    { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'presens', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
+    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'presens', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
     { en: 'The party is on Saturday.', parts: [FK(['Het', 'De'], 0, 'dehet', 'feest is a het-word, like het huis. Learn the word with its article.'), 'feest is zaterdag.'] },
     { en: 'The bill is €48.', parts: ['De rekening is', FK(['achtenveertig', 'vierentachtig'], 0, 'getal', 'Dutch says the units first: achtenveertig is eight and forty.'), 'euro.'] },
   ] });
@@ -1599,7 +1599,7 @@
     // words: the table, the drinks, the food, the market
     { w: 'the restaurant', nl: 'het restaurant', wrong: 'de restaurant' }, { w: 'the glass', nl: 'het glas', wrong: 'de glas' },
     { w: 'the plate', nl: 'het bord' }, { w: 'the wine', nl: 'de wijn' }, { w: 'the fish', nl: 'de vis' },
-    { w: 'the cake', nl: 'de taart' }, { w: 'the terrace', nl: 'het terras' }, { w: 'the market stall', nl: 'de kraam' },
+    { w: 'the cake', nl: 'de taart' }, { w: 'the terrace', nl: 'het terras' }, { w: 'nothing', nl: 'niets' },
     { w: 'the bitterballen (fried snacks)', nl: 'de bitterballen' }, { w: 'the dessert', nl: 'het toetje', wrong: 'de toetje' },
 
     // reads: two meaning traps, four plain lines
@@ -1614,11 +1614,11 @@
 
     // listen: ee and ij in heerlijk, ui in de ui, the price on the bill
     { listen: true, nl: 'heerlijk', en: 'delicious' }, { listen: true, nl: 'de ui', en: 'the onion' },
-    { listen: true, nl: 'achtentwintig euro', en: '€ 28' },
+    { listen: true, nl: 'het regent', en: 'it\'s raining' },
 
     // look: the lamp over the café door, the door itself, the table number
     { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
-    { look: true, prop: 'nummer', value: 24, nl: 'vierentwintig', en: '24' },
+    { look: true, prop: 'nummer', value: 43, nl: 'drieënveertig', en: '43' },
 
     // builds: present tense, verb-first questions, V2, modals, niet/geen, onze, de/het and a number
     { en: 'We have a reservation for two.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural, so the plural form: hebben.'), 'een reservering voor twee.'] },

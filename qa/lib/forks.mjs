@@ -47,7 +47,7 @@ export function intendedDim(task, rule) {
   if (task === 'order') return 'order';
   if (['kof', 'spel', 'meervoud'].includes(rule)) return 'spelling';
   if (task === 'past' || task === 'verb' || task === 'comp') return 'form';
-  if (['adj', 'verklein', 'vgl', 'imper'].includes(rule)) return 'form';
+  if (['adj', 'verklein'].includes(rule)) return 'form';
   return 'word';
 }
 // dimensions a label honestly covers; spelling is reported by the non-word check, never as a label problem

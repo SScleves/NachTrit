@@ -15,7 +15,7 @@
   //   no blij next to gelukkig, no de wijk next to de buurt, no feest or vrijmibo next to de borrel.
   // Read meanings are all different, so a plain read never gets a second right English sign.
   // `wrong` on a word item is the same noun with the wrong article, so that fork also tests de/het.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(48, { deliveries: 20, items: [
@@ -32,9 +32,9 @@
     { read: true, nl: 'Ik vind het leuk.', en: 'I like it.',
       o: ['I like it.', 'I found it.', "I'm looking for it."], a: 0, r: 'woord', w: 'vinden with an adjective gives your opinion: ik vind het leuk, I like it. Nothing was lost.' },
     { read: true, nl: 'Dat klopt.', en: "That's right.",
-      o: ["That's right.", 'Someone is knocking.', "That's enough."], a: 0, r: 'woord', w: 'kloppen is to knock on a door, but dat klopt means that is right. A bill klopt when it adds up.' },
+      o: ["That's right.", 'Someone is knocking.', "That's enough."], a: 0, r: 'woord', w: 'kloppen is to knock, but dat klopt means that is right: the bill adds up.' },
     { read: true, nl: 'Gefeliciteerd met je vrouw.', en: "Congratulations on your wife's birthday.",
-      o: ["Congratulations on your wife's birthday.", 'Your wife congratulates you.', 'Say congratulations to your wife.'], a: 0, r: 'cult', w: 'At a Dutch birthday you congratulate the whole room, so the guests say gefeliciteerd met je vrouw to her husband.' },
+      o: ["Congratulations on your wife's birthday.", 'Your wife congratulates you.', 'Say congratulations to your wife.'], a: 0, r: 'cult', w: 'At a Dutch birthday everyone is congratulated, so guests tell the husband gefeliciteerd met je vrouw.' },
     { read: true, nl: 'Proost, op de buren.', en: 'Cheers, to the neighbours.' },
     { read: true, nl: 'Fijn weekend.', en: 'Have a nice weekend.' },
     { read: true, nl: 'Sorry, ik begrijp het niet.', en: "Sorry, I don't understand." },
@@ -48,9 +48,9 @@
     { look: true, prop: 'nummer', value: 43, nl: 'drieënveertig', en: '43' },
 
     // builds: one fork each, present tense, zijn, de/het or a number
-    { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'pres', 'ik takes the bare stem: spreek, with ee to keep the sound long.'), 'een beetje Nederlands.'] },
-    { en: 'You live next door.', parts: ['U', FK(['woont', 'woon', 'wonen'], 0, 'pres', 'u is the polite you and works like jij: stem plus t, u woont.'), 'hiernaast.'] },
-    { en: 'Everyone finds it cosy.', parts: ['Iedereen', FK(['vindt', 'vinden', 'vind'], 0, 'pres', 'iedereen counts as one person: stem vind plus t gives vindt.'), 'het gezellig.'] },
+    { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'presens', 'ik takes the bare stem: spreek, with ee to keep the sound long.'), 'een beetje Nederlands.'] },
+    { en: 'You live next door.', parts: ['U', FK(['woont', 'woon', 'wonen'], 0, 'presens', 'u is the polite you and works like jij: stem plus t, u woont.'), 'hiernaast.'] },
+    { en: 'Everyone finds it cosy.', parts: ['Iedereen', FK(['vindt', 'vinden', 'vind'], 0, 'presens', 'iedereen counts as one person: stem vind plus t gives vindt.'), 'het gezellig.'] },
     { en: "It's Paola's birthday.", parts: ['Paola', FK(['is', 'heeft'], 0, 'zijn', 'jarig goes with zijn: Paola is jarig, today is her birthday.'), 'jarig.'] },
     { en: 'The little present is for Paola.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every -je word is het: het cadeautje, het biertje.'), 'cadeautje is voor Paola.'] },
     { en: 'That is €75 altogether.', parts: ['Dat is samen', FK(['vijfenzeventig', 'zevenenvijftig'], 0, 'getal', 'Dutch says the units first: vijfenzeventig is five and seventy.'), 'euro.'] },
@@ -70,7 +70,7 @@
 
     // reads: one meaning trap, seven plain lines; geen and niet only here
     { read: true, nl: 'Hoe heet je?', en: "What's your name?",
-      o: ["What's your name?", 'How hot is it?', 'How old are you?'], a: 0, r: 'woord', w: 'heten is to be called: hoe heet je asks your name. heet is also hot, but not in this line.' },
+      o: ["What's your name?", 'How hot is it?', 'How old are you?'], a: 0, r: 'woord', w: 'heten is to be called: hoe heet je asks your name. Hot is not meant here.' },
     { read: true, nl: 'Tot straks.', en: 'See you in a bit.' },
     { read: true, nl: 'Ik heb geen kinderen.', en: "I don't have children." },
     { read: true, nl: 'Het is niet erg.', en: "It doesn't matter." },
@@ -89,8 +89,8 @@
     // builds: one fork each, zijn and hebben in the present, heten, de/het and a number
     { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'wij takes zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
     { en: 'You are warmly welcome.', parts: ['U', FK(['bent', 'zijn', 'ben'], 0, 'zijn', 'u is the polite you and takes bent, like jij: u bent welkom.'), 'van harte welkom.'] },
-    { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'pres', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
-    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'pres', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
+    { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'presens', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
+    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'presens', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
     { en: 'The party is on Saturday.', parts: [FK(['Het', 'De'], 0, 'dehet', 'feest is a het-word, like het huis. Learn the word with its article.'), 'feest is zaterdag.'] },
     { en: 'The bill is €48.', parts: ['De rekening is', FK(['achtenveertig', 'vierentachtig'], 0, 'getal', 'Dutch says the units first: achtenveertig is eight and forty.'), 'euro.'] },
   ] });

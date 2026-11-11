@@ -62,7 +62,7 @@
       { read: true, nl: 'De trein is al vertrokken.', o: ['The train has already left.', 'The train is leaving now.', 'The train leaves later.'], a: 0, r: 'perf',
         w: 'is plus a participle is the past: vertrokken means it has gone.' },
       { read: true, nl: 'Ik ben mijn kaartje vergeten.', o: ['I forgot my ticket.', 'I bought my ticket.', 'I am looking for my ticket.'], a: 0, r: 'perf',
-        w: 'vergeten is to forget. Here ben is only the helper of the perfectum, it does not mean I am.' },
+        w: 'vergeten is to forget. Here ben only helps form the perfectum, it does not mean I am.' },
       { read: true, nl: 'We zijn naar het strand gefietst.', o: ['We cycled to the beach.', 'We are cycling to the beach.', 'We are going to cycle to the beach.'], a: 0, r: 'aux',
         w: 'zijn plus a participle is the past. Cycling to a place takes zijn.' },
       { read: true, nl: 'Heb je al uitgecheckt?', o: ['Have you checked out yet?', 'Are you checking in now?', 'Are you going to check out?'], a: 0, r: 'sep',

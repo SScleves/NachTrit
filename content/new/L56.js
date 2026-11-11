@@ -51,11 +51,11 @@
 
       // ---- words: the sea, the wind, the gym, the course
       { w: 'the sea', nl: 'de zee' }, { w: 'the beach', nl: 'het strand', wrong: 'de strand' }, { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
-      { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the storm', nl: 'de storm' }, { w: 'the gust of wind', nl: 'de windstoot' },
-      { w: 'the headwind', nl: 'de tegenwind' }, { w: 'the golf club', nl: 'de golfclub' }, { w: 'the gym', nl: 'de sportschool' },
+      { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the storm', nl: 'de storm' }, { w: 'the Zeeland sticky bun', nl: 'de Zeeuwse bolus' },
+      { w: 'the mouse', nl: 'de muis' }, { w: 'the headphones', nl: 'de koptelefoon' }, { w: 'the gym', nl: 'de sportschool' },
       { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
       { w: 'the match', nl: 'de wedstrijd' }, { w: 'the coach', nl: 'de trainer' }, { w: 'the weight', nl: 'het gewicht', wrong: 'de gewicht' },
-      { w: 'the running shoes', nl: 'de hardloopschoenen' }, { w: 'the raincoat', nl: 'de regenjas' }, { w: 'the bike ride', nl: 'de fietstocht' },
+      { w: 'the department', nl: 'de afdeling' }, { w: 'the lunch', nl: 'de lunch' }, { w: 'the intern', nl: 'de stagiair' },
       { w: 'the helmet', nl: 'de helm' }, { w: 'the muscle ache', nl: 'de spierpijn' }, { w: 'faster', nl: 'sneller' },
 
       // ---- reads
@@ -72,7 +72,7 @@
       { read: true, nl: 'Er zijn geen golfballen meer.', en: 'There are no golf balls left.' },
 
       // ---- listen
-      { listen: true, nl: 'windkracht acht', en: 'wind force 8' }, { listen: true, nl: 'het snelst', en: 'the fastest' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' }, { listen: true, nl: 'het snelst', en: 'the fastest' },
       { listen: true, nl: 'de stormvloedkering', en: 'the storm surge barrier' },
 
       // ---- look
@@ -80,7 +80,7 @@
       { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'nummer', value: 62, nl: 'tweeënzestig', en: '62' },
 
       // ---- de of het
-      { dehet: true, nl: 'zand', art: 'het', en: 'the sand' },
-      { dehet: true, nl: 'golftas', art: 'de', en: 'the golf bag', w: 'A compound takes the article of its last part: de tas, so de golftas.' },
+      { dehet: true, nl: 'stokbrood', art: 'het', en: 'the baguette', w: 'brood is het, and so is every bread built on it: het stokbrood.' },
+      { dehet: true, nl: 'wachtwoord', art: 'het', en: 'the password', w: 'A compound takes the article of its last part: het woord, so het wachtwoord.' },
     ] }]);
 })();

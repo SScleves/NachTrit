@@ -13,7 +13,7 @@
 
 (() => {
   window.RULES.spel = { name: 'Open and closed syllables', note: 'open vs gesloten lettergreep' };
-  window.RULES.pres = { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = { name: 'Present tense endings', note: 'presens' };
 
   const WIJK = { lanes: 3, speed: 12, maxSpeed: 14, ramp: false, lampDecay: 0.45, forkSlow: 0.3, hint: 'letter', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 5 };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -49,7 +49,7 @@
       mission: { where: 'The butcher two streets past the supermarket. The bell over the door still rings.', carry: 'Cash, just in case. The card machine went with everyone else.', want: 'Order by weight. He weighs in ons, counts in tens, and always asks if it can be a bit more.' },
       items: [
         { w: 'the butcher', nl: 'de slager' }, { w: 'the meat', nl: 'het vlees' }, { w: 'the mince', nl: 'het gehakt' },
-        { w: 'the chicken breast', nl: 'de kipfilet' }, { w: 'the sausage', nl: 'de worst' }, { w: 'the slice', nl: 'het plakje' },
+        { w: 'thank you', nl: 'dank je wel' }, { w: 'the sausage', nl: 'de worst' }, { w: '€ 0,85', nl: 'vijfentachtig cent' },
         { w: '30', nl: 'dertig' }, { w: '80', nl: 'tachtig' }, { w: '90', nl: 'negentig' }, { w: '100', nl: 'honderd' },
         { w: '500 grams', nl: 'een pond' }, { w: '1000 grams', nl: 'een kilo' },
         { w: '20', nl: 'twintig' }, { w: '14', nl: 'veertien' }, { w: '16', nl: 'zestien' }, { w: 'the plastic bag', nl: 'het tasje' },
@@ -57,7 +57,7 @@
         { read: true, nl: 'Mag het ietsje meer zijn?', en: 'Is a little more okay?' },
         { read: true, nl: 'Snijdt u het in plakjes?', en: 'Could you slice it?' },
         { read: true, nl: 'Nee, dat was het.', en: "No, that's all." },
-        { listen: true, nl: 'vijfentwintig', en: '25' }, { listen: true, nl: 'zeventig', en: '70' }, { listen: true, nl: 'negenennegentig', en: '99' },
+        { listen: true, nl: 'de rijst', en: 'the rice' }, { listen: true, nl: 'zeventig', en: '70' }, { listen: true, nl: 'negenennegentig', en: '99' },
         { look: true, prop: 'nummer', value: 50, nl: 'vijftig', en: '50' }, { look: true, prop: 'nummer', value: 60, nl: 'zestig', en: '60' },
         { look: true, prop: 'winkel', nl: 'de winkel', en: 'the shop' },
         { en: 'Can I have 200 grams of mince?', parts: ['Mag ik', FK(['twee ons', 'twintig ons', 'twee pond'], 0, 'getal', 'One ons is 100 grams, so 200 grams is twee ons. A pond is 500.'), 'gehakt?'] },
@@ -107,10 +107,10 @@
         { listen: true, nl: 'woensdag', en: 'Wednesday' }, { listen: true, nl: 'donderdag', en: 'Thursday' }, { listen: true, nl: 'de bestelling', en: 'the order' },
         { look: true, prop: 'winkel', nl: 'de winkel', en: 'the shop' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
         { look: true, prop: 'nummer', value: 21, nl: 'eenentwintig', en: '21' },
-        { en: 'How long will it take?', parts: ['Hoe lang', FK(['duurt', 'duren', 'duur'], 0, 'pres', 'het duurt: het takes the -t, just like hij.'), 'het?'] },
+        { en: 'How long will it take?', parts: ['Hoe lang', FK(['duurt', 'duren', 'duur'], 0, 'presens', 'het duurt: het takes the -t, just like hij.'), 'het?'] },
         { en: 'Are you open on Sunday?', parts: ['Bent u', FK(['zondag', 'zaterdag', 'maandag'], 0, 'woord', 'zondag is Sunday: zon, the sun.'), 'open?'] },
-        { en: "I'd like to order.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'pres', 'ik wil, no -t. willen is for wij, jullie and zij.'), 'graag bestellen.'] },
-        { en: 'What does that mean?', parts: ['Wat', FK(['betekent', 'beteken', 'betekenen'], 0, 'pres', 'dat works like hij: stem plus -t. Wat betekent dat?'), 'dat?'] },
+        { en: "I'd like to order.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'presens', 'ik wil, no -t. willen is for wij, jullie and zij.'), 'graag bestellen.'] },
+        { en: 'What does that mean?', parts: ['Wat', FK(['betekent', 'beteken', 'betekenen'], 0, 'presens', 'dat works like hij: stem plus -t. Wat betekent dat?'), 'dat?'] },
       ] },
 
     { id: 10, act: 2, name: 'De kalender', theme: 'square', ...WIJK, obstacles: 'light', filler: [28, 38], deliveries: 12,

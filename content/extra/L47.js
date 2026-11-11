@@ -15,7 +15,7 @@
   //   thing: no de regen next to de bui, no de baan next to de golfbaan, no de bal next to het balletje, no de sloot
   //   next to the water prop. `wrong` sits only on nouns whose other article is wrong in every variety of Dutch.
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   window.extendLevel(47, { deliveries: 20, items: [
     // words: the golf club, the gym, the dog walk on the dyke, the bike, the weather, the weekend
@@ -51,9 +51,9 @@
     // builds: one fork each, on the number, the article or the present tense
     { en: 'My handicap is 20.', parts: ['Ik speel handicap', FK(['twintig', 'twaalf', 'tweeëntwintig'], 0, 'getal', '20 is twintig; twaalf is 12 and tweeëntwintig is 22.'), '.'] },
     { en: 'The subscription costs € 30.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Words ending in -ment are het: het abonnement, het moment.'), 'abonnement kost dertig euro.'] },
-    { en: 'The dogs always pull.', parts: ['De honden', FK(['trekken', 'trekt', 'trek'], 0, 'pres', 'Two dogs, plural: the whole infinitive, trekken.'), 'altijd.'] },
-    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt'], 0, 'pres', 'The stem sport already ends in t, and Dutch never writes tt at the end.', 'spell'), 'op zondag.'] },
-    { en: 'I cycle to the gym.', parts: ['Ik', FK(['fiets', 'fietst', 'fietsen'], 0, 'pres', 'ik takes the bare stem: fiets, the same word as de fiets.'), 'naar de sportschool.'] },
+    { en: 'The dogs always pull.', parts: ['De honden', FK(['trekken', 'trekt', 'trek'], 0, 'presens', 'Two dogs, plural: the whole infinitive, trekken.'), 'altijd.'] },
+    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt'], 0, 'presens', 'The stem sport already ends in t, and Dutch never writes tt at the end.', 'spell'), 'op zondag.'] },
+    { en: 'I cycle to the gym.', parts: ['Ik', FK(['fiets', 'fietst', 'fietsen'], 0, 'presens', 'ik takes the bare stem: fiets, the same word as de fiets.'), 'naar de sportschool.'] },
 
     // ---- second pass: the bike on the dyke path, the polder animals, the weather on the course, the sore legs after
     //   Sources: _site/dialogues/een-lekke-band (de band, de ketting, het stuur, Ik heb een lekke band, kept out of the reads because the adjective -e is tier 4),
@@ -92,9 +92,9 @@
     // builds: one fork each, on zijn, hebben, the article and the present tense
     { en: 'The course is open.', parts: ['De baan', FK(['is', 'zijn', 'ben'], 0, 'zijn', 'One course, singular: is.'), 'open.'] },
     { en: 'The dogs are wet.', parts: ['De honden', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'Two dogs, plural: zijn.'), 'nat.'] },
-    { en: 'We have a tee time.', parts: ['Wij', FK(['hebben', 'hebt', 'heeft'], 0, 'pres', 'wij is plural, so the whole infinitive: hebben.'), 'een starttijd.'] },
+    { en: 'We have a tee time.', parts: ['Wij', FK(['hebben', 'hebt', 'heeft'], 0, 'presens', 'wij is plural, so the whole infinitive: hebben.'), 'een starttijd.'] },
     { en: 'The cycle path is slippery.', parts: [FK(['Het', 'De'], 0, 'dehet', 'A compound takes the article of its last part: het pad, so het fietspad.'), 'fietspad is glad.'] },
-    { en: 'You cycle fast.', parts: ['Jij', FK(['fietst', 'fiets', 'fietsen'], 0, 'pres', 'jij before the verb takes stem plus t: jij fietst.'), 'snel.'] },
-    { en: 'The sun is shining.', parts: ['De zon', FK(['schijnt', 'schijn', 'schijnen'], 0, 'pres', 'One sun, singular: stem plus t, schijnt.'), '.'] },
+    { en: 'You cycle fast.', parts: ['Jij', FK(['fietst', 'fiets', 'fietsen'], 0, 'presens', 'jij before the verb takes stem plus t: jij fietst.'), 'snel.'] },
+    { en: 'The sun is shining.', parts: ['De zon', FK(['schijnt', 'schijn', 'schijnen'], 0, 'presens', 'One sun, singular: stem plus t, schijnt.'), '.'] },
   ] });
 })();
