@@ -51,7 +51,7 @@
 
       // ---- builds: separable verbs split in the present
       { en: 'Every morning I walk the dogs.', parts: ['Elke ochtend', FK(['laat ik', 'ik laat', 'uitlaat ik'], 0, 'sep', 'Elke ochtend takes slot 1, so laat comes next and ik after it. uit waits at the end.'), 'de honden uit.'] },
-      { en: "I'll call you tomorrow about the tee time.", parts: ['Ik', FK(['bel', 'opbel', 'bellen'], 0, 'sep', 'opbellen splits in the present: bel stays in slot 2, op goes behind je morgen.'), 'je morgen op over de starttijd.'] },
+      { en: "I'll call you tomorrow about the tee time.", parts: ['Ik', FK(['bel', 'opbel'], 0, 'sep', 'opbellen splits in the present: bel in slot 2, op at the end.'), 'je morgen op over de starttijd.'] },
       { en: 'Are you coming along to the gym?', parts: [FK(['Ga je mee', 'Meega je', 'Ga mee je'], 0, 'sep', 'meegaan splits: ga up front, then je, then mee.'), 'naar de sportschool?'] },
       { en: 'At half past eight we arrive at the golf course.', parts: ['Om half negen', FK(['komen we', 'we komen'], 0, 'v2', 'A time in slot 1: the verb comes next, then we.'), 'bij de golfbaan',
         FK(['aan', 'aankomen'], 0, 'sep', 'aankomen splits: komen in slot 2, aan alone at the end.'), '.'] },
@@ -71,16 +71,16 @@
 
       // ---- builds: telling the time
       { en: 'My tee time is 8:30.', parts: ['Mijn starttijd is', FK(['half negen', 'half acht'], 0, 'klok', 'Dutch counts toward the next hour: half negen is 8:30.'), '.'] },
-      { en: 'The gym opens at 7:15.', parts: ['De sportschool', FK(['gaat', 'opengaat'], 0, 'sep', 'opengaan splits: gaat in slot 2, open at the end.'), 'om',
-        FK(['kwart over zeven', 'kwart voor zeven', 'zeven kwart over'], 0, 'klok', 'Fifteen minutes after seven is kwart over zeven.'), 'open.'] },
-      { en: "It's 9:45. We're late.", parts: ['Het is', FK(['kwart voor tien', 'kwart over tien', 'tien kwart voor'], 0, 'klok', 'Fifteen minutes before ten is kwart voor tien.'), '. We zijn te laat.'] },
+      { en: 'The gym opens at 7:15.', parts: ['De sportschool', FK(['gaat', 'opengaat'], 0, 'sep', 'opengaan splits: gaat in slot 2, open at the end.'), 'om kwart',
+        FK(['over', 'voor'], 0, 'klok', 'Fifteen minutes after seven is kwart over zeven.'), 'zeven open.'] },
+      { en: "It's 9:45. We're late.", parts: ['Het is kwart', FK(['voor', 'over'], 0, 'klok', 'Fifteen minutes before ten is kwart voor tien.'), 'tien. We zijn te laat.'] },
 
       // ---- builds: the imperative
-      { en: 'Just walk the dogs, honey.', parts: [FK(['Laat', 'Laten', 'Uitlaat'], 0, 'imper', 'A command is the bare stem, and uitlaten still splits: laat first, uit at the end.'), 'de honden even uit, schat.'] },
-      { en: "Keep cycling, don't look back.", parts: [FK(['Fiets', 'Fietst', 'Te fietsen'], 0, 'imper', 'A command is the bare stem: fiets. No t, nobody to agree with.'), 'maar door,',
+      { en: 'Just walk the dogs, honey.', parts: [FK(['Laat', 'Laten'], 0, 'gebod', 'A command is the bare stem: laat; uit still goes to the end.'), 'de honden even uit, schat.'] },
+      { en: "Keep cycling, don't look back.", parts: [FK(['Fiets', 'Fietst', 'Te fietsen'], 0, 'gebod', 'A command is the bare stem: fiets. No t, nobody to agree with.'), 'maar door,',
         FK(['kijk niet om', 'omkijk niet', 'kijk om niet'], 0, 'sep', 'omkijken splits in a command too: kijk first, niet, then om at the end.'), '.'] },
-      { en: "Put your helmet on. You don't have a helmet.", parts: [FK(['Zet', 'Zetten', 'Opzet'], 0, 'imper', 'Command: the bare stem, zet. opzetten splits, so op goes to the end.'), 'je helm op. Je hebt geen helm.'] },
-      { en: "Come in, it's raining.", parts: [FK(['Kom binnen', 'Binnenkom', 'Komen binnen'], 0, 'imper', 'binnenkomen splits in a command too: kom first, binnen after it.'), ', het regent.'] },
+      { en: "Put your helmet on. You don't have a helmet.", parts: [FK(['Zet', 'Zetten'], 0, 'gebod', 'A command is the bare stem: zet; op still goes to the end.'), 'je helm op. Je hebt geen helm.'] },
+      { en: "Come in, it's raining.", parts: [FK(['Kom binnen', 'Binnenkom'], 0, 'sep', 'binnenkomen splits in a command too: kom first, binnen after it.'), ', het regent.'] },
 
       // ---- reading
       { read: true, nl: 'Mooie slag.', en: 'Nice shot.' },
