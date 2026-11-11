@@ -1,17 +1,17 @@
 // The planner: what goes on the road ahead. Filler between forks (obstacles, the dead, wisps), and each fork placed so its
 // signs stay legible for its whole reading budget at the tier's speed (planFork, planSentence, placeFork). The pure rules it
 // uses are in forks.js (the level queue), reading.js (budget, legibility) and tasks.js (the task label).
-import { taskOf } from './tasks.js?v=40';
-import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=40';
-import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=40';
-import { camera, scene } from './render.js?v=40';
-import { mistTex } from './road.js?v=40';
-import { PROPS } from './houses.js?v=40';
-import { footprint, scenery } from './scenery.js?v=40';
-import { bigSign, signFit, signpost } from './signs.js?v=40';
-import { ghostFigure } from './cast.js?v=40';
-import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=40';
-import { BASE, L, LANE_X, S } from './state.js?v=40';
+import { taskOf } from './tasks.js?v=41';
+import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=41';
+import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=41';
+import { camera, scene } from './render.js?v=41';
+import { mistTex } from './road.js?v=41';
+import { PROPS } from './houses.js?v=41';
+import { footprint, scenery } from './scenery.js?v=41';
+import { bigSign, signFit, signpost } from './signs.js?v=41';
+import { ghostFigure } from './cast.js?v=41';
+import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=41';
+import { BASE, L, LANE_X, S } from './state.js?v=41';
 
 // itemToEntry and levelQueue (level items to the entries the planner rides) are in src/forks.js
 

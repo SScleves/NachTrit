@@ -1,8 +1,8 @@
 // The renderer, the scene, the camera and the four lights; the WebGL post chain (scene target, ink lines from depth, bloom, the
 // grade) and render(), which draws a frame through whichever chain runs. The node chain itself is in render-nodes.js.
-import { EffectComposer, GPU_PREF, NODES, POST, RENDERER_Q, ShaderPass, TexturePass, THREE, UnrealBloomPass } from './engine.js?v=40';
-import { buildNodePost, NODEFX } from './render-nodes.js?v=40';
-import { MIST_Q } from './main.js?v=40';   // later modules, through the hub
+import { EffectComposer, GPU_PREF, NODES, POST, RENDERER_Q, ShaderPass, TexturePass, THREE, UnrealBloomPass } from './engine.js?v=41';
+import { buildNodePost, NODEFX } from './render-nodes.js?v=41';
+import { MIST_Q } from './main.js?v=41';   // later modules, through the hub
 
 // ---------- renderer / scene ----------
 const renderer = NODES ? new THREE.WebGPURenderer({ antialias: !POST, powerPreference: GPU_PREF, forceWebGL: RENDERER_Q === 'webgl2' }) : new THREE.WebGLRenderer({ antialias: true, powerPreference: GPU_PREF });

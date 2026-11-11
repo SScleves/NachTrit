@@ -1,10 +1,10 @@
 // The cast's own shapes: smooth swept tubes and shells built once (sweepGeo, shellGeo, lathes), and the passengers: the dead
 // who still want a lift, in a coloured coat with a pale calm face (ghostFigure).
-import { pick, THREE } from './engine.js?v=40';
-import { GlowMat, glowTex, Mat } from './materials.js?v=40';
-import { PG, PM } from './props.js?v=40';
-import { kadd, kit, kmerge, PK } from './kit.js?v=40';
-import './signs.js?v=40';   // keeps the order the game's code runs in
+import { pick, THREE } from './engine.js?v=41';
+import { GlowMat, glowTex, Mat } from './materials.js?v=41';
+import { PG, PM } from './props.js?v=41';
+import { kadd, kit, kmerge, PK } from './kit.js?v=41';
+import './signs.js?v=41';   // keeps the order the game's code runs in
 
 // ---------- the cast's own shapes: smooth swept tubes and shells, built once and kept (PG) or copied into the kits ----------
 // sweepGeo(rings, seg, o) runs a tube through ring centres [x, y, z, rx, rz, fwd]: rx across, rz toward fwd (o.fwd, default -z, the

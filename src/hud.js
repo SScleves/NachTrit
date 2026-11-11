@@ -1,11 +1,11 @@
 // The HUD: the card with the sentence and its gap, the task label, the toast with the why line, the fare row, the lanes,
 // first-letter hints and the flash.
-import { TASKS } from './tasks.js?v=40';
-import { VOICES } from './voice.js?v=40';
-import { $, FARES } from './engine.js?v=40';
-import { L, S } from './state.js?v=40';
-import './plan.js?v=40';   // keeps the order the game's code runs in
-import { speak } from './main.js?v=40';   // later modules, through the hub
+import { TASKS } from './tasks.js?v=41';
+import { VOICES } from './voice.js?v=41';
+import { $, FARES } from './engine.js?v=41';
+import { L, S } from './state.js?v=41';
+import './plan.js?v=41';   // keeps the order the game's code runs in
+import { speak } from './main.js?v=41';   // later modules, through the hub
 
 // ---------- HUD ----------
 const card = $('card'), toast = $('toast');
