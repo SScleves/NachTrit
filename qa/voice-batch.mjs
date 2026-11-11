@@ -62,6 +62,8 @@ F.TIPS.forEach(t => add(t.nl, VOICE.passenger, 'tip')); F.REFUSE.forEach(r => ad
 
 // fixed lines spoken by the game: speak('...') with a literal
 for (const m of code.matchAll(/\bspeak\('((?:[^'\\]|\\.)*)'/g)) add(m[1], VOICE.narrator, 'fixed');
+// and literals the game speaks through a variable or speakSeq, marked /* voice */ in front (the dawn card, the bus stop restart)
+for (const m of code.matchAll(/\/\* voice \*\/ ?'((?:[^'\\]|\\.)*)'/g)) add(m[1], VOICE.narrator, 'fixed');
 
 const lines = [...out.values()];
 fs.mkdirSync(path.join(ROOT, 'voice'), { recursive: true });

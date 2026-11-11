@@ -3,6 +3,7 @@
 // material first, and the boot: ?map, ?cine, ?shot and ?level, then the title.
 import { HOLD_AT, READ_AHEAD, READ_THR } from './reading.js?v=43';
 import { lampLoss, lampReadK, TUNE } from './lamp.js?v=43';
+import { DAWN } from './payoff.js?v=43';
 import { onReviewRoad } from './review.js?v=43';
 import { VOICES } from './voice.js?v=43';
 import { $, clamp, FARES, lerp, NODES, rnd, ROAD_W, smooth, THREE } from './engine.js?v=43';
@@ -24,7 +25,7 @@ import { plan, signFrac } from './plan.js?v=43';
 import { wordsTick } from './words.js?v=43';
 import { card, endWhy, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=43';
 import { bark, chime, thump, tick } from './audio.js?v=43';
-import { speak } from './speech.js?v=43';
+import { speak, speakSeq } from './speech.js?v=43';
 import { goKnown, TOUCH } from './input.js?v=43';
 import { setIntroSeen, showIntro, startArt } from './intro.js?v=43';
 import { cineBegin, cineTick, setCineFrozen } from './cine.js?v=43';
@@ -57,7 +58,7 @@ function update(dt) {
     S.introT += dt; const k = smooth(clamp(S.introT / 3.6, 0, 1));
     camera.position.set(0, lerp(22, 2.85, k), lerp(14, 6.4, k));
     camera.lookAt(0, lerp(0, 1.25, k), lerp(-30, -8, k));
-    if (S.introT > 3.6) { S.mode = 'ride'; if (S.introLine) { say(S.introLine[0], 'good', S.introLine[1], 4); S.introLine = null; } else say(L ? L.mission.where : 'Ride through the right sign.', 'good', null, 2.2); }   // introLine: after a restart at the bus stop
+    if (S.introT > 3.6) { S.mode = 'ride'; if (S.dawnCard) { dawnCard(S.dawnCard); S.dawnCard = null; } else if (S.introLine) { say(S.introLine[0], 'good', S.introLine[1], 4); speak(S.introLine[0]); S.introLine = null; } else say(L ? L.mission.where : 'Ride through the right sign.', 'good', null, 2.2); }   // introLine: after a restart at the bus stop
   }
   if (S.mode === 'dying') {
     if (S.dieT >= 10) return;
@@ -114,13 +115,14 @@ function update(dt) {
   // lamp look
   const Lf = S.lamp / 100;
   lampLight.intensity = cine && !bike.visible ? 0 : 0.8 + Lf * 4.0;   // a shot without the rider has no bike lamp either
-  const nd = nightDepth(), nightK = lerp(1, theme.night || 0.17, nd);
-  hemiLight.intensity = 0.6 - 0.4 * nd;
-  scene.fog.color.copy(theme.fogC).multiplyScalar(nightK); skyDome.material.color.setScalar(nightK);   // the haze and the sky dim together as the night deepens
-  const town = 1 - 0.45 * nd; tintFar(town); LAMP_POOL_MAT.opacity = town; LAMP_STREAK_MAT.opacity = town; LAMP_CONE_MAT.opacity = 0.42 * town; LAMP_HALO_MAT.opacity = 0.85 * town; WIN_GLOW_MAT.opacity = 0.55 * town;   // the town's lights burn lower too; the wisps do not
+  const nd = S.dawn ? 0 : nightDepth(), nightK = lerp(1, theme.night || 0.17, nd);   // dawn (src/dawn.js): the night never deepens on screen
+  hemiLight.intensity = S.dawn ? DAWN.hemi : 0.6 - 0.4 * nd;
+  if (S.dawn) { scene.fog.color.setHex(DAWN.fog); skyDome.material.color.setScalar(DAWN.sky); }   // the pale haze of concept image A
+  else { scene.fog.color.copy(theme.fogC).multiplyScalar(nightK); skyDome.material.color.setScalar(nightK); }   // the haze and the sky dim together as the night deepens
+  const town = 1 - 0.45 * nd; tintFar(town); LAMP_POOL_MAT.opacity = town; LAMP_STREAK_MAT.opacity = town; LAMP_CONE_MAT.opacity = 0.42 * town; LAMP_HALO_MAT.opacity = 0.85 * town; WIN_GLOW_MAT.opacity = S.dawn ? DAWN.windows : 0.55 * town;   // the town's lights burn lower too; the wisps do not
   bike.userData.lampMesh.material.color.setHSL(0.1, 0.85, 0.3 + Lf * 0.55); bike.userData.lampGlow.material.opacity = 0.2 + Lf * 0.6;   // the headlamp burns as warm as the lamp is full
   beam.material.opacity = 0.02 + Lf * 0.04;
-  scene.fog.density = (theme.fogD * (1.28 - 0.4 * Lf) + S.forkZoom * 0.002 + 0.004 * nd) * (cine ? (S.fogMul || 1) : 1);   // a weak lamp thickens the haze; about 70 percent fogged at 70 m; a shot can thicken it
+  scene.fog.density = (theme.fogD * (1.28 - 0.4 * Lf) + S.forkZoom * 0.002 + 0.004 * nd) * (cine ? (S.fogMul || 1) : 1) * (S.dawn ? DAWN.fogThin : 1);   // a weak lamp thickens the haze; about 70 percent fogged at 70 m; a shot can thicken it
   const lw = Math.round(S.lamp); if (lw !== S.lampLast) { S.lampLast = lw; $('lampfill').style.width = lw + '%'; }
   const danger = 1 - Lf;
   const vo = Math.round(Math.pow(danger, 1.6) * 95) / 100; if (vo !== S.vigLast) { S.vigLast = vo; $('vignette').style.opacity = composer ? 0 : vo; }
@@ -300,6 +302,12 @@ function update(dt) {
   if (toastT > 0) { setToastT(toastT - dt); if (toastT <= 0) toast.style.opacity = 0; }
 }
 
+// a dawn ride's card (phase 5 item 2): the town's rumour, resolved as far as it ever will be. It stays up until the first fork's card
+function dawnCard(t) {
+  showCard(`Dawn · ${t.name}`, `${t.rumour || ''} Still unconfirmed.`, `<i>${t.rumourNl || ''}</i> Nog steeds niet bevestigd.`, '');
+  card.querySelector('.task').textContent = 'The mist lifted'; card.querySelector('.task').style.color = '#ffd27a';
+  speakSeq([t.rumourNl, /* voice */ 'Nog steeds niet bevestigd.'].filter(Boolean), [VOICES.town, VOICES.narrator]);
+}
 function loop() {
   requestAnimationFrame(loop);
   const raw = clock.getDelta(); const dt = Math.min(0.05, raw);

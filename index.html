@@ -108,6 +108,8 @@
   #s_words .ok { color:var(--good); } #s_words .no { color:#ff8b84; }
   #lanes .side { display:block; color:#ffd27a; font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:2px; }
   #nl .town { cursor:pointer; pointer-events:auto; }
+  #nl .town .dawnglow { pointer-events:none; mix-blend-mode:screen; animation: dawnpulse 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes dawnpulse { 0%,100% { opacity:.75; transform: scale(.94); } 50% { opacity:1; transform: scale(1.06); } }   /* a town at dawn (phase 5) */
   #nl text { font-family:"Segoe UI",system-ui,-apple-system,sans-serif; }
   #nl text.nm { font-weight:600; fill:#f0f1f3; letter-spacing:.14em; paint-order:stroke; stroke:rgba(8,11,16,.85); stroke-width:3px; stroke-linejoin:round; }
   #nl text.band { font-weight:500; fill:#b8c2cf; letter-spacing:.06em; paint-order:stroke; stroke:rgba(8,11,16,.85); stroke-width:3px; }

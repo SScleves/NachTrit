@@ -138,6 +138,9 @@ function allWords() {   // the walls of a town carry its own words: the research
   let list = own.concat(own, [...mine]); if (list.length < 6) list = list.concat([...rest]);
   return (_townWords[townId] = list);
 }
+// called after every buildScenery (a ride, an intro shot, the title): src/dawn.js puts the night back here, so only the ride that
+// asks for dawn has it
+const sceneryHooks = [];
 function buildScenery(th) {
   const td = T3(), K = townKit();
   let key = th.key;
@@ -172,6 +175,7 @@ function buildScenery(th) {
       sceneryPlace(o); scene.add(mesh); scenery.push(o);
     }
   }
+  for (const f of sceneryHooks) f();
 }
 
 // witte wieven: ground mist in three bands, thin near the bike and thicker toward the horizon; long soft banks with no edges, coloured from the haze every frame
@@ -214,4 +218,4 @@ for (const B of MIST_BANDS) {
 }
 MIST_Q = MIST_BANDS;
 
-export { allWords, buildScenery, footprint, MIST_BANDS, MIST_Q, scenery, sceneryPlace, SHOP_SIGNS, theme, THEMES, townKit, wieven };
+export { allWords, buildScenery, sceneryHooks, footprint, MIST_BANDS, MIST_Q, scenery, sceneryPlace, SHOP_SIGNS, theme, THEMES, townKit, wieven };

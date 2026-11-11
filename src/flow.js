@@ -23,12 +23,13 @@ import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from 
 import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=43';
 import { placeStop, plan, unplanFinish } from './plan.js?v=43';
 import { wordBack, wordsStart } from './words.js?v=43';
+import { setDawn } from './dawn.js?v=43';
 import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=43';
 import { chime, initAudio } from './audio.js?v=43';
 import { speak, speakSeq } from './speech.js?v=43';
 import { G } from './signs.js?v=43';
 import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=43';
-import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=43';
+import { openMap, openMission, pendingLevel, TOWN_OF, townAtDawn, towns } from './map.js?v=43';
 import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=43';   // later modules, through the hub
 
 // ---------- game flow ----------
@@ -43,9 +44,12 @@ function start(lv) {
   buildScenery(THEMES[qs.get('theme') || (L && L.theme) || 'polder'] || THEMES.polder);   // ?town= and ?theme= dress any level as another place, for looking at a town's art
   setRoadLook(LANE_X.length, theme);
   $('hud').classList.toggle('endless', !L);
-  wordsStart(false);   // the street's lamps go out, its shop signs go blank: right answers give them back (src/words.js)
+  const town = L && towns().find(t => t.id === (L.town || TOWN_OF(L.id))), dawn = !!(L && !L.practice && townAtDawn(town));
+  if (dawn) setDawn(town);   // every place in this town has three stars: it plays at dawn (src/dawn.js); buildScenery put the night back otherwise
+  wordsStart(dawn);   // the street's lamps go out, its shop signs go blank: right answers give them back (src/words.js); at dawn they are all lit
   if (L) SAVE.ride++;   // the learner model counts rides, not days
   reset(); S.mode = 'intro'; S.introT = 0;
+  if (dawn) S.dawnCard = town;   // the rumour, resolved, when the camera comes down (src/loop.js)
 }
 // the town's tier prices the rides; endless rides as tier 6
 function fareTier() {
@@ -285,7 +289,7 @@ function restartFromStop() {
   Object.assign(S, sn.n, { objs: [], queue: sn.queue.slice(), plannedN: sn.plannedN, ownPlanned: sn.ownPlanned, reviewRoad: sn.reviewRoad, reviewM: sn.reviewM, missN: sn.missN,
     dist: cp.d - 30, planCursor: cp.d - 4, finishPlanned: false, lamp: CHECKPOINT.lamp, speed: BASE, slow: 1, slowTarget: 1, stumble: 0, held: false, streak: 0, wrongRow: 0,
     activeFork: null, forkZoom: 0, whyT: 0, onReview: false, riding: null, teachPlan: 0, dieT: 0, mode: 'intro', introT: 0,
-    introLine: ['Terug bij de halte.', `Half a lamp. Ride on from here: this ride can earn ${CHECKPOINT.maxStars} stars at most.`] });
+    introLine: [/* voice */ 'Terug bij de halte.', `Half a lamp. Ride on from here: this ride can earn ${CHECKPOINT.maxStars} stars at most.`] });
   Object.assign(S.learn, { returns: sn.learn.returns, right: sn.learn.right, wrong: sn.learn.wrong }); S.learn.log.length = sn.learn.logN;
   follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); setRackGhost(null); }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();

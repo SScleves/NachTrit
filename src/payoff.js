@@ -54,9 +54,10 @@ export function townDawn(levels, stars) {
   for (const l of levels) { if (l.soon || l.id >= 1000) continue; n++; if ((stars[l.id] || 0) < 3) return false; }
   return n > 0;
 }
-// how the dawn look reads the night: the haze lifts to a pale morning (fog colour raised toward the A reference's grey-blue,
-// thinner), the night depth never deepens, every window lit. Numbers, not lights: the loop drives fog and the town's glow with them.
-export const DAWN = { fogLift: 2.1, fogThin: 0.62, night: 0, windows: 0.95 };
+// how a dawn ride looks: the haze lifts to the pale grey of concept image A (fog colour, thinner), the night depth the loop draws
+// with stays at 0 (the lamp's own drain still follows the real night depth, so the ride plays the same), the sky dome and the
+// hemisphere light brighter, every window lit. Numbers on what exists, not lights: src/loop.js applies them.
+export const DAWN = { fog: 0x8e989f, fogThin: 0.72, sky: 1.75, hemi: 0.9, windows: 0.95 };
 
 // ---------- keeping a seeded ride the same ----------
 // three.js draws four Math.random numbers for the uuid of every object, material, texture and geometry it makes. What this phase

@@ -50,6 +50,7 @@ for (const lv of String(opt.levels).split(',').map(s => s.trim()).filter(Boolean
   const qs = new URLSearchParams({ level: lv, shot: String(opt.shot), lane: '1' });
   if (opt.renderer !== 'webgpu') qs.set('renderer', opt.renderer);   // webgl: the old WebGLRenderer; webgl2: the node path forced onto its WebGL2 fallback
   if (opt.power) qs.set('gpu', opt.power);
+  qs.set('dawn', '0');   // the stars seeded above would put every town at dawn (phase 5): measure the night; --extra 'dawn=gouda' to look at one
   if (opt.extra) for (const [k, v] of new URLSearchParams(opt.extra)) qs.set(k, v);
   const t0 = Date.now();
   await page.goto(opt.base + '?' + qs, { waitUntil: 'load', timeout: 180000 });

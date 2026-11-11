@@ -286,4 +286,4 @@ function wisp() {
   return g;
 }
 
-export { cart, deadPool, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, ZOMBIE_VARIANTS, zombieBike, zombieParts };
+export { cart, deadPool, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, ZEYE_MAT, zombie, ZOMBIE_VARIANTS, zombieBike, zombieParts };

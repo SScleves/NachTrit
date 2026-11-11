@@ -1,6 +1,7 @@
 // The world map and the mission card: towns by tier (window.TOWNS, painted by map-art.js), which town is open and saved, the
 // route board with the cyclist riding between towns, the de/het bonus level per town, the town card, and the mission card with
 // its fares and the pictograms of its three words.
+import { townDawn } from './payoff.js?v=43';
 import { $, FARES } from './engine.js?v=43';
 import { PICTO, PICTO_ALIAS } from './houses.js?v=43';
 import { DISTRICT_NEED, progress, S, scores, UNLOCK_ALL } from './state.js?v=43';
@@ -25,6 +26,10 @@ const TOWNS_FALLBACK = [
 function towns() { return (window.TOWNS && window.TOWNS.length ? window.TOWNS : TOWNS_FALLBACK).slice().sort((a, b) => a.tier - b.tier); }
 function townLevels(t) { return LEVELS.filter(l => (l.town || TOWN_OF(l.id)) === t.id); }
 function townStars(t) { return townLevels(t).reduce((n, l) => n + (progress[l.id] || 0), 0); }
+// town dawn (PLAN.md phase 5 item 2): every place in the town has three stars. ?dawn=<town id> shows one town at dawn without the
+// stars (on the map and on its rides, for looking at it); ?dawn=0 turns dawn off everywhere (qa/dt/gpu-shot.mjs seeds every star)
+const DAWN_Q = new URLSearchParams(location.search).get('dawn');
+function townAtDawn(t) { if (!t || DAWN_Q === '0') return false; if (DAWN_Q) return DAWN_Q === t.id; return townDawn(townLevels(t), progress); }
 function townOpen(t) { if (t.tier === 1 || UNLOCK_ALL) return true; const prev = towns().find(x => x.tier === t.tier - 1); return prev ? townStars(prev) >= DISTRICT_NEED : false; }
 // the route board: towns in tier order along roads over the real country, painted by map-art.js (window.NRMAP)
 const CEFR_COL = { A1: '#8fd16a', 'A1-A2': '#c8d85a', A2: '#ffd27a', 'A2-B1': '#f0a050', B1: '#e87a3a', 'B1-B2': '#d9532a', B2: '#b8282a' };
@@ -47,15 +52,16 @@ function drawWorld() {
   const states = T.map(townState);
   NRMAP.paint($('nlart'), mapLay, T, states);   // the country, the roads and the towns, cached until the size or the progress changes
   const openIdx = T.map((t, i) => townOpen(t) ? i : -1).filter(i => i >= 0); if (!openIdx.includes(mapAt)) mapAt = openIdx[openIdx.length - 1] || 0;
-  const defs = el('defs', {}); defs.innerHTML = NRMAP.defs; svg.appendChild(defs);
+  const defs = el('defs', {}); defs.innerHTML = NRMAP.defs + '<radialGradient id="nrdawn"><stop offset="0" stop-color="#fff6d8" stop-opacity="1"/><stop offset=".3" stop-color="#ffe0a0" stop-opacity=".8"/><stop offset=".6" stop-color="#ffc060" stop-opacity=".32"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>'; svg.appendChild(defs);
   mapBadges = [];
   T.forEach((t, i) => {
     const [x, y] = pts[i]; const st = states[i]; const stars = townStars(t); const col = CEFR_COL[t.cefr] || '#e8e4d8';
     const g = el('g', { class: 'town' + (st === 'locked' ? ' locked' : ''), transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` });
     g.appendChild(el('circle', { r: f * 2.6, fill: 'transparent' }));
+    if (townAtDawn(t)) g.appendChild(el('circle', { r: f * 5.5, fill: 'url(#nrdawn)', class: 'dawnglow' }));   // a town at dawn glows on the map
     const b = el('g', {}); g.appendChild(b); mapBadges.push({ b, t, st, col });
     const label = el('text', { y: f * 2.75, 'text-anchor': 'middle', class: 'nm', style: `font-size:${f}px` }); label.textContent = NRMAP.label(t); g.appendChild(label);
-    const band = el('text', { y: f * 3.95, 'text-anchor': 'middle', class: 'band', style: `font-size:${(f * 0.88).toFixed(1)}px;fill:${st === 'locked' ? '#aab4c2' : col}` }); band.textContent = t.cefr + (st !== 'locked' && stars ? ' · ★' + stars : ''); g.appendChild(band);
+    const band = el('text', { y: f * 3.95, 'text-anchor': 'middle', class: 'band', style: `font-size:${(f * 0.88).toFixed(1)}px;fill:${st === 'locked' ? '#aab4c2' : col}` }); band.textContent = t.cefr + (st !== 'locked' && stars ? ' · ★' + stars : '') + (townAtDawn(t) ? ' · dawn' : ''); g.appendChild(band);
     g.onclick = () => rideTo(i);
     svg.appendChild(g);
   });
@@ -217,4 +223,4 @@ function pictogram(nl) {
   return `<img src="${pictoCache[key]}" width="32" height="32" alt="">`;
 }
 
-export { openMap, openMission, openTown, pendingLevel, pictogram, TOWN_OF, townOpen, towns };
+export { openMap, openMission, openTown, pendingLevel, pictogram, TOWN_OF, townAtDawn, townOpen, towns };

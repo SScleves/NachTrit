@@ -3,7 +3,7 @@
 // qa/lampbot.js, and a frame saved at the moments worth looking at:
 //   word     level 1: a word in the air on its way to a dark lamp, then the lamp lit after it lands
 //   signs    a shops street (--signs-level, default 60, Utrecht): a blank shop sign, then the same street after words gave signs back
-//   dawn     ?dawn=<town> on that town's first level: the street at dawn, the dawn card, and the map with the town glowing
+//   dawn     ?dawn=<town> on one of its levels (--dawn-town gouda --dawn-level 12): the street at dawn, the dawn card, and the map with the town glowing
 //   stop     a hard level ridden ignoring wisps (--stop-level, default 75): the bus stop as he passes it, the restart card
 // usage: node qa/dt/payoff-shots.mjs [--base http://localhost:8780/index.html] [--jobs word,signs,dawn,stop] [--out dir]
 //                                    [--signs-level 60] [--stop-level 75] [--dawn-town gouda] [--probe 60,68,70]
@@ -17,7 +17,7 @@ const { chromium } = require('playwright');
 const argv = process.argv.slice(2), val = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 ? argv[i + 1] : d; };
 const base = val('base', 'http://localhost:8780/index.html'), jobs = val('jobs', 'word,signs,dawn,stop').split(','), probe = val('probe', '');
 const out = val('out', `qa/out/payoff/${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}`);
-const SIGNS = +val('signs-level', 60), STOP = +val('stop-level', 75), DAWN_TOWN = val('dawn-town', 'gouda');
+const DAWN_LEVEL = +val('dawn-level', 12), SIGNS = +val('signs-level', 60), STOP = +val('stop-level', 75), DAWN_TOWN = val('dawn-town', 'gouda');
 fs.mkdirSync(out, { recursive: true });
 
 function pageInit() {
@@ -101,7 +101,7 @@ if (!probe && jobs.includes('signs')) {
   await p.close();
 }
 if (!probe && jobs.includes('dawn')) {
-  const lv = await (async () => { const p = await open('map=1'); const id = await p.evaluate(t => (LEVELS.find(l => (l.town || '') === t && !l.soon) || LEVELS.find(l => !l.soon)).id, DAWN_TOWN); await p.close(); return id; })();
+  const lv = DAWN_LEVEL;
   const p = await open(`unlock=1&shot=0&level=${lv}&dawn=${DAWN_TOWN}`);
   await stepUntil(p, 'NR.mode === "ride"', 10); await stepUntil(p, 'false', 0.2);
   await frame(p, `dawn-${DAWN_TOWN}-card`, 'the dawn card as the ride begins');
@@ -110,14 +110,14 @@ if (!probe && jobs.includes('dawn')) {
   await stepUntil(p, 'NR.activeFork && NR.activeFork.armed', 60); await stepUntil(p, 'false', 1.2);
   await frame(p, `dawn-${DAWN_TOWN}-fork`, 'a fork at dawn');
   await p.close();
-  const m = await open(`map=1&dawn=${DAWN_TOWN}`);
+  const m = await open(`map=1&unlock=1&dawn=${DAWN_TOWN}`);
   await new Promise(r => setTimeout(r, 1500));
   const f = path.join(out, `dawn-${DAWN_TOWN}-map.png`); await m.screenshot({ path: f }); console.log(`dawn-${DAWN_TOWN}-map`.padEnd(22), f);
   await m.close();
 }
 if (!probe && jobs.includes('stop')) {
   const p = await open(`unlock=1&shot=0&level=${STOP}`);
-  let r = await stepUntil(p, 'NR.objs.some(o => o.type === "halte" && NR.dist - o.d > -26 && NR.dist - o.d < -8)', 400, false);
+  let r = await stepUntil(p, 'NR.objs.some(o => o.type === "halte" && NR.dist - o.d > -20 && NR.dist - o.d < -10) && !NR.activeFork', 400, false);
   await frame(p, `L${STOP}-bus-stop`, `the bus stop ahead at ${r.sec} s: ${JSON.stringify(await p.evaluate(() => ({ delivered: NR.delivered, total: NR.deliveriesTotal })))}`);
   r = await stepUntil(p, 'NR.cp && NR.cp.used && NR.mode === "ride"', 600, false);
   await stepUntil(p, 'false', 0.3);
