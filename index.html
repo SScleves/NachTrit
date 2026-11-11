@@ -602,7 +602,26 @@ function buildNodePost() {
 const _resV = new THREE.Vector2();
 buildPost();
 if (POST) document.querySelectorAll('.css-look').forEach(e => e.style.display = 'none');
+let MIST_Q = null;   // the ground-mist bands, once built (render can run before they are)
+const _mR = new THREE.Vector3(), _mU = new THREE.Vector3();
+function mistSync() {
+  if (!MIST_Q) return;
+  camera.updateMatrixWorld(); const e = camera.matrixWorld.elements; _mR.set(e[0], e[1], e[2]); _mU.set(e[4], e[5], e[6]);
+  for (const B of MIST_Q) {
+    const P = B.q.geometry.attributes.position, a = P.array;
+    B.q.material.color.copy(B.mat.color); B.q.material.opacity = B.mat.opacity;
+    for (let i = 0; i < B.banks.length; i++) {
+      const w = B.banks[i], p = w.position, on = w.visible ? 0.5 : 0, sx = w.scale.x * on, sy = w.scale.y * on, o = i * 12;
+      a[o] = p.x - _mR.x * sx - _mU.x * sy; a[o + 1] = p.y - _mR.y * sx - _mU.y * sy; a[o + 2] = p.z - _mR.z * sx - _mU.z * sy;
+      a[o + 3] = p.x + _mR.x * sx - _mU.x * sy; a[o + 4] = p.y + _mR.y * sx - _mU.y * sy; a[o + 5] = p.z + _mR.z * sx - _mU.z * sy;
+      a[o + 6] = p.x + _mR.x * sx + _mU.x * sy; a[o + 7] = p.y + _mR.y * sx + _mU.y * sy; a[o + 8] = p.z + _mR.z * sx + _mU.z * sy;
+      a[o + 9] = p.x - _mR.x * sx + _mU.x * sy; a[o + 10] = p.y - _mR.y * sx + _mU.y * sy; a[o + 11] = p.z - _mR.z * sx + _mU.z * sy;
+    }
+    P.needsUpdate = true;
+  }
+}
 function render() {
+  mistSync();
   if (NODES) { NODEFX.FOG_D.value = scene.fog.density; NODEFX.FOG_C.value.copy(scene.fog.color); if (composer) { gradePass.uniforms.time.value = (performance.now() % 100000) / 1000; composer.render(); } else renderer.render(scene, camera); return; }
   if (composer) { gradePass.uniforms.time.value = (performance.now() % 100000) / 1000; renderer.setRenderTarget(sceneRT); renderer.render(scene, camera); renderer.setRenderTarget(null); composer.render(); } else renderer.render(scene, camera); }
 addEventListener('resize', () => {
@@ -2124,9 +2143,21 @@ for (const B of MIST_BANDS) {
     const s = new THREE.Sprite(B.mat); s.scale.set(rnd(B.w[0], B.w[1]), rnd(B.h[0], B.h[1]), 1);
     s.userData.band = B; s.userData.bx = B.side ? (Math.random() < 0.5 ? -1 : 1) * rnd(B.side, 16) : rnd(-18, 18); s.userData.drift = rnd(0.2, 0.6);
     s.position.set(s.userData.bx, s.scale.y * 0.12, B.z0 - (i + Math.random() * 0.7) * B.len / B.n);   // the lower part sinks into the ground, so a bank lies on it with no hard edge
-    scene.add(s); wieven.push(s);
+    s.layers.set(1);   // a handle only: the camera draws layer 0, the band's mesh below draws the bank (the shots still test and hide these)
+    scene.add(s); wieven.push(s); (B.banks = B.banks || []).push(s);
   }
+  // one draw call per band instead of one per bank: camera-facing quads written by mistSync() before every render, from the
+  // banks' positions, scales and visibility. A band is one colour and opacity, so the order of its banks does not matter.
+  const n = B.n, g = new THREE.BufferGeometry(), uv = new Float32Array(n * 8), idx = [];
+  for (let i = 0; i < n; i++) { uv.set([0, 0, 1, 0, 1, 1, 0, 1], i * 8); idx.push(i * 4, i * 4 + 1, i * 4 + 2, i * 4, i * 4 + 2, i * 4 + 3); }
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 12), 3)); g.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); g.setIndex(idx);
+  const zc = B.z0 - B.len / 2;
+  g.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 2, zc), 40 + B.len);   // the transparent sort key: the middle of the band, as the banks were
+  g.boundingBox = new THREE.Box3(new THREE.Vector3(-45, 0, B.z0 - B.len - 10), new THREE.Vector3(45, 12, B.z0 + 10));
+  B.q = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: hazeTex, transparent: true, depthWrite: false, fog: false, opacity: B.a }));
+  B.q.frustumCulled = false; B.q.userData.mistBand = true; scene.add(B.q);
 }
+MIST_Q = MIST_BANDS;
 
 // ---------- the bike ----------
 // Santi's retro-future omafiets (concept-art/G-omafiets-retro-future.png): a black frame, a sprung leather saddle, a round warm
