@@ -102,6 +102,8 @@ nemen: neem neemt nemen nam namen genomen
 geven: geef geeft geven gaf gaven gegeven
 krijgen: krijg krijgt krijgen kreeg kregen gekregen
 blijven: blijf blijft blijven bleef bleven gebleven
+hijsen: hijs hijst hijsen hees hesen gehesen
+graven: graaf graaft graven groef groeven gegraven
 schrijven: schrijf schrijft schrijven schreef schreven geschreven
 lezen: lees leest lezen las lazen gelezen
 spreken: spreek spreekt spreken sprak spraken gesproken
@@ -175,6 +177,8 @@ export const PARTICLES = ['terug', 'samen', 'dicht', 'open', 'langs', 'voorbij',
 export function stem(w) {
   let s = w.toLowerCase().replace(/['’]s$/, '').replace(/['’]/g, '');
   if (IRREG_OF.has(s)) return IRREG_OF.get(s);
+  // a particle in front of an irregular form: thuisgebleven, thuisbleef -> thuisblijven, opgegeten -> opeten
+  for (const p of PARTICLES) if (s.startsWith(p) && IRREG_OF.has(s.slice(p.length))) return p + IRREG_OF.get(s.slice(p.length));
   // separable participle: opgelost -> oplost, meegenomen -> meenomen
   for (const p of PARTICLES) if (s.startsWith(p + 'ge') && s.length > p.length + 4) { s = p + s.slice(p.length + 2); break; }
   if (s.startsWith('ge') && s.length > 5 && /[dtn]$/.test(s)) s = s.slice(2);
