@@ -1,20 +1,20 @@
 // The debug and qa hooks on window, in one place: NR (the state), NRstep (step the world without the clock), NRbright, NRinfo,
 // NRbackend, NRpost, NRbike, NRface, NRcam, NRsnap, NRsetDPR, NRTUNE, NRfare, NRfareFns, NRread, NRgo, NRmodels, goLevel. qa/ and
 // qa/dt/ depend on them. Three live next to what they show: NRW (cine.js, the towns use it too), NRmapBike (map.js), NRTK (scenery.js).
-import { legDist, READ_AHEAD, READ_THR } from './reading.js?v=39';
-import { TUNE } from './lamp.js?v=39';
-import { NODES, THREE } from './engine.js?v=39';
-import { MSAA } from './render-nodes.js?v=39';
-import { bloomPass, camera, composer, DPR, gradePass, inkPass, postSize, render, renderer, setDPR } from './render.js?v=39';
-import { MODELS } from './kit.js?v=39';
-import { modelsReady } from './models.js?v=39';
-import { bike, dogs, faceState, setFace } from './rider.js?v=39';
-import { signFit } from './signs.js?v=39';
-import { S } from './state.js?v=39';
-import { goNow } from './input.js?v=39';
-import { openMission } from './map.js?v=39';
-import { paidLine, payTikkie } from './wallet.js?v=39';
-import { update } from './main.js?v=39';   // later modules, through the hub
+import { legDist, READ_AHEAD, READ_THR } from './reading.js?v=40';
+import { TUNE } from './lamp.js?v=40';
+import { NODES, THREE } from './engine.js?v=40';
+import { MSAA } from './render-nodes.js?v=40';
+import { bloomPass, camera, composer, DPR, gradePass, inkPass, postSize, render, renderer, setDPR } from './render.js?v=40';
+import { MODELS } from './kit.js?v=40';
+import { modelsReady } from './models.js?v=40';
+import { bike, dogs, faceState, setFace } from './rider.js?v=40';
+import { signFit } from './signs.js?v=40';
+import { S } from './state.js?v=40';
+import { goNow } from './input.js?v=40';
+import { openMission } from './map.js?v=40';
+import { paidLine, payTikkie } from './wallet.js?v=40';
+import { update } from './main.js?v=40';   // later modules, through the hub
 
 // the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
 window.NRTUNE = TUNE;

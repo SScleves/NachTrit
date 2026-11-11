@@ -1,13 +1,13 @@
 // The rider on his omafiets: the bike group (primitives first, the rider model in their place once it loads), the beam, the
 // two dogs that run beside him, riderTick (the wheels, the pedalling legs, the dogs), his face canvas, the passenger on the
 // rack, and the follower that shows at the end.
-import { clamp, ROAD_W, THREE } from './engine.js?v=39';
-import { scene } from './render.js?v=39';
-import { GlowMat, glowTex, M, Mat, TINT } from './materials.js?v=39';
-import { PM } from './props.js?v=39';
-import { kadd, kb, kbuild, KG, kit, ktube, MODELS } from './kit.js?v=39';
-import { modelClone } from './models.js?v=39';
-import { add, ghostFigure, S } from './main.js?v=39';   // later modules, through the hub
+import { clamp, ROAD_W, THREE } from './engine.js?v=40';
+import { scene } from './render.js?v=40';
+import { GlowMat, glowTex, M, Mat, TINT } from './materials.js?v=40';
+import { PM } from './props.js?v=40';
+import { kadd, kb, kbuild, KG, kit, ktube, MODELS } from './kit.js?v=40';
+import { modelClone } from './models.js?v=40';
+import { add, ghostFigure, S } from './main.js?v=40';   // later modules, through the hub
 
 // ---------- the bike ----------
 // Santi's retro-future omafiets (concept-art/G-omafiets-retro-future.png): a black frame, a sprung leather saddle, a round warm
