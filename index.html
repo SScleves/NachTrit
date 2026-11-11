@@ -162,6 +162,28 @@
   #card .fare s { color:#ff8b84; }
   #card .fare .no { color:#ff8b84; }
   #summary .money { color:var(--dim); font-size:13px; margin:-4px 0 10px; line-height:1.5; }
+  /* the learning core: the "again" tag on a returned item's card, the why card after a wrong answer, the end card's misses */
+  #card .again { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:2px 9px; border-radius:999px; background:#e8e4d8; color:#0b0e16; margin:0 0 5px 6px; vertical-align:top; }
+  #card .again:empty { display:none; }
+  #card.wrong { border-color:rgba(255,139,132,.55); }
+  #card .who s { color:#ff8b84; text-transform:none; letter-spacing:.02em; font-size:13px; }
+  #card .en b.right, #card .nl b.right { color:#9fdc7a; font-style:normal; font-weight:700; text-decoration:none; }
+  #card .whyline { font-size:clamp(14px,2.1vw,17px); line-height:1.35; color:var(--ink); margin-top:8px; }
+  #card .whyline:empty { display:none; }
+  #summary { overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; align-items:flex-start; }
+  #summary .box { margin:auto; }
+  #summary.hasmissed #log { display:none; }
+  #summary.hasmissed #s_words { max-height:13vh; }
+  #s_missed { max-width:520px; margin:0 auto 10px; max-height:32vh; overflow-y:auto; text-align:left; font-size:13px; line-height:1.4; touch-action:pan-y; }
+  #s_missed:empty { display:none; }
+  #s_missed .mhead { color:var(--dim); font-size:11px; letter-spacing:.12em; text-transform:uppercase; text-align:center; }
+  #s_missed .weak { color:#ffd27a; text-align:center; font-size:14px; margin:3px 0 4px; }
+  #s_missed .mrule { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin:9px 0 2px; }
+  #s_missed .mrow { display:flex; gap:9px; align-items:flex-start; padding:5px 0; border-top:1px solid rgba(255,255,255,.07); }
+  #s_missed .say { pointer-events:auto; flex:0 0 auto; width:30px; height:28px; padding:0; font-size:14px; line-height:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.16); border-radius:8px; color:var(--ink); cursor:pointer; }
+  #s_missed .msent { color:#c9d6ff; font-size:14px; } #s_missed .msent b { color:#9fdc7a; } #s_missed .msent .eq { color:var(--dim); }
+  #s_missed .mwhy { color:#9aa1ad; } #s_missed .mwhy s { color:#ff8b84; }
+  #s_missed .magain { font-size:12px; margin-top:1px; } #s_missed .magain.right { color:var(--good); } #s_missed .magain.wrong { color:#ff8b84; }
   @media (max-width: 520px) {
     #distpill { display:none; }
     /* phone: keep the pills clear of the sound button, and let the wallet flash sit under the pill so the row never grows */
@@ -188,7 +210,7 @@
     <div class="pill" id="distpill"><small>Distance</small><span id="dist">0 m</span></div>
   </div>
   <div id="topright"><button class="ico" id="snd" title="Dutch voice">🔊</button></div>
-  <div id="card"><div class="task"></div><div class="who"></div><div class="en"></div><div class="nl"></div><div class="fare"></div><div class="gohint"></div></div>
+  <div id="card"><div class="task"></div><span class="again"></span><div class="who"></div><div class="en"></div><div class="nl"></div><div class="whyline"></div><div class="fare"></div><div class="gohint"></div></div>
   <div id="toast"></div>
   <div id="lanes"><div></div><div></div><div></div></div>
   <div id="err"></div>
@@ -266,6 +288,7 @@
         <div class="pill"><small>Best</small><span id="s_best">0</span></div>
       </div>
       <div class="money" id="s_money"></div>
+      <div id="s_missed"></div>
       <div id="s_words"></div>
       <textarea id="log" readonly></textarea>
       <div id="stars" style="font-size:34px;letter-spacing:.2em;margin:4px 0 10px"></div>

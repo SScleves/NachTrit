@@ -3,6 +3,7 @@
 // material first, and the boot: ?map, ?cine, ?shot and ?level, then the title.
 import { HOLD_AT, READ_AHEAD, READ_THR } from './reading.js?v=39';
 import { lampLoss, lampReadK, TUNE } from './lamp.js?v=39';
+import { onReviewRoad } from './review.js?v=39';
 import { VOICES } from './voice.js?v=39';
 import { $, clamp, FARES, lerp, NODES, rnd, ROAD_W, smooth, THREE } from './engine.js?v=39';
 import { MSAA, setMSAA } from './render-nodes.js?v=39';
@@ -20,7 +21,7 @@ import { ghostFigure } from './cast.js?v=39';
 import { cart, fence, puddle, roadArrow, TEACH_HALO_MAT, wisp } from './zombies.js?v=39';
 import { BASE, L, LANE_X, MAXS, nightDepth, S } from './state.js?v=39';
 import { plan, signFrac } from './plan.js?v=39';
-import { card, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=39';
+import { card, endWhy, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=39';
 import { bark, chime, thump, tick } from './audio.js?v=39';
 import { speak } from './speech.js?v=39';
 import { goKnown, TOUCH } from './input.js?v=39';
@@ -81,8 +82,10 @@ function update(dt) {
     if (!L || L.ramp) S.speed = clamp(S.speed + dt * 0.08, BASE, MAXS);      // slow ramp with time
     const v = S.speed * S.slow * (S.stumble > 0 ? 0.6 : 1) * hillK;
     S.dist += v * dt;
-    // reading costs little lamp: while a fork is armed the drain scales with the speed against cruise (0.85), so slowing to read is cheap; nothing while the first gate holds
-    const readK = lampReadK(S.held, S.activeFork && L, S.slow);
+    if (S.reviewRoad.length) { S.onReview = onReviewRoad(S.reviewRoad, S.dist); if (S.onReview) S.reviewM += v * dt; }   // the road a returned item added
+    // reading costs little lamp: while a fork is armed the drain scales with the speed against cruise (0.85), so slowing to read is cheap; nothing while the first gate holds,
+    // on review road, or while the why card is up
+    const readK = lampReadK(S.held || S.onReview || S.whyT > 0, S.activeFork && L, S.slow);
     S.lamp -= lampLoss(dt, readK, L, S.speed, nightDepth());
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
@@ -191,7 +194,7 @@ function update(dt) {
     if (o.type === 'passenger' && !o.hit && z > -2) {
       o.hit = true; o.mesh.visible = false; mountPassenger(o.mesh.userData.variant, o.mesh.userData.coat); S.riding = o.st; S.slowTarget = 0.6; setTimeout(() => { if (S.activeFork == null) S.slowTarget = 1; }, 1800);
       const fr = fareRow(o.st.fare, o.st.wrong, o.st.forks.length);
-      if (!o.st.carded) forkCard(o.st.fork0, fr); o.st.carded = true; thump(0.5);
+      if (!o.st.carded && !(S.whyT > 0)) { forkCard(o.st.fork0, fr); o.st.carded = true; } thump(0.5);   // under the why card: the gate shows it when it arms
     }
     if (o.type === 'finish' && !o.hit && z > 0) { o.hit = true; levelDone(); return; }
   }
@@ -202,7 +205,7 @@ function update(dt) {
   // fork approach
   if (riding && nearestGate) {
     const g = nearestGate.gate; const z = S.dist - g.d;   // negative while ahead
-    if (!g.armed && z > -g.armD) {   // the card and the voice come up here, before the signs read: the English first
+    if (!g.armed && z > -g.armD && !(S.whyT > 0)) {   // the card and the voice come up here, before the signs read: the English first (after the why card)
       g.armed = true; S.activeFork = g; g.laneN0 = S.laneN; setFace('worry', 2.0, false);
       const f = g.fork;
       const fr = f.read ? fareRow(f.fare, 0, 1) : fareRow(f.st.fare, f.st.wrong, f.st.forks.length);
@@ -247,6 +250,15 @@ function update(dt) {
     if (g.armed) { const cells = $('lanes').children; for (let i = 0; i < 3; i++) cells[i].classList.toggle('here', i === S.lane); }
     S.forkZoom = lerp(S.forkZoom, g.armed ? clamp(1 - (-z) / 46, 0, 1) : 0, dt * 4);
   } else S.forkZoom = lerp(S.forkZoom, 0, dt * 4);
+  // the why card after a wrong answer: the bike crawls at the fork speed and stops short of the next fork's reading range
+  // (that fork arms when the card goes), the lamp holds (readK above); ↑ ends it early
+  if (riding && S.whyT > 0) {
+    S.whyT -= dt;
+    let k = L ? L.forkSlow : 0.55;
+    if (nearestGate) k = Math.min(k, Math.max(0, nearestGate.d - S.dist - nearestGate.gate.legD - 1) / 12);
+    S.slowTarget = k;
+    if (S.whyT <= 0) endWhy();
+  }
 
   // cleanup
   for (let i = S.objs.length - 1; i >= 0; i--) {

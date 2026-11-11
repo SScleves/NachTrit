@@ -1,7 +1,13 @@
 // A ride from start to end: start() dresses the town and builds the level queue, reset() clears the road, the first-ride
 // teaching and the lamp hint, die() and the summary card with stars and scores, and resolveFork, the verdict on each fork.
+// The learning core (PLAN.md 3a, 3d) is here too: a missed item goes back in the queue (sendBack), a wrong answer gets the why
+// card, every fork is noted for the end card's list of misses by rule (noteFork, missedHtml). Its pure rules: src/review.js.
 import { refuelRight, TUNE } from './lamp.js?v=39';
 import { levelQueue } from './forks.js?v=39';
+import { whyBudget } from './reading.js?v=39';
+import { TASKS } from './tasks.js?v=39';
+import { VOICES } from './voice.js?v=39';
+import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=39';
 import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=39';
 import { camera, scene } from './render.js?v=39';
 import { setRoadLook } from './road.js?v=39';
@@ -9,8 +15,8 @@ import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=3
 import { buildScenery, theme, THEMES } from './scenery.js?v=39';
 import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=39';
 import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=39';
-import { plan } from './plan.js?v=39';
-import { assembled, flash, hideCard, say, toast } from './hud.js?v=39';
+import { plan, unplanFinish } from './plan.js?v=39';
+import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=39';
 import { chime, initAudio } from './audio.js?v=39';
 import { speak, speakSeq } from './speech.js?v=39';
 import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=39';
@@ -42,7 +48,11 @@ function reset() {
   Object.assign(S, { t: 0, dist: 0, speed: BASE, slow: 1, slowTarget: 1, lane: LANE_X.length === 2 ? 0 : 1, x: 0, lean: 0, lamp: L ? 85 : 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
     objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L, LANE_X.length) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, grade: 0, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100,
     met: new Map(), tasksSeen: new Set(), goHints: 0, teachPlan: L && !taughtBefore() ? 3 : 0, taught: 0, lastWords: 0, held: false, wispEasy: !!L && fareTier() === 1,
-    cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: fareTier(), score: 0, fxT: 0, paid: 0, walletLast: 0, tickT: -1 });
+    cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: fareTier(), score: 0, fxT: 0, paid: 0, walletLast: 0, tickT: -1,
+    // the learning core: forks answered, entries planned, the misses for the end card, first rides per task, misses per item,
+    // the returns (count, their verdicts, the why cards shown, one log line each), the why card, review road
+    forkN: 0, plannedN: 0, missList: [], tally: {}, missN: new Map(), learn: { returns: 0, right: 0, wrong: 0, whyN: 0, log: [] },
+    whyT: 0, reviewRoad: [], reviewM: 0, onReview: false });
   $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
   follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); setRackGhost(null); }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
@@ -54,13 +64,13 @@ function taughtBefore() { try { return localStorage.getItem('nachtrit.taught') =
 let lampHinted = (() => { try { return localStorage.getItem('nachtrit.lamphint') === '1'; } catch (e) { return true; } })();
 function setLampHinted(v) { lampHinted = v; }   // the loop gives the hint once (an imported binding is read-only)
 function die() {
-  S.mode = 'dying'; S.dieT = 0; hideCard(); setFace('scream', 9);
+  S.mode = 'dying'; S.dieT = 0; S.whyT = 0; hideCard(); $('lanes').style.opacity = 0; setFace('scream', 9);
   follower.visible = true; follower.position.set(0, 0, 11); follower.lookAt(0, 4, 0);
   speak('Je bent te laat.');
 }
 
 function showSummary(won) {
-  S.mode = 'dead';
+  S.mode = 'dead'; S.whyT = 0;
   $('s_souls').textContent = L ? `${S.delivered}/${S.deliveriesTotal}` : S.souls; $('s_dist').textContent = Math.round(S.dist) + ' m';
   $('s_good').textContent = S.good; $('s_bad').textContent = S.bad;
   let stars = 0;
@@ -79,6 +89,7 @@ function showSummary(won) {
   $('s_words').innerHTML = wl.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase">Words tonight · ${wl.filter(w => w[1].ok).length} of ${wl.length} right</div>`
     + wl.map(([nl, w]) => `<span class="${w.ok ? 'ok' : 'no'}">${w.ok ? '✓' : '✗'}</span> <b>${nl}</b> ${w.en}`).join(' · ') : '';
   $('log').value = S.mistakes.map(m => `- ${today()} — ${m.said} → ${m.should} → [[${m.note}]]`).join('\n') || '(no mistakes)';
+  const missed = missedHtml(); $('s_missed').innerHTML = missed; $('summary').classList.toggle('hasmissed', !!missed);
   // money: score, best per level (levels only when home, endless on every death), the wallet line
   S.score = S.delivered * 100 + S.cents / 10 + Math.round(clamp(S.lampMin, 0, 100));
   const sk = L ? String(L.id) : 'endless';
@@ -97,6 +108,22 @@ $('again').onclick = () => {
   if (L && $('again').textContent === 'Next place') { const next = LEVELS.find(l => l.id === L.id + 1); if (next && !next.soon && L.id < 1000 && unlocked(next)) return openMission(next); return openMap(); }
   start(L);
 };
+// the end card's misses (PLAN.md 3d point 4): grouped by rule (the task label), the weakest rule in one line, and per item the
+// sentence with the right form marked, what he rode, the why line, how its return went, and a speaker button
+function missedHtml() {
+  const { groups, weakest } = groupMisses(S.missList, S.tally, TASKS);
+  if (!groups.length) return '';
+  const row = m => {
+    const [a, b, c] = markRight(m.nl, m.right);
+    const sent = b ? `${esc(a)}<b>${esc(b)}</b>${esc(c)}` : `${esc(m.nl)} <span class="eq">=</span> <b>${esc(m.right)}</b>`;
+    const back = m.again === 'right' ? '<div class="magain right">Right when it came back.</div>' : m.again === 'wrong' ? '<div class="magain wrong">Missed again when it came back.</div>' : '';
+    return `<div class="mrow"><button class="say" data-say="${esc(m.nl)}" title="Hear it" aria-label="Hear it">🔊</button><div><div class="msent">${sent}</div>`
+      + `<div class="mwhy">${m.said ? `<s>${esc(m.said)}</s>${m.why ? ' · ' : ''}` : ''}${esc(m.why)}</div>${back}</div></div>`;
+  };
+  return `<div class="mhead">Missed tonight · ${S.missList.length}</div>` + (weakest ? `<div class="weak">${esc(weakLine(weakest))}</div>` : '')
+    + groups.map(g => `<div class="mrule" style="color:${g.color}">${esc(g.label)} · ${g.items.length}</div>` + g.items.map(row).join('')).join('');
+}
+$('s_missed').onclick = e => { const b = e.target.closest && e.target.closest('button[data-say]'); if (b) { initAudio(); speak(b.dataset.say, false, VOICES.rider, true); } };
 $('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy mistakes', 1500); };
 
 function resolveFork(gate) {
@@ -104,43 +131,80 @@ function resolveFork(gate) {
   const post = gate.posts.find(p => p.lane === S.lane);
   const chosenIdx = post ? post.oi : -1;
   const ok = chosenIdx === fork.a;
-  if (L && (fork.read || (fork.st && fork.st.forks.length === 1))) {   // the words of the ride, for the end card: words met, words right
+  const back = fork.entry.again || 0;   // 0 on the item's first ride; 1 or 2 when a miss brought it back (it never counts for stars)
+  S.forkN++; noteFork(fork, ok, back, chosenIdx);
+  if (L && !back && (fork.read || (fork.st && fork.st.forks.length === 1))) {   // the words of the ride, for the end card: words met, words right
     const k = fork.entry.nl, was = S.met.get(k); S.met.set(k, { en: fork.read ? fork.o[fork.a] : fork.entry.en, ok: ok && (!was || was.ok) });
   }
   if (gate.teach && ++S.taught >= 3) { try { localStorage.setItem('nachtrit.taught', '1'); } catch (e) {} }
   const rule = RULES[fork.r] || { name: fork.r, note: fork.r };
+  const done = fork.read || fork.idx === fork.st.forks.length - 1;
   if (ok) {
-    S.good++; S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
+    if (back) S.learn.right++; else S.good++;
+    S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
     S.lamp = clamp(S.lamp + refuelRight(S.streak) + (gate.goEarly ? TUNE.fast : 0), 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
-    if (fork.read) { S.souls++; S.delivered++; const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
+    if (fork.read) { if (!back) { S.souls++; S.delivered++; } const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
     else {
       fork.st.chosen.push(fork.o[fork.a]);
-      const done = fork.idx === fork.st.forks.length - 1;
-      if (done) { S.souls++; if (fork.st.wrong === 0) S.delivered++; hideCard(); const m = settleRide(fork); say(`<b>${fork.entry.nl}</b>`, 'good', whyLine(L ? fork.w : 'Delivered.', m.line), 3.2); speakSeq(m.voice); dropPassenger(); }
+      if (done) { if (!back) { S.souls++; if (fork.st.wrong === 0) S.delivered++; } hideCard(); const m = settleRide(fork); say(`<b>${fork.entry.nl}</b>`, 'good', whyLine(L ? fork.w : 'Delivered.', m.line), 3.2); speakSeq(m.voice); dropPassenger(); }
       else { say(`<b>${fork.o[fork.a]}</b>`, 'good', null, 1.6); speak(fork.o[fork.a], true); }
     }
   } else {
-    S.bad++; S.streak = 0; S.wrongRow++; S.cleanRow = 0; setFace('ouch', 2.2);
-    S.lamp = clamp(S.lamp - (L ? 14 : 22), 0, 100); S.speed = clamp(S.speed - 3, BASE, MAXS);
+    if (back) S.learn.wrong++; else { S.bad++; S.wrongRow++; }   // a return answered wrong never counts toward the three in a row
+    S.streak = 0; S.cleanRow = 0; setFace('ouch', 2.2);
+    if (!back) S.lamp = clamp(S.lamp - (L ? 14 : 22), 0, 100);   // review never kills: a return costs no lamp
+    S.speed = clamp(S.speed - 3, BASE, MAXS);
     flash('#a01010', 0.45); chime(false); S.stumble = 1;
-    const saidTxt = chosenIdx >= 0 ? fork.o[chosenIdx] : '(geen keuze)';
+    const saidTxt = chosenIdx >= 0 ? fork.o[chosenIdx] : '(geen keuze)', said = chosenIdx >= 0 ? fork.o[chosenIdx] : '';
+    const secs = whyBudget(fork.w); S.learn.whyN++;
     if (fork.read) {
       S.missed += fork.fare;
-      say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', whyLine(fork.w, 'Geen cent.'), 3.6);
-      S.mistakes.push({ said: `"${fork.entry.nl}" read as "${saidTxt}"`, should: `"${fork.o[fork.a]}"`, note: rule.note });
+      whyCard(fork, said, '<span class="no">Geen cent.</span>', secs);
+      if (!back) S.mistakes.push({ said: `"${fork.entry.nl}" read as "${saidTxt}"`, should: `"${fork.o[fork.a]}"`, note: rule.note });
     } else {
       const wrongSentence = assembled(fork.st, fork.idx, chosenIdx >= 0 ? saidTxt : '___').replace(' …', '');
-      S.mistakes.push({ said: wrongSentence, should: fork.entry.nl, note: rule.note });
+      if (!back) S.mistakes.push({ said: wrongSentence, should: fork.entry.nl, note: rule.note });
       fork.st.chosen.push(fork.o[fork.a]); // the sentence continues with the right word
       fork.st.wrong++; if (fork.st.lostAt < 0) fork.st.lostAt = fork.idx;
-      const done = fork.idx === fork.st.forks.length - 1;
-      if (done) { S.souls++; hideCard(); const m = settleRide(fork); say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', whyLine(fork.w, m.line), 3.6); speakSeq(m.voice); dropPassenger(); }
-      else say(`<s>${saidTxt}</s> → <b>${fork.o[fork.a]}</b>`, 'bad', fork.w, 3.6);
+      if (done) { if (!back) S.souls++; hideCard(); const m = settleRide(fork); whyCard(fork, said, settledHtml(fork.st, m), secs); speakSeq(m.voice); dropPassenger(); }
+      else whyCard(fork, said, fareRow(fork.st.fare, fork.st.wrong, fork.st.forks.length), secs);
     }
     if (S.wrongRow >= 3) S.lamp = 0;
   }
   for (const p of gate.posts) p.mesh.userData.board.material.color.set(p.oi === fork.a ? 0x9fdc7a : 0x7a3a3a);
+  if (back && done) { const r = S.learn.log.find(x => x.entry === fork.entry); if (r) { r.result = (fork.read ? ok : fork.st.wrong === 0) ? 'right' : 'wrong'; r.fare = fork.read ? fork.fare : fork.st.fare; } }
+  if (L && done && (fork.read ? !ok : fork.st.wrong > 0)) sendBack(fork);   // a missed item comes back later in this ride
+}
+// the fare line of a ride settled on a wrong answer: the struck fare and what was paid, or the refusal
+function settledHtml(st, m) {
+  if (m.line) return `${fareRow(st.fare, st.wrong, st.forks.length)} · ${esc(m.line)}`;
+  const r = m.refused && FARES.REFUSE.find(x => x.nl === m.refused);
+  return r ? `<span class="no">${esc(r.nl)} <i>${esc(r.en)}</i></span>` : '';
+}
+// every fork, for the end card: first rides per task (the weakest rule), each missed fork once, and how its return went
+function noteFork(fork, ok, back, chosenIdx) {
+  const origin = fork.entry.origin || fork.entry, task = fork.taskId || 'word';
+  if (!back) { const t = S.tally[task] || (S.tally[task] = { tried: 0, missed: 0 }); t.tried++; if (!ok) t.missed++; }
+  if (back && fork.idx === 0) { const r = S.learn.log.find(x => x.entry === fork.entry); if (r) r.gap = S.forkN - r.at - 1; }   // other forks between the miss and its return
+  const m = S.missList.find(x => x.origin === origin && x.idx === fork.idx);
+  if (ok) { if (m && back) m.again = 'right'; return; }
+  if (m) { if (back) m.again = 'wrong'; return; }
+  S.missList.push({ origin, idx: fork.idx, task, nl: fork.entry.nl, right: fork.o[fork.a], said: chosenIdx >= 0 ? fork.o[chosenIdx] : '', why: fork.w || '', again: '', first: !back });
+}
+// a missed item goes back in the queue (PLAN.md 3a): after 3 to 5 other forks, a second miss in the last quarter, at most twice,
+// at most six a ride. It rides as a copy with again = 1 or 2: the "again" tag, half fare, review road
+const forksIn = e => e.read ? 1 : e.parts.filter(p => typeof p !== 'string').length;
+function sendBack(fork) {
+  const origin = fork.entry.origin || fork.entry, n = (S.missN.get(origin) || 0) + 1; S.missN.set(origin, n);
+  if (!shouldReturn(n, S.learn.returns)) return;
+  let ahead = 0; for (const o of S.objs) if (o.type === 'gate' && !o.gate.resolved) ahead++;
+  const at = returnSlot(ahead, S.queue.map(forksIn), S.plannedN, n);
+  const e = Object.assign({}, origin, { again: n, origin });
+  S.queue.splice(at, 0, e); S.learn.returns++;
+  S.learn.log.push({ entry: e, nl: origin.nl, misses: n, at: S.forkN, ahead, slot: at, ofQueue: S.queue.length - 1, planned: S.plannedN,
+    full: origin.read ? FARES.FLAT.read || 0 : FARES.fareFor(origin, S.fareTier) || 0, fare: -1, gap: -1, result: '' });
+  if (S.finishPlanned) unplanFinish();   // the finish was already on the road: the return rides before it
 }
 
 export { die, lampHinted, levelDone, reset, resolveFork, setLampHinted, showSummary, start };

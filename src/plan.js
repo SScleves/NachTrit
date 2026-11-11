@@ -1,14 +1,16 @@
 // The planner: what goes on the road ahead. Filler between forks (obstacles, the dead, wisps), and each fork placed so its
 // signs stay legible for its whole reading budget at the tier's speed (planFork, planSentence, placeFork). The pure rules it
-// uses are in forks.js (the level queue), reading.js (budget, legibility) and tasks.js (the task label).
+// uses are in forks.js (the level queue), reading.js (budget, legibility) and tasks.js (the task label). A missed item that
+// comes back (src/review.js, put in the queue by src/flow.js) rides on review road: a quiet stretch, half fare.
 import { taskOf } from './tasks.js?v=39';
 import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=39';
 import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=39';
 import { camera, scene } from './render.js?v=39';
 import { mistTex } from './road.js?v=39';
+import { PG } from './props.js?v=39';
 import { PROPS } from './houses.js?v=39';
 import { footprint, scenery } from './scenery.js?v=39';
-import { bigSign, signFit, signpost } from './signs.js?v=39';
+import { bigSign, G, signFit, signpost } from './signs.js?v=39';
 import { ghostFigure } from './cast.js?v=39';
 import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=39';
 import { BASE, L, LANE_X, S } from './state.js?v=39';
@@ -27,8 +29,9 @@ function add(obj, d, lane, type, extra = {}) {
   const o = Object.assign({ mesh: obj, d, lane, type, hit: false, bx }, extra);
   S.objs.push(o); return o;
 }
-function planFiller(len) {
+function planFiller(len, quiet) {
   const start = S.planCursor, end = start + len;
+  if (quiet) { S.planCursor = end; return; }   // review road: nothing to dodge and nothing to collect, the lamp holds there
   let d = start + 10;
   while (d < end - 8) {
     const gap = 11 + S.speed * 0.5;
@@ -94,7 +97,7 @@ function planSentence(entry) {
   if (entry.read) {
     const d0 = S.planCursor + 14;
     add(bigSign(entry.nl), d0, null, 'readsign', { nl: entry.nl }).mesh.position.x = 0;
-    const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true, fare: FARES.FLAT.read || 0 };
+    const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true, fare: entry.again ? FARES.halfFare(FARES.FLAT.read || 0) : FARES.FLAT.read || 0 };
     const dF = d0 + Math.max(34, planFork(fork).slowD + 6);
     placeFork(fork, dF);
     S.planCursor = dF + 10;
@@ -102,6 +105,7 @@ function planSentence(entry) {
   }
   // fareFor gives passengers their tier fare, look entries FLAT.look and de/het entries FLAT.dehet
   const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0, fare: FARES.fareFor(entry, S.fareTier) || 0, lostAt: -1 };
+  if (entry.again) st.fare = FARES.halfFare(st.fare);   // a returned item pays half
   if (entry.look) { // the thing stands beside the road, the signs come right after it
     const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
     const mesh = pr.make(entry.value); if (pr.scale) mesh.scale.setScalar(pr.scale); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;
@@ -154,10 +158,25 @@ function placeFork(fork, d) {
 function plan() {
   while (S.planCursor < S.dist + LOOK) {
     if (!L) { planFiller(rnd(55, 85)); planSentence(nextEntry()); continue; }
-    if (S.queue.length) { planFiller(rnd(L.filler[0], L.filler[1]) + Math.max(0, (S.lastWords || 0) - 4) * 0.1 * BASE); planSentence(S.queue.shift()); continue; }   // 0.1 s a word over four at the level's speed: long sentences never back to back
+    if (S.queue.length) {   // 0.1 s a word over four at the level's speed: long sentences never back to back
+      const len = rnd(L.filler[0], L.filler[1]) + Math.max(0, (S.lastWords || 0) - 4) * 0.1 * BASE, e = S.queue.shift(), from = S.planCursor;
+      planFiller(len, !!e.again); planSentence(e); S.plannedN++;
+      if (e.again) S.reviewRoad.push([from, S.planCursor]);   // the road a return adds: the lamp does not drain on it (src/loop.js)
+      continue;
+    }
     if (!S.finishPlanned) { S.finishPlanned = true; planFiller(30); const d = S.planCursor + 10; add(bigSign('THUIS'), d, null, 'finish', {}).mesh.position.x = 0; S.planCursor = d + 60; }
     else S.planCursor += 60;
   }
 }
 
-export { add, plan, signFrac };
+// a missed item went back in the queue after the finish was planned: take the finish sign away and plan on from where its
+// run-in began, so the return rides before THUIS
+function unplanFinish() {
+  const i = S.objs.findIndex(o => o.type === 'finish' && !o.hit); if (i < 0) return false;
+  const o = S.objs[i]; S.objs.splice(i, 1); scene.remove(o.mesh);
+  o.mesh.traverse(m => { if (m.material && m.material.map && !m.material.userData.shared) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); });
+  S.finishPlanned = false; S.planCursor = o.d - 10;
+  return true;
+}
+
+export { add, plan, signFrac, unplanFinish };

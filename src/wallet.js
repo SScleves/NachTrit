@@ -13,19 +13,19 @@ function paidLine(cents, tip) {   // 'Alsjeblieft. Twee euro dertig.' plus the t
   const w = FARES.euroToWords(handed(cents, tip) / 100).replace(/^één/, 'eén');
   return w ? 'Alsjeblieft. ' + w.charAt(0).toUpperCase() + w.slice(1) + '.' + (tip ? ' ' + tip : '') : '';
 }
-// the last fork of a ride settles the money: full or part pay, or a refusal; returns the toast line and what is said
+// the last fork of a ride settles the money: full or part pay, or a refusal; returns the toast line, what is said and the refusal
 function settleRide(fork) {
   const st = fork.st, nl = fork.entry.nl; S.riding = null;
   const quiet = fork.entry.dehet || (L && L.id > 1000);   // de/het and bonus fares are not spoken: the next card comes too fast
   const pay = FARES.payCents(st.fare, st.wrong, st.forks.length);
-  if (S.wrongRow >= 3) { S.missed += st.fare; return { line: '', voice: [nl] }; }   // the death on the next frame owns this moment
+  if (S.wrongRow >= 3) { S.missed += st.fare; return { line: '', voice: [nl], refused: '' }; }   // the death on the next frame owns this moment
   if (pay > 0) {
     S.missed += st.fare - pay;
     const tip = payFare(pay, st.wrong === 0);
-    return { line: paidLine(pay, tip), voice: quiet ? [nl] : [nl, FARES.euroToWords(handed(pay, tip) / 100), tip] };
+    return { line: paidLine(pay, tip), voice: quiet ? [nl] : [nl, FARES.euroToWords(handed(pay, tip) / 100), tip], refused: '' };
   }
   const r = refuse(st);
-  return { line: '', voice: quiet ? [nl] : [nl, r] };
+  return { line: '', voice: quiet ? [nl] : [nl, r], refused: r };
 }
 // money in; every third clean ride in a row adds a tip; returns the tip line or ''
 function payFare(cents, clean = true) {

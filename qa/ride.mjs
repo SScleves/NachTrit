@@ -19,6 +19,10 @@
 //   --ignore    the autopilot ignores wisps (expect deaths on 58 and 75)
 //   --miss K    ride through a wrong sign at every K-th fork (exercises the wrong path, the why line and the mistakes list)
 //   --teach     a first-time player: the teaching forks of the first ride (nachtrit.taught unset)
+//   --shots     also save a frame of the first why card (after a wrong answer) and of the first card with the "again" tag
+//               (a missed item come back); use with --miss and --gpu
+// With misses, each level also prints the learning core's numbers (PLAN.md 3a, 3d): the returns, the other forks between each
+// miss and its return, full and paid fares, metres of review road, lamp lost on review road and while the why card was up.
 // Prints one line per level and a table; writes qa/out/ride/<stamp>/report.json and a PNG of each summary card.
 // Exit 1 on any page error, a ride that never reached the summary card, or (in the default always-right, collecting mode) a death.
 import fs from 'node:fs';
@@ -37,7 +41,7 @@ const VALUED = ['base', 'seed', 'miss', 'chunk', 'w', 'h', 'out', 'json'];
 const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(argv[i - 1].replace(/^--/, ''))));
 const levels = (pos[0] || '1').split(',').map(s => +s.trim()).filter(Boolean);
 const opt = {
-  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'),
+  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), shots: flag('shots'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'),
   chunk: Math.max(12, Math.round((+val('chunk', 300) || 300) / 12) * 12), w: +val('w', 1280), h: +val('h', 800),
   out: val('out', path.join(ROOT, 'qa', 'out', 'ride', new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19))), json: val('json', ''),
 };
@@ -88,8 +92,9 @@ function pageInit({ seed, teach }) {
 }
 
 // ---- the ride, in the page (after qa/lampbot.js has defined __bot)
-function rideSetup({ collect, miss, draw }) {
-  const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap(), draw };
+function rideSetup({ collect, miss, draw, shots }) {
+  const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap(), draw,
+    shots: shots ? ['why', 'again'] : [], pause: '', lamp: NR.lamp, rev: false, why: false, lostRev: 0, lostWhy: 0, whySec: 0, revFrames: 0 };
   const rr = NRpost().renderer; R.drawCall = rr.render; R.noDraw = () => {};   // the renderer's own draw, and a stand-in that draws nothing
   window.__nl = NR.objs.some(o => o.lane === 2) ? 3 : 2;   // as lamp-balance.mjs: two-lane levels have no lane 2
   R.steer = () => {
@@ -103,16 +108,35 @@ function rideSetup({ collect, miss, draw }) {
   };
   R.each = () => {
     R.frame++; __vt.tick(1 / 60);
+    // the learning core: lamp lost on a frame that began and ended on review road, or began under the why card
+    const d = NR.lamp - R.lamp, rev = !!NR.onReview, why = NR.whyT > 0;
+    if (d < 0 && rev && R.rev) R.lostRev -= d;
+    if (d < 0 && R.why && NR.mode === 'ride') R.lostWhy -= d;
+    if (why) R.whySec += 1 / 60; if (rev) R.revFrames++;
+    R.lamp = NR.lamp; R.rev = rev; R.why = why;
     if (NR.mode === 'dead') { R.ended = true; throw R; }   // the summary card is up: stop on this frame
     if (R.frame % 12 === 0) R.steer();
+    if (R.shots.length && NR.mode === 'ride') {   // --shots: stop the chunk on the frame worth a picture
+      const g = NR.activeFork;
+      if (R.shots[0] === 'why' && why && R.whySec > 0.6) { R.pause = R.shots.shift(); throw R; }
+      if (R.shots.includes('again') && g && g.fork.entry.again && g.legT > 0.8) { R.shots.splice(R.shots.indexOf('again'), 1); R.pause = 'again'; throw R; }
+    }
   };
   R.steer();
 }
 function rideChunk(n) {
   const R = window.__ride, t0 = performance.now(), rr = NRpost().renderer;
   if (!R.draw) rr.render = R.noDraw;
+  R.pause = '';
   try { if (!R.ended) NRstep(n, R.each); } catch (e) { if (e !== R) throw e; } finally { rr.render = R.drawCall; }
-  return { frame: R.frame, ended: R.ended, mode: NR.mode, ms: Math.round(performance.now() - t0) };
+  return { frame: R.frame, ended: R.ended, mode: NR.mode, ms: Math.round(performance.now() - t0), pause: R.pause };
+}
+// --shots: draw this frame into an image under the HUD (a headless screenshot does not see the WebGL canvas), or take it away
+function shotFrame(on) {
+  document.querySelectorAll('img.__shot').forEach(i => i.remove());
+  if (!on) return;
+  NRbright(); const img = new Image(); img.className = '__shot'; img.src = NRpost().renderer.domElement.toDataURL();
+  img.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1'; document.body.appendChild(img);
 }
 function rideResult() {
   const R = window.__ride, $ = id => document.getElementById(id);
@@ -120,6 +144,10 @@ function rideResult() {
     result: NR.mode === 'dead' ? (NR.dieT >= 10 ? 'home' : 'dies') : NR.mode, delivered: NR.delivered, total: NR.deliveriesTotal, right: NR.good, wrong: NR.bad,
     lamp: Math.round(NR.lamp * 10) / 10, lampMin: Math.round(NR.lampMin * 10) / 10, dist: Math.round(NR.dist), gameSec: Math.round(R.frame / 6) / 10, frames: R.frame,
     missedOnPurpose: R.missed,
+    learn: { returns: NR.learn.returns, againRight: NR.learn.right, againWrong: NR.learn.wrong, whyCards: NR.learn.whyN, whySec: Math.round(R.whySec * 10) / 10,
+      reviewM: Math.round(NR.reviewM), lampLostOnReview: Math.round(R.lostRev * 100) / 100, lampLostUnderWhy: Math.round(R.lostWhy * 100) / 100, missedItems: NR.missList.length,
+      weakest: (document.querySelector('#s_missed .weak') || {}).textContent || '',
+      log: NR.learn.log.map(r => ({ nl: r.nl, misses: r.misses, afterFork: r.at, gap: r.gap, full: r.full, paid: r.fare, result: r.result })) },
     title: $('sumtitle').textContent, stars: $('stars').textContent, score: NR.score, cents: NR.cents, mistakes: NR.mistakes.length,
     summaryShown: $('summary').style.display === 'flex', errBox: $('err').textContent.trim(), timersLeft: __vt.pending(),
   };
@@ -146,13 +174,18 @@ async function rideLevel(browser, base, id) {
   const r0 = await page.evaluate(() => { document.querySelectorAll('img').forEach(i => { if (i.style.zIndex === '1') i.remove(); }); return { mode: NR.mode, level: NR.deliveriesTotal }; });
   if (r0.mode !== 'intro') errors.push(`harness: level ${id} did not start (mode ${r0.mode})`);
   await page.evaluate(async () => { eval(await (await fetch('qa/lampbot.js')).text()); });
-  await page.evaluate(rideSetup, { collect: opt.collect, miss: opt.miss, draw: opt.draw });
-  let st, chunks = 0, maxMs = 0, evalMax = 0; const evalMs = [];
+  await page.evaluate(rideSetup, { collect: opt.collect, miss: opt.miss, draw: opt.draw, shots: opt.shots });
+  let st, chunks = 0, maxMs = 0, evalMax = 0; const evalMs = [], shots = [];
   do {
     const e0 = Date.now();
     st = await page.evaluate(rideChunk, opt.chunk); chunks++;
     maxMs = Math.max(maxMs, st.ms); evalMs.push(Date.now() - e0); evalMax = Math.max(evalMax, evalMs[evalMs.length - 1]);
     if (chunks % 10 === 0) process.stdout.write(`  L${id}: ${Math.round(st.frame / 60)} game s, ${Math.round((Date.now() - wall0) / 1000)} s wall\r`);
+    if (st.pause) {   // --shots
+      await page.evaluate(shotFrame, true); await new Promise(r => setTimeout(r, 500));   // the card's fade is real time
+      const f = path.join(opt.out, `L${id}-${st.pause}.png`); await page.screenshot({ path: f }); shots.push(f);
+      await page.evaluate(shotFrame, false);
+    }
   } while (!st.ended && st.frame < MAX_FRAMES);
   const res = await page.evaluate(rideResult);
   if (!st.ended) errors.push(`harness: no summary card after ${MAX_FRAMES} frames (mode ${st.mode})`);
@@ -160,7 +193,7 @@ async function rideLevel(browser, base, id) {
   const png = path.join(opt.out, `L${id}-summary.png`);
   await page.screenshot({ path: png }).catch(() => {});
   await page.close();
-  return { level: id, ...res, chunks, chunkMsMax: maxMs, evaluateMsMax: evalMax, evaluateMs: evalMs.join(' '), wallSec: Math.round((Date.now() - wall0) / 1000), errors, png };
+  return { level: id, ...res, shots, chunks, chunkMsMax: maxMs, evaluateMsMax: evalMax, evaluateMs: evalMs.join(' '), wallSec: Math.round((Date.now() - wall0) / 1000), errors, png };
 }
 
 fs.mkdirSync(opt.out, { recursive: true });
@@ -179,6 +212,13 @@ try {
     const died = r.result !== 'home', bad = r.errors.length || !r.summaryShown || (died && opt.collect && !opt.miss);
     if (bad) fail++;
     console.log(`L${id}: ${r.result}, delivered ${r.delivered}/${r.total}, right ${r.right}, wrong ${r.wrong}, lamp left ${r.lamp} (lowest ${r.lampMin}), ${r.stars || '-'} ${r.title}, ${r.dist} m in ${r.gameSec} game s | ${r.wallSec} s wall, ${r.chunks} chunks, longest evaluate ${r.evaluateMsMax} ms | errors ${r.errors.length}${bad ? '  FAIL' : ''}`);
+    const Ln = r.learn;
+    if (Ln.whyCards || Ln.returns) {
+      console.log(`    learning: ${Ln.returns} returns (right ${Ln.againRight}, wrong ${Ln.againWrong}), ${Ln.reviewM} m review road, lamp lost on it ${Ln.lampLostOnReview}; ${Ln.whyCards} why cards, ${Ln.whySec} s up, lamp lost under them ${Ln.lampLostUnderWhy}; ${Ln.missedItems} missed on the end card`);
+      for (const x of Ln.log) console.log(`      ${x.misses === 1 ? 'back ' : 'back2'} after fork ${x.afterFork}, ${x.gap} forks between, fare ${x.full} -> ${x.paid}, ${x.result || 'not ridden'}: ${x.nl}`);
+      if (Ln.weakest) console.log(`    ${Ln.weakest}`);
+    }
+    for (const f of r.shots) console.log('    shot: ' + f);
     for (const e of r.errors.slice(0, 6)) console.log('    ' + e.slice(0, 300));
   }
 } finally {

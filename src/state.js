@@ -21,12 +21,14 @@ const S = {
   // fares, all integer cents
   cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: 1, score: 0, fxT: 0,
   paid: 0, walletLast: 0, tickT: -1,
+  // the learning core (PLAN.md 3a, 3d): the why card's time left, review road and the distance ridden on it
+  whyT: 0, reviewRoad: [], reviewM: 0, onReview: false,
 };
 // every write to the lane counts as a steer (keys, swipes, and the qa autopilots that set NR.lane): laneN releases the first gate's hold
 { let lane = S.lane; S.laneN = 0; Object.defineProperty(S, 'lane', { get() { return lane; }, set(v) { lane = v; S.laneN++; }, enumerable: true }); }
 // how deep into the night we are: 0 at the start of a level, 1 at the end (endless: by distance)
 const NIGHT_Q = new URLSearchParams(location.search).has('night') ? clamp(parseFloat(new URLSearchParams(location.search).get('night')) || 0, 0, 1) : null;   // ?night=0..1 holds the night depth (for measuring luma)
-function nightDepth() { if (NIGHT_Q !== null) return NIGHT_Q; return nightAt(S.dist, L && S.deliveriesTotal); }
+function nightDepth() { if (NIGHT_Q !== null) return NIGHT_Q; return nightAt(S.dist - S.reviewM, L && S.deliveriesTotal); }   // review road does not bring the dawn nearer
 buildScenery(THEMES.polder);
 let L = null;                 // current level, null = endless
 let BASE = BASE_SPEED, MAXS = MAX_SPEED;

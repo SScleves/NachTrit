@@ -65,11 +65,15 @@ test('misses group by task label, the most missed rule first, items in the order
   assert.deepEqual(groups[0].items.map(m => m.nl), ['b', 'c', 'f']);
   assert.equal(groups[0].color, TASKS.past.color);
 });
-test('the weakest rule is the highest share missed on first tries, then the most misses', () => {
+test('the weakest rule: misses times the share missed on first tries, then the most misses', () => {
   const t = { word: { tried: 10, missed: 3 }, past: { tried: 2, missed: 1 }, order: { tried: 4, missed: 2 } };
   const { weakest } = groupMisses([miss('word', 'a'), miss('word', 'b'), miss('word', 'c'), miss('past', 'd'), miss('order', 'e'), miss('order', 'f')], t, TASKS);
-  assert.equal(weakest.task, 'order', 'a half missed, two misses, beats a half missed with one');
+  assert.equal(weakest.task, 'order', '2 of 4 (1.0) beats 1 of 2 (0.5) and 3 of 10 (0.9)');
   assert.equal(weakLine(weakest), 'Weakest rule tonight: Word order, 2 of 4 missed on the first try.');
+  const w = (tally, ...tasks) => groupMisses(tasks.map(x => miss(x, x)), tally, TASKS).weakest.task;
+  assert.equal(w({ word: { tried: 5, missed: 3 }, dehet: { tried: 1, missed: 1 } }, 'word', 'dehet'), 'word', '3 of 5 beats a single 1 of 1');
+  assert.equal(w({ past: { tried: 3, missed: 3 }, word: { tried: 15, missed: 4 } }, 'word', 'past'), 'past', '3 of 3 beats 4 of 15');
+  assert.equal(w({ past: { tried: 2, missed: 2 }, word: { tried: 8, missed: 4 } }, 'past', 'word'), 'word', 'a tie (2.0): more misses');
 });
 test('misses only on returns name no weakest rule; nothing missed gives no line', () => {
   const { groups, weakest } = groupMisses([miss('verb', 'a', { first: false })], { verb: { tried: 3, missed: 0 } }, TASKS);

@@ -64,8 +64,9 @@ async function voiceSay(text, voice, o, gen) {
   }
   if (gen === voiceGen) return ttsSay(text, o.rate, o.pitch, o.volume);
 }
-function speak(text, whisper = false, voice = VOICES.rider) {
-  if (!S.voice || !text) return;
+// force: a line the player asked for (the end card's speaker buttons) plays even with the voice off
+function speak(text, whisper = false, voice = VOICES.rider, force = false) {
+  if ((!S.voice && !force) || !text) return;
   voiceStop(); const gen = voiceGen;
   voiceSay(text, voice, whisper ? { volume: 0.6, detune: -150, rate: 0.85, pitch: 0.7 } : { volume: 1, detune: 0, rate: 0.9, pitch: 0.9 }, gen);
 }
