@@ -256,7 +256,8 @@
     }
     const dg = ownGeo(new THREE.BufferGeometry());
     dg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 3), 3)); dg.setAttribute('color', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
-    st.grains = new THREE.Points(dg, ownMat(new THREE.PointsMaterial({ map: pt, size: 0.011, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true })));
+    { const gm = ownMat(new THREE.PointsMaterial({ map: pt, size: 0.011, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
+      st.grains = W.NODE ? W.NODE.points(dg, gm) : new THREE.Points(dg, gm); if (W.NODE) ownMat(st.grains.material); }   // the node path draws big points as instanced sprites
     st.grains.frustumCulled = false; set.add(st.grains);
     st.clouds = [];
     for (let i = 0; i < 12; i++) {
@@ -325,7 +326,7 @@
       // their soft shadows on the table, or on the page and the cover they rest on
       st.shadows.forEach((m, i) => { const h = i ? st.right : st.left, s = i ? 1 : -1, ry = h.rotation.y, y = i ? (settle > 0.5 ? TOP + BT + 0.0015 : TOP + 0.0015) : TOP + 0.0015 + (lm > 0.5 ? 2 * BOARD + 0.001 : 0); m.position.set(h.position.x - s * 0.06 * Math.cos(ry), y, h.position.z + s * 0.06 * Math.sin(ry)); m.rotation.z = ry; });
       // dust: lifted off the cover as it moves, thrown up where it lands; it rises and spreads in the warm light and fades
-      const pos = st.grains.geometry.attributes.position, col = st.grains.geometry.attributes.color;
+      const gg = st.grains.userData.pts || st.grains.geometry, pos = gg.attributes.position, col = gg.attributes.color;
       st.dust.forEach((u, i) => {
         let x = 0, y = -10, z = 0, b = 0;
         const age = t - u.t0;
