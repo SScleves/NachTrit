@@ -176,3 +176,30 @@ The shape from HANDOVER section 6 still holds: a rider who collects wisps finish
 - The bark's volume and panning.
 - That the hold toast does not cover the signs on phones.
 - That draw calls stay under 600 at forks, and that frame time does not change from the per-frame `signFrac` projections (2 or 3 per frame).
+
+## Go input and clear tasks (11 Nov 2026)
+
+Santi played the branch and said two things. The slow-down helps, but it is too slow when he already knows the answer. At higher levels it is often unclear what a fork asks. The mixed forks felt weird, for example level 75's `werkte ik / ik werkte / werkde ik`, which tests word order and spelling at once. The design we agreed on: the card asks, the signs answer, and the player sets the pace. This is the engine part. The content rewrite comes after Santi has played it.
+
+- **Go**: ↑ or W, or a swipe up on touch (`goNow`, also `window.NRgo` for qa). Go cancels the reading slow-down, creep and wait for the current fork, and `S.slowTarget` goes back to cruising (0.85 in a level). `S.slow` eases back up at its usual rate, so the speed never jumps. The reading budget is now the longest the bike waits, never a wait you have to sit through. Go also releases the first-ride hold. Steering never counts as go, and the harness autopilots, which write `NR.lane`, still just steer.
+- **Fast refuel**: a right answer after go, pressed before the fork's legible time reached its budget (`gate.goEarly`), adds `TUNE.fast` (1) on top of `refuelRight()`. Waiting costs nothing, and wrong answers cost the same as before.
+- **Go hint**: the card shows "↑ or W once you have chosen: the bike stops waiting." ("Swipe up ..." on coarse pointers) on armed forks until the player has used go once. That is stored as `localStorage nachtrit.go = '1'`, separate from `nachtrit.progress`. It never shows on teaching forks, and at most 6 times a ride.
+- **Task labels** (`TASKS`, `taskOf`): a coloured pill at the top of the card. There are 8 labels: Word order, Past tense, Verb form, Which word, de or het, Comparison, Listen and Meaning. Order is decided first by the options themselves: if all options are the same words in another order, the label is Word order. Otherwise the rule id decides, and any id not in the map is Which word. `task` on a fork or item overrides both. The table is in CONTENT-BRIEF.md, "One thing per fork".
+- **Gap frame** (`cardFrame`): the card shows the whole Dutch sentence. Earlier gaps are filled in, the current gap is a glowing gold slot, and later gaps are dim slots. De/het cards use the same slot. The passenger pickup and the gate now share one card builder (`forkCard`). `assembled()` is unchanged and still writes the mistakes log.
+- **First of a type**: planning runs in ride order, so the first fork of each task type in a level is marked `firstTask`. That fork gets a larger label, 1.5 s more budget and a slow zone of at least 30 m, like the teaching forks, but with no halo, so the answer is not shown.
+- **L75 prototype**: the source is `content/new/L75.js`. Three mixed forks became single-task forks. `werkte ik / ik werkte / werkde ik` became a Past tense fork (`werkte / werkde / werkt`, "Ik ___ gisteren de hele dag thuis.") and a Word order fork (`werkte ik / ik werkte`). `herinnerde me / herinnerte me / me herinnerde` became Past tense (`herinnerde / herinnerte`), plus a new Word order item, "Ik herinner me de honden." `verveelden zich / verveelde zich / zich verveelden` became Past tense (`verveelden / verveelde / verveelten`), plus a new Word order item, "Vandaag vervelen de honden zich weer." I also removed the -den spelling note from the `bestelden we` order fork. The validator reports 0 errors and 0 warnings, and L75 now has 23 builds.
+- **Engine rules**: no lights, materials or road changes. The only additions in `update()` are a flag test (`g.go`), so there are no per-frame allocations. Labels and the frame are built once, when a fork arms.
+
+### Checks (11 Nov)
+
+- `node qa/validate-content.mjs`: 0 errors, 0 warnings. Bundles rebuilt. `node qa/check-versions.mjs --bump` moved NR_VERSION from 29 to 30.
+- NRstep smoke on L75 (a scratch script with autopilot on the right lane, pressing go on every other fork): 12 forks, 11 right, 0 wrong, 0 page errors.
+  - The forks with go resolved after about 1 s of legible time. Forks without go took 3.8 to 5.4 s, or 16.9 s on the long read.
+  - The first of each type had a large label and +1.5 s of budget. Labels came out as Word order, Listen, Meaning, Comparison, Which word and Past tense.
+  - The gap frame came out as expected, for example "Gisteren [slot] de hele dag thuis." and "Ik [slot] gisteren de hele dag thuis.".
+  - The go hint showed until the first press and then never again.
+- `NR_URL=http://localhost:8771/index.html node qa/run.mjs 75`: errors 0. It only reached 1 of 20 deliveries (2 right, 0 wrong). SwiftShader ran at about 2 fps on the shared machine, and the harness plays in real time with a 10-minute cap, so this run proves no errors and nothing more.
+- `node qa/dt/first-five.mjs` on 8771: errors 0.
+  - The first gate held and was released by the harness's lane write.
+  - The three teaching forks had their decals and lit sign. The taught key was set, and the lamp toast showed.
+  - The end card showed 20 of 20 right. It ended with mode `dead`, because this script never collects wisps (see "Lamp balance" above). Go was not used in that run.
