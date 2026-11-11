@@ -4,7 +4,7 @@
 // The pure rules (tasks, reading, lamp, forks, voice) are shared with the unit tests in qa/test.
 import { taskOf, TASKS } from './tasks.js?v=38';
 import { HOLD_AT, legDist, READ_AHEAD, READ_THR, readBudget, wordsIn } from './reading.js?v=38';
-import { lampLoss, lampReadK, nightAt, refuelRight, TUNE } from './lamp.js?v=38';
+import { lampLoss, lampReadK, refuelRight, TUNE } from './lamp.js?v=38';
 import { levelQueue } from './forks.js?v=38';
 import { voiceFileOf, VOICES } from './voice.js?v=38';
 import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, lerp, LOOK, MAX_SPEED, NODES, pick, rnd, ROAD_W, smooth, THREE, today } from './engine.js?v=38';
@@ -43,8 +43,10 @@ import { ghostFigure } from './cast.js?v=38';
 export * from './cast.js?v=38';
 import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike, zombieParts } from './zombies.js?v=38';
 export * from './zombies.js?v=38';
+import { BASE, DISTRICT_NEED, L, LANE_X, MAXS, nightDepth, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, UNLOCK_ALL,
+  unlocked } from './state.js?v=38';
+export * from './state.js?v=38';
 // ---------- the rest of the game: not yet in its own module ----------
-let LANE_X = LANES3;
 let frameAcc = 0, frameN = 0, rideFrames = 0;
 
 // ---------- warm-up: compile every material variant once so nothing stalls mid-ride ----------
@@ -58,27 +60,7 @@ function warmUp() {
   tmp.forEach(o => { scene.remove(o); o.traverse(m => { if (m.material && m.material.map && !m.material.userData.shared) { m.material.map.dispose(); m.material.dispose(); } }); });
 }
 
-// ---------- state ----------
-const S = {
-  mode: 'start',          // start | intro | ride | dying | dead
-  t: 0, dist: 0, speed: BASE_SPEED, slow: 1, slowTarget: 1,
-  lane: 1, x: 0, lean: 0,
-  lamp: 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
-  objs: [], planCursor: 40, lastObstacleD: 0,
-  activeFork: null, forkZoom: 0, speedNorm: 0,
-  mistakes: [], introT: 0, dieT: 0, stumble: 0,
-  voice: true, heartT: 0,
-  sentencePool: [], curv: 0, curvTarget: 0, curvNextAt: 60, grade: 0, wordPool: [],
-  // fares, all integer cents
-  cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: 1, score: 0, fxT: 0,
-  paid: 0, walletLast: 0, tickT: -1,
-};
-// every write to the lane counts as a steer (keys, swipes, and the qa autopilots that set NR.lane): laneN releases the first gate's hold
-{ let lane = S.lane; S.laneN = 0; Object.defineProperty(S, 'lane', { get() { return lane; }, set(v) { lane = v; S.laneN++; }, enumerable: true }); }
 let audioCtx = null;
-// how deep into the night we are: 0 at the start of a level, 1 at the end (endless: by distance)
-const NIGHT_Q = new URLSearchParams(location.search).has('night') ? clamp(parseFloat(new URLSearchParams(location.search).get('night')) || 0, 0, 1) : null;   // ?night=0..1 holds the night depth (for measuring luma)
-function nightDepth() { if (NIGHT_Q !== null) return NIGHT_Q; return nightAt(S.dist, L && S.deliveriesTotal); }
 // the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
 window.NRTUNE = TUNE;
 window.NR = S; // debug handle
@@ -102,19 +84,6 @@ window.NRinfo = () => ({ geometries: renderer.info.memory.geometries, textures: 
 window.NRfare = () => ({ cents: S.cents, missed: S.missed, tips: S.tips, tikkie: S.tikkie, cleanRow: S.cleanRow, score: S.score, paid: S.paid });
 window.NRfareFns = { paidLine, payTikkie };   // qa: the toast line and the Tikkie, called directly
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
-buildScenery(THEMES.polder);
-let L = null;                 // current level, null = endless
-let BASE = BASE_SPEED, MAXS = MAX_SPEED;
-let progress = {}; try { progress = JSON.parse(localStorage.getItem('nachtrit.progress') || '{}'); } catch (e) { progress = {}; }
-function saveProgress() { try { localStorage.setItem('nachtrit.progress', JSON.stringify(progress)); } catch (e) {} }
-// best score per level id (and 'endless'), its own key so nachtrit.progress stays stars only
-let scores = {}; try { const raw = JSON.parse(localStorage.getItem('nachtrit.scores') || '{}'); if (raw && typeof raw === 'object') for (const k in raw) if (Number.isFinite(raw[k])) scores[k] = raw[k]; } catch (e) { scores = {}; }
-function saveScores() { try { localStorage.setItem('nachtrit.scores', JSON.stringify(scores)); } catch (e) {} }
-function districtStars(a) { return LEVELS.filter(l => l.act === a).reduce((n, l) => n + (progress[l.id] || 0), 0); }
-const DISTRICT_NEED = 5; // stars in the previous district to open the next
-// ?unlock=1 opens every town on this device, to look at the art (kept in nachtrit.unlock; ?unlock=0 locks them again). The stars are not touched.
-const UNLOCK_ALL = (() => { const v = new URLSearchParams(location.search).get('unlock'); try { if (v === '1') localStorage.setItem('nachtrit.unlock', '1'); else if (v === '0') localStorage.removeItem('nachtrit.unlock'); return localStorage.getItem('nachtrit.unlock') === '1'; } catch (e) { return v === '1'; } })();
-function unlocked(lv) { const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); return t ? townOpen(t) : lv.act === 1; }
 
 // itemToEntry and levelQueue (level items to the entries the planner rides) are in src/forks.js
 
@@ -720,7 +689,7 @@ const W = {
     const rand = Math.random; if (o.seed != null) { let s = (o.seed | 0) % 2147483646 + 1; Math.random = () => (s = (s * 16807) % 2147483647) / 2147483647; }
     try {
       setTownId(o.town || 'alblasserdam'); setTownStyle(townStyleOf(townId));
-      L = null; LANE_X = LANES3; BASE = BASE_SPEED; MAXS = MAX_SPEED;
+      setL(null); setLaneX(LANES3); setSpeeds(BASE_SPEED, MAX_SPEED);
       buildScenery(THEMES[o.theme || 'street'] || THEMES.street); setRoadLook(3, theme);
       reset(); for (const ob of S.objs) if (ob.mesh) scene.remove(ob.mesh); S.objs = []; S.planCursor = 1e9;   // no forks, no wisps: nothing is played
       S.mode = 'cine'; S.fogMul = o.fog || 1; S.lamp = o.lamp == null ? 92 : o.lamp; S.lane = 1; S.x = 0; setBehind(40, 40);
@@ -996,9 +965,9 @@ function missionFares(lv, tier) {
   return 'Fares here ' + (lo === hi ? FARES.fmtEuro(lo) + ' each' : FARES.fmtEuro(lo) + ' to ' + FARES.fmtEuro(hi)) + (best ? ' · best ' + best : '');
 }
 function start(lv) {
-  startArt.off(); L = lv || null;
-  LANE_X = (L && L.lanes === 2) ? LANES2 : LANES3;
-  BASE = L ? L.speed : BASE_SPEED; MAXS = L ? L.maxSpeed : MAX_SPEED;
+  startArt.off(); setL(lv || null);
+  setLaneX((L && L.lanes === 2) ? LANES2 : LANES3);
+  setSpeeds(L ? L.speed : BASE_SPEED, L ? L.maxSpeed : MAX_SPEED);
   for (const id of ['start', 'summary', 'mission', 'map']) $(id).style.display = 'none';
   S.wordPool = L ? L.items.map(i => i.nl).filter(Boolean) : [];
   setTownId(L ? (L.town || TOWN_OF(L.id)) : 'alblasserdam'); const qs = new URLSearchParams(location.search), qt = qs.get('town'); if (qt) setTownId(qt);
@@ -1484,4 +1453,5 @@ loop();
 
 
 
-export { add, S, TOWN_OF };
+
+export { add, TOWN_OF, townOpen, towns };
