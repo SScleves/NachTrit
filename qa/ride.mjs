@@ -260,7 +260,8 @@ if (opt.keep) {   // spaced review: every first-try miss comes back as a marked 
   results.forEach((r, i) => {
     if (typeof r.level !== 'number' || r.level >= 1000) return;   // misses of level rides
     for (const m of r.save.missed) {
-      const later = results.slice(i + 1).filter(x => typeof x.level === 'number' && x.level < 1000).slice(0, 2), at =   // the next two level rides (practice and trophy rides carry no review forks) later.findIndex(x => x.save.due.some(d => d.key === m.key && d.tag === 'again'));
+      // the next two level rides (practice and trophy rides carry no review forks)
+      const later = results.slice(i + 1).filter(x => typeof x.level === 'number' && x.level < 1000).slice(0, 2), at = later.findIndex(x => x.save.due.some(d => d.key === m.key && d.tag === 'again'));
       if (later.length < 2 && at < 0) { console.log(`  L${r.level} missed "${m.nl}": not enough level rides after it to tell`); continue; }
       if (at < 0) fail++;
       console.log(`  L${r.level} missed "${m.nl}": ${at < 0 ? 'not back within two rides  FAIL' : `back on L${later[at].level} (${at + 1} ride${at ? 's' : ''} later) as a review fork tagged again`}`);
