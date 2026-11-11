@@ -72,7 +72,7 @@ if present in this folder.
 What is wrong against the concept, in order: (1) the country outline is a rounded blob, not the
 Netherlands; it needs real coastline coordinates (simplified to 150 to 300 points, with the
 Wadden islands, Zeeland's estuaries, the Afsluitdijk) projected with the same projection the
-town positions use (`nodePositions` in index.html, which warps the Randstad apart so nothing
+town positions use (`nodePositions`, now in `src/map.js`, which warps the Randstad apart so nothing
 overlaps; keep that and apply the same warp to the outline); (2) the land has no raised edge;
 the concept is a diorama with a visible darker side face and water reflections under it;
 (3) the route is straight dashed lines across the whole country; it should follow the roads of
@@ -185,5 +185,55 @@ no per-frame allocations in update(); ribbons untouched; draw calls under 2x.
 - `node qa/intro-sheet.mjs`: the 14 intro shots at t=2 and t=6 on the GPU, one contact sheet, checks for errors, the
   riding dogs (8 and 14 only), his torso in shot 9 and a luma band per frame (`qa/intro-bands.json`). Run it after any
   change to the rider, the dogs or `bike` children, and look at the sheet.
-- `src/`: the pure rules index.html imports and the tests share (`tasks.js`, `reading.js`, `lamp.js`, `forks.js`,
-  `voice.js`). Change a rule there, not in a copy. Phase 2 moves the rest of the engine next to them.
+- `src/`: the pure rules the game imports and the tests share (`tasks.js`, `reading.js`, `lamp.js`, `forks.js`,
+  `voice.js`). Change a rule there, not in a copy. Since phase 2 the rest of the engine lives next to them (section 10).
+- `npm run types`: `tsc` over `src/`, part of `npm run validate`. Files that start with `// @ts-check` are checked (the
+  five pure modules and `src/types.js`, which holds the JSDoc types of a level, the six item kinds, a fork, an entry, a
+  town and the ride state).
+
+## 10. The code layout (phase 2, branch `dt/split`, 11 Nov 2026)
+
+`index.html` is the markup, the styles and the classic scripts (content, towns, intro panels and shots), then one module:
+`src/main.js`. All of the game's code is in `src/`, in modules of 38 to 439 lines. Report: `reports/dt-split.md`.
+
+`src/main.js` is the hub. It holds no code. It imports and re-exports the modules in the order their code ran when it was
+one script:
+
+| Module | What it holds |
+|---|---|
+| `engine.js` | which renderer runs, three.js and its addons, the legacy light units patch, the constants and helpers (`$`, `clamp`, `rnd`, `pick`, `FARES`) |
+| `render-nodes.js` | the opt-in node path (`?renderer=webgpu`): NODEFX, the node post chain |
+| `render.js` | renderer, scene, camera, the four lights, the WebGL post chain, `render()` |
+| `sky.js`, `materials.js` | the painted sky dome and aurora; `Mat`, `GlowMat`, `glowTex`, `M` |
+| `road.js` | road textures, the ribbons, `bend`, the hills |
+| `props.js`, `kit.js` | `PM`, `PG`, the street light glows; the merged kit, `MODELS`, the sign atlas |
+| `furniture.js`, `houses.js`, `backdrop.js` | street furniture, the town style and look (`townId`, `T3`); houses and their props; landmarks and what stands behind the street |
+| `scenery.js` | the themes and `buildScenery` |
+| `models.js` | the .glb loader and the kit and clone helpers |
+| `rider.js` | the bike, the rider model, the dogs, `riderTick`, his face, the passenger, the follower, and the rider API (`W.rider`) |
+| `signs.js`, `cast.js`, `zombies.js` | sign labels and spawn geometry; the passengers; the dead, obstacles and wisps |
+| `state.js` | `S`, the night depth, `L`, `LANE_X`, speeds, stars and scores |
+| `plan.js` | the planner and fork placement |
+| `hud.js`, `audio.js`, `speech.js`, `input.js` | the card and toast; the synthesised sounds; the voice files and speech fallback; steering and the go key |
+| `intro.js`, `cine.js` | the painted intro, title and level cards; the 3D shots and the `W` handle |
+| `map.js`, `flow.js`, `wallet.js` | the map and mission card; a ride's start, end and fork verdict; paying |
+| `debug.js` | the `window.NR*` hooks (`NRW` stays in `cine.js`, `NRmapBike` in `map.js`, `NRTK` in `scenery.js`) |
+| `loop.js` | `update()`, the animation loop, the warm-up and the boot (`?map`, `?cine`, `?shot`, `?level`) |
+
+Rules for working in it:
+- **The order is the run order.** Random draws, scene objects and their ids are made in this order, which is what keeps a
+  seeded ride identical. A new module goes into `main.js` at the point where its code should run.
+- **Imports.** A module imports what an earlier module defines directly from that module, and imports what a later module
+  defines from `./main.js` (the hub). It also imports the module before it, even if it uses nothing from it: with top-level
+  `await` in `engine.js`, `render.js` and `loop.js`, that import is what keeps the modules running in order.
+- **Writing another module's variable.** An imported binding is read-only, so a module that owns a `let` other modules change
+  exports a setter next to it (`setL`, `setLaneX`, `setSpeeds`, `setTownId`, `setTownStyle`, `setHills`, `setHillPhase`,
+  `setBehind`, `setDPR`, `setMSAA`, `setToastT`, `setIntroSeen`, `setCineFrozen`, `setLampHinted`, `setFaceState`,
+  `setRackGhost`). Assigning an imported name throws only when that line runs, so search before you write one.
+- **Versions.** Every import between modules carries `?v=<NR_VERSION>`; `check-versions` checks and bumps them in `src/` as
+  in `index.html`. A module imported with two different URLs runs twice.
+- **The intro and the rider.** Shots pose him only through `W.rider` (`pose('ride' | 'seated' | 'standing' | 'hidden')`,
+  `show`, `showBike`, `showLamp`, `showDogs`, `coat`, `head`, `lens`, `halo`, `restore`), documented in
+  `intro3d/README.md`. A shot that wants the dogs says `dogs: true`. `restore()` runs after every shot's `dispose`. After a
+  change to the rider, still shoot all 14 (`node qa/intro-sheet.mjs`).
+- `qa/voice-batch.mjs` reads the fallback panels and the `speak('...')` lines from `src/` too.

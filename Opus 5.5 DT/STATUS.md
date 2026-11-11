@@ -41,7 +41,17 @@ The combined branch `dt/all` is merged into `main` and live.
   the rider's head, ground mist costs 17 fewer draw calls. GPU run of 1, 12, 58, 75, 123 with 0 errors at
   59-60 fps; all 14 intro shots checked.
 
-## On branch `dt/tests`, waiting for the GPU check and merge (NR_VERSION 37)
+## On branch `dt/split`, waiting for the GPU check and merge (NR_VERSION 39)
+
+Phase 2, the code split (`reports/dt-split.md`). No change a player can see.
+- `index.html` went from 4,331 lines to 343. The engine is 30 modules in `src/` (`src/main.js` lists them in run order;
+  HANDOVER.md section 10 has the map and the rules). Seeded rides of 1, 12 and 75 are identical before and after.
+- The intro shots pose the rider through `W.rider` (`pose`, `show`, `showBike`, `showLamp`, `showDogs`, `coat`, `head`,
+  `restore`) and no longer reach into the bike. The dogs are a property of a shot (`dogs: true`).
+- The node render path has its own module (`src/render-nodes.js`) and stays opt-in.
+- `npm run types`: `tsc` checks the data types and the pure modules, inside `npm run validate`.
+
+## Landed on main: phase 1, the safety net (NR_VERSION 37 and 38)
 
 Phase 1, the safety net (`reports/dt-tests.md`). No change a player can see.
 - `npm test` (about 10 s, no browser) and CI on every push to `main` and `dt/*`, with a SwiftShader ride of 1 and 75.
@@ -49,7 +59,8 @@ Phase 1, the safety net (`reports/dt-tests.md`). No change a player can see.
   shots on the GPU with automatic checks.
 - The pure rules (task labels, reading budget, lamp maths, level queue, voice file choice) moved from index.html to
   `src/*.js`, which the game imports and the unit tests share. Seeded rides give the same numbers before and after.
-- Found by the new tests: levels 98 and 113 each have a reading that rides as a single sign (open, content).
+- Found by the new tests: levels 98 and 113 each had a reading that rode as a single sign; fixed in NR_VERSION 38
+  (each now shows three signs).
 
 ## Pending
 
