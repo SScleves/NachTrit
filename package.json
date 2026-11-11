@@ -18,6 +18,8 @@
     "@gltf-transform/core": "^3.10.1",
     "@gltf-transform/extensions": "^3.10.1",
     "@gltf-transform/functions": "^3.10.1",
+    "dictionary-nl": "^2.0.0",
+    "nspell": "^2.1.5",
     "playwright": "^1.47.2",
     "three": "^0.152.2"
   }
