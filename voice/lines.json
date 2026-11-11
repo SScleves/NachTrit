@@ -4898,5 +4898,7 @@
 {"id":"0a24d7202539","text":"Ik had het zelf beter gezegd.","voice":"nl-NL-FennaNeural","kind":"refuse"},
 {"id":"81f781b2c476","text":"Daar geef ik geen cent voor.","voice":"nl-NL-FennaNeural","kind":"refuse"},
 {"id":"34c70ec423a0","text":"Mijn oma sprak beter Nederlands, en die ligt al honderd jaar onder de grond.","voice":"nl-NL-FennaNeural","kind":"refuse"},
-{"id":"4e1e9ad7341a","text":"Je bent te laat.","voice":"nl-NL-MaartenNeural","kind":"fixed"}
+{"id":"4e1e9ad7341a","text":"Je bent te laat.","voice":"nl-NL-MaartenNeural","kind":"fixed"},
+{"id":"bb54f0b4bd05","text":"Terug bij de halte.","voice":"nl-NL-MaartenNeural","kind":"fixed"},
+{"id":"ab605af74d0d","text":"Nog steeds niet bevestigd.","voice":"nl-NL-MaartenNeural","kind":"fixed"}
 ]
