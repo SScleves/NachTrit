@@ -69,10 +69,10 @@
       // ---- builds: tourists and locals, the way into town
       { en: 'Excuse me, how do I get to the Dam? Walk all the way down the Damrak, ten minutes.', parts: ['Pardon, hoe', FK(['kom ik', 'ik kom'], 0, 'v2',
         'In a direct question the verb comes right after the question word: hoe kom ik.'), 'bij de Dam?', FK(['Loop', 'Afloop'], 0, 'sep',
-        'aflopen splits in a command: loop ... af, with af at the end.', 'word'), 'het Damrak helemaal af, tien minuten.'] },
+        'aflopen splits in a command: loop ... af, with af at the end.', 'order'), 'het Damrak helemaal af, tien minuten.'] },
       { en: 'From the Dam take the second street on the left and then cross the canal.', parts: ['Neem', FK(['vanaf', 'sinds'], 0, 'weg', 'vanaf is from a place. sinds is since, for time.'), 'de Dam de', FK(['tweede', 'twee'], 0, 'weg',
         'An order needs the ordinal: de tweede straat.'), 'straat links en', FK(['steek', 'oversteek'], 0, 'sep',
-        'oversteken splits: steek ... over, with over at the end.', 'word'), 'daarna de gracht over.'] },
+        'oversteken splits: steek ... over, with over at the end.', 'order'), 'daarna de gracht over.'] },
       { en: 'Excuse me, sir, is this seat free?', parts: ['Pardon meneer, is', FK(['deze', 'dit'], 0, 'dehet',
         'plaats is a de-word, so deze plaats.'), 'plaats nog', FK(['vrij', 'gratis'], 0, 'woord',
         'A free seat is vrij. gratis means it costs nothing.'), '?'] },

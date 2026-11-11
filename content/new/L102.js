@@ -92,7 +92,7 @@
         'afslaan splits in the imperative and the prefix goes to the end: sla ... af.'), '.'] },
       { en: 'It is difficult to find a spot for your bike in the city.', parts: ['Het is lastig om in de stad een plek voor je fiets', FK(['te vinden', 'vinden te'], 0, 'omte', 'te stands right before the infinitive at the end: om ... te vinden.'), '.'] },
       { en: 'The train to Zwolle leaves at 10:20.', parts: ['De trein naar Zwolle vertrekt om tien', FK(['voor', 'over'], 0, 'klok',
-        'Half elf is 10:30. Ten minutes before that is tien voor half elf, 10:20.'), '.'] },
+        'Half elf is 10:30. Ten minutes before that is tien voor half elf, 10:20.'), 'half elf.'] },
 
       // ---- words: the station, the tracks, the bike shed, the roads
       { w: 'the track', nl: 'het spoor', wrong: 'de spoor' }, { w: 'the station hall', nl: 'de stationshal' },

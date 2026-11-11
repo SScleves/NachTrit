@@ -89,7 +89,7 @@
 
       // ---- builds: the way to your own front door
       { en: 'Turn left at the Westertoren, cross the bridge and walk along the canal up to our door.', parts: ['Ga bij de Westertoren linksaf,', FK(['steek', 'oversteek'], 0, 'sep',
-        'oversteken splits in a command: steek de brug over, with over at the end.', 'word'), 'de brug over en loop langs de gracht', FK(['tot aan', 'naar aan'], 0, 'weg', 'tot aan means right up to: tot aan onze deur.'), 'onze deur.'] },
+        'oversteken splits in a command: steek de brug over, with over at the end.', 'order'), 'de brug over en loop langs de gracht', FK(['tot aan', 'naar aan'], 0, 'weg', 'tot aan means right up to: tot aan onze deur.'), 'onze deur.'] },
       { en: 'Our house is the third one after the bridge, opposite the houseboat.', parts: ['Ons huis is', FK(['het derde', 'de derde'], 0, 'weg',
         'huis is a het-word, so the third one is het derde.'), 'na de brug,', FK(['tegenover', 'tegen'], 0, 'weg',
         'tegenover means opposite, across from. tegen means against.'), 'de woonboot.'] },

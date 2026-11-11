@@ -85,7 +85,7 @@
         'A preposition plus a thing becomes er plus the preposition, one word: ermee, erop, erin.'), 'naar het strand.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'On Texel the bike is faster than the bus.', parts: ['Op Texel is de fiets', FK(['sneller', 'snelder'], 0, 'vergelijk', 'snel plus -er gives sneller, with a double l to keep the e short.', 'spell'), FK(['dan', 'van'], 0, 'vergelijk',
+      { en: 'On Texel the bike is faster than the bus.', parts: ['Op Texel is de fiets', FK(['sneller', 'sneler'], 0, 'vergelijk', 'snel plus -er gives sneller, with a double l to keep the e short.', 'spell'), FK(['dan', 'van'], 0, 'vergelijk',
         'After a comparative Dutch uses dan: sneller dan de bus.'), 'de bus.'] },
       { en: 'When we stood on the deck, we saw the seals.', parts: ['Toen we op het dek', FK(['stonden', 'staan', 'stond'], 0, 'bijzin', 'toen tells a past moment, and we takes stonden at the end.', 'past'), ',', FK(['zagen we', 'we zagen'], 0, 'v2', 'After the toen clause the main clause starts with its verb: zagen we.'), 'de zeehonden.'] },
       { en: 'The last ferry leaves at half past ten.', parts: ['De laatste boot', FK(['vertrekt', 'vertrekken'], 0, 'presens',

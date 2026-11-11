@@ -76,7 +76,7 @@
 
       // ---- builds: the last ride through the canals
       { en: 'From the Westertoren follow the Prinsengracht, cross the Leidsegracht and keep going to the Amstel.', parts: [FK(['Volg', 'Volgt'], 0, 'gebod', 'A command is the bare stem: volg.'), 'vanaf de Westertoren de Prinsengracht,', FK(['steek', 'oversteek'], 0, 'sep',
-        'oversteken splits in a command: steek ... over.', 'word'), 'de Leidsegracht over en loop door tot', FK(['aan de Amstel', 'de Amstel aan'], 0, 'weg',
+        'oversteken splits in a command: steek ... over.', 'order'), 'de Leidsegracht over en loop door tot', FK(['aan de Amstel', 'de Amstel aan'], 0, 'weg',
         'tot aan means right up to, and both words come before the place.'), '.'] },
       { en: 'The canal house where Paola is waiting leans forward a little, like all the others.', parts: [FK(['Het', 'De'], 0, 'samen',
         'grachten + pand: pand is het, so het grachtenpand.'), 'grachtenpand', FK(['waar', 'dat'], 0, 'diedat',

@@ -345,7 +345,7 @@
         'afslaan splits in the imperative and the prefix goes to the end: sla ... af.'), '.'] },
       { en: 'It is difficult to find a spot for your bike in the city.', parts: ['Het is lastig om in de stad een plek voor je fiets', FK(['te vinden', 'vinden te'], 0, 'omte', 'te stands right before the infinitive at the end: om ... te vinden.'), '.'] },
       { en: 'The train to Zwolle leaves at 10:20.', parts: ['De trein naar Zwolle vertrekt om tien', FK(['voor', 'over'], 0, 'klok',
-        'Half elf is 10:30. Ten minutes before that is tien voor half elf, 10:20.'), '.'] },
+        'Half elf is 10:30. Ten minutes before that is tien voor half elf, 10:20.'), 'half elf.'] },
 
       // ---- words: the station, the tracks, the bike shed, the roads
       { w: 'the track', nl: 'het spoor', wrong: 'de spoor' }, { w: 'the station hall', nl: 'de stationshal' },
@@ -2974,7 +2974,7 @@
 
       // ---- builds: the way to your own front door
       { en: 'Turn left at the Westertoren, cross the bridge and walk along the canal up to our door.', parts: ['Ga bij de Westertoren linksaf,', FK(['steek', 'oversteek'], 0, 'sep',
-        'oversteken splits in a command: steek de brug over, with over at the end.', 'word'), 'de brug over en loop langs de gracht', FK(['tot aan', 'naar aan'], 0, 'weg', 'tot aan means right up to: tot aan onze deur.'), 'onze deur.'] },
+        'oversteken splits in a command: steek de brug over, with over at the end.', 'order'), 'de brug over en loop langs de gracht', FK(['tot aan', 'naar aan'], 0, 'weg', 'tot aan means right up to: tot aan onze deur.'), 'onze deur.'] },
       { en: 'Our house is the third one after the bridge, opposite the houseboat.', parts: ['Ons huis is', FK(['het derde', 'de derde'], 0, 'weg',
         'huis is a het-word, so the third one is het derde.'), 'na de brug,', FK(['tegenover', 'tegen'], 0, 'weg',
         'tegenover means opposite, across from. tegen means against.'), 'de woonboot.'] },
@@ -3212,7 +3212,7 @@
 
       // ---- builds: the snack wall, the rijsttafel, patat
       { en: 'The snack wall? Cross the square, it is next to the cinema.', parts: ['De automatiek?', FK(['Steek', 'Oversteek'], 0, 'sep',
-        'oversteken splits in a command: steek het plein over.', 'word'), 'het plein over, hij zit naast', FK(['de', 'het'], 0, 'dehet', 'bioscoop is a de-word: de bioscoop.'), 'bioscoop.'] },
+        'oversteken splits in a command: steek het plein over.', 'order'), 'het plein over, hij zit naast', FK(['de', 'het'], 0, 'dehet', 'bioscoop is a de-word: de bioscoop.'), 'bioscoop.'] },
       { en: 'At an Indonesian rijsttafel more than ten little dishes are put on the table.', parts: ['Bij een Indische rijsttafel', FK(['worden', 'wordt'], 0, 'passief',
         'More than ten dishes is a plural, so worden.'), 'meer dan tien schaaltjes op tafel', FK(['gezet', 'gezett'], 0, 'kof', 'zet already ends in t, so the participle gezet gets nothing extra.', 'spell'), '.'] },
       { en: 'When the rijsttafel came, we had already eaten all the krupuk.', parts: ['Toen de rijsttafel kwam,', FK(['hadden we', 'we hadden'], 0, 'v2',
@@ -3344,10 +3344,10 @@
       // ---- builds: tourists and locals, the way into town
       { en: 'Excuse me, how do I get to the Dam? Walk all the way down the Damrak, ten minutes.', parts: ['Pardon, hoe', FK(['kom ik', 'ik kom'], 0, 'v2',
         'In a direct question the verb comes right after the question word: hoe kom ik.'), 'bij de Dam?', FK(['Loop', 'Afloop'], 0, 'sep',
-        'aflopen splits in a command: loop ... af, with af at the end.', 'word'), 'het Damrak helemaal af, tien minuten.'] },
+        'aflopen splits in a command: loop ... af, with af at the end.', 'order'), 'het Damrak helemaal af, tien minuten.'] },
       { en: 'From the Dam take the second street on the left and then cross the canal.', parts: ['Neem', FK(['vanaf', 'sinds'], 0, 'weg', 'vanaf is from a place. sinds is since, for time.'), 'de Dam de', FK(['tweede', 'twee'], 0, 'weg',
         'An order needs the ordinal: de tweede straat.'), 'straat links en', FK(['steek', 'oversteek'], 0, 'sep',
-        'oversteken splits: steek ... over, with over at the end.', 'word'), 'daarna de gracht over.'] },
+        'oversteken splits: steek ... over, with over at the end.', 'order'), 'daarna de gracht over.'] },
       { en: 'Excuse me, sir, is this seat free?', parts: ['Pardon meneer, is', FK(['deze', 'dit'], 0, 'dehet',
         'plaats is a de-word, so deze plaats.'), 'plaats nog', FK(['vrij', 'gratis'], 0, 'woord',
         'A free seat is vrij. gratis means it costs nothing.'), '?'] },
@@ -3903,7 +3903,7 @@
 
       // ---- builds: the last ride through the canals
       { en: 'From the Westertoren follow the Prinsengracht, cross the Leidsegracht and keep going to the Amstel.', parts: [FK(['Volg', 'Volgt'], 0, 'gebod', 'A command is the bare stem: volg.'), 'vanaf de Westertoren de Prinsengracht,', FK(['steek', 'oversteek'], 0, 'sep',
-        'oversteken splits in a command: steek ... over.', 'word'), 'de Leidsegracht over en loop door tot', FK(['aan de Amstel', 'de Amstel aan'], 0, 'weg',
+        'oversteken splits in a command: steek ... over.', 'order'), 'de Leidsegracht over en loop door tot', FK(['aan de Amstel', 'de Amstel aan'], 0, 'weg',
         'tot aan means right up to, and both words come before the place.'), '.'] },
       { en: 'The canal house where Paola is waiting leans forward a little, like all the others.', parts: [FK(['Het', 'De'], 0, 'samen',
         'grachten + pand: pand is het, so het grachtenpand.'), 'grachtenpand', FK(['waar', 'dat'], 0, 'diedat',
@@ -8661,7 +8661,7 @@
         'A preposition plus a thing becomes er plus the preposition, one word: ermee, erop, erin.'), 'naar het strand.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'On Texel the bike is faster than the bus.', parts: ['Op Texel is de fiets', FK(['sneller', 'snelder'], 0, 'vergelijk', 'snel plus -er gives sneller, with a double l to keep the e short.', 'spell'), FK(['dan', 'van'], 0, 'vergelijk',
+      { en: 'On Texel the bike is faster than the bus.', parts: ['Op Texel is de fiets', FK(['sneller', 'sneler'], 0, 'vergelijk', 'snel plus -er gives sneller, with a double l to keep the e short.', 'spell'), FK(['dan', 'van'], 0, 'vergelijk',
         'After a comparative Dutch uses dan: sneller dan de bus.'), 'de bus.'] },
       { en: 'When we stood on the deck, we saw the seals.', parts: ['Toen we op het dek', FK(['stonden', 'staan', 'stond'], 0, 'bijzin', 'toen tells a past moment, and we takes stonden at the end.', 'past'), ',', FK(['zagen we', 'we zagen'], 0, 'v2', 'After the toen clause the main clause starts with its verb: zagen we.'), 'de zeehonden.'] },
       { en: 'The last ferry leaves at half past ten.', parts: ['De laatste boot', FK(['vertrekt', 'vertrekken'], 0, 'presens',

@@ -66,7 +66,7 @@
 
       // ---- builds: the snack wall, the rijsttafel, patat
       { en: 'The snack wall? Cross the square, it is next to the cinema.', parts: ['De automatiek?', FK(['Steek', 'Oversteek'], 0, 'sep',
-        'oversteken splits in a command: steek het plein over.', 'word'), 'het plein over, hij zit naast', FK(['de', 'het'], 0, 'dehet', 'bioscoop is a de-word: de bioscoop.'), 'bioscoop.'] },
+        'oversteken splits in a command: steek het plein over.', 'order'), 'het plein over, hij zit naast', FK(['de', 'het'], 0, 'dehet', 'bioscoop is a de-word: de bioscoop.'), 'bioscoop.'] },
       { en: 'At an Indonesian rijsttafel more than ten little dishes are put on the table.', parts: ['Bij een Indische rijsttafel', FK(['worden', 'wordt'], 0, 'passief',
         'More than ten dishes is a plural, so worden.'), 'meer dan tien schaaltjes op tafel', FK(['gezet', 'gezett'], 0, 'kof', 'zet already ends in t, so the participle gezet gets nothing extra.', 'spell'), '.'] },
       { en: 'When the rijsttafel came, we had already eaten all the krupuk.', parts: ['Toen de rijsttafel kwam,', FK(['hadden we', 'we hadden'], 0, 'v2',

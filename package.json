@@ -8,7 +8,7 @@
     "qa": "node qa/run.mjs",
     "build:content": "node qa/build-content.mjs",
     "models": "node tools/models/build.mjs",
-    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs",
+    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs && node qa/audit-forks.mjs --check --fail && node qa/audit-distractors.mjs --check --fail && node qa/audit-threads.mjs --check --fail",
     "voice": "node qa/voice-batch.mjs && ../venv/bin/python qa/voice-render.py && node qa/voice-check.mjs",
     "voice:lines": "node qa/voice-batch.mjs",
     "voice:render": "../venv/bin/python qa/voice-render.py",
