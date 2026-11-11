@@ -29,6 +29,7 @@ import { setIntroSeen, showIntro, startArt } from './intro.js?v=42';
 import { cineBegin, cineTick, setCineFrozen } from './cine.js?v=42';
 import { openMap, openTown, towns } from './map.js?v=42';
 import { die, lampHinted, levelDone, resolveFork, setLampHinted, showSummary, start } from './flow.js?v=42';
+import { levelOf } from './book.js?v=42';
 import { payTikkie } from './wallet.js?v=42';
 import './debug.js?v=42';   // keeps the order the game's code runs in
 
@@ -328,7 +329,7 @@ if (q.has('cine')) {
   }
 }
 if (q.has('shot')) {
-  start(q.has('level') ? LEVELS.find(l => l.id === +q.get('level')) : null);   // by id: the content bundles append levels out of order
+  start(q.has('level') ? levelOf(q.get('level')) : null);   // by id (the content bundles append levels out of order), or practice, trophy-<town>
   if (q.has('hillphase')) setHillPhase(parseFloat(q.get('hillphase')) || 0);   // hill towns: where on the waves the ride starts, to look at a crest or a dip
   if (q.has('look')) { const looks = S.queue.filter(e => e.look); if (looks.length) S.queue = looks.concat(looks); }
   const secs = parseFloat(q.get('shot')) || 0;

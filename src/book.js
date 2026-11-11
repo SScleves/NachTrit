@@ -47,6 +47,12 @@ function trophyLevel(t) {
     mission: { where: `Every street in ${t.name}.`, carry: `${n} deliveries from all ${items.length} of its words and sentences.`, want: 'No hints and no glowing signs. Every fare is doubled.' },
   });
 }
+// ?level=: a level id, 'practice' or 'trophy-<town id>' (the boot and qa/ride.mjs)
+function levelOf(q) {
+  if (q === 'practice') return practiceLevel();
+  if (/^trophy-/.test(q)) { const t = towns().find(x => x.id === q.slice(7)); return t ? trophyLevel(t) : null; }
+  return LEVELS.find(l => l.id === +q) || null;
+}
 // the end card's link and the word book's button
 function openPractice() {
   const lv = practiceLevel();
@@ -158,4 +164,4 @@ $('b_usecode').onclick = async () => {
 addEventListener('keydown', e => { if (e.key === 'Escape' && $('book').style.display !== 'none') { closeBook(); e.preventDefault(); } });
 window.NRbook = { open: openBook, practiceLevel, trophyLevel, index: contentIndex, persist, words: () => bookWords(SAVE.items, contentIndex(), entryText) };   // qa
 
-export { openBook, openPractice, practiceLevel, trophyLevel };
+export { levelOf, openBook, openPractice, practiceLevel, trophyLevel };

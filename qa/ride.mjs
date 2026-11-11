@@ -12,7 +12,7 @@
 //
 // usage: node qa/ride.mjs [levels=1] [--base URL] [--gpu] [--seed N|off] [--ignore] [--miss K] [--teach] [--chunk 300] [--draw]
 //                         [--w 1280 --h 800] [--out dir] [--json file]
-//   levels      comma list of level ids (1,75)
+//   levels      comma list of level ids (1,75); practice (the 20 weakest items of the save) and trophy-<town> ride the built ones
 //   --base      a served index.html; without it the script serves its own working tree on a free local port
 //   --gpu       the installed Chrome on the real GPU (headless=new, ANGLE on GL); default is SwiftShader in Playwright's Chromium
 //   --seed      seed for Math.random (default 1); off leaves the game random
@@ -46,7 +46,7 @@ const argv = process.argv.slice(2), flag = k => argv.includes('--' + k);
 const val = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 && i + 1 < argv.length ? argv[i + 1] : d; };
 const VALUED = ['base', 'seed', 'miss', 'chunk', 'w', 'h', 'out', 'json', 'miss-only'];
 const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(argv[i - 1].replace(/^--/, ''))));
-const levels = (pos[0] || '1').split(',').map(s => +s.trim()).filter(Boolean);
+const levels = (pos[0] || '1').split(',').map(s => s.trim()).filter(Boolean).map(s => /^\d+$/.test(s) ? +s : s);   // ids, or practice and trophy-<town> (with --keep)
 const opt = {
   base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), shots: flag('shots'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'), keep: flag('keep'), missOnly: String(val('miss-only', '')).split(',').map(s => +s.trim()).filter(Boolean),
   chunk: Math.max(12, Math.round((+val('chunk', 300) || 300) / 12) * 12), w: +val('w', 1280), h: +val('h', 800),
@@ -258,10 +258,10 @@ try {
 if (opt.keep) {   // spaced review: every first-try miss comes back as a marked review fork within the next two rides
   console.log('\nspaced review across rides:');
   results.forEach((r, i) => {
-    if (i + 2 >= results.length + 1 && !r.save.missed.length) return;
+    if (typeof r.level !== 'number' || r.level >= 1000) return;   // misses of level rides
     for (const m of r.save.missed) {
-      const later = results.slice(i + 1, i + 3), at = later.findIndex(x => x.save.due.some(d => d.key === m.key && d.tag === 'again'));
-      if (later.length < 2 && at < 0) { console.log(`  L${r.level} missed "${m.nl}": not enough rides after it to tell`); continue; }
+      const later = results.slice(i + 1).filter(x => typeof x.level === 'number' && x.level < 1000).slice(0, 2), at =   // the next two level rides (practice and trophy rides carry no review forks) later.findIndex(x => x.save.due.some(d => d.key === m.key && d.tag === 'again'));
+      if (later.length < 2 && at < 0) { console.log(`  L${r.level} missed "${m.nl}": not enough level rides after it to tell`); continue; }
       if (at < 0) fail++;
       console.log(`  L${r.level} missed "${m.nl}": ${at < 0 ? 'not back within two rides  FAIL' : `back on L${later[at].level} (${at + 1} ride${at ? 's' : ''} later) as a review fork tagged again`}`);
     }
