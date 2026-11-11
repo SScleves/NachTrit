@@ -15,7 +15,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[5];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -54,7 +54,7 @@
         { en: 'Just pay at the checkout. (polite)', parts: [FK(['Betaalt u', 'Betaal u', 'Betalen u'], 0, 'gebod', 'With u the command keeps its t: Betaalt u maar.'), 'maar bij de kassa.'] },
         { en: 'Go ahead and put the trousers on.', parts: [FK(['Trek', 'Trekt', 'Trekken'], 0, 'gebod', 'A command is the bare stem: trek; aan still goes to the end.'), 'de broek maar even aan.'] },
         // ---- tier 4 kept alive
-        { en: "The jumper is nice. I'll take it.", parts: ['De trui is mooi. Ik neem', FK(['hem', 'hij'], 0, 'objpron', 'trui is a de-word, and as the object it is hem. hij only does the doing.'), '.'] },
+        { en: "The jumper is nice. I'll take it.", parts: ['De trui is mooi. Ik neem', FK(['hem', 'hij'], 0, 'obj', 'trui is a de-word, and as the object it is hem. hij only does the doing.'), '.'] },
         { en: 'The market is cheaper than the Albert Heijn.', parts: ['De markt is', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing with dan: add -er, goedkoop becomes goedkoper.'), 'dan de Albert Heijn.'] },
 
         // ---- words, all with their article

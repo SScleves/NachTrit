@@ -13,7 +13,7 @@
 // New rules: none. objpron is declared below only if missing; aux, kof, perf, sep, v2, mag and woord already exist.
 // New props: none. Only deur, tuin and hond are used.
 (() => {
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -62,7 +62,7 @@
         FK(['gepraat', 'gepraatd'], 0, 'kof', 'praat already ends in t, and Dutch adds nothing after it: gepraat.', 'spell'), '.'] },
       { en: 'Paola chatted with the neighbour for an hour.', parts: ['Paola heeft een uur met de buurvrouw',
         FK(['gekletst', 'gekletsd'], 0, 'kof', 'klets ends in s, a ketchup letter, so the participle ends in t.', 'spell'), '.'] },
-      { en: 'I thanked her for the flowers.', parts: ['Ik heb', FK(['haar', 'zij'], 0, 'objpron',
+      { en: 'I thanked her for the flowers.', parts: ['Ik heb', FK(['haar', 'zij'], 0, 'obj',
         'She is the one being thanked, so haar. zij is only for the one doing the thanking.'), 'voor de bloemen',
         FK(['bedankt', 'bedankd'], 0, 'kof', 'bedank ends in k, a ketchup letter, so the participle ends in t.', 'spell'), '.'] },
       { en: 'I congratulated my colleague on his birthday.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
@@ -75,7 +75,7 @@
         'Crying is something you do, nothing moves: hebben.'), 'in het debat',
         FK(['gehuild', 'gehuilt'], 0, 'kof', 'huil ends in l, not a ketchup letter, so the participle ends in d: gehuild.', 'spell'), '.'] },
       { en: 'The neighbour smiled at me.', parts: ['De buurvrouw heeft naar',
-        FK(['me', 'ik'], 0, 'objpron', 'After a preposition you need the object form: naar me. ik is for the one doing it.'),
+        FK(['me', 'ik'], 0, 'obj', 'After a preposition you need the object form: naar me. ik is for the one doing it.'),
         FK(['geglimlacht', 'geglimlachd'], 0, 'kof', 'glimlach ends in ch, a ketchup sound, so the participle ends in t.', 'spell'), '.'] },
       { en: 'What did you think of the debate?', parts: ['Hoe', FK(['heb je', 'hebt je'], 0, 'presens', 'When je comes right after the verb, the t drops: heb je.'), 'het debat',
         FK(['gevonden', 'vond', 'vindt'], 0, 'perf', 'vinden is irregular: the participle is gevonden.'), '?'] },
@@ -90,7 +90,7 @@
         w: 'Je hoeft niet te means you do not have to. You should not is je moet niet, and not allowed is je mag niet.' },
       { read: true, nl: 'Druk geweest op het werk?', o: ['Are you busy at work?', 'Have you been busy at work?', 'Will you be busy at work?'], a: 1, r: 'perf',
         w: 'geweest is the participle of zijn, so the question is about busy time that has already happened.' },
-      { read: true, nl: 'Ik heb hem gisteren niet gezien.', o: ["He didn't see me yesterday.", "I won't see him tomorrow.", "I didn't see him yesterday."], a: 2, r: 'objpron',
+      { read: true, nl: 'Ik heb hem gisteren niet gezien.', o: ["He didn't see me yesterday.", "I won't see him tomorrow.", "I didn't see him yesterday."], a: 2, r: 'obj',
         w: 'hem is the one being seen, ik is the one who did not see him. gezien and gisteren both put it in the past.' },
       { read: true, nl: 'Volgens mij heeft de minister gelijk.', o: ['The minister thinks I am right.', 'I told the minister he is right.', 'In my opinion the minister is right.'], a: 2, r: 'woord',
         w: 'volgens mij is according to me, so it is my opinion. gelijk hebben is to be right.' },

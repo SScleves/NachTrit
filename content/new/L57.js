@@ -17,7 +17,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[4];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -86,9 +86,9 @@
         FK(['je', 'jij'], 0, 'obj', 'jij is the one who acts, and ik is already doing the seeing. The one seen is je.'), 'op de borrel.'] },
       // ---- builds: er is, er zijn
       { en: "There's a borrel at the harbour tonight.", parts: ['Vanavond', FK(['is er', 'er is'], 0, 'v2', 'Vanavond takes slot 1, so the verb comes next and er follows it.'), 'een borrel bij de haven.'] },
-      { en: 'There are a lot of tourists on the island.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'toeristen is plural, so er zijn.', 'verb'), 'veel toeristen op',
+      { en: 'There are a lot of tourists on the island.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'toeristen is plural, so er zijn.', 'verb'), 'veel toeristen op',
         FK(['het', 'de'], 0, 'dehet', 'eiland is a het-word: het eiland.'), 'eiland.'] },
-      { en: 'Is there one more bitterbal?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One bitterbal, so is er. A question puts the verb first.', 'verb'), 'nog een bitterbal?'] },
+      { en: 'Is there one more bitterbal?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One bitterbal, so is er. A question puts the verb first.', 'verb'), 'nog een bitterbal?'] },
       // ---- builds: comparing
       { en: 'The women here are even taller.', parts: ['De vrouwen hier zijn nog',
         FK(['langer', 'langst'], 0, 'vergelijk', 'nog plus a comparative means even more: nog langer.'), '.'] },

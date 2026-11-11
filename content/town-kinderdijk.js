@@ -20,7 +20,7 @@
 // Not loaded yet: index.html needs <script src="content/town-kinderdijk.js"></script> after levels.js.
 
 (() => {
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const WIJK = { lanes: 3, speed: 12, maxSpeed: 14, ramp: false, lampDecay: 0.45, forkSlow: 0.3, hint: 'letter', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 5 };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -47,9 +47,9 @@
         { listen: true, nl: 'de standup', en: 'the standup' }, { listen: true, nl: 'goedemorgen', en: 'good morning' }, { listen: true, nl: 'het mailtje', en: 'the quick email' },
         { look: true, prop: 'kerk', nl: 'de kerk', en: 'the church' }, { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
         { look: true, prop: 'nummer', value: 9, nl: 'negen', en: '9' },
-        { en: 'The dashboard is working again.', parts: ['Het dashboard', FK(['werkt', 'werken', 'werk'], 0, 'pres', 'het dashboard is one thing, like hij: stem plus t, werkt.'), 'weer.'] },
-        { en: 'I work from home today.', parts: ['Ik', FK(['werk', 'werkt', 'werken'], 0, 'pres', 'ik takes the bare stem: ik werk, no t.'), 'vandaag thuis.'] },
-        { en: 'The meeting takes a long time.', parts: ['De vergadering', FK(['duurt', 'duur', 'duren'], 0, 'pres', 'One meeting is a hij: stem plus t, duurt.'), 'lang.'] },
+        { en: 'The dashboard is working again.', parts: ['Het dashboard', FK(['werkt', 'werken', 'werk'], 0, 'presens', 'het dashboard is one thing, like hij: stem plus t, werkt.'), 'weer.'] },
+        { en: 'I work from home today.', parts: ['Ik', FK(['werk', 'werkt', 'werken'], 0, 'presens', 'ik takes the bare stem: ik werk, no t.'), 'vandaag thuis.'] },
+        { en: 'The meeting takes a long time.', parts: ['De vergadering', FK(['duurt', 'duur', 'duren'], 0, 'presens', 'One meeting is a hij: stem plus t, duurt.'), 'lang.'] },
         { en: 'I see the problem.', parts: ['Ik zie', FK(['het', 'de'], 0, 'dehet', 'probleem is a het-word: het probleem. Learn it with the het.'), 'probleem.'] },
       ] },
 
@@ -74,9 +74,9 @@
         { listen: true, nl: 'de wieken', en: 'the sails of a mill' }, { listen: true, nl: 'de polder', en: 'the polder' }, { listen: true, nl: 'achttien', en: '18' },
         { look: true, prop: 'molen', nl: 'de molen', en: 'the windmill' }, { look: true, prop: 'water', nl: 'het water', en: 'the water' },
         { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' },
-        { en: 'I play golf on Saturday.', parts: ['Ik', FK(['speel', 'speelt', 'spelen'], 0, 'pres', 'ik takes the bare stem: speel, with ee to keep the sound long.'), 'zaterdag golf.'] },
-        { en: 'We walk along the dyke.', parts: ['Wij', FK(['lopen', 'loopt', 'loop'], 0, 'pres', 'wij is plural, so the whole infinitive: lopen.'), 'over de dijk.'] },
-        { en: 'The mill turns without wind.', parts: ['De molen', FK(['draait', 'draai', 'draaien'], 0, 'pres', 'One mill is a hij: stem plus t, draait.'), 'zonder wind.'] },
+        { en: 'I play golf on Saturday.', parts: ['Ik', FK(['speel', 'speelt', 'spelen'], 0, 'presens', 'ik takes the bare stem: speel, with ee to keep the sound long.'), 'zaterdag golf.'] },
+        { en: 'We walk along the dyke.', parts: ['Wij', FK(['lopen', 'loopt', 'loop'], 0, 'presens', 'wij is plural, so the whole infinitive: lopen.'), 'over de dijk.'] },
+        { en: 'The mill turns without wind.', parts: ['De molen', FK(['draait', 'draai', 'draaien'], 0, 'presens', 'One mill is a hij: stem plus t, draait.'), 'zonder wind.'] },
         { en: 'I am sitting in the clubhouse.', parts: ['Ik zit in', FK(['het', 'de'], 0, 'dehet', 'A compound takes the article of its last part: het huis, so het clubhuis.'), 'clubhuis.'] },
       ] },
 
@@ -101,9 +101,9 @@
         { listen: true, nl: 'gezellig', en: 'cosy, a good time together' }, { listen: true, nl: 'proost', en: 'cheers' }, { listen: true, nl: 'hiernaast', en: 'next door' },
         { look: true, prop: 'huis', nl: 'het huis', en: 'the house' }, { look: true, prop: 'tuin', nl: 'de tuin', en: 'the garden' },
         { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
-        { en: 'I live next door.', parts: ['Ik', FK(['woon', 'woont', 'wonen'], 0, 'pres', 'ik takes the bare stem: woon, with oo to keep the sound long.'), 'hiernaast.'] },
-        { en: 'You pay €6,25.', parts: ['Jij', FK(['betaalt', 'betaal', 'betalen'], 0, 'pres', 'jij before the verb takes stem plus t: jij betaalt.'), 'zes euro vijfentwintig.'] },
-        { en: 'The bill adds up exactly.', parts: ['De rekening', FK(['klopt', 'klop', 'kloppen'], 0, 'pres', 'One bill is a hij: stem plus t, klopt.'), 'precies.'] },
+        { en: 'I live next door.', parts: ['Ik', FK(['woon', 'woont', 'wonen'], 0, 'presens', 'ik takes the bare stem: woon, with oo to keep the sound long.'), 'hiernaast.'] },
+        { en: 'You pay €6,25.', parts: ['Jij', FK(['betaalt', 'betaal', 'betalen'], 0, 'presens', 'jij before the verb takes stem plus t: jij betaalt.'), 'zes euro vijfentwintig.'] },
+        { en: 'The bill adds up exactly.', parts: ['De rekening', FK(['klopt', 'klop', 'kloppen'], 0, 'presens', 'One bill is a hij: stem plus t, klopt.'), 'precies.'] },
         { en: 'Welcome to the neighbourhood.', parts: ['Welkom in', FK(['de', 'het'], 0, 'dehet', 'buurt is a de-word, like de straat and de wijk.'), 'buurt.'] },
       ] },
   ]);

@@ -63,3 +63,11 @@ test('the qa tools label every fork of the content as the game does', () => {
   });
   assert.deepEqual(diff.slice(0, 10), [], `${diff.length} forks labelled differently`);
 });
+test('one id per rule: the seven merged groups stay merged (11 Nov 2026)', () => {
+  const retired = new Set(['pres', 'vgl', 'objpron', 'eris', 'imper', 'conditie', 'alsdan', 'voorwaarde', 'vnwadv', 'erop']);
+  const { levels, RULES } = content_(), used = new Set();
+  for (const lv of levels) for (const it of lv.items) for (const p of it.parts || [it]) if (p && p.r) used.add(p.r);
+  assert.deepEqual([...used].filter(r => retired.has(r)), []);
+  assert.deepEqual(Object.keys(RULES).filter(r => retired.has(r)), []);
+  for (const r of retired) assert.equal(TASK_OF_RULE[r], undefined, r);
+});

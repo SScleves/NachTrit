@@ -61,6 +61,6 @@
     { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'De friet is one portion, so it takes is. Only de frieten would take zijn.'), 'koud.'] },
     { en: 'Two pizzas, please.', parts: ['Twee', FK(['pizza\'s', 'pizzas'], 0, 'spel', 'pizza ends in a long a, and the \'s keeps it long in the plural: pizza\'s.', 'spell'), ', alstublieft.'] },
     { en: 'The food is tasty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'eten here is a verb used as a noun, and those are always het: het eten.'), 'eten is lekker.'] },
-    { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'pres', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
+    { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'presens', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
   ] });
 })();

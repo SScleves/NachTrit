@@ -21,7 +21,7 @@
   // Trap reads carry their own o / a / r / w, and w starts with the meaning because the mission card shows it.
   // New props: none. Only fiets, water and molen. New rules: none. pres comes from district2.js and hebben from
   // the other extra files; both are set again below only if they are missing.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -65,13 +65,13 @@
 
     // ---- builds: one fork each
     { en: 'I take the train.', nl: 'Ik neem de trein.',
-      parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'pres', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de trein.'] },
+      parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'presens', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de trein.'] },
     { en: 'The station is on the left.', nl: 'Het station is links.',
       parts: [FK(['Het', 'De'], 0, 'dehet', 'station is a het-word: het station. Learn it with the het.'), 'station is links.'] },
     { en: 'We are going by bike.', nl: 'We gaan met de fiets.',
-      parts: ['We', FK(['gaan', 'gaat', 'ga'], 0, 'pres', 'we is plural, so the whole infinitive: gaan.'), 'met de fiets.'] },
+      parts: ['We', FK(['gaan', 'gaat', 'ga'], 0, 'presens', 'we is plural, so the whole infinitive: gaan.'), 'met de fiets.'] },
     { en: 'The water bus sails to Dordrecht.', nl: 'De waterbus vaart naar Dordrecht.',
-      parts: ['De waterbus', FK(['vaart', 'vaar', 'varen'], 0, 'pres', 'One boat is a hij: stem plus t. varen, vaar, vaart.'), 'naar Dordrecht.'] },
+      parts: ['De waterbus', FK(['vaart', 'vaar', 'varen'], 0, 'presens', 'One boat is a hij: stem plus t. varen, vaar, vaart.'), 'naar Dordrecht.'] },
     { en: 'The trains are delayed.', nl: 'De treinen hebben vertraging.',
       parts: ['De treinen', FK(['hebben', 'heeft', 'hebt'], 0, 'hebben', 'treinen is plural, so hebben. Dutch says the trains have delay.'), 'vertraging.'] },
   ] });

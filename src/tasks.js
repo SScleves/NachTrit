@@ -9,9 +9,9 @@ export const TASKS = {
 };
 export const TASK_OF_RULE = {};
 for (const [t, ids] of Object.entries({
-  order: 'v2 bijzin tmp sepbz hoewel indirect alsdan cond conditie voorwaarde',
+  order: 'v2 bijzin tmp sepbz hoewel indirect cond',
   past: 'imp kof perf plusq aux',
-  verb: 'sep modal zou fut zullen aanhet presens pres passief gebod omte al zijn hebben om',
+  verb: 'sep modal zou fut zullen aanhet presens passief gebod omte al zijn hebben om',
   comp: 'vergelijk', dehet: 'dehet',
 })) for (const r of ids.split(' ')) TASK_OF_RULE[r] = t;
 // options that are the same words in another order ask for word order, whatever the rule id says

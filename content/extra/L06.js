@@ -60,8 +60,8 @@
     { look: true, prop: 'nummer', value: 64, nl: 'vierenzestig', en: '64' },
 
     // ---- builds: one fork each
-    { en: 'You pay at the checkout.', parts: ['U', FK(['betaalt', 'betaal', 'betalen'], 0, 'pres', 'u takes stem plus t, just like jij: u betaalt.'), 'bij de kassa.'] },
-    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kostt'], 0, 'pres', 'The stem kost already ends in t, and Dutch never writes tt at the end.', 'spell'), 'drie euro.'] },
+    { en: 'You pay at the checkout.', parts: ['U', FK(['betaalt', 'betaal', 'betalen'], 0, 'presens', 'u takes stem plus t, just like jij: u betaalt.'), 'bij de kassa.'] },
+    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kostt'], 0, 'presens', 'The stem kost already ends in t, and Dutch never writes tt at the end.', 'spell'), 'drie euro.'] },
     { en: 'This jumper is too small.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'trui is a de-word, so deze trui. dit only goes with het-words: dit brood.'), 'trui is te klein.'] },
     { en: 'Can I have four rolls?', parts: ['Mag ik vier', FK(['broodjes', 'broodjen', 'broodje\'s'], 0, 'meervoud', 'Every -je word takes -s in the plural: het broodje, de broodjes.', 'spell'), '?'] },
     { en: 'It costs € 1,99.', parts: ['Het kost een euro', FK(['negenennegentig', 'negentien', 'negenentachtig'], 0, 'getal', 'Dutch says the units first, then en, then the tens: negen-en-negentig is 99.'), '.'] },

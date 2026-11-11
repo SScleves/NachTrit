@@ -15,7 +15,7 @@
   //   no blij next to gelukkig, no de wijk next to de buurt, no feest or vrijmibo next to de borrel.
   // Read meanings are all different, so a plain read never gets a second right English sign.
   // `wrong` on a word item is the same noun with the wrong article, so that fork also tests de/het.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(48, { deliveries: 20, items: [
@@ -48,9 +48,9 @@
     { look: true, prop: 'nummer', value: 43, nl: 'drieënveertig', en: '43' },
 
     // builds: one fork each, present tense, zijn, de/het or a number
-    { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'pres', 'ik takes the bare stem: spreek, with ee to keep the sound long.'), 'een beetje Nederlands.'] },
-    { en: 'You live next door.', parts: ['U', FK(['woont', 'woon', 'wonen'], 0, 'pres', 'u is the polite you and works like jij: stem plus t, u woont.'), 'hiernaast.'] },
-    { en: 'Everyone finds it cosy.', parts: ['Iedereen', FK(['vindt', 'vinden', 'vind'], 0, 'pres', 'iedereen counts as one person: stem vind plus t gives vindt.'), 'het gezellig.'] },
+    { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'presens', 'ik takes the bare stem: spreek, with ee to keep the sound long.'), 'een beetje Nederlands.'] },
+    { en: 'You live next door.', parts: ['U', FK(['woont', 'woon', 'wonen'], 0, 'presens', 'u is the polite you and works like jij: stem plus t, u woont.'), 'hiernaast.'] },
+    { en: 'Everyone finds it cosy.', parts: ['Iedereen', FK(['vindt', 'vinden', 'vind'], 0, 'presens', 'iedereen counts as one person: stem vind plus t gives vindt.'), 'het gezellig.'] },
     { en: "It's Paola's birthday.", parts: ['Paola', FK(['is', 'heeft'], 0, 'zijn', 'jarig goes with zijn: Paola is jarig, today is her birthday.'), 'jarig.'] },
     { en: 'The little present is for Paola.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every -je word is het: het cadeautje, het biertje.'), 'cadeautje is voor Paola.'] },
     { en: 'That is €75 altogether.', parts: ['Dat is samen', FK(['vijfenzeventig', 'zevenenvijftig'], 0, 'getal', 'Dutch says the units first: vijfenzeventig is five and seventy.'), 'euro.'] },
@@ -89,8 +89,8 @@
     // builds: one fork each, zijn and hebben in the present, heten, de/het and a number
     { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'wij takes zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
     { en: 'You are warmly welcome.', parts: ['U', FK(['bent', 'zijn', 'ben'], 0, 'zijn', 'u is the polite you and takes bent, like jij: u bent welkom.'), 'van harte welkom.'] },
-    { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'pres', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
-    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'pres', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
+    { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'presens', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
+    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'presens', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
     { en: 'The party is on Saturday.', parts: [FK(['Het', 'De'], 0, 'dehet', 'feest is a het-word, like het huis. Learn the word with its article.'), 'feest is zaterdag.'] },
     { en: 'The bill is €48.', parts: ['De rekening is', FK(['achtenveertig', 'vierentachtig'], 0, 'getal', 'Dutch says the units first: achtenveertig is eight and forty.'), 'euro.'] },
   ] });

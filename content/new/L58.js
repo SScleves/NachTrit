@@ -12,8 +12,8 @@
 
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem / haar' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -51,7 +51,7 @@
       { w: 'the helmet', nl: 'de helm' },
 
       // ---- builds: er is / er zijn
-      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
+      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
       { en: 'There is a museum in Ouwerkerk.', parts: ['In Ouwerkerk', FK(['is er', 'er is'], 0, 'v2', 'In Ouwerkerk takes slot 1, so the verb comes next and er follows it.'), 'een museum.'] },
       { en: 'Tonight there is a storm at sea.', parts: ['Vannacht', FK(['is er', 'er is'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it.'), 'een storm op zee.'] },
 
@@ -69,11 +69,11 @@
       { en: 'Neeltje Jans is a big island.', parts: ['Neeltje Jans is een', FK(['groot', 'grote'], 0, 'adj', 'een plus a het-word is the one cell without -e: een groot eiland.'), 'eiland.'] },
 
       // ---- builds: object pronouns
-      { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'objpron', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
+      { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'obj', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
       { en: "In the mist I can't see her.", parts: ['In de mist', FK(['zie ik', 'ik zie'], 0, 'v2', 'In de mist takes slot 1, so the verb comes second, then ik.'), 'haar niet.'] },
-      { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'objpron', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
-      { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'objpron', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
-      { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'objpron', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },
+      { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'obj', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
+      { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
+      { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'obj', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },
 
       // ---- reading
       { read: true, nl: 'Het waait vandaag hard.', en: 'It is blowing hard today.' },

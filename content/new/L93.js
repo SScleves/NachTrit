@@ -25,7 +25,6 @@
   window.RULES.cond = window.RULES.cond || { name: 'If ... then: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.pronadv = window.RULES.pronadv || { name: 'ermee, erop, erin: er plus preposition', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
@@ -74,8 +73,8 @@
       // ---- builds: er as quantity, er as the opener, and the pronominal adverbs
       { en: 'Another bitterbal? No thanks, I have already eaten five.', parts: ['Nog een bitterbal? Nee, dank je, ik heb', FK(['er', 'het'], 0, 'er',
         'When you only say how many, er stands for the thing: ik heb er al vijf.'), 'al vijf', FK(['gegeten', 'eten', 'aten'], 0, 'perf', 'eten is irregular, and after heb comes the participle: gegeten.'), '.'] },
-      { en: 'There is a sheep on the terrace.', parts: [FK(['Er', 'Het', 'Dat'], 0, 'eris',
-        'er opens a sentence about something new: Er staat een schaap.'), FK(['staat', 'staan'], 0, 'eris', 'The verb agrees with the one new thing, one sheep: staat.', 'verb'), 'een schaap op het terras.'] },
+      { en: 'There is a sheep on the terrace.', parts: [FK(['Er', 'Het', 'Dat'], 0, 'er',
+        'er opens a sentence about something new: Er staat een schaap.'), FK(['staat', 'staan'], 0, 'er', 'The verb agrees with the one new thing, one sheep: staat.', 'verb'), 'een schaap op het terras.'] },
       { en: 'What a big portion. I am very happy with it.', parts: ['Wat een grote portie. Ik ben', FK(['er', 'het'], 0, 'pronadv',
         'A thing after a preposition becomes er: blij met de portie turns into er ... blij mee.'), 'heel blij', FK(['mee', 'met'], 0, 'pronadv',
         'With er the preposition moves behind it as mee: ermee, not er met.'), '.'] },

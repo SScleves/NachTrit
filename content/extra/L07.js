@@ -53,10 +53,10 @@
     { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
     // ---- builds: one fork each
-    { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'pres', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
-    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'pres', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
+    { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'presens', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
+    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'presens', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
     { en: 'The waiter brings the food.', parts: ['De ober brengt', FK(['het', 'de'], 0, 'dehet', 'A verb used as a noun is a het-word: eten, het eten.'), 'eten.'] },
-    { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'pres', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
-    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'pres', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
+    { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'presens', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
+    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'presens', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
   ] });
 })();

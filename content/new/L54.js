@@ -8,9 +8,9 @@
 // (de stormvloedkering, het eiland, de zeedijk, Neeltje Jans, de Lange Jan, Het waait vandaag hard).
 // New rules: eris, obj, vgl. New props: none (fiets, water, brug).
 (() => {
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'er' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.vgl = window.RULES.vgl || { name: 'Comparing: groter dan, het grootst', note: 'dan' };
+  window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
 
   const P = window.TIER_PRESET[4];
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -23,12 +23,12 @@
       want: 'They ask what is faster, what costs more and who is taller. The women are still taller than you. The grammar book you never opened has a page on this.' },
     items: [
       // ---- builds: er is / er zijn
-      { en: 'There is no train tonight.', parts: ['Er', FK(['is', 'zijn'], 0, 'eris', 'One train, so er is.', 'verb'), 'vannacht',
+      { en: 'There is no train tonight.', parts: ['Er', FK(['is', 'zijn'], 0, 'er', 'One train, so er is.', 'verb'), 'vannacht',
         FK(['geen', 'niet'], 0, 'neg', 'een trein turns into geen trein.'), 'trein.'] },
-      { en: 'There are three dead people at the bus stop.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Three of them, plural: er zijn.', 'verb'), 'drie doden bij de bushalte.'] },
-      { en: 'Is there a toilet at the station?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One toilet, so is er. In a question the verb comes first.', 'verb'), 'een toilet op',
+      { en: 'There are three dead people at the bus stop.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Three of them, plural: er zijn.', 'verb'), 'drie doden bij de bushalte.'] },
+      { en: 'Is there a toilet at the station?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One toilet, so is er. In a question the verb comes first.', 'verb'), 'een toilet op',
         FK(['het', 'de'], 0, 'dehet', 'station is a het-word: het station. Learn it with its article.'), 'station?'] },
-      { en: 'Is there still a bus to Zierikzee?', parts: [FK(['Is er', 'Zijn er'], 0, 'eris', 'One bus, so is er. In a question the verb comes first.', 'verb'), 'nog een bus naar Zierikzee?'] },
+      { en: 'Is there still a bus to Zierikzee?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One bus, so is er. In a question the verb comes first.', 'verb'), 'nog een bus naar Zierikzee?'] },
       // ---- builds: object pronouns
       { en: 'No ticket. The conductor is looking at me.', parts: ['Geen kaartje. De conducteur kijkt naar', FK(['me', 'ik', 'mijn'], 0, 'obj', 'After naar you need the object form: me. ik only does things.'), '.'] },
       { en: 'Excuse me, can you help us?', parts: ['Pardon, kunt u', FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get the help, so the object form: ons. onze goes before a noun.'), 'helpen?'] },
@@ -58,8 +58,8 @@
       { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the stopping train', nl: 'de stoptrein' }, { w: 'the exit', nl: 'de uitgang' },
       // ---- reads
       { read: true, nl: 'De trein naar Vlissingen rijdt vandaag niet.', o: ['The train to Vlissingen is not running today.', 'The train to Vlissingen is late today.', 'The train to Vlissingen is full today.'], a: 0, r: 'neg' },
-      { read: true, nl: 'Er zijn geen bussen meer.', o: ['There are no more buses.', 'There are more buses.', 'The buses are not here yet.'], a: 0, r: 'eris' },
-      { read: true, nl: 'De fiets is hier sneller dan de bus.', o: ['The bike is faster than the bus here.', 'The bike is slower than the bus here.', 'The bike is as fast as the bus here.'], a: 0, r: 'vgl' },
+      { read: true, nl: 'Er zijn geen bussen meer.', o: ['There are no more buses.', 'There are more buses.', 'The buses are not here yet.'], a: 0, r: 'er' },
+      { read: true, nl: 'De fiets is hier sneller dan de bus.', o: ['The bike is faster than the bus here.', 'The bike is slower than the bus here.', 'The bike is as fast as the bus here.'], a: 0, r: 'vergelijk' },
       { read: true, nl: 'Is deze plek nog vrij?', en: 'Is this seat free?' },
       { read: true, nl: 'De kering is vannacht dicht.', en: 'The barrier is closed tonight.' },
       { read: true, nl: 'De bus komt over tien minuten.', en: 'The bus comes in ten minutes.' },

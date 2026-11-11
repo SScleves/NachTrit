@@ -46,7 +46,7 @@
           'gaan sends the real verb to the end, whole, no te.'), 'op de werf.'] },
         { en: "I'm going to invite the new neighbours.", parts: ['Ik', FK(['ga', 'gaat', 'gaan'], 0, 'fut',
           'ik ga. The t is for jij and hij.'), 'de nieuwe buren', FK(['uitnodigen', 'uitnodigt', 'uit te nodigen'], 0, 'fut', 'After gaan the separable verb goes whole to the end, without te: uitnodigen.'), '.'] },
-        { en: 'Are you going to call her?', parts: [FK(['Ga je', 'Gaat je'], 0, 'presens', 'When je comes right after the verb, the t drops: ga je.'), FK(['haar', 'zij'], 0, 'objpron',
+        { en: 'Are you going to call her?', parts: [FK(['Ga je', 'Gaat je'], 0, 'presens', 'When je comes right after the verb, the t drops: ga je.'), FK(['haar', 'zij'], 0, 'obj',
           'She is the one being called, so haar. zij is only for the one doing it.'), 'bellen?'] },
 
         // ---- builds: the imperative

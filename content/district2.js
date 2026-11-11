@@ -13,7 +13,7 @@
 
 (() => {
   window.RULES.spel = { name: 'Open and closed syllables', note: 'open vs gesloten lettergreep' };
-  window.RULES.pres = { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = { name: 'Present tense endings', note: 'presens' };
 
   const WIJK = { lanes: 3, speed: 12, maxSpeed: 14, ramp: false, lampDecay: 0.45, forkSlow: 0.3, hint: 'letter', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 5 };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
@@ -107,10 +107,10 @@
         { listen: true, nl: 'woensdag', en: 'Wednesday' }, { listen: true, nl: 'donderdag', en: 'Thursday' }, { listen: true, nl: 'de bestelling', en: 'the order' },
         { look: true, prop: 'winkel', nl: 'de winkel', en: 'the shop' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
         { look: true, prop: 'nummer', value: 21, nl: 'eenentwintig', en: '21' },
-        { en: 'How long will it take?', parts: ['Hoe lang', FK(['duurt', 'duren', 'duur'], 0, 'pres', 'het duurt: het takes the -t, just like hij.'), 'het?'] },
+        { en: 'How long will it take?', parts: ['Hoe lang', FK(['duurt', 'duren', 'duur'], 0, 'presens', 'het duurt: het takes the -t, just like hij.'), 'het?'] },
         { en: 'Are you open on Sunday?', parts: ['Bent u', FK(['zondag', 'zaterdag', 'maandag'], 0, 'woord', 'zondag is Sunday: zon, the sun.'), 'open?'] },
-        { en: "I'd like to order.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'pres', 'ik wil, no -t. willen is for wij, jullie and zij.'), 'graag bestellen.'] },
-        { en: 'What does that mean?', parts: ['Wat', FK(['betekent', 'beteken', 'betekenen'], 0, 'pres', 'dat works like hij: stem plus -t. Wat betekent dat?'), 'dat?'] },
+        { en: "I'd like to order.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'presens', 'ik wil, no -t. willen is for wij, jullie and zij.'), 'graag bestellen.'] },
+        { en: 'What does that mean?', parts: ['Wat', FK(['betekent', 'beteken', 'betekenen'], 0, 'presens', 'dat works like hij: stem plus -t. Wat betekent dat?'), 'dat?'] },
       ] },
 
     { id: 10, act: 2, name: 'De kalender', theme: 'square', ...WIJK, obstacles: 'light', filler: [28, 38], deliveries: 12,

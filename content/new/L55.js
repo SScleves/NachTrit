@@ -10,8 +10,8 @@
 // de zeedijk, de stormvloedkering, het eiland, 62 gates, Het waait vandaag hard.).
 // New rules: objpron, eris, vergelijk (declared below only if missing). New props: none.
 (() => {
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
@@ -29,30 +29,30 @@
       // ---- build: object pronouns
       { en: "I'll call him after the standup.", parts: ['Na de standup',
         FK(['bel ik', 'ik bel'], 0, 'v2', 'Na de standup takes slot 1, so the verb comes next, then ik.'),
-        FK(['hem', 'hij', 'zijn'], 0, 'objpron', 'He is on the receiving end of the call, so hem. hij only does things.'), '.'] },
+        FK(['hem', 'hij', 'zijn'], 0, 'obj', 'He is on the receiving end of the call, so hem. hij only does things.'), '.'] },
       { en: 'Can you help me?', parts: ['Kun je',
-        FK(['me', 'ik', 'mijn'], 0, 'objpron', 'The help goes to me, so me. ik only does things, mijn needs a noun after it.'),
+        FK(['me', 'ik', 'mijn'], 0, 'obj', 'The help goes to me, so me. ik only does things, mijn needs a noun after it.'),
         FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'After kun the verb goes whole to the end, no te: helpen.'), '?'] },
       { en: 'Every morning the customers call us.', parts: ['Elke ochtend',
         FK(['bellen de klanten', 'de klanten bellen'], 0, 'v2', 'Elke ochtend in slot 1: the verb second, then de klanten.'),
-        FK(['ons', 'wij', 'onze'], 0, 'objpron', 'We get called, so ons. wij is us doing the calling.'), '.'] },
+        FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get called, so ons. wij is us doing the calling.'), '.'] },
       { en: 'Sorry, the dogs need me.', parts: ['Sorry, de honden',
         FK(['hebben', 'heeft'], 0, 'presens', 'Two dogs, plural: hebben.'),
-        FK(['me', 'ik', 'mijn'], 0, 'objpron', 'The dogs need someone, and that someone is me. Object, so me.'), 'nodig.'] },
+        FK(['me', 'ik', 'mijn'], 0, 'obj', 'The dogs need someone, and that someone is me. Object, so me.'), 'nodig.'] },
       { en: "Later I'll send her the link.", parts: ['Straks',
         FK(['stuur ik', 'ik stuur'], 0, 'v2', 'Straks takes slot 1, so the verb jumps ahead of ik.'),
-        FK(['haar', 'zij'], 0, 'objpron', 'She gets the link, so haar. zij is she doing the sending.'), 'de link.'] },
+        FK(['haar', 'zij'], 0, 'obj', 'She gets the link, so haar. zij is she doing the sending.'), 'de link.'] },
       { en: 'You have to call him tonight.', parts: ['Je moet',
-        FK(['hem', 'hij'], 0, 'objpron', 'Him, the one you call: hem.'), 'vannacht',
+        FK(['hem', 'hij'], 0, 'obj', 'Him, the one you call: hem.'), 'vannacht',
         FK(['bellen', 'belt', 'te bellen'], 0, 'modal', 'moet sends the infinitive to the end: bellen.'), '.'] },
       // ---- build: er is, er zijn
       { en: "Tonight there's an outage on the server.", parts: ['Vannacht',
         FK(['is er', 'er is'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it.'), 'een storing op de server.'] },
       { en: 'There are two new alerts.', parts: ['Er',
-        FK(['zijn', 'is'], 0, 'eris', 'Two alerts, plural: er zijn.', 'verb'), 'twee',
+        FK(['zijn', 'is'], 0, 'er', 'Two alerts, plural: er zijn.', 'verb'), 'twee',
         FK(['nieuwe', 'nieuw'], 0, 'adj', 'Before a plural noun the adjective takes -e: nieuwe meldingen.'), 'meldingen.'] },
       { en: 'There are no blockers.', parts: ['Er',
-        FK(['zijn', 'is'], 0, 'eris', 'blockers is plural, so er zijn.', 'verb'),
+        FK(['zijn', 'is'], 0, 'er', 'blockers is plural, so er zijn.', 'verb'),
         FK(['geen', 'niet'], 0, 'neg', 'geen cancels a noun that has no article: geen blockers, never niet blockers.'), 'blockers.'] },
       // ---- build: comparing
       { en: 'My laptop is older than the intern.', parts: ['Mijn laptop is',

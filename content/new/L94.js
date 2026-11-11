@@ -22,8 +22,8 @@
 // New rules: omte, conditie, vnwadv (all guarded below). New props: none (water, kerk, hond).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te and om ... te + infinitive', note: 'heb-je-zin-om-zaterdag-te-golfen' };
-  window.RULES.conditie = window.RULES.conditie || { name: 'als ... dan: if clauses', note: 'bijzin - werkwoord naar het einde' };
-  window.RULES.vnwadv = window.RULES.vnwadv || { name: 'erop, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[9];
@@ -61,13 +61,13 @@
         'niet stands before te: om de veerboot niet te missen.'), '.'] },
 
       // ---- builds: conditionals with als ... dan and zou
-      { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'conditie',
+      { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'cond',
         'als sends the verb to the end of its clause: als de boot niet vaart.'), ',', FK(['dan blijven we', 'dan we blijven'], 0, 'v2',
         'dan takes slot 1 of the main clause, so the verb comes next: dan blijven we.'), 'hier.'] },
-      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'conditie', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
+      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'cond', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
         'After the als clause the main clause starts with its verb: zou ik.'), 'de fiets nemen.'] },
       { en: 'If the bus is late, we take the bikes.', parts: ['Als de bus te laat', FK(['is', 'zijn'], 0, 'presens',
-        'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'conditie',
+        'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'cond',
         'After the als clause the main clause starts with its verb: nemen we de fietsen.'), 'de fietsen.'] },
       { en: 'Could you tell me where the ferry leaves from?', parts: [FK(['Zou', 'Zouden'], 0, 'zou',
         'u takes the singular: zou u. zou plus kunnen makes the request polite.'), 'u mij kunnen zeggen waar', FK(['de veerboot vertrekt', 'vertrekt de veerboot'], 0, 'bijzin', 'An indirect question sends the verb to the end: waar de veerboot vertrekt.'), '?'] },
@@ -78,10 +78,10 @@
       { en: 'My sister lives on Texel. I cycle there every year.', parts: ['Mijn zus woont op Texel. Ik fiets', FK(['er', 'het'], 0, 'er',
         'A place that was just named becomes er: ik fiets er.'), 'elk jaar', FK(['naartoe', 'toe'], 0, 'er',
         'To a place just named, er takes naartoe: ik fiets er naartoe.'), '.'] },
-      { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'vnwadv',
+      { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'pronadv',
         'A question about a thing with a preposition starts with waar: waar wacht je op.'), 'wacht je op? Ik wacht', FK(['op', 'aan'], 0, 'woord',
         'wachten goes with op: wachten op de bus.'), 'de bus.'] },
-      { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'vnwadv',
+      { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'pronadv',
         'A preposition plus a thing becomes er plus the preposition, one word: ermee, erop, erin.'), 'naar het strand.'] },
 
       // ---- builds: review of earlier tiers

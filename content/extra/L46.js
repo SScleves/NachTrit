@@ -13,7 +13,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers here mean the same
   //   thing: no de meeting next to de vergadering, no stuk next to kapot, no het werk next to de baan, no de mail
   //   next to het mailtje. `wrong` sits only on het-nouns whose de form is wrong in every variety of Dutch.
-  window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
+  window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
@@ -53,8 +53,8 @@
     { en: 'The laptop is broken.', parts: ['De laptop', FK(['is', 'zijn', 'ben'], 0, 'zijn', 'One laptop is a hij, and hij is. zijn is for more than one, ben for ik.'), 'kapot.'] },
     { en: 'I have a question.', parts: ['Ik', FK(['heb', 'heeft', 'hebben'], 0, 'hebben', 'ik heb. heeft is only for hij, zij and het.'), 'een vraag.'] },
     { en: 'We have a meeting on Friday.', parts: ['We', FK(['hebben', 'heeft', 'heb'], 0, 'hebben', 'we is plural, so the whole verb: hebben.'), 'vrijdag een vergadering.'] },
-    { en: 'The customer calls on Monday.', parts: ['De klant', FK(['belt', 'bel', 'bellen'], 0, 'pres', 'One customer is a hij: stem plus t, belt.'), 'maandag.'] },
-    { en: 'The standup starts tomorrow.', parts: ['De standup', FK(['begint', 'begin', 'beginnen'], 0, 'pres', 'One standup is a hij: stem plus t, begint.'), 'morgen.'] },
-    { en: 'The system is running again.', parts: ['Het systeem', FK(['draait', 'draai', 'draaien'], 0, 'pres', 'One system is a het, so it takes the t: draait.'), 'weer.'] },
+    { en: 'The customer calls on Monday.', parts: ['De klant', FK(['belt', 'bel', 'bellen'], 0, 'presens', 'One customer is a hij: stem plus t, belt.'), 'maandag.'] },
+    { en: 'The standup starts tomorrow.', parts: ['De standup', FK(['begint', 'begin', 'beginnen'], 0, 'presens', 'One standup is a hij: stem plus t, begint.'), 'morgen.'] },
+    { en: 'The system is running again.', parts: ['Het systeem', FK(['draait', 'draai', 'draaien'], 0, 'presens', 'One system is a het, so it takes the t: draait.'), 'weer.'] },
   ] });
 })();

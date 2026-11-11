@@ -31,7 +31,7 @@ function classify(x, ans, rule) {
   if (new RegExp('^' + PRT + 'ge').test(lx) || new RegExp('^' + PRT + 'ge').test(la) && new RegExp('^' + PRT).test(lx)) return { cat: 'separable participle formed wrongly', legit: false };
   if (verbRule && /(te|de|ten|den|d|t)$/.test(lx) && !/(te|de|ten|den)$/.test(la)) return { cat: 'irregular verb made regular (koopte, gegaand)', legit: false };
   if (/^ge.*(en|t|d)$/.test(lx)) return { cat: 'participle formed wrongly', legit: false };
-  if (['vergelijk', 'vgl'].includes(rule) || ['goed', 'graag', 'lief', 'veel'].some(w => lx.startsWith(w)) && /(er|der|ste|st)$/.test(lx)) return { cat: 'comparative formed wrongly (graager, gooder, duurer)', legit: false };
+  if (rule === 'vergelijk' || ['goed', 'graag', 'lief', 'veel'].some(w => lx.startsWith(w)) && /(er|der|ste|st)$/.test(lx)) return { cat: 'comparative formed wrongly (graager, gooder, duurer)', legit: false };
   if (rule === 'verklein' || /(tje|pje|je|jes|tjes|ties|tjen|jen)$/.test(lx)) return { cat: 'diminutive spelling', legit: true };
   if (!verbRule && (rule === 'meervoud' || /('s|s|en)$/.test(lx) && ['woord', 'spel', 'samen', 'meervoud', 'dehet', 'adj', 'getal', 'datum'].includes(rule))) return { cat: 'plural spelling', legit: true };
   if (rule === 'adj' && (lx.endsWith('e') || la.endsWith('e'))) return { cat: 'adjective -e', legit: true };
