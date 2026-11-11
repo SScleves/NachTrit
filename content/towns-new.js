@@ -1670,7 +1670,8 @@
         w: 'vroeg of turns a yes-or-no question into a report. was afgezegd is the passive in the past: it had been cancelled.' },
       { read: true, nl: 'Noondezju. Het is weer carnaval.', o: ['Damn it. It is carnival again.', 'Welcome. Carnival is starting.', 'Sorry. Carnival is over.'], a: 0, r: 'cult',
         w: 'Noondezju is Maastricht dialect, a mild curse or a sigh of surprise. weer means again.' },
-      { read: true, nl: 'Doe mij maar een stuk kersenvlaai.', en: 'I will have a piece of cherry tart.' },
+      { read: true, nl: 'Doe mij maar een stuk kersenvlaai.', en: 'I will have a piece of cherry tart.', o: ['I will have a piece of cherry tart.', 'I will bake a cherry tart.', 'Give me the whole cherry tart.'], a: 0, r: 'woord',
+        w: 'Doe mij maar ... is how you order: I will have. Vlaai is the Limburg fruit tart.' },
 
       // ---- listens: four by ear, from the people and the town
       { listen: true, nl: 'de ruzie', en: 'the quarrel' }, { listen: true, nl: 'het compliment', en: 'the compliment' },
@@ -9158,7 +9159,8 @@
         w: 'zou graag is a wish, not a fact. maar keeps normal word order.' },
       { read: true, nl: 'Ik heb er niets mee te maken.', o: ['I have nothing to do with it.', 'I have nothing to do it with.', 'I have nothing left to make.'], a: 0, r: 'pronadv',
         w: 'iets te maken hebben met: with the thing becomes er ... mee. A fixed phrase, not a literal one.' },
-      { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.' },
+      { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.', o: ['Miss the last ferry and you live here from now on.', 'Take the last ferry and you live here from now on.', 'Miss the last ferry and you sleep here tonight.'], a: 0, r: 'woord',
+        w: 'Mis je ..., dan ...: a verb first works like if. voortaan means from now on.' },
 
       // ---- listens: a sunset, the last ferry, the island beer
       { listen: true, nl: 'de zonsondergang', en: 'the sunset' }, { listen: true, nl: 'de laatste boot', en: 'the last ferry' },

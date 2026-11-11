@@ -93,7 +93,8 @@
         w: 'zou graag is a wish, not a fact. maar keeps normal word order.' },
       { read: true, nl: 'Ik heb er niets mee te maken.', o: ['I have nothing to do with it.', 'I have nothing to do it with.', 'I have nothing left to make.'], a: 0, r: 'pronadv',
         w: 'iets te maken hebben met: with the thing becomes er ... mee. A fixed phrase, not a literal one.' },
-      { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.' },
+      { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.', o: ['Miss the last ferry and you live here from now on.', 'Take the last ferry and you live here from now on.', 'Miss the last ferry and you sleep here tonight.'], a: 0, r: 'woord',
+        w: 'Mis je ..., dan ...: a verb first works like if. voortaan means from now on.' },
 
       // ---- listens: a sunset, the last ferry, the island beer
       { listen: true, nl: 'de zonsondergang', en: 'the sunset' }, { listen: true, nl: 'de laatste boot', en: 'the last ferry' },

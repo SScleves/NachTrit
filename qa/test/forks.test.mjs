@@ -69,7 +69,7 @@ test('levelQueue: as many entries as deliveries, every item once a round, repeat
 // Known on 11 Nov 2026 (content, not engine): a reading without its own options takes its distractors from the other
 // readings of the level that have only en. In these levels it is the only one, so it rides as a single sign. For the content
 // branch to fix (give the item an o list); this list only keeps new cases from slipping in.
-const KNOWN_SINGLE = new Set(['L98 Mis je de laatste boot, dan woon je hier voortaan.', 'L113 Doe mij maar een stuk kersenvlaai.']);
+const KNOWN_SINGLE = new Set();
 test('every level in the content builds a queue whose forks are playable', t => {
   const { levels } = content_();
   assert.ok(levels.length >= 100, `only ${levels.length} levels loaded`);
