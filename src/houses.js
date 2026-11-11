@@ -1,14 +1,14 @@
 // Houses and the props that stand among them: brick, roof tile, wood and window textures painted once and shared, the
 // townhouse builder, graffiti walls, pictograms, and the props of the street and the canal (tulip boxes, bollards, benches,
 // fingerposts, the cheese cart, the drawbridge, reeds, boats, the church), listed in PROPS.
-import { NODES, pick, rnd, THREE } from './engine.js?v=38';
-import { NODEFX } from './render-nodes.js?v=38';
-import { MAX_ANISO } from './render.js?v=38';
-import { M, Mat, TINT } from './materials.js?v=38';
-import { PG, PM, WIN_GLOW_MAT } from './props.js?v=38';
-import { kadd, kat, kb, kBike, kbuild, kCrate, KG, kit, kTulipBox, MODELS, PK, SIGN_GEO, SIGN_ICONS, signMat, worldUV } from './kit.js?v=38';
-import { lamppost, townStyle, tree, windmill } from './furniture.js?v=38';
-import { cart, fence, kGable, kModel, labelTexture, modelClone, signIcon, zombie, zombieParts } from './main.js?v=38';   // later modules, through the hub
+import { NODES, pick, rnd, THREE } from './engine.js?v=39';
+import { NODEFX } from './render-nodes.js?v=39';
+import { MAX_ANISO } from './render.js?v=39';
+import { M, Mat, TINT } from './materials.js?v=39';
+import { PG, PM, WIN_GLOW_MAT } from './props.js?v=39';
+import { kadd, kat, kb, kBike, kbuild, kCrate, KG, kit, kTulipBox, MODELS, PK, SIGN_GEO, SIGN_ICONS, signMat, worldUV } from './kit.js?v=39';
+import { lamppost, townStyle, tree, windmill } from './furniture.js?v=39';
+import { cart, fence, kGable, kModel, labelTexture, modelClone, signIcon, zombie, zombieParts } from './main.js?v=39';   // later modules, through the hub
 
 // ---------- surfaces: brick, roof tiles, wood and window panes, painted once on canvases and shared by every house ----------
 // kit parts with a wuv material get UVs from their position (metres per repeat), so a 22 m tower and a 4 m house show bricks of one size

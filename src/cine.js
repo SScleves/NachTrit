@@ -1,25 +1,25 @@
 // The cinematic intro: 3D shots staged in the game's own world. intro3d/shot-N.js registers window.NRCINE[N-1]; W is the
 // handle a shot gets (the world's builders, stage, hide, cam, say, title), also window.NRW. cineBegin, cineTick and cineEnd run a
 // shot and put everything back after it.
-import { $, BASE_SPEED, clamp, LANES3, lerp, MAX_SPEED, pick, rnd, ROAD_W, smooth, THREE } from './engine.js?v=38';
-import { NODEFX } from './render-nodes.js?v=38';
-import { camera, lampLight, render, scene } from './render.js?v=38';
-import { GlowMat, glowTex, M, Mat, TINT } from './materials.js?v=38';
-import { KERB_W, setBehind, setRoadLook } from './road.js?v=38';
-import { PG, PM } from './props.js?v=38';
-import { kadd, kb, kbuild, KG, kit, ktube, PK } from './kit.js?v=38';
-import { bikeRow, bins, crates, ducks, lamppost, moorings, setTownId, setTownStyle, townId, townStyleOf, windmill } from './furniture.js?v=38';
-import { bench, bikeProp, boat, bollard, bridge, cheeseCart, church, drawbridge, house, reeds, tulipBox } from './houses.js?v=38';
-import { backRow, canalBridge, flagNL, LANDMARK, terrace, tower, treeCard } from './backdrop.js?v=38';
-import { buildScenery, scenery, theme, THEMES } from './scenery.js?v=38';
-import { beam, bike, rider, setFace } from './rider.js?v=38';
-import { labelTexture } from './signs.js?v=38';
-import { ghostFigure } from './cast.js?v=38';
-import { fence, wisp, zombie, zombieParts } from './zombies.js?v=38';
-import { S, setL, setLaneX, setSpeeds } from './state.js?v=38';
-import { hideCard } from './hud.js?v=38';
-import './intro.js?v=38';   // keeps the order the game's code runs in
-import { reset, update } from './main.js?v=38';   // later modules, through the hub
+import { $, BASE_SPEED, clamp, LANES3, lerp, MAX_SPEED, pick, rnd, ROAD_W, smooth, THREE } from './engine.js?v=39';
+import { NODEFX } from './render-nodes.js?v=39';
+import { camera, lampLight, render, scene } from './render.js?v=39';
+import { GlowMat, glowTex, M, Mat, TINT } from './materials.js?v=39';
+import { KERB_W, setBehind, setRoadLook } from './road.js?v=39';
+import { PG, PM } from './props.js?v=39';
+import { kadd, kb, kbuild, KG, kit, ktube, PK } from './kit.js?v=39';
+import { bikeRow, bins, crates, ducks, lamppost, moorings, setTownId, setTownStyle, townId, townStyleOf, windmill } from './furniture.js?v=39';
+import { bench, bikeProp, boat, bollard, bridge, cheeseCart, church, drawbridge, house, reeds, tulipBox } from './houses.js?v=39';
+import { backRow, canalBridge, flagNL, LANDMARK, terrace, tower, treeCard } from './backdrop.js?v=39';
+import { buildScenery, scenery, theme, THEMES } from './scenery.js?v=39';
+import { beam, bike, rider, setFace } from './rider.js?v=39';
+import { labelTexture } from './signs.js?v=39';
+import { ghostFigure } from './cast.js?v=39';
+import { fence, wisp, zombie, zombieParts } from './zombies.js?v=39';
+import { S, setL, setLaneX, setSpeeds } from './state.js?v=39';
+import { hideCard } from './hud.js?v=39';
+import './intro.js?v=39';   // keeps the order the game's code runs in
+import { reset, update } from './main.js?v=39';   // later modules, through the hub
 
 // ---------- the cinematic intro: 3D shots in the game's own world ----------
 // intro3d/shot-N.js registers window.NRCINE[N-1] = { build(W), update(W, t, dt), dispose(W) }: a few seconds staged from the

@@ -1,7 +1,7 @@
 // Sound: the audio context (made on the first key or tap), the synthesised thump, tick, chime and bark, and the Dutch voice
 // speechSynthesis falls back to.
-import { clamp } from './engine.js?v=38';
-import './hud.js?v=38';   // keeps the order the game's code runs in
+import { clamp } from './engine.js?v=39';
+import './hud.js?v=39';   // keeps the order the game's code runs in
 
 // ---------- audio ----------
 let audioCtx = null;

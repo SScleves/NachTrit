@@ -1,21 +1,21 @@
 // A ride from start to end: start() dresses the town and builds the level queue, reset() clears the road, the first-ride
 // teaching and the lamp hint, die() and the summary card with stars and scores, and resolveFork, the verdict on each fork.
-import { refuelRight, TUNE } from './lamp.js?v=38';
-import { levelQueue } from './forks.js?v=38';
-import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=38';
-import { camera, scene } from './render.js?v=38';
-import { setRoadLook } from './road.js?v=38';
-import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=38';
-import { buildScenery, theme, THEMES } from './scenery.js?v=38';
-import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=38';
-import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=38';
-import { plan } from './plan.js?v=38';
-import { assembled, flash, hideCard, say, toast } from './hud.js?v=38';
-import { chime, initAudio } from './audio.js?v=38';
-import { speak, speakSeq } from './speech.js?v=38';
-import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=38';
-import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=38';
-import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=38';   // later modules, through the hub
+import { refuelRight, TUNE } from './lamp.js?v=39';
+import { levelQueue } from './forks.js?v=39';
+import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=39';
+import { camera, scene } from './render.js?v=39';
+import { setRoadLook } from './road.js?v=39';
+import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=39';
+import { buildScenery, theme, THEMES } from './scenery.js?v=39';
+import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=39';
+import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=39';
+import { plan } from './plan.js?v=39';
+import { assembled, flash, hideCard, say, toast } from './hud.js?v=39';
+import { chime, initAudio } from './audio.js?v=39';
+import { speak, speakSeq } from './speech.js?v=39';
+import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=39';
+import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=39';
+import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=39';   // later modules, through the hub
 
 // ---------- game flow ----------
 function start(lv) {

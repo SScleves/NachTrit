@@ -1,16 +1,16 @@
 // The dead and what else stands in the road: the zombies in their variants (shapes, rags, pools, level of detail), the
 // zombie on a bike, fences, carts, puddles, the wisps that fill the lamp, the road arrows and the halos of the first-ride
 // teaching forks.
-import { pick, rnd, THREE } from './engine.js?v=38';
-import { camera } from './render.js?v=38';
-import { GlowMat, glowTex, M, Mat } from './materials.js?v=38';
-import { PG, PM, streakTex } from './props.js?v=38';
-import { kadd, kb, KG, kit, kmerge, PK } from './kit.js?v=38';
-import { T3, TOWN3D } from './furniture.js?v=38';
-import { bikeProp } from './houses.js?v=38';
-import { townKit } from './scenery.js?v=38';
-import { G } from './signs.js?v=38';
-import { _gs, _lathe, _ss, limbRings, orient, partsGeo, shellGeo, sweepGeo } from './cast.js?v=38';
+import { pick, rnd, THREE } from './engine.js?v=39';
+import { camera } from './render.js?v=39';
+import { GlowMat, glowTex, M, Mat } from './materials.js?v=39';
+import { PG, PM, streakTex } from './props.js?v=39';
+import { kadd, kb, KG, kit, kmerge, PK } from './kit.js?v=39';
+import { T3, TOWN3D } from './furniture.js?v=39';
+import { bikeProp } from './houses.js?v=39';
+import { townKit } from './scenery.js?v=39';
+import { G } from './signs.js?v=39';
+import { _gs, _lathe, _ss, limbRings, orient, partsGeo, shellGeo, sweepGeo } from './cast.js?v=39';
 
 // ---------- the dead: the sheet's shape, tall and thin, knees bent, the back bowed forward, a small head pushed out in front, long arms
 // dangling to the knees, eyes glowing yellow. The joints stay where every town's dress expects them (hip, sh, hd, and knee, foot,

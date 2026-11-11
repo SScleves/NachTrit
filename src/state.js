@@ -1,11 +1,11 @@
 // The ride's state: S (mode, speed, lane, lamp, the objects in the road, the fares), the night depth, the current level L with
 // its lanes and speeds, and what is saved: stars (nachtrit.progress, numbers only), best scores and the unlocks. The first
 // dressing of the world, the polder, happens here as it always did.
-import { nightAt } from './lamp.js?v=38';
-import { BASE_SPEED, clamp, LANES3, MAX_SPEED } from './engine.js?v=38';
-import { buildScenery, THEMES } from './scenery.js?v=38';
-import './zombies.js?v=38';   // keeps the order the game's code runs in
-import { TOWN_OF, townOpen, towns } from './main.js?v=38';   // later modules, through the hub
+import { nightAt } from './lamp.js?v=39';
+import { BASE_SPEED, clamp, LANES3, MAX_SPEED } from './engine.js?v=39';
+import { buildScenery, THEMES } from './scenery.js?v=39';
+import './zombies.js?v=39';   // keeps the order the game's code runs in
+import { TOWN_OF, townOpen, towns } from './main.js?v=39';   // later modules, through the hub
 
 // ---------- state ----------
 const S = {
