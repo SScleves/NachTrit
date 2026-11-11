@@ -7,10 +7,10 @@ import { DISTRICT_NEED, progress, S, scores, UNLOCK_ALL } from './state.js?v=42'
 import { audioCtx, initAudio } from './audio.js?v=42';
 import { startArt } from './intro.js?v=42';
 import './cine.js?v=42';   // keeps the order the game's code runs in
-import { warmUp } from './main.js?v=42';   // later modules, through the hub
+import { trophyLevel, warmUp } from './main.js?v=42';   // later modules, through the hub
 
 // ---------- the world map ----------
-const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen'], ['eigen', 'Alleen hier']];
+const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen'], ['eigen', 'Alleen hier'], ['practice', 'Practice'], ['trophy', 'Trophy']];
 const TOWN_OF = id => id === 41 ? 'alblasserdam' : id <= 5 ? 'alblasserdam' : id <= 10 ? 'kinderdijk' : id <= 15 ? 'gouda' : id <= 20 ? 'utrecht' : id <= 30 ? 'rotterdam' : 'amsterdam';
 const PLACE_OF = { 41: 'thuis', 1: 'thuis', 2: 'mensen', 3: 'thuis', 4: 'mensen', 5: 'winkels', 6: 'winkels', 7: 'eten', 8: 'thuis', 9: 'eten', 10: 'station', 11: 'werk', 12: 'station', 13: 'mensen', 14: 'winkels', 15: 'sport' };
 const LL = (lon, lat) => [(lon - 3.3) / (7.2 - 3.3), 1 - (lat - 50.75) / (53.55 - 50.75)];
@@ -111,7 +111,7 @@ function rideTo(target) {   // ride the road to an open town, through the towns 
   mapAnim = requestAnimationFrame(step);
 }
 addEventListener('keydown', e => {
-  if ($('map').style.display === 'none' || S.mode !== 'start') return;
+  if ($('map').style.display === 'none' || S.mode !== 'start' || $('book').style.display !== 'none') return;
   const T = towns();
   if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { const n = T.findIndex((t, i) => i > mapAt && townOpen(t)); if (n >= 0) rideTo(n); e.preventDefault(); }
   else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { let n = -1; for (let i = mapAt - 1; i >= 0; i--) if (townOpen(T[i])) { n = i; break; } if (n >= 0) rideTo(n); e.preventDefault(); }
@@ -150,6 +150,7 @@ function openTown(t) {
   const box = $('t_places'); box.innerHTML = '';
   const rows = []; for (const [pid, pname] of PLACES) for (const l of townLevels(t)) if ((l.place || PLACE_OF[l.id]) === pid && !l.soon) rows.push({ l, pname });
   const bonus = dehetBonus(t); rows.push({ l: bonus, pname: 'Bonus', bonus: true });
+  const trophy = townStars(t) >= DISTRICT_NEED && trophyLevel(t); if (trophy) rows.push({ l: trophy, pname: 'Trophy', bonus: true, trophy: true });   // a saved town: one ride through all of it
   const stars = n => '★'.repeat(n) + '☆'.repeat(3 - n);
   const done = rows.filter(r => progress[r.l.id] > 0), todo = rows.filter(r => !(progress[r.l.id] > 0));
   if (done.length) {
@@ -162,7 +163,7 @@ function openTown(t) {
   }
   const tier = t.tier, later = document.createElement('div'); later.className = 'tlater'; townNext = null;
   todo.forEach((r, i) => {
-    const b = document.createElement('button'), next = open && i === 0, words = r.bonus ? `, ${r.l.items.length} words` : '';
+    const b = document.createElement('button'), next = open && i === 0, words = r.trophy ? `, ${r.l.deliveries} of ${r.l.items.length}` : r.bonus ? `, ${r.l.items.length} words` : '';
     b.className = 'place' + (next ? ' next' : ' later') + (r.bonus ? ' bonus' : '') + (open ? '' : ' locked');
     b.innerHTML = next
       ? `<small>${r.pname}${r.bonus ? '' : ' · next'}</small><b>${r.l.name}${words}</b><span class="go">${r.l.mission ? r.l.mission.where : ''}${missionFares(r.l, tier) ? ` <i>${missionFares(r.l, tier)}</i>` : ''}</span>`
@@ -190,19 +191,19 @@ function openMission(lv) {
   pendingLevel = lv; $('map').style.display = 'none'; townCardUp = false;
   const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); const pl = PLACES.find(p => p[0] === (lv.place || PLACE_OF[lv.id]));
   $('m_act').textContent = `${t ? t.name : ''} · ${pl ? pl[1] : ''} · tier ${t ? t.tier : lv.act}`; $('m_name').textContent = lv.name;
-  $('m_fare').textContent = missionFares(lv, t ? t.tier : (lv.act || 1));
+  $('m_fare').textContent = missionFares(lv, lv.practice ? 1 : t ? t.tier : (lv.act || 1));
   $('m_lines').innerHTML = `<div>📍 ${lv.mission.where}</div><div>📦 ${lv.mission.carry}</div><div>👻 ${lv.mission.want}</div>`;
   // three words as a teaser, the new ones first (not met on a road already starred); the full list comes at the end of the ride
   const met = new Set(); for (const l of LEVELS) if (progress[l.id] > 0 && l.id !== lv.id && l.items) for (const i of l.items) if (i.nl) met.add(i.nl);
   const cand = lv.place === 'bonus' ? [] : lv.items.filter(i => i.w && i.nl && !/^\d+$/.test(i.w)).filter((v, i, a) => a.findIndex(x => x.nl === v.nl) === i);
-  const fresh = cand.filter(i => !met.has(i.nl)), three = (fresh.length ? fresh : cand).slice(0, 3);
+  const fresh = lv.practice || lv.trophy ? [] : cand.filter(i => !met.has(i.nl)), three = (fresh.length ? fresh : cand).slice(0, 3);
   $('m_words').innerHTML = three.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;text-align:center">${fresh.length ? 'New tonight' : 'Tonight'}</div><div class="wchips">`
     + three.map(i => `<div class="wchip"><span class="pic">${pictogram(i.nl)}</span><div><b>${i.nl}</b><span>${i.w}</span></div></div>`).join('') + '</div>' : '';
   $('mission').style.display = 'flex'; $('mission').scrollTop = 0;
 }
 // 'Fares here € 1,00 to € 2,90 · best 1284': every fare on this road, signposts and look forks included
 function missionFares(lv, tier) {
-  const fares = (lv.items || []).map(i => FARES.fareFor(i, tier)).filter(f => f > 0);
+  const fares = (lv.items || []).map(i => FARES.fareFor(i, tier) * (lv.fareK || 1)).filter(f => f > 0);
   if (!fares.length) return '';
   const lo = Math.min(...fares), hi = Math.max(...fares), best = scores[lv.id];
   return 'Fares here ' + (lo === hi ? FARES.fmtEuro(lo) + ' each' : FARES.fmtEuro(lo) + ' to ' + FARES.fmtEuro(hi)) + (best ? ' · best ' + best : '');
@@ -216,4 +217,4 @@ function pictogram(nl) {
   return `<img src="${pictoCache[key]}" width="32" height="32" alt="">`;
 }
 
-export { openMap, openMission, openTown, pendingLevel, TOWN_OF, townOpen, towns };
+export { openMap, openMission, openTown, pendingLevel, pictogram, TOWN_OF, townOpen, towns };

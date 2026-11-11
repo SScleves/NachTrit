@@ -2,7 +2,7 @@
 // and the why card after a wrong answer.
 import { $, clamp } from './engine.js?v=42';
 import { renderer } from './render.js?v=42';
-import { LANE_X, S } from './state.js?v=42';
+import { flag, LANE_X, S, setFlag } from './state.js?v=42';
 import { card, endWhy, setToastT, toastT } from './hud.js?v=42';
 import './speech.js?v=42';   // keeps the order the game's code runs in
 
@@ -10,14 +10,14 @@ import './speech.js?v=42';   // keeps the order the game's code runs in
 function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir, 0, LANE_X.length - 1); }
 // go: "I've chosen". The reading slow-down ends for this fork and the bike eases back to cruising speed; steering is not go
 const TOUCH = matchMedia('(pointer: coarse)').matches;
-function goKnown() { try { return localStorage.getItem('nachtrit.go') === '1'; } catch (e) { return false; } }
+function goKnown() { return flag('go') === 1; }
 function goNow() {
   if (S.mode === 'ride' && S.whyT > 0) { endWhy(); return; }   // the why card is up: go ends it, the bike picks up speed
   const g = S.activeFork; if (S.mode !== 'ride' || !g || g.resolved || g.go) return;
   g.go = true; g.goEarly = g.legT < g.budget;   // answered before the budget ran out: a little extra lamp if it is right
   if (g.hold) { g.hold = false; if (S.held) { S.held = false; setToastT(Math.min(toastT, 1.2)); } }
   card.querySelector('.gohint').textContent = '';
-  try { localStorage.setItem('nachtrit.go', '1'); } catch (e) {}
+  setFlag('go', 1);
 }
 addEventListener('keydown', e => {
   if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { if (S.mode === 'ride') { goNow(); e.preventDefault(); } }

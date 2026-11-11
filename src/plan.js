@@ -97,7 +97,7 @@ function planSentence(entry) {
   if (entry.read) {
     const d0 = S.planCursor + 14;
     add(bigSign(entry.nl), d0, null, 'readsign', { nl: entry.nl }).mesh.position.x = 0;
-    const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true, fare: entry.again ? FARES.halfFare(FARES.FLAT.read || 0) : FARES.FLAT.read || 0 };
+    const fork = { entry, idx: 0, o: entry.o, a: entry.a, r: entry.r, w: entry.w, read: true, fare: (entry.again ? FARES.halfFare(FARES.FLAT.read || 0) : FARES.FLAT.read || 0) * S.fareK };
     const dF = d0 + Math.max(34, planFork(fork).slowD + 6);
     placeFork(fork, dF);
     S.planCursor = dF + 10;
@@ -106,6 +106,7 @@ function planSentence(entry) {
   // fareFor gives passengers their tier fare, look entries FLAT.look and de/het entries FLAT.dehet
   const st = { entry, chosen: [], forks: entry.parts.filter(p => typeof p !== 'string'), wrong: 0, fare: FARES.fareFor(entry, S.fareTier) || 0, lostAt: -1 };
   if (entry.again) st.fare = FARES.halfFare(st.fare);   // a returned item pays half
+  st.fare *= S.fareK;   // a trophy ride pays double
   if (entry.look) { // the thing stands beside the road, the signs come right after it
     const d0 = S.planCursor + 16; const pr = PROPS[entry.prop] || PROPS.boom; const side = entry.side === 'links' ? -1 : 1;
     const mesh = pr.make(entry.value); if (pr.scale) mesh.scale.setScalar(pr.scale); if (mesh.userData.faceRoad) mesh.rotation.y = side < 0 ? Math.PI : 0; if (entry.prop === 'water' && side > 0) mesh.rotation.y = Math.PI;

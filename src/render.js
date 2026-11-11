@@ -2,7 +2,7 @@
 // grade) and render(), which draws a frame through whichever chain runs. The node chain itself is in render-nodes.js.
 import { EffectComposer, GPU_PREF, NODES, POST, RENDERER_Q, ShaderPass, TexturePass, THREE, UnrealBloomPass } from './engine.js?v=42';
 import { buildNodePost, NODEFX } from './render-nodes.js?v=42';
-import { MIST_Q } from './main.js?v=42';   // later modules, through the hub
+import { flag, MIST_Q, setFlag } from './main.js?v=42';   // later modules, through the hub
 
 // ---------- renderer / scene ----------
 const renderer = NODES ? new THREE.WebGPURenderer({ antialias: !POST, powerPreference: GPU_PREF, forceWebGL: RENDERER_Q === 'webgl2' }) : new THREE.WebGLRenderer({ antialias: true, powerPreference: GPU_PREF });
@@ -18,7 +18,7 @@ const scene = new THREE.Scene();
 let composer = null, inkPass = null, bloomPass = null, gradePass = null, sceneRT = null;
 function pictureLost(e) {
   if (e && e.preventDefault) e.preventDefault();
-  try { localStorage.setItem('nachtrit.lost', String((+localStorage.getItem('nachtrit.lost') || 0) + 1)); } catch (err) {}
+  setFlag('lost', flag('lost') + 1);
   document.getElementById('err').textContent = 'The graphics card dropped the picture. Reloading in a lighter mode.';
   setTimeout(() => { const u = new URL(location.href); u.searchParams.set('post', '0'); location.href = u.toString(); }, 1200);
 }

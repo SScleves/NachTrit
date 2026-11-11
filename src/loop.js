@@ -19,7 +19,7 @@ import { beam, bike, drawFace, faceState, follower, mountPassenger, rackGhost, r
 import { bigSign, G, signpost } from './signs.js?v=42';
 import { ghostFigure } from './cast.js?v=42';
 import { cart, fence, puddle, roadArrow, TEACH_HALO_MAT, wisp } from './zombies.js?v=42';
-import { BASE, L, LANE_X, MAXS, nightDepth, S } from './state.js?v=42';
+import { BASE, L, LANE_X, MAXS, nightDepth, S, setFlag } from './state.js?v=42';
 import { plan, signFrac } from './plan.js?v=42';
 import { card, endWhy, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=42';
 import { bark, chime, thump, tick } from './audio.js?v=42';
@@ -90,7 +90,7 @@ function update(dt) {
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
     if (S.lamp <= 0) { S.lamp = 0; die(); return; }
-    if (!lampHinted && L && S.lamp < 50 && toastT <= 0) { setLampHinted(true); try { localStorage.setItem('nachtrit.lamphint', '1'); } catch (e) {} say('The lamp is going.', 'bad', 'Ride through the lights to fill it.', 3.6); }
+    if (!lampHinted && L && S.lamp < 50 && toastT <= 0) { setLampHinted(true); setFlag('lamphint', 1); say('The lamp is going.', 'bad', 'Ride through the lights to fill it.', 3.6); }
     plan();
   }
   S.speedNorm = MAXS > BASE ? (S.speed - BASE) / (MAXS - BASE) : 0;

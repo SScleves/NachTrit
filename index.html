@@ -133,6 +133,41 @@
   #grain { position:fixed; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:overlay; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"); }
   #shade { position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%); }
   #summary .stats { display:flex; gap:10px; justify-content:center; margin:12px 0; }
+  /* the word book: a sheet with three tabs; on a phone it fills the screen and the list scrolls under a thumb */
+  #map .mapbtns { display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; }
+  #map #bookbtn { font-size:clamp(14px,1.5vw,17px); font-weight:500; padding:10px 22px; background:rgba(10,14,20,.55); border:1px solid rgba(255,210,122,.45); color:#ffd27a; border-radius:6px; margin:0; }
+  #book { padding:12px; z-index:5; }
+  #book .bbox { width:min(100%,680px); max-height:100%; height:min(100%,860px); display:flex; flex-direction:column; background:rgba(9,12,18,.97); border:1px solid rgba(255,255,255,.12); border-radius:14px; text-align:left; }
+  #book .bhead { display:flex; justify-content:space-between; align-items:center; padding:12px 14px 4px; }
+  #book .bhead h1 { font-size:24px; margin:0; letter-spacing:.06em; }
+  #book .btabs { display:flex; gap:4px; padding:0 10px; border-bottom:1px solid rgba(255,255,255,.1); }
+  #book .btabs button { flex:1; min-height:46px; background:none; border:0; border-bottom:2px solid transparent; color:var(--dim); font:600 15px "Segoe UI",system-ui,sans-serif; cursor:pointer; }
+  #book .btabs button.on { color:#ffd27a; border-bottom-color:#ffd27a; }
+  #book .btabs button span { font-weight:400; font-size:12px; }
+  #b_scroll { flex:1; overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; padding:10px 14px 16px; }
+  #book .bfilt { display:flex; gap:8px; }
+  #book select { flex:1; min-width:0; min-height:44px; background:#141a24; color:var(--ink); border:1px solid rgba(255,255,255,.2); border-radius:8px; padding:0 8px; font:14px "Segoe UI",system-ui,sans-serif; }
+  #book .bcount { color:var(--dim); font-size:12px; letter-spacing:.1em; text-transform:uppercase; margin:10px 0 4px; }
+  #book .bw { display:flex; align-items:center; gap:10px; min-height:52px; padding:4px 0; border-top:1px solid rgba(255,255,255,.07); }
+  #book .bw .pic { flex:0 0 32px; height:32px; display:flex; align-items:center; justify-content:center; }
+  #book .bt { flex:1; min-width:0; }
+  #book .bt b { display:block; color:#ffd27a; font-size:16px; font-weight:600; overflow-wrap:anywhere; }
+  #book .bt span { color:#c9cfd8; font-size:13px; margin-right:8px; } #book .bt small { color:var(--dim); font-size:11px; letter-spacing:.06em; white-space:nowrap; }
+  #book .str { flex:0 0 auto; font-size:11px; letter-spacing:1px; } #book .str i { font-style:normal; color:rgba(255,255,255,.14); }
+  #book .str.s1 { color:#ff8b84; } #book .str.s2, #book .str.s3 { color:#ffd27a; } #book .str.s4 { color:#c8d85a; } #book .str.s5 { color:var(--good); }
+  #book .say { flex:0 0 44px; height:44px; padding:0; font-size:17px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.16); border-radius:10px; color:var(--ink); cursor:pointer; }
+  #book .bempty, #book .bnote { color:var(--dim); font-size:14px; line-height:1.45; }
+  #book .bfoot { margin-top:14px; text-align:center; } #book .bfoot .btn[disabled] { opacity:.4; cursor:default; }
+  #book h3 { color:var(--dim); font-size:12px; letter-spacing:.12em; text-transform:uppercase; margin:16px 0 6px; }
+  #book .br { display:grid; grid-template-columns:1fr auto; gap:3px 10px; padding:7px 0; border-top:1px solid rgba(255,255,255,.07); }
+  #book .brn { color:#e8e4d8; font-size:14px; } #book .brc { color:var(--dim); font-size:12px; text-align:right; }
+  #book .bar { grid-column:1 / -1; height:8px; background:rgba(255,255,255,.08); border-radius:4px; overflow:hidden; } #book .bar i { display:block; height:100%; background:#ffd27a; border-radius:4px; }
+  #book #b_have { color:#e8e4d8; font-size:15px; }
+  #book .bbtns { display:flex; gap:8px; flex-wrap:wrap; } #book .bbtns .btn { margin:0; flex:1 1 140px; }
+  #book textarea { width:100%; height:84px; margin:0 0 8px; background:#141a24; color:#c9d6ff; border:1px solid rgba(255,255,255,.2); border-radius:8px; padding:8px; font:12px/1.35 ui-monospace,monospace; word-break:break-all; resize:vertical; }
+  #book #b_msg { margin-top:10px; font-size:14px; color:var(--good); } #book #b_msg.bad { color:#ff8b84; }
+  #book #b_confirm p { color:#e8e4d8; font-size:14px; line-height:1.45; } #book #b_confirm .btn { margin:0 8px 0 0; }
+  @media (max-width: 480px) { #book { padding:0; } #book .bbox { border-radius:0; height:100%; border:0; } }
   #summary .stats .pill { min-width:80px; }
   #log { width:100%; height:140px; background:#0b0e16; color:#cfd3dc; border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:8px; font:12px/1.4 ui-monospace,monospace; resize:none; }
   #topright { position:absolute; top:calc(10px + env(safe-area-inset-top)); right:12px; display:flex; gap:6px; pointer-events:auto; }
@@ -253,7 +288,7 @@
       <div id="mapfoot" style="position:relative;z-index:1;text-align:center;padding:0 12px calc(12px + env(safe-area-inset-bottom));pointer-events:none">
         <div class="maplegend"><span class="kb">LEFT / RIGHT: RIDE <i>·</i> ENTER or TAP: GO IN <i>·</i></span><span class="tp">TAP A TOWN TO RIDE THERE <i>·</i></span> <span>GREEN EASY, RED HARD</span></div>
         <div class="mapline"></div>
-        <button class="btn ghost" id="endless">Endless night (everything, hard)</button>
+        <div class="mapbtns"><button class="btn ghost" id="bookbtn">Word book</button><button class="btn ghost" id="endless">Endless night (everything, hard)</button></div>
       </div>
       <div id="town" style="position:absolute;z-index:3;left:50%;bottom:0;transform:translate(-50%,105%);transition:transform .3s;width:min(96vw,760px);background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));pointer-events:auto">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div><div class="who" style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase" id="t_tier"></div><h1 style="font-size:28px;margin:0" id="t_name"></h1></div><button class="ico" id="t_close">✕</button></div>
@@ -293,8 +328,35 @@
       <div id="s_words"></div>
       <textarea id="log" readonly></textarea>
       <div id="stars" style="font-size:34px;letter-spacing:.2em;margin:4px 0 10px"></div>
-      <div><button class="btn ghost" id="copy">Copy mistakes</button><button class="btn ghost" id="tomap">Map</button><button class="btn" id="again">Again</button></div>
+      <div><button class="btn ghost" id="copy">Copy mistakes</button><button class="btn ghost" id="practice" style="display:none">Practice ride</button><button class="btn ghost" id="tomap">Map</button><button class="btn" id="again">Again</button></div>
       <div class="hint">Mistakes are in the format of ⚠️ Mistakes &amp; Drills in your vault.</div>
+    </div>
+  </div>
+  <div class="overlay" id="book" style="display:none">
+    <div class="bbox" role="dialog" aria-label="Word book">
+      <div class="bhead"><h1>Word book</h1><button class="ico" id="b_close" aria-label="Close">✕</button></div>
+      <div class="btabs" role="tablist"><button data-tab="words" role="tab">Words <span id="b_wn"></span></button><button data-tab="rules" role="tab">Rules</button><button data-tab="save" role="tab">Save</button></div>
+      <div id="b_scroll">
+        <div id="b_words">
+          <div class="bfilt"><select id="b_town" aria-label="Town"></select><select id="b_box" aria-label="Strength"></select></div>
+          <div class="bcount" id="b_count"></div>
+          <div id="b_list"></div>
+          <div class="bfoot"><button class="btn" id="b_practice">Practice ride</button><div class="bnote" id="b_pnote"></div></div>
+        </div>
+        <div id="b_rules"></div>
+        <div id="b_save">
+          <p id="b_have"></p>
+          <p class="bnote">Your progress lives in this browser only. Nothing is sent anywhere. To keep a copy, or to carry on on another device, save it to a file or make a code, then load it there.</p>
+          <h3>File</h3>
+          <div class="bbtns"><button class="btn" id="b_file">Save to a file</button><button class="btn ghost" id="b_load">Load a file</button><input type="file" id="b_input" accept=".json,application/json" hidden></div>
+          <h3>Code</h3>
+          <p class="bnote">A code is the same save as text, to paste on a phone or send to yourself. It works between devices with the same version of the game.</p>
+          <textarea id="b_code" spellcheck="false" autocomplete="off" placeholder="Paste a code here, or make one"></textarea>
+          <div class="bbtns"><button class="btn" id="b_mkcode">Make a code</button><button class="btn ghost" id="b_usecode">Load this code</button></div>
+          <div id="b_msg" role="status"></div>
+          <div id="b_confirm"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

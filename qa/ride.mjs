@@ -19,8 +19,15 @@
 //   --ignore    the autopilot ignores wisps (expect deaths on 58 and 75)
 //   --miss K    ride through a wrong sign at every K-th fork (exercises the wrong path, the why line and the mistakes list)
 //   --teach     a first-time player: the teaching forks of the first ride (nachtrit.taught unset)
-//   --shots     also save a frame of the first why card (after a wrong answer) and of the first card with the "again" tag
-//               (a missed item come back); use with --miss and --gpu
+//   --shots     also save a frame of the first why card (after a wrong answer), of the first card with the "again" tag
+//               (a missed item come back) and of the first spaced-review fork (an item due from an earlier ride); use with --gpu
+//   --keep      one browser profile for all the levels: the save (nachtrit.save) carries from ride to ride, as for a player
+//               who rides them in a row. Without it every level is a first-time player's ride (a fresh profile)
+//   --miss-only ids   apply --miss only on these levels (comma list), ride the others right
+// With --keep, each ride also prints the save's numbers (PLAN.md phase 4): the ride counter, items in the learner model, the
+// spaced-review forks it carried (from which level, their box, the tag on the card, the first try) and its own first-try
+// misses; at the end, for every first-try miss, the later ride that brought it back as a marked review fork, or FAIL when
+// the next two rides did not.
 // With misses, each level also prints the learning core's numbers (PLAN.md 3a, 3d): the returns, the other forks between each
 // miss and its return, full and paid fares, metres of review road, lamp lost on review road and while the why card was up.
 // Prints one line per level and a table; writes qa/out/ride/<stamp>/report.json and a PNG of each summary card.
@@ -37,11 +44,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const argv = process.argv.slice(2), flag = k => argv.includes('--' + k);
 const val = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 && i + 1 < argv.length ? argv[i + 1] : d; };
-const VALUED = ['base', 'seed', 'miss', 'chunk', 'w', 'h', 'out', 'json'];
+const VALUED = ['base', 'seed', 'miss', 'chunk', 'w', 'h', 'out', 'json', 'miss-only'];
 const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(argv[i - 1].replace(/^--/, ''))));
 const levels = (pos[0] || '1').split(',').map(s => +s.trim()).filter(Boolean);
 const opt = {
-  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), shots: flag('shots'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'),
+  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), shots: flag('shots'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'), keep: flag('keep'), missOnly: String(val('miss-only', '')).split(',').map(s => +s.trim()).filter(Boolean),
   chunk: Math.max(12, Math.round((+val('chunk', 300) || 300) / 12) * 12), w: +val('w', 1280), h: +val('h', 800),
   out: val('out', path.join(ROOT, 'qa', 'out', 'ride', new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19))), json: val('json', ''),
 };
@@ -95,7 +102,8 @@ function pageInit({ seed, teach }) {
 function rideSetup({ collect, miss, draw, shots }) {
   const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap(), draw,
     shots: shots ? ['why', 'again'] : [], pause: '', lamp: NR.lamp, rev: false, why: false, lostRev: 0, lostWhy: 0, whySec: 0, revFrames: 0,
-    gate: null, gateAfterWhy: false, reads: [] };
+    gate: null, gateAfterWhy: false, reads: [], dueTags: new Map() };
+  if (shots) R.shots.push('due');
   const rr = NRpost().renderer; R.drawCall = rr.render; R.noDraw = () => {};   // the renderer's own draw, and a stand-in that draws nothing
   window.__nl = NR.objs.some(o => o.lane === 2) ? 3 : 2;   // as lamp-balance.mjs: two-lane levels have no lane 2
   R.steer = () => {
@@ -119,13 +127,15 @@ function rideSetup({ collect, miss, draw, shots }) {
     const g0 = NR.activeFork;
     if (R.gate && R.gate !== g0 && R.gate.resolved) { R.reads.push({ legT: R.gate.legT, budget: R.gate.budget, go: !!R.gate.go, afterWhy: R.gateAfterWhy }); R.gate = null; }
     if (g0 && g0 !== R.gate) { R.gate = g0; R.gateAfterWhy = R.whyEnded; }
+    if (g0 && g0.fork.entry.due && g0.armed && !R.dueTags.has(g0.fork.entry.nl)) R.dueTags.set(g0.fork.entry.nl, document.querySelector('#card .again').textContent);   // the tag on a review fork's card
     if (why) R.whyEnded = true; else if (g0) R.whyEnded = false;
     if (NR.mode === 'dead') { R.ended = true; throw R; }   // the summary card is up: stop on this frame
     if (R.frame % 12 === 0) R.steer();
     if (R.shots.length && NR.mode === 'ride') {   // --shots: stop the chunk on the frame worth a picture
       const g = NR.activeFork;
       if (R.shots[0] === 'why' && why && R.whySec > 1.6) { R.pause = R.shots.shift(); throw R; }
-      if (R.shots.includes('again') && g && g.fork.entry.again && g.legT > 0.8) { R.shots.splice(R.shots.indexOf('again'), 1); R.pause = 'again'; throw R; }
+      if (R.shots.includes('due') && g && g.fork.entry.due && g.legT > 0.8) { R.shots.splice(R.shots.indexOf('due'), 1); R.pause = 'due'; throw R; }
+      if (R.shots.includes('again') && g && g.fork.entry.again && !g.fork.entry.due && g.legT > 0.8) { R.shots.splice(R.shots.indexOf('again'), 1); R.pause = 'again'; throw R; }
     }
   };
   R.steer();
@@ -158,11 +168,17 @@ function rideResult() {
       log: NR.learn.log.map(r => ({ nl: r.nl, misses: r.misses, afterFork: r.at, gap: r.gap, full: r.full, paid: r.fare, result: r.result })) },
     title: $('sumtitle').textContent, stars: $('stars').textContent, score: NR.score, cents: NR.cents, mistakes: NR.mistakes.length,
     summaryShown: $('summary').style.display === 'flex', errBox: $('err').textContent.trim(), timersLeft: __vt.pending(),
+    save: { ride: NRsave().ride, items: Object.keys(NRsave().items).length, rules: Object.keys(NRsave().rules).length, stored: (localStorage.getItem('nachtrit.save') || '').length,
+      due: NR.due.map(d => ({ key: d.key, nl: d.nl, box: d.box, level: d.level, result: d.result, tag: R.dueTags.get(d.nl) || '' })),
+      missed: [...NR.noted].filter(([k, v]) => !v.right && !v.due).map(([k, v]) => ({ key: k, nl: v.nl })), practiceButton: $('practice').style.display !== 'none' },
   };
 }
 
+let keepCtx = null;   // --keep: one profile for every level
 async function rideLevel(browser, base, id) {
-  const page = await browser.newPage({ viewport: { width: opt.w, height: opt.h } });
+  if (opt.keep && !keepCtx) keepCtx = await browser.newContext({ viewport: { width: opt.w, height: opt.h } });
+  const page = keepCtx ? await keepCtx.newPage() : await browser.newPage({ viewport: { width: opt.w, height: opt.h } });
+  const miss = opt.missOnly.length && !opt.missOnly.includes(id) ? 0 : opt.miss;
   page.setDefaultTimeout(180000);
   const errors = [];
   page.on('pageerror', e => errors.push('page: ' + String(e)));
@@ -182,7 +198,7 @@ async function rideLevel(browser, base, id) {
   const r0 = await page.evaluate(() => { document.querySelectorAll('img').forEach(i => { if (i.style.zIndex === '1') i.remove(); }); return { mode: NR.mode, level: NR.deliveriesTotal }; });
   if (r0.mode !== 'intro') errors.push(`harness: level ${id} did not start (mode ${r0.mode})`);
   await page.evaluate(async () => { eval(await (await fetch('qa/lampbot.js')).text()); });
-  await page.evaluate(rideSetup, { collect: opt.collect, miss: opt.miss, draw: opt.draw, shots: opt.shots });
+  await page.evaluate(rideSetup, { collect: opt.collect, miss, draw: opt.draw, shots: opt.shots });
   let st, chunks = 0, maxMs = 0, evalMax = 0; const evalMs = [], shots = [];
   do {
     const e0 = Date.now();
@@ -218,6 +234,11 @@ try {
     const r = await rideLevel(browser, base, id);
     results.push(r);
     const died = r.result !== 'home', bad = r.errors.length || !r.summaryShown || (died && opt.collect && !opt.miss);
+    if (opt.keep) {
+      const sv = r.save; console.log(`    save: ride ${sv.ride}, ${sv.items} items and ${sv.rules} rules in the learner model, nachtrit.save ${sv.stored} bytes`);
+      for (const d of sv.due) console.log(`      review fork from L${d.level}, box ${d.box}, tag "${d.tag}", ${d.result || 'not ridden'}: ${d.nl}`);
+      for (const m of sv.missed) console.log(`      missed on the first try: ${m.nl}`);
+    }
     if (bad) fail++;
     console.log(`L${id}: ${r.result}, delivered ${r.delivered}/${r.total}, right ${r.right}, wrong ${r.wrong}, lamp left ${r.lamp} (lowest ${r.lampMin}), ${r.stars || '-'} ${r.title}, ${r.dist} m in ${r.gameSec} game s | ${r.wallSec} s wall, ${r.chunks} chunks, longest evaluate ${r.evaluateMsMax} ms | errors ${r.errors.length}${bad ? '  FAIL' : ''}`);
     const Ln = r.learn;
@@ -233,6 +254,18 @@ try {
 } finally {
   await browser.close();
   if (srv) srv.close();
+}
+if (opt.keep) {   // spaced review: every first-try miss comes back as a marked review fork within the next two rides
+  console.log('\nspaced review across rides:');
+  results.forEach((r, i) => {
+    if (i + 2 >= results.length + 1 && !r.save.missed.length) return;
+    for (const m of r.save.missed) {
+      const later = results.slice(i + 1, i + 3), at = later.findIndex(x => x.save.due.some(d => d.key === m.key && d.tag === 'again'));
+      if (later.length < 2 && at < 0) { console.log(`  L${r.level} missed "${m.nl}": not enough rides after it to tell`); continue; }
+      if (at < 0) fail++;
+      console.log(`  L${r.level} missed "${m.nl}": ${at < 0 ? 'not back within two rides  FAIL' : `back on L${later[at].level} (${at + 1} ride${at ? 's' : ''} later) as a review fork tagged again`}`);
+    }
+  });
 }
 console.log('\n| Level | result | delivered | right | wrong | lamp left | lowest lamp | game s | wall s | longest evaluate ms | errors |');
 console.log('|---|---|---|---|---|---|---|---|---|---|---|');

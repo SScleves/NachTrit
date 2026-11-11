@@ -2,7 +2,7 @@
 // and their Dutch line read aloud, the level card with the town's rumour, and the live title painting (startArt).
 import { $ } from './engine.js?v=42';
 import { THEMES } from './scenery.js?v=42';
-import { S } from './state.js?v=42';
+import { flag, S, setFlag } from './state.js?v=42';
 import { speak, voiceTalking } from './speech.js?v=42';
 import './input.js?v=42';   // keeps the order the game's code runs in
 import { CINE, cineBegin, cineEnd, cineShot, TOWN_OF, towns } from './main.js?v=42';   // later modules, through the hub
@@ -187,7 +187,7 @@ function showIntro(then, panels, full, from) {
   };
   const finish = () => {
     cancelAnimationFrame(introRaf); cineEnd(); cover.style.opacity = 0; frameEl.style.display = ''; txt.style.opacity = 1; $('intro').style.display = 'none'; $('intro').onclick = null; onKey = null;
-    if (!panels) { try { localStorage.setItem('nachtrit.intro', short ? 'short' : 'full'); } catch (e) {} }
+    if (!panels) setFlag('intro', short ? 1 : 2);
     then();
   };
   $('intro').onclick = (e) => { if (e.target.id === 'skip') finish(); else next(); };
@@ -195,7 +195,7 @@ function showIntro(then, panels, full, from) {
 }
 let onKey = null;
 addEventListener('keydown', e => { if (onKey && $('intro').style.display !== 'none') { onKey(e); e.preventDefault(); } });
-let introSeen = false; try { introSeen = !!localStorage.getItem('nachtrit.intro'); } catch (e) {}
+let introSeen = flag('intro') > 0;
 if (new URLSearchParams(location.search).has('intro')) introSeen = false;
 function setIntroSeen(v) { introSeen = v; }   // the title's button and ?map / ?cine set it (an imported binding is read-only)
 // the start screen: the intro's first shot, live in 3D behind the title (the mills of Kinderdijk at night, the moon, thin mist).

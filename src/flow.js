@@ -2,8 +2,12 @@
 // teaching and the lamp hint, die() and the summary card with stars and scores, and resolveFork, the verdict on each fork.
 // The learning core (PLAN.md 3a, 3d) is here too: a missed item goes back in the queue (sendBack), a wrong answer gets the why
 // card, every fork is noted for the end card's list of misses by rule (noteFork, missedHtml). Its pure rules: src/review.js.
+// The learner model (PLAN.md phase 4, src/learn.js): a level ride counts in the save's ride counter, items due from earlier
+// levels replace up to a quarter of its deliveries (addReview), each item's first try moves its box (noteLearn), and the
+// save is written when the end card shows.
 import { refuelRight, TUNE } from './lamp.js?v=42';
-import { levelQueue } from './forks.js?v=42';
+import { itemToEntry, levelQueue } from './forks.js?v=42';
+import { duePositions, noteItem, noteRule, reviewCap, selectDue } from './learn.js?v=42';
 import { whyBudget } from './reading.js?v=42';
 import { TASKS } from './tasks.js?v=42';
 import { VOICES } from './voice.js?v=42';
@@ -14,14 +18,14 @@ import { setRoadLook } from './road.js?v=42';
 import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=42';
 import { buildScenery, theme, THEMES } from './scenery.js?v=42';
 import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=42';
-import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=42';
+import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=42';
 import { plan, unplanFinish } from './plan.js?v=42';
 import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=42';
 import { chime, initAudio } from './audio.js?v=42';
 import { speak, speakSeq } from './speech.js?v=42';
 import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=42';
 import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=42';
-import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=42';   // later modules, through the hub
+import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=42';   // later modules, through the hub
 
 // ---------- game flow ----------
 function start(lv) {
@@ -35,11 +39,13 @@ function start(lv) {
   buildScenery(THEMES[qs.get('theme') || (L && L.theme) || 'polder'] || THEMES.polder);   // ?town= and ?theme= dress any level as another place, for looking at a town's art
   setRoadLook(LANE_X.length, theme);
   $('hud').classList.toggle('endless', !L);
+  if (L) SAVE.ride++;   // the learner model counts rides, not days
   reset(); S.mode = 'intro'; S.introT = 0;
 }
 // the town's tier prices the rides; endless rides as tier 6
 function fareTier() {
   if (!L) return 6;
+  if (L.practice) return 1;   // a practice ride pays small fares
   const t = towns().find(t => t.id === (L.town || TOWN_OF(L.id)));
   return t ? t.tier : (L.act || 1);
 }
@@ -52,16 +58,38 @@ function reset() {
     // the learning core: forks answered, entries planned, the misses for the end card, first rides per task, misses per item,
     // the returns (count, their verdicts, the why cards shown, one log line each), the why card, review road
     forkN: 0, plannedN: 0, missList: [], tally: {}, missN: new Map(), learn: { returns: 0, right: 0, wrong: 0, whyN: 0, log: [] },
-    whyT: 0, reviewRoad: [], reviewM: 0, onReview: false });
+    whyT: 0, reviewRoad: [], reviewM: 0, onReview: false,
+    // the learner model: items from earlier rides on this one (key, text, box, level, result), keys noted this ride, the fare factor
+    due: [], noted: new Map(), fareK: (L && L.fareK) || 1 });
   $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
   follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); setRackGhost(null); }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
   hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0;
+  addReview();
   plan();
 }
+// spaced review (PLAN.md phase 4 point 3): up to a quarter of a level's deliveries become items due from earlier levels of the
+// same or a lower tier, weakest box first, spread through the ride. They ride as returns do (the again tag, half fare, review
+// road, never counted, never a lamp lost) and their first try moves their box. Nothing is due on a first ride, and with
+// nothing due nothing here runs: no hash, no random draw
+function addReview() {
+  if (!L || L.id >= 1000 || L.practice || L.trophy) return;
+  const cap = reviewCap(L.deliveries); let any = false; for (const k in SAVE.items) { any = true; break; }
+  if (!cap || !any) return;
+  const ix = contentIndex(), order = ix.levelOrder.get(L.id); if (order == null) return;
+  const cands = []; for (const r of ix.rows) { if (r.order >= order) break; cands.push(r.key); }   // rows are in play order
+  const keys = selectDue(SAVE.items, SAVE.ride, cands, cap, new Set(S.queue.map(e => keyOf(e.nl))));
+  const at = duePositions(S.queue.length, keys.length);
+  at.forEach((p, j) => {
+    const row = ix.byKey.get(keys[j]), e = itemToEntry(row.item, row.level.items, LANE_X.length);
+    S.queue[p] = Object.assign({}, e, { again: 1, due: true });
+    S.due.push({ key: keys[j], nl: e.nl, box: SAVE.items[keys[j]][0], level: row.level.id, result: '' });
+  });
+  S.deliveriesTotal = L.deliveries - at.length;   // stars count the level's own deliveries
+}
 // the first three forks of a player's first ride teach the move (nachtrit.taught is set once they are done)
-function taughtBefore() { try { return localStorage.getItem('nachtrit.taught') === '1'; } catch (e) { return true; } }
-let lampHinted = (() => { try { return localStorage.getItem('nachtrit.lamphint') === '1'; } catch (e) { return true; } })();
+function taughtBefore() { return flag('taught') === 1; }
+let lampHinted = flag('lamphint') === 1;
 function setLampHinted(v) { lampHinted = v; }   // the loop gives the hint once (an imported binding is read-only)
 function die() {
   S.mode = 'dying'; S.dieT = 0; S.whyT = 0; hideCard(); $('lanes').style.opacity = 0; setFace('scream', 9);
@@ -74,16 +102,17 @@ function showSummary(won) {
   $('s_souls').textContent = L ? `${S.delivered}/${S.deliveriesTotal}` : S.souls; $('s_dist').textContent = Math.round(S.dist) + ' m';
   $('s_good').textContent = S.good; $('s_bad').textContent = S.bad;
   let stars = 0;
-  if (L && won) {
+  if (L && won && !L.practice) {   // a practice ride gives no stars
     const ratio = S.delivered / S.deliveriesTotal;
-    const three = S.deliveriesTotal >= 16 ? 0.95 : 1;   // long levels allow one miss for three stars
+    const three = L.deliveries >= 16 ? 0.95 : 1;   // long levels allow one miss for three stars
     stars = ratio >= three && S.lampMin >= 40 ? 3 : ratio >= 0.83 ? 2 : ratio >= 0.66 ? 1 : 0;
     if (stars > (progress[L.id] || 0)) { progress[L.id] = stars; saveProgress(); }
   }
-  $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
+  $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : L.practice ? 'PRACTISED.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
   $('stars').textContent = L && won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
   $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.missList.length} mistake${S.missList.length === 1 ? '' : 's'} to practise.`)
-    : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (S.deliveriesTotal >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
+    : L.practice ? 'A practice ride gives no stars. What you got right on the first try moves up in the word book.'
+    : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (L.deliveries >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
   $('again').textContent = L && won && stars ? 'Next place' : 'Again';
   const wl = [...S.met.entries()];
   $('s_words').innerHTML = wl.length ? `<div style="color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase">Words tonight · ${wl.filter(w => w[1].ok).length} of ${wl.length} right</div>`
@@ -93,11 +122,14 @@ function showSummary(won) {
   // money: score, best per level (levels only when home, endless on every death), the wallet line
   S.score = S.delivered * 100 + S.cents / 10 + Math.round(clamp(S.lampMin, 0, 100));
   const sk = L ? String(L.id) : 'endless';
-  if ((!L || won) && S.score > (scores[sk] || 0)) { scores[sk] = S.score; saveScores(); }
+  if ((!L || won) && !(L && L.practice) && S.score > (scores[sk] || 0)) scores[sk] = S.score;
+  persist();   // stars, the best score and what this ride taught the learner model, in one write
   $('s_wallet').textContent = FARES.fmtEuro(S.cents); $('s_score').textContent = S.score; $('s_best').textContent = scores[sk] || 0;
   const f = FARES.fmtEuro;
   $('s_money').innerHTML = `<div>Fares ${f(S.paid)} · tips ${f(S.tips)} · Tikkie − ${f(S.tikkie)} · missed ${f(S.missed)}</div>`
-    + (S.riding ? `<div>Niet afgeleverd · ${f(S.riding.fare)}</div>` : '') + (L && !won ? '<div>Score counts when you get home.</div>' : '');
+    + (S.riding ? `<div>Niet afgeleverd · ${f(S.riding.fare)}</div>` : '') + (L && !won ? '<div>Score counts when you get home.</div>' : '')
+    + (S.due.length ? `<div>From earlier rides: ${S.due.length} back for review, ${S.due.filter(d => d.result === 'right').length} right on the first try.</div>` : '');
+  $('practice').style.display = L && S.missList.length ? '' : 'none';   // misses: a practice ride of the weakest items
   $('summary').style.display = 'flex';
 }
 function levelDone() { S.mode = 'dying'; S.dieT = 10; showSummary(true); }
@@ -123,6 +155,7 @@ function missedHtml() {
   return `<div class="mhead">Missed tonight · ${S.missList.length}</div>` + (weakest ? `<div class="weak">${esc(weakLine(weakest))}</div>` : '')
     + groups.map(g => `<div class="mrule" style="color:${g.color}">${esc(g.label)} · ${g.items.length}</div>` + g.items.map(row).join('')).join('');
 }
+$('practice').onclick = () => openPractice();
 $('s_missed').onclick = e => { const b = e.target.closest && e.target.closest('button[data-say]'); if (b) { initAudio(); speak(b.dataset.say, false, VOICES.rider, true); } };
 $('copy').onclick = () => { navigator.clipboard?.writeText($('log').value); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy mistakes', 1500); };
 
@@ -136,7 +169,7 @@ function resolveFork(gate) {
   if (L && !back && (fork.read || (fork.st && fork.st.forks.length === 1))) {   // the words of the ride, for the end card: words met, words right
     const k = fork.entry.nl, was = S.met.get(k); S.met.set(k, { en: fork.read ? fork.o[fork.a] : fork.entry.en, ok: ok && (!was || was.ok) });
   }
-  if (gate.teach && ++S.taught >= 3) { try { localStorage.setItem('nachtrit.taught', '1'); } catch (e) {} }
+  if (gate.teach && ++S.taught >= 3) setFlag('taught', 1);
   const rule = RULES[fork.r] || { name: fork.r, note: fork.r };
   const done = fork.read || fork.idx === fork.st.forks.length - 1;
   if (ok) {
@@ -175,6 +208,16 @@ function resolveFork(gate) {
   for (const p of gate.posts) p.mesh.userData.board.material.color.set(p.oi === fork.a ? 0x9fdc7a : 0x7a3a3a);
   if (back && done) { const r = S.learn.log.find(x => x.entry === fork.entry); if (r) { r.result = (fork.read ? ok : fork.st.wrong === 0) ? 'right' : 'wrong'; r.fare = fork.read ? fork.fare : fork.st.fare; } }
   if (L && done && (fork.read ? !ok : fork.st.wrong > 0)) sendBack(fork);   // a missed item comes back later in this ride
+  if (L && (!back || (fork.entry.due && !fork.entry.origin))) noteLearn(fork, ok, done);   // first rides and review, not returns
+}
+// the learner model: every fork's rule, and when an item is done its first try (all its forks right), once per item a ride
+function noteLearn(fork, ok, done) {
+  noteRule(SAVE.rules, fork.r || 'woord', ok);
+  if (!done) return;
+  const key = keyOf(fork.entry.nl); if (S.noted.has(key)) return;
+  const right = fork.read ? ok : fork.st.wrong === 0;
+  S.noted.set(key, { right, nl: fork.entry.nl, due: !!fork.entry.due }); noteItem(SAVE.items, key, right, SAVE.ride);
+  if (fork.entry.due) { const d = S.due.find(x => x.key === key); if (d) d.result = right ? 'right' : 'wrong'; }
 }
 // the fare line of a ride settled on a wrong answer: the struck fare and what was paid, or the refusal
 function settledHtml(st, m) {

@@ -33,5 +33,6 @@ export * from './cine.js?v=42';
 export * from './map.js?v=42';
 export * from './flow.js?v=42';
 export * from './wallet.js?v=42';
+export * from './book.js?v=42';
 export * from './debug.js?v=42';
 export * from './loop.js?v=42';

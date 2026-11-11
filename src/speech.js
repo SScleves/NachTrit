@@ -2,7 +2,7 @@
 // with speechSynthesis when a file is missing or fails; speak and speakSeq. Which file plays a line is voiceFileOf in voice.js.
 import { voiceFileOf, VOICES } from './voice.js?v=42';
 import { $ } from './engine.js?v=42';
-import { S } from './state.js?v=42';
+import { persist, S, SAVE } from './state.js?v=42';
 import { audioCtx, nlVoice } from './audio.js?v=42';
 
 // ---------- voice: pre-rendered neural Dutch (voice/<id>.mp3), speechSynthesis when a file is missing or fails ----------
@@ -79,6 +79,7 @@ async function speakSeq(list, voices = []) {
     await voiceSay(list[i], voices[i] || (i ? VOICES.passenger : VOICES.rider), { volume: 1, detune: i ? -200 : 0, rate: 0.9, pitch: i ? 0.75 : 0.9 }, gen);
   }
 }
-$('snd').onclick = () => { S.voice = !S.voice; $('snd').textContent = S.voice ? '🔊' : '🔇'; if (!S.voice) voiceStop(); };
+$('snd').onclick = () => { S.voice = !S.voice; $('snd').textContent = S.voice ? '🔊' : '🔇'; if (!S.voice) voiceStop(); SAVE.settings.voice = S.voice ? 1 : 0; persist(); };
+if (!S.voice) $('snd').textContent = '🔇';   // the voice setting is kept in the save
 
 export { speak, speakSeq, voiceTalking };

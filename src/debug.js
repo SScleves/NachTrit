@@ -10,7 +10,7 @@ import { MODELS } from './kit.js?v=42';
 import { modelsReady } from './models.js?v=42';
 import { bike, dogs, faceState, setFace } from './rider.js?v=42';
 import { signFit } from './signs.js?v=42';
-import { S } from './state.js?v=42';
+import { S, SAVE } from './state.js?v=42';
 import { goNow } from './input.js?v=42';
 import { openMission } from './map.js?v=42';
 import { paidLine, payTikkie } from './wallet.js?v=42';
@@ -19,6 +19,7 @@ import { update } from './main.js?v=42';   // later modules, through the hub
 // the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
 window.NRTUNE = TUNE;
 window.NR = S; // debug handle
+window.NRsave = () => SAVE;   // qa: the live save (src/save.js), the learner model in it
 window.NRsetDPR = v => { setDPR(v); renderer.setPixelRatio(DPR); postSize(); };
 window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
 window.NRface = (n, secs) => setFace(n, secs || 3);
