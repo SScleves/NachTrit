@@ -14,9 +14,9 @@
     // golf: booking, the first tee, the round
     { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. A modal never takes a t after ik.'), 'graag een starttijd voor zaterdag',
       FK(['reserveren', 'reserveer', 'te reserveren'], 0, 'modal', 'After wil the verb goes to the end as a bare infinitive. No te.'), '.'] },
-    { en: 'Do you still have room for two people?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'jullie takes the plural: hebben, first in a yes/no question.'), 'jullie nog plek voor twee personen?'] },
+    { en: 'Do you still have room for two people?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'With jullie it is the plural: hebben, first in a yes/no question.'), 'jullie nog plek voor twee personen?'] },
     { en: 'On Saturday I play golf.', parts: ['Zaterdag', FK(['speel ik', 'ik speel'], 0, 'v2', 'Zaterdag takes slot 1, so the verb comes second and ik follows it.'), 'golf.'] },
-    { en: 'May we play through?', parts: [FK(['Mogen', 'Mag'], 0, 'modal', 'we takes the plural: mogen. mag is for one person.'), 'we even',
+    { en: 'May we play through?', parts: [FK(['Mogen', 'Mag'], 0, 'modal', 'With we it is the plural: mogen. mag is for one person.'), 'we even',
       FK(['doorspelen', 'doorspeelt', 'door te spelen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: doorspelen.'), '?'] },
     { en: 'My ball is in the water.', parts: [FK(['Mijn', 'Mij', 'Ik'], 0, 'bezit', 'Before a noun, my is mijn. mij and ik never stand in front of a noun.'), 'balletje',
       FK(['ligt', 'liggen', 'lig'], 0, 'presens', 'One ball, so stem plus t: ligt.'), 'in het water.'] },

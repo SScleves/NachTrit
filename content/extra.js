@@ -632,7 +632,7 @@
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(11, { deliveries: 20, items: [
     // the standup and the meeting
-    { en: 'Morning everyone, shall we start?', parts: ['Goedemorgen allemaal,', FK(['zullen', 'zal', 'zult'], 0, 'modal', 'we takes the plural: zullen. zal and zult are for one person.'), 'we',
+    { en: 'Morning everyone, shall we start?', parts: ['Goedemorgen allemaal,', FK(['zullen', 'zal', 'zult'], 0, 'modal', 'With we it is the plural: zullen. zal and zult are for one person.'), 'we',
       FK(['beginnen', 'begint', 'te beginnen'], 0, 'modal', 'zullen sends the second verb to the end as a bare infinitive: beginnen.'), '?'] },
     { en: 'The standup starts at nine.', parts: ['Om negen uur', FK(['begint', 'beginnen', 'begin'], 0, 'presens', 'de standup is one thing, so stem plus t: begint, in slot 2 right after the time.'), 'de standup.'] },
     { en: 'Mark is still waiting for my review.', parts: ['Mark', FK(['wacht', 'wachtt'], 0, 'presens', 'The stem wacht already ends in t, and Dutch never writes tt at the end.', 'spell'), 'nog op',
@@ -904,7 +904,7 @@
     { en: "This afternoon the butcher has no mince.", parts: ['Vanmiddag', FK(['heeft de slager', 'de slager heeft'], 0, 'v2', 'Vanmiddag takes slot 1, so heeft comes second.'),
       FK(['geen', 'niet'], 0, 'neg', 'gehakt has no article here, so geen.'), 'gehakt.'] },
     { en: "The cheese isn't mature, it's young.", parts: ['De kaas is', FK(['niet', 'geen'], 0, 'neg', 'belegen is an adjective here with no noun after it, so niet. geen needs a noun behind it.'), 'belegen, maar jong.'] },
-    { en: "We don't sell cheese anymore.", parts: ['Wij', FK(['verkopen', 'verkoopt', 'verkoop'], 0, 'presens', 'wij takes the plural: verkopen.'),
+    { en: "We don't sell cheese anymore.", parts: ['Wij', FK(['verkopen', 'verkoopt', 'verkoop'], 0, 'presens', 'With wij it is the plural: verkopen.'),
       FK(['geen', 'niet'], 0, 'neg', 'kaas has no article here, so geen.'), 'kaas meer.'] },
     { en: 'Do you have any syrup waffles left? (polite)', parts: [FK(['Heeft u', 'Heb u', 'Hebben u'], 0, 'presens', 'A question starts with the verb, and u takes heeft: heeft u.'), 'nog stroopwafels?'] },
     { en: "On Thursday I'm not going to the cheese market.", parts: ['Donderdag', FK(['ga ik', 'ik ga'], 0, 'v2', 'Donderdag takes slot 1, so the verb comes before ik.'),
@@ -949,9 +949,9 @@
     // golf: booking, the first tee, the round
     { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. A modal never takes a t after ik.'), 'graag een starttijd voor zaterdag',
       FK(['reserveren', 'reserveer', 'te reserveren'], 0, 'modal', 'After wil the verb goes to the end as a bare infinitive. No te.'), '.'] },
-    { en: 'Do you still have room for two people?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'jullie takes the plural: hebben, first in a yes/no question.'), 'jullie nog plek voor twee personen?'] },
+    { en: 'Do you still have room for two people?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'With jullie it is the plural: hebben, first in a yes/no question.'), 'jullie nog plek voor twee personen?'] },
     { en: 'On Saturday I play golf.', parts: ['Zaterdag', FK(['speel ik', 'ik speel'], 0, 'v2', 'Zaterdag takes slot 1, so the verb comes second and ik follows it.'), 'golf.'] },
-    { en: 'May we play through?', parts: [FK(['Mogen', 'Mag'], 0, 'modal', 'we takes the plural: mogen. mag is for one person.'), 'we even',
+    { en: 'May we play through?', parts: [FK(['Mogen', 'Mag'], 0, 'modal', 'With we it is the plural: mogen. mag is for one person.'), 'we even',
       FK(['doorspelen', 'doorspeelt', 'door te spelen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: doorspelen.'), '?'] },
     { en: 'My ball is in the water.', parts: [FK(['Mijn', 'Mij', 'Ik'], 0, 'bezit', 'Before a noun, my is mijn. mij and ik never stand in front of a noun.'), 'balletje',
       FK(['ligt', 'liggen', 'lig'], 0, 'presens', 'One ball, so stem plus t: ligt.'), 'in het water.'] },
@@ -1107,7 +1107,7 @@
     { en: 'The bread roll is warm.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every word ending in -je is a het-word: het broodje.'), 'broodje is warm.'] },
     { en: 'The fries are cold.', parts: ['De patat', FK(['is', 'zijn'], 0, 'zijn', 'patat is one singular word, so it takes is, even though English says the fries are.'), 'koud.'] },
     { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben'], 0, 'hebben', 'In Dutch you have hunger, like in Spanish: ik heb honger, tengo hambre.'), 'honger.'] },
-    { en: 'We have a reservation.', parts: ['We', FK(['hebben', 'heeft'], 0, 'hebben', 'we takes hebben. heeft is for hij, zij (she), het and u.'), 'een reservering.'] },
+    { en: 'We have a reservation.', parts: ['We', FK(['hebben', 'heeft'], 0, 'hebben', 'With we it is hebben. heeft is for hij, zij (she), het and u.'), 'een reservering.'] },
     { en: "That's nine euros altogether.", parts: ['Dat is samen', FK(['negen', 'negentien'], 0, 'getal', 'negen is 9. negentien is 19: -tien adds ten.'), 'euro.'] },
   ] });
 })();
@@ -1503,7 +1503,7 @@
     { look: true, prop: 'nummer', value: 68, nl: 'achtenzestig', en: '68' },
 
     // builds: one fork each, zijn and hebben in the present, heten, de/het and a number
-    { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'wij takes zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
+    { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'With wij it is zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
     { en: 'You are warmly welcome.', parts: ['U', FK(['bent', 'zijn', 'ben'], 0, 'zijn', 'u is the polite you and takes bent, like jij: u bent welkom.'), 'van harte welkom.'] },
     { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'presens', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
     { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'presens', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
@@ -1622,7 +1622,7 @@
 
     // builds: present tense, verb-first questions, V2, modals, niet/geen, onze, de/het and a number
     { en: 'We have a reservation for two.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural, so the plural form: hebben.'), 'een reservering voor twee.'] },
-    { en: 'Do you have a table for four?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'jullie takes the plural: hebben. The verb first makes it a question.'), 'jullie een tafel voor vier?'] },
+    { en: 'Do you have a table for four?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'With jullie it is the plural: hebben. The verb first makes it a question.'), 'jullie een tafel voor vier?'] },
     { en: 'What would you like to drink?', parts: ['Wat', FK(['willen jullie', 'jullie willen'], 0, 'v2', 'Wat takes slot 1, the verb comes second, then jullie.'), 'drinken?'] },
     { en: 'My wife is having the fish.', parts: [FK(['Mijn', 'Mij'], 0, 'bezit', 'My before a noun is mijn. mij is me.'), 'vrouw',
       FK(['neemt', 'neem', 'nemen'], 0, 'presens', 'mijn vrouw is a zij: stem plus t, neemt.'), 'de vis.'] },

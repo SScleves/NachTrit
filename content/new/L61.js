@@ -48,7 +48,7 @@
         FK(['eten', 'eet', 'te eten'], 0, 'fut', 'gaan sends the infinitive to the end: eten.'), '?'] },
       { en: 'On Saturday we are going to buy cheese at the market.', parts: ['Zaterdag', FK(['gaan we', 'we gaan'], 0, 'v2', 'A time word first, then the verb in slot 2: Zaterdag gaan we.'), 'op de markt kaas',
         FK(['kopen', 'koopt'], 0, 'fut', 'After gaan the infinitive closes the sentence: kopen.'), '.'] },
-      { en: 'Are we going to split the bill?', parts: [FK(['Gaan', 'Gaat'], 0, 'fut', 'A question starts with the verb, and we takes gaan.'), 'we de rekening',
+      { en: 'Are we going to split the bill?', parts: [FK(['Gaan', 'Gaat'], 0, 'fut', 'A question starts with the verb, and with we it is gaan.'), 'we de rekening',
         FK(['delen', 'deelt', 'te delen'], 0, 'fut', 'gaan plus the bare infinitive at the end: delen.'), '?'] },
       { en: 'The kitchen closes at a quarter to ten.', parts: ['De keuken', FK(['gaat', 'dichtgaat'], 0, 'sep', 'dichtgaan splits: gaat in slot 2, dicht at the end.'), 'om',
         FK(['kwart voor tien', 'kwart over tien', 'kwart voor negen'], 0, 'klok', 'kwart voor tien is 9:45, a quarter before ten.'), 'dicht.'] },

@@ -14,7 +14,7 @@
   const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(11, { deliveries: 20, items: [
     // the standup and the meeting
-    { en: 'Morning everyone, shall we start?', parts: ['Goedemorgen allemaal,', FK(['zullen', 'zal', 'zult'], 0, 'modal', 'we takes the plural: zullen. zal and zult are for one person.'), 'we',
+    { en: 'Morning everyone, shall we start?', parts: ['Goedemorgen allemaal,', FK(['zullen', 'zal', 'zult'], 0, 'modal', 'With we it is the plural: zullen. zal and zult are for one person.'), 'we',
       FK(['beginnen', 'begint', 'te beginnen'], 0, 'modal', 'zullen sends the second verb to the end as a bare infinitive: beginnen.'), '?'] },
     { en: 'The standup starts at nine.', parts: ['Om negen uur', FK(['begint', 'beginnen', 'begin'], 0, 'presens', 'de standup is one thing, so stem plus t: begint, in slot 2 right after the time.'), 'de standup.'] },
     { en: 'Mark is still waiting for my review.', parts: ['Mark', FK(['wacht', 'wachtt'], 0, 'presens', 'The stem wacht already ends in t, and Dutch never writes tt at the end.', 'spell'), 'nog op',

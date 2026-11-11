@@ -47,7 +47,7 @@
     { en: 'The bread roll is warm.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Every word ending in -je is a het-word: het broodje.'), 'broodje is warm.'] },
     { en: 'The fries are cold.', parts: ['De patat', FK(['is', 'zijn'], 0, 'zijn', 'patat is one singular word, so it takes is, even though English says the fries are.'), 'koud.'] },
     { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben'], 0, 'hebben', 'In Dutch you have hunger, like in Spanish: ik heb honger, tengo hambre.'), 'honger.'] },
-    { en: 'We have a reservation.', parts: ['We', FK(['hebben', 'heeft'], 0, 'hebben', 'we takes hebben. heeft is for hij, zij (she), het and u.'), 'een reservering.'] },
+    { en: 'We have a reservation.', parts: ['We', FK(['hebben', 'heeft'], 0, 'hebben', 'With we it is hebben. heeft is for hij, zij (she), het and u.'), 'een reservering.'] },
     { en: "That's nine euros altogether.", parts: ['Dat is samen', FK(['negen', 'negentien'], 0, 'getal', 'negen is 9. negentien is 19: -tien adds ten.'), 'euro.'] },
   ] });
 })();

@@ -39,7 +39,7 @@
       { en: 'I cycled along the Maas every day.', parts: ['Ik', FK(['fietste', 'fietsde'], 0, 'imp', 'fiets ends in s, a ketchup letter, so the past ends in -te: fietste.', 'spell'), 'elke dag langs de Maas.'] },
       { en: 'After the run I felt great.', parts: ['Na het hardlopen', FK(['voelde ik', 'ik voelde'], 0, 'v2', 'Na het hardlopen takes slot 1, so the verb comes next, then ik.'), FK(['me', 'zich', 'je'], 0, 'refl',
         'The self-word matches the subject: ik goes with me, and it sits right after ik.'), 'geweldig.'] },
-      { en: 'We were late because we got the time wrong.', parts: ['We kwamen te laat, want we', FK(['vergisten', 'vergisden'], 0, 'imp', 'vergis ends in s, a ketchup letter, so we takes -ten: vergisten.', 'spell'), FK(['ons', 'zich', 'me'], 0, 'refl',
+      { en: 'We were late because we got the time wrong.', parts: ['We kwamen te laat, want we', FK(['vergisten', 'vergisden'], 0, 'imp', 'vergis ends in s, a ketchup letter, so with we it is -ten: vergisten.', 'spell'), FK(['ons', 'zich', 'me'], 0, 'refl',
         'we goes with ons, and it sits right after the verb.'), 'in de tijd.'] },
       { en: 'The dogs get bored in the rain.', parts: ['De honden', FK(['vervelen zich', 'zich vervelen'], 0, 'refl', 'The self-word zich comes right after the verb: vervelen zich.'), 'in de regen.'] },
 

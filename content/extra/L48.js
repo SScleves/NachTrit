@@ -87,7 +87,7 @@
     { look: true, prop: 'nummer', value: 68, nl: 'achtenzestig', en: '68' },
 
     // builds: one fork each, zijn and hebben in the present, heten, de/het and a number
-    { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'wij takes zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
+    { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'With wij it is zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
     { en: 'You are warmly welcome.', parts: ['U', FK(['bent', 'zijn', 'ben'], 0, 'zijn', 'u is the polite you and takes bent, like jij: u bent welkom.'), 'van harte welkom.'] },
     { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'presens', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
     { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'presens', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },

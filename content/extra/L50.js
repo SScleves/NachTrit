@@ -46,7 +46,7 @@
 
     // builds: present tense, verb-first questions, V2, modals, niet/geen, onze, de/het and a number
     { en: 'We have a reservation for two.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural, so the plural form: hebben.'), 'een reservering voor twee.'] },
-    { en: 'Do you have a table for four?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'jullie takes the plural: hebben. The verb first makes it a question.'), 'jullie een tafel voor vier?'] },
+    { en: 'Do you have a table for four?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'With jullie it is the plural: hebben. The verb first makes it a question.'), 'jullie een tafel voor vier?'] },
     { en: 'What would you like to drink?', parts: ['Wat', FK(['willen jullie', 'jullie willen'], 0, 'v2', 'Wat takes slot 1, the verb comes second, then jullie.'), 'drinken?'] },
     { en: 'My wife is having the fish.', parts: [FK(['Mijn', 'Mij'], 0, 'bezit', 'My before a noun is mijn. mij is me.'), 'vrouw',
       FK(['neemt', 'neem', 'nemen'], 0, 'presens', 'mijn vrouw is a zij: stem plus t, neemt.'), 'de vis.'] },

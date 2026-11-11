@@ -72,7 +72,7 @@
       { en: 'He asked whether I knew the neighbour.', parts: ['Hij vroeg', FK(['of', 'om'], 0, 'indirect', 'A reported yes-or-no question takes of: vroeg of ik de buurman kende.', 'word'), 'ik de buurman', FK(['kende', 'kenden'], 0, 'imp',
         'One person, ik: kende. kenden belongs to wij and zij.'), '.'] },
       { en: 'My neighbours said that they are moving next month.', parts: ['Mijn buren', FK(['zeiden', 'zei'], 0, 'imp',
-        'Several neighbours, so the plural zeiden.'), 'dat ze volgende maand', FK(['verhuizen', 'verhuist', 'verhuisd'], 0, 'indirect', 'After dat the verb goes to the end, and plural ze takes verhuizen.', 'verb'), '.'] },
+        'Several neighbours, so the plural zeiden.'), 'dat ze volgende maand', FK(['verhuizen', 'verhuist', 'verhuisd'], 0, 'indirect', 'After dat the verb goes to the end, and with plural ze it is verhuizen.', 'verb'), '.'] },
       { en: 'He said that he had already invited the neighbours.', parts: ['Hij zei dat hij de buren al', FK(['had uitgenodigd', 'had uitnodigen'], 0, 'sep', 'had needs the participle, with ge in the middle: uitgenodigd.'), '.'] },
 
       // ---- builds: review of earlier tiers

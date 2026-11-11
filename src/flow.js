@@ -82,7 +82,7 @@ function showSummary(won) {
   }
   $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
   $('stars').textContent = L && won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
-  $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.mistakes.length} mistake${S.mistakes.length === 1 ? '' : 's'} to practise.`)
+  $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.missList.length} mistake${S.missList.length === 1 ? '' : 's'} to practise.`)
     : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (S.deliveriesTotal >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
   $('again').textContent = L && won && stars ? 'Next place' : 'Again';
   const wl = [...S.met.entries()];

@@ -35,7 +35,7 @@
         'dat sends the verb to the end: dat de trein te laat is.'), '.'] },
       { en: 'If it rains, I take the bus.', parts: ['Als het regent,', FK(['neem ik', 'ik neem'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'de bus.'] },
-      { en: 'When we got to the harbour, the cutter was already gone.', parts: ['Toen we bij de haven', FK(['kwamen', 'komen', 'kwam'], 0, 'bijzin', 'toen tells a past moment, and we takes kwamen at the end.', 'past'), ',', FK(['was de kotter', 'de kotter was'], 0, 'bijzin',
+      { en: 'When we got to the harbour, the cutter was already gone.', parts: ['Toen we bij de haven', FK(['kwamen', 'komen', 'kwam'], 0, 'bijzin', 'toen tells a past moment, and with we it is kwamen at the end.', 'past'), ',', FK(['was de kotter', 'de kotter was'], 0, 'bijzin',
         'After the toen-clause the main clause starts with its verb: was de kotter al weg.'), 'al weg.'] },
       { en: 'While I wait, I read my mail.', parts: ['Terwijl', FK(['ik wacht', 'wacht ik'], 0, 'bijzin',
         'terwijl sends the verb to the end: ik wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'v2',

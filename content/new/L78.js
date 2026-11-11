@@ -49,7 +49,7 @@
         'After zo the plain form stays plain: zo lang. -er is only for comparing with dan.'), 'op het station?'] },
       { en: 'The conductor spoke fast and I understood nothing.', parts: ['De conducteur', FK(['sprak', 'spraken', 'gesproken'], 0, 'imp', 'spreken is irregular: the past is sprak, and one person takes no ending.'), 'heel snel en ik verstond', FK(['niets', 'geen'], 0, 'neg',
         'geen needs a noun after it. Nothing on its own is niets.'), '.'] },
-      { en: 'Paola bought a ticket and we walked to the platform.', parts: ['Paola', FK(['kocht', 'kochten', 'gekocht'], 0, 'imp', 'kopen is irregular: the past is kocht, and Paola takes no ending.'), 'een kaartje en we', FK(['liepen', 'liep', 'gelopen'], 0, 'imp', 'lopen is irregular: liep, and we takes the plural: liepen.'), 'naar het perron.'] },
+      { en: 'Paola bought a ticket and we walked to the platform.', parts: ['Paola', FK(['kocht', 'kochten', 'gekocht'], 0, 'imp', 'kopen is irregular: the past is kocht, and Paola takes no ending.'), 'een kaartje en we', FK(['liepen', 'liep', 'gelopen'], 0, 'imp', 'lopen is irregular: liep, and with we it is the plural: liepen.'), 'naar het perron.'] },
       { en: 'The stand-up began at nine, but I was still on the metro.', parts: ['De standup', FK(['begon', 'begonnen'], 0, 'imp', 'beginnen is irregular: the past is begon, and one standup takes no ending.'), 'om negen, maar', FK(['ik zat', 'zat ik'], 0, 'v2',
         'maar does not count as a slot, so the subject stays first: maar ik zat.'), 'nog in de metro.'] },
 

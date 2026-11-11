@@ -30,7 +30,7 @@
     { en: "This afternoon the butcher has no mince.", parts: ['Vanmiddag', FK(['heeft de slager', 'de slager heeft'], 0, 'v2', 'Vanmiddag takes slot 1, so heeft comes second.'),
       FK(['geen', 'niet'], 0, 'neg', 'gehakt has no article here, so geen.'), 'gehakt.'] },
     { en: "The cheese isn't mature, it's young.", parts: ['De kaas is', FK(['niet', 'geen'], 0, 'neg', 'belegen is an adjective here with no noun after it, so niet. geen needs a noun behind it.'), 'belegen, maar jong.'] },
-    { en: "We don't sell cheese anymore.", parts: ['Wij', FK(['verkopen', 'verkoopt', 'verkoop'], 0, 'presens', 'wij takes the plural: verkopen.'),
+    { en: "We don't sell cheese anymore.", parts: ['Wij', FK(['verkopen', 'verkoopt', 'verkoop'], 0, 'presens', 'With wij it is the plural: verkopen.'),
       FK(['geen', 'niet'], 0, 'neg', 'kaas has no article here, so geen.'), 'kaas meer.'] },
     { en: 'Do you have any syrup waffles left? (polite)', parts: [FK(['Heeft u', 'Heb u', 'Hebben u'], 0, 'presens', 'A question starts with the verb, and u takes heeft: heeft u.'), 'nog stroopwafels?'] },
     { en: "On Thursday I'm not going to the cheese market.", parts: ['Donderdag', FK(['ga ik', 'ik ga'], 0, 'v2', 'Donderdag takes slot 1, so the verb comes before ik.'),

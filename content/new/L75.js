@@ -46,7 +46,7 @@
         'lamp is a de-word, so the adjective takes -e: een nieuwe lamp.'), 'lamp voor de woonkamer.'] },
       { en: 'Paola spoke softly to the dogs and sternly to me.', parts: ['Paola', FK(['sprak', 'spraken', 'gesproken'], 0, 'imp', 'spreken is irregular: the past is sprak, and one person takes no ending.'), 'zacht tegen de honden en streng tegen', FK(['mij', 'ik'], 0, 'obj',
         'After tegen comes the object form: tegen mij, not tegen ik.'), '.'] },
-      { en: 'We had no time, so we ordered pizza.', parts: ['We', FK(['hadden', 'had', 'gehad'], 0, 'imp', 'hebben is irregular: had, and we takes the plural: hadden.'), 'geen tijd, daarom', FK(['bestelden we', 'we bestelden'], 0, 'v2',
+      { en: 'We had no time, so we ordered pizza.', parts: ['We', FK(['hadden', 'had', 'gehad'], 0, 'imp', 'hebben is irregular: had, and with we it is the plural: hadden.'), 'geen tijd, daarom', FK(['bestelden we', 'we bestelden'], 0, 'v2',
         'daarom takes slot 1, so the verb comes second, then we.'), 'pizza.'] },
 
       // ---- builds: reflexive verbs, the self-word right after the verb
