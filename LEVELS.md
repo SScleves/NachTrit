@@ -119,6 +119,8 @@ Source: grammar notes bijzin, die vs dat, imperfectum, reflexieve werkwoorden, z
 - Hints: full hint in act 1 (the right word glows faintly), first letter in act 2, none after.
 - Speed: fixed in act 1, ramps per act. Act 5 ramps within the level.
 - Reading time does not get faster with speed (2 Nov 2026): at every fork the bike slows so the signs stay legible for the fork's reading budget (0.35 s a word over all options plus 1.2 s, 3 to 7 s, listen and read 1.5x). Speed between forks, obstacles, wisps and the lamp keep rising with the tier. See CONTENT-BRIEF.md, "Word limits are reading limits".
+- Go (11 Nov 2026): ↑ or W, or a swipe up, means "I've chosen". The reading slow-down ends for that fork and the bike eases back to cruising speed, so the reading budget is the longest the bike waits, never a forced wait. A right answer after go, before the budget ran out, refuels `TUNE.fast` (1) extra. Steering is not go. Waiting stays free; wrong answers cost the same.
+- Task labels (11 Nov 2026): every fork card carries a short English label in a fixed colour that says what the fork asks. The first fork of each type in a level shows the label larger and gets the slow teaching approach (1.5 s more budget, slow zone from 30 m), once. The card shows the whole Dutch frame with a glowing slot for the piece the signs fill. Mapping in CONTENT-BRIEF.md, "One thing per fork".
 - Lamp: decays slower early. Correct answers give more lamp early, less later.
 - Obstacles: none, puddles, fences, carts, then dense.
 - Forks per delivery: 1, 1, 1-2, 2-3, 3-4.
