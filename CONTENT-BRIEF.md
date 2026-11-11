@@ -103,6 +103,43 @@ need, then `window.defineLevels([...])` with the five levels in id order. No oth
 syntax with `node --check content/district<N>.js` before you finish.
 
 
+## Word limits are reading limits (2 Nov 2026)
+
+`maxWords` in `window.TIER_PRESET` is how much a player can read at a fork, not a speed target. The
+game gives every fork a reading budget from the words on its signs: 0.35 s per word over all options
+plus 1.2 s to decide, at least 3 s and at most 7 s; listen and read items get 1.5 times that, de/het
+and single-word items the 3 s minimum. At the fork the bike slows (`forkSlow` is now only the
+ceiling) so the signs stay legible for that budget at the tier's speed, the card and the voice come
+up before the signs are readable, and the stretch after a long sentence is longer. The game gets
+harder with the tier between the forks (speed, obstacles, wisps, the lamp), never at the fork itself.
+
+What this means when you write content:
+- Short options read from further away. A sign shows one option on a board 2.1 m wide; the letters
+  shrink as the text wraps, and a long option (over about four words) gets a taller board with up to
+  four lines. Options of one to three words are legible from 10 to 15 m; six to nine words only
+  from 4 to 8 m, so the bike nearly stops for them. Prefer gaps of one to three words.
+- The budget counts every option on screen, so long distractors cost as much time as a long answer.
+- The `maxWords` limit stays a hard cap on the sentence.
+
+## One thing per fork (11 Nov 2026)
+
+The card asks, the signs answer, the player sets the pace. Each fork asks exactly one thing, and the card says which with a label. Do not mix word order and spelling in one fork: `werkte ik / ik werkte / werkde ik` is two forks, a "Past tense" fork (`werkte / werkde / werkt`) and a "Word order" fork (`werkte ik / ik werkte`). Level 75 is the prototype.
+
+The engine derives the label from the fork (`taskOf` in index.html), in this order:
+
+| Label | Colour | When |
+|---|---|---|
+| Word order | blue | every option has two or more words and all options are the same words in another order (any rule id); also rule ids v2, bijzin, tmp, sepbz, hoewel, indirect, alsdan, cond, conditie, voorwaarde |
+| Past tense | orange | imp, kof, perf, plusq, aux |
+| Verb form | purple | sep, modal, zou, fut, zullen, aanhet, presens, pres, passief, gebod, omte, al, zijn, hebben, om |
+| Comparison | pink | vergelijk |
+| de or het | gold | de/het items (rule dehet) |
+| Listen | teal | listen items |
+| Meaning | cream | read items |
+| Which word | green | word and look items, and every other rule id (woord, neg, diedat, refl, adj, bezit, obj, idioom, soft, er, ...) |
+
+Override per fork with `task` on the fork object (`{ o, a, r, w, task: 'order' }`) or per item (`task` on a build or read item). Ids: `order`, `past`, `verb`, `comp`, `dehet`, `listen`, `meaning`, `word`. An unknown id shows "Which word". Signs carry only the missing piece; the card shows the full sentence with the gap marked, so keep the fixed parts of the sentence in `parts`.
+
 ## Tier fences for towns 7 to 13 (added 23 Oct 2026; word limits are in `window.TIER_PRESET`)
 
 Each tier includes everything below it. A tier may drill only what it introduces, but earlier
