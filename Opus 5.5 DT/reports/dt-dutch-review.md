@@ -156,3 +156,86 @@ Shape rules kept in every fix: same rule id, same fork shape, one thing per fork
 - No wrong clock, number, 't kofschip, participle, sub-clause order or passive in any why line, other than W11.
 - No English line that contradicts its Dutch line, other than M1 (where both are loose) and the three-way sheep sentences the author already flagged.
 - Every dehet or wrong-article item whose noun the Woordenlijst gives a single gender agrees with the Woordenlijst (526 of 536 nouns; the other 10 are W1 to W10).
+
+## 7. Applied
+
+Branch `dt/dutch-review`, 11 Nov 2026. All 28 findings are applied except D3, which is resolved with no change (reason below). The question-10 why line is also softened. Edits go through the content sources (`content/new/L*.js`, `content/extra/*.js`, `content/towns.js`, `levels.js`, `content/town-alblasserdam.js`, `content/town-kinderdijk.js`) and the bundles are rebuilt with `node qa/build-content.mjs`. Fork count is unchanged (6,733 in `qa/dump-tasks.mjs`) and the only task labels that moved are the two the findings ask for (W12 and W14, now Spelling).
+
+Counts: applied 27 (14 Wrong, 7 Unnatural, 1 Mismatch, 5 Doubtful), resolved without a change 1 (D3), skipped 0, plus question 10.
+
+### Wrong
+
+| # | Status | What was done |
+|---|---|---|
+| W1 dashboard | applied | `wrong` dropped on the word items in levels 44, 46, 79. L41 `dehet dashboard` becomes `het adres`. L111 `dehet dashboard` becomes `het scherm`. L44 build "[Het\|De] scherm is groen." (en "The screen is green."). L127 build "[Het\|De] scherm staat al sinds vanochtend op rood ..." (en "The screen has been red ..."). |
+| W2 ticket | applied | `wrong` dropped in L111 and L119. |
+| W3 schap | applied | `wrong` dropped in L100. |
+| W4 Tikkie | applied | `wrong` dropped in L125. |
+| W5 kraam, marktkraam | applied | `wrong: 'het marktkraam'` dropped in L69. L69 `dehet kraam` becomes `de haringkar` (why: de kar, so de haringkar; a compound takes the article of its last word). |
+| W6 gordijn | applied | `wrong` dropped in L51, L75, L107. L59 `dehet gordijn` becomes `het huis` (met in level 41; the report's `dekbed` is first met in L67, so it would not count for the thread). |
+| W7 medicijn | applied | `wrong` dropped in L52 and L100. |
+| W8 zadel | applied | `wrong` dropped in L66 and L94. |
+| W9 schilderij | applied | `wrong` dropped in L8. L67 `dehet schilderij` becomes `het gezin` (met in L59; `dekbed` and `balkon` are already word items with `wrong` in L67). |
+| W10 rooster | applied | L87 `dehet rooster` becomes `het incident`; L95 becomes `het overleg` (as the report says). |
+| W11 | applied | L105 why line: "de ontmoeting, de uitnodiging, de vergadering." |
+| W12 | applied | L74 `gerend`/`gerent` fork carries `'spell'` (label Past tense to Spelling). |
+| W13 | applied | L98 options are now `['uit te laten', 'te uitlaten']`. |
+| W14 | applied | L106 `bruggetje`/`brugje` fork carries `'spell'` (label Which word to Spelling). |
+
+### Unnatural, Mismatch
+
+| # | Status | What was done |
+|---|---|---|
+| U1 | applied | L7 read is "Laat maar zitten." (en, options and why unchanged). |
+| U2 | applied | L84 ", was die al dicht." |
+| U3 | applied | L93 "Het terras dat [zo mooi ligt \| ligt zo mooi], is al vol." en "The terrace that is so well placed is already full." why ends "dat zo mooi ligt." |
+| U4 | applied | L94 "Het schaap dat er [al uren staat \| staat al uren]"; why ends "dat er al uren staat." |
+| U5 | applied | L97 "Het schaap dat hier [al jaren woont \| woont al jaren]"; why ends "hier al jaren woont." |
+| U6 | applied | L95 "Het schaap dat [al klaarstaat \| staat al klaar]"; en "The sheep that is already in place wants to join the standup." |
+| U7 | applied | L59 `opbelt Paola` dropped; two options left. |
+| M1 | applied | `content/towns.js` Maastricht blurb and blurbNl: "The Treaty of Maastricht was signed here in 1992." / "In 1992 werd hier het Verdrag van Maastricht getekend." |
+
+### Doubtful
+
+| # | Status | What was done |
+|---|---|---|
+| D1 | applied | L79 `duurt` replaced by `geduurd`; why: "... duurde. geduurd needs heeft." (15 words). |
+| D2 | applied | L129 options `[aan de hand \| bij de hand \| op de hand]`. |
+| D3 Noondezju | resolved, no change | The English Wikipedia article "Maastrichtian dialect" (Expressions table) spells it "Noondezju", glosses it "a minor swear word and/or an expression of surprise" and derives it from Eastern Walloon "nondidju". So the spelling and the Maastricht label the game uses are confirmed by a source the report did not reach, and the existing glosses (mild curse or surprise, Maastricht dialect) say only that. The ANW headword `nondedju` (mainly Belgium, euphemistic, spoken) is the related southern form; its article does not mention Limburg. Kept as is: swapping to "Nondedju" would drop a spelling that is sourced for Maastricht. If a stricter source than Wikipedia is wanted, the Mestreechs dictionary of Aarts (2005) is the one to check. |
+| D4 salu | applied | The L111 listen item `salu` is replaced by `de bompa` (en "grandpa (Maastricht dialect, in Dutch opa)"), which Wiktionary (Maastrichtian) and the Wikipedia dialect table give with `bomma`; Woordenlijst has `bompa (m)`. A second search found no source that gives a Mestreechs greeting, so no greeting was invented. `salu` is out of `qa/allow-words.txt`, `bompa` is in. |
+| D5 | applied | L99 read is "Er zit een scheur in de muur." en "There is a crack in the wall." |
+| D6 | applied | Zeeland blurb: "In 1953 the sea came in at night. Now there are doors in the sea, and they close when it storms." and the Dutch likewise, without the number. |
+
+### Question 10
+
+L130 why line: "de taal is a de-word; in the Netherlands that is hem. zich would point back at niemand." (17 words).
+
+### The noun swaps
+
+Single-gender checks on `woordenlijst.org/MolexServe/lexicon/find_wordform?database=gig_pro_wrdlst&wordform=<word>`, 11 Nov 2026.
+
+| Where | Old | New | Woordenlijst |
+|---|---|---|---|
+| L41 dehet | het dashboard | het adres | adres: (o) |
+| L111 dehet | het dashboard | het scherm | scherm: (o) |
+| L44 and L127 article forks | dashboard | scherm | (o) |
+| L59 dehet | het gordijn | het huis | huis: (o) |
+| L67 dehet | het schilderij | het gezin | gezin: (o) |
+| L69 dehet | de kraam | de haringkar | haringkar: (m/v), both de |
+| L87 dehet | het rooster | het incident | incident: (o) |
+| L95 dehet | het rooster | het overleg | overleg: (o) |
+
+### The guard
+
+- `qa/data/dehet-both.txt` lists the ten nouns plus `marktkraam`. I looked up all 524 single-word nouns the game tests (every de/het item, every word `wrong` article, every article fork) in the Woordenlijst. No other noun came back with both genders in one entry; the homonyms that list two entries (raam, weer, bal, bot, week and others) are separate words, and `schap`, `tikkie` and the compounds are on the list. The head nouns of the multi-word items (stuk, vervoer, café, oorlog, patatje) are single-gender.
+- `qa/lib/dehet-both.mjs` finds the nouns an item tests (`testedNouns`) and loads the list (`loadBoth`). `qa/lib/validate.mjs` takes `both` and reports an error for a de/het item, a word item whose `wrong` is the other article, or an article build fork (bare Het/De before the noun, or options that carry the noun) on a listed noun. `qa/validate-content.mjs` passes the list and fails if the file is missing.
+- Unit test: `qa/test/dehet-both.test.mjs` (6 tests: the list, each of the three item types, plain words and sentences stay allowed, the shipped content is clean).
+- Word items lost their `wrong` article in 16 places; the de/het thread audit still shows 0 levels under three.
+
+### Checks
+
+- `node qa/build-content.mjs`, `npm test`: green (56 unit tests, validate 0 errors and 0 warnings, 0 levels under three de/het or V2 forks, `tsc` clean).
+- `node qa/dump-tasks.mjs` before and after: 6,733 forks both times; only `L74.2.1` (Past tense to Spelling) and `L106.13.0` (Which word to Spelling) differ, as W12 and W14 ask.
+- Rides (`node qa/ride.mjs`, seed 1): levels 7, 8, 41, 44, 46, 51, 52, 59, 66, 67, 69, 74, 75, 79, 84, 87, 93, 94, 95, 97, 98, 99, 100, 105, 106, 107, 111, 119, 125, 127, 129, 130 all ride home with 0 errors and 0 wrong signs.
+- Voice: 11 new lines rendered (`npm run voice`), `npm run voice:check` shows 0 lines without a file (180 orphan mp3s, known). New lines: "Het scherm is groen.", "Het scherm staat al sinds vanochtend op rood, en niemand weet waarom.", "de bompa", "Toen ik bij de apotheek kwam, was die al dicht.", "Het terras dat zo mooi ligt, is al vol.", "Het schaap dat er al uren staat, wil niet van het fietspad af.", "Het schaap dat al klaarstaat, wil meedoen aan de standup.", "Het schaap dat hier al jaren woont, kent iedereen.", "Er zit een scheur in de muur.", the Zeeland blurb and the Maastricht blurb.
+- `node qa/check-versions.mjs --bump`: NR_VERSION 40 to 41. `npm run review` regenerated `review/native-review.html` and `review/native-review-short.html`.
