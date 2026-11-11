@@ -21,7 +21,7 @@ const ok = (name, cond) => eq(name, !!cond, true);
 
 ok('window.FARES exists', F);
 eq('only FARES on window', Object.keys(ctx.window).join(','), 'FARES');
-eq('FARES keys', Object.keys(F).sort().join(','), ['euroToWords', 'fmtEuro', 'fareFor', 'payCents', 'FLAT', 'REFUSE', 'TIPS'].sort().join(','));
+eq('FARES keys', Object.keys(F).sort().join(','), ['euroToWords', 'fmtEuro', 'fareFor', 'payCents', 'halfFare', 'FLAT', 'REFUSE', 'TIPS'].sort().join(','));
 
 const WORDS = [
   [0, 'nul euro'], [0.5, 'vijftig cent'], [0.1, 'tien cent'], [1, 'één euro'], [1.5, 'één euro vijftig'],
@@ -36,6 +36,10 @@ eq('euroToWords rows', WORDS.length, 22);
 
 const PAY = [[[450, 0, 1], 450], [[450, 1, 1], 0], [[450, 1, 2], 220], [[450, 2, 2], 0], [[1050, 2, 3], 260], [[1050, 3, 3], 0]];
 for (const [args, want] of PAY) eq(`payCents(${args.join(',')})`, F.payCents(...args), want);
+
+// a missed item that comes back pays half its fare, floored to 10 cents (PLAN.md 3a point 2)
+const HALF = [[200, 100], [450, 220], [1050, 520], [1200, 600], [150, 70], [100, 50], [50, 20], [0, 0]];
+for (const [c, want] of HALF) eq(`halfFare(${c})`, F.halfFare(c), want);
 
 const entry = forks => ({ parts: Array.from({ length: forks }, () => ({ o: ['a', 'b'], a: 0 })).flatMap(p => ['x', p]) });
 for (let tier = 1; tier <= 12; tier++) for (let forks = 1; forks <= 4; forks++) {

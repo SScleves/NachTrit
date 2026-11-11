@@ -55,6 +55,11 @@
     return Math.floor(fare / Math.pow(2, wrong) / 10) * 10;
   }
 
+  // a missed item that comes back later in the ride (the "again" card) pays half its fare, floored to 10 cents
+  function halfFare(cents) {
+    return Math.floor((+cents || 0) / 2 / 10) * 10;
+  }
+
   // refusals: minTier..maxTier is the tier range of the town where the line is said
   const REFUSE = [
     { nl: 'Dat betaal ik niet.', en: "I'm not paying for that.", minTier: 1, maxTier: 99 },
@@ -76,5 +81,5 @@
     { nl: 'Laat maar zitten.', en: 'Keep it.', minTier: 4 },
   ];
 
-  window.FARES = { euroToWords, fmtEuro, fareFor, payCents, FLAT, REFUSE, TIPS };
+  window.FARES = { euroToWords, fmtEuro, fareFor, payCents, halfFare, FLAT, REFUSE, TIPS };
 })();

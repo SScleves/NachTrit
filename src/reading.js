@@ -15,6 +15,8 @@ export function readBudget(fork) {
   const b = clamp(0.35 * wordsIn(fork.o) + 1.2, 3, 7);
   return (fork.read || e.listen ? b * 1.5 : b) + first;
 }
+// seconds the why card stays up after a wrong answer: 0.35 s a word of the why line, at least 3 (PLAN.md 3d). The go key ends it sooner.
+export const whyBudget = why => Math.max(3, 0.35 * wordsIn([why || '']));
 // how far ahead letters of em metres become legible, through the fork camera at full speed (it widens and closes in as the gate nears)
 export function legDist(em) {
   for (let a = 40; a > READ_AHEAD; a -= 0.5) { const fz = clamp(1 - a / 46, 0, 1), sf = 1 - fz, half = (60 + sf * 10 + fz * 22) * Math.PI / 360; if (em / (2 * Math.tan(half) * (a + 6.4 + sf * 2.6 - fz * 2.4)) >= READ_THR) return a; }

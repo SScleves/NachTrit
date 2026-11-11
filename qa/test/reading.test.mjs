@@ -63,3 +63,11 @@ test('every fork in the content has a budget within the rule: 3 to 7 s, read and
   assert.ok(seen.n > 1000, `only ${seen.n} forks`);
   assert.deepEqual(bad.slice(0, 10), [], `${bad.length} forks outside the rule`);
 });
+// the why card after a wrong answer (PLAN.md 3d point 1): the reading budget of the why line, 0.35 s a word, at least 3 s
+import { whyBudget } from '../../src/reading.js';
+test('the why card stays 0.35 s a word of the why line, at least 3 s', () => {
+  assert.equal(whyBudget(''), 3); assert.equal(whyBudget(undefined), 3); assert.equal(whyBudget('de hond = the dog'), 3, 'short lines get the floor');
+  const w = 'A fronted time phrase pushes the subject behind the verb: bel ik. The separable prefix terug sits at the end.';
+  assert.ok(Math.abs(whyBudget(w) - 0.35 * 20) < 1e-9, `20 words: ${whyBudget(w)}`);
+  assert.ok(Math.abs(whyBudget('one two three four five six seven eight nine') - 3.15) < 1e-9, 'nine words: just over the floor');
+});

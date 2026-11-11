@@ -45,7 +45,7 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const today = () => new Date().toISOString().slice(0, 10);
 // fares.js fills this; without it the game runs with no money instead of a black page
-const FARES = window.FARES || { fareFor: () => 0, payCents: () => 0, euroToWords: () => '', fmtEuro: c => '€ 0,00', FLAT: {}, REFUSE: [], TIPS: [] };
+const FARES = window.FARES || { fareFor: () => 0, payCents: () => 0, halfFare: () => 0, euroToWords: () => '', fmtEuro: c => '€ 0,00', FLAT: {}, REFUSE: [], TIPS: [] };
 
 export { $, ADD, BASE_SPEED, clamp, EffectComposer, FARES, GLTFLoader, GPU_PREF, LANES2, LANES3, lerp, LOOK, MAX_SPEED, NODES, pick, POST,
   RENDERER_Q, rnd, ROAD_W, ShaderPass, smooth, TexturePass, THREE, today, TSL, UnrealBloomPass };
