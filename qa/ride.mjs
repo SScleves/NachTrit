@@ -24,6 +24,9 @@
 //   --keep      one browser profile for all the levels: the save (nachtrit.save) carries from ride to ride, as for a player
 //               who rides them in a row. Without it every level is a first-time player's ride (a fresh profile)
 //   --miss-only ids   apply --miss only on these levels (comma list), ride the others right
+//   --die-after-stop  put the lamp out 40 m after the bus stop at halfway (PLAN.md phase 5 item 5), to ride the restart on any level
+// Every level also prints the bus stop (the delivery it stands after, passed, a restart from it and the stars it allowed) and the
+// words that came back (phase 5 item 1: lamps lit, shop signs given their word back).
 // With --keep, each ride also prints the save's numbers (PLAN.md phase 4): the ride counter, items in the learner model, the
 // spaced-review forks it carried (from which level, their box, the tag on the card, the first try) and its own first-try
 // misses; at the end, for every first-try miss, the later ride that brought it back as a marked review fork, or FAIL when
@@ -48,7 +51,7 @@ const VALUED = ['base', 'seed', 'miss', 'chunk', 'w', 'h', 'out', 'json', 'miss-
 const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(argv[i - 1].replace(/^--/, ''))));
 const levels = (pos[0] || '1').split(',').map(s => s.trim()).filter(Boolean).map(s => /^\d+$/.test(s) ? +s : s);   // ids, or practice and trophy-<town> (with --keep)
 const opt = {
-  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), shots: flag('shots'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'), keep: flag('keep'), missOnly: String(val('miss-only', '')).split(',').map(s => +s.trim()).filter(Boolean),
+  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), shots: flag('shots'), seed: val('seed', '1'), collect: !flag('ignore'), dieAfterStop: flag('die-after-stop'), miss: +val('miss', 0) || 0, teach: flag('teach'), keep: flag('keep'), missOnly: String(val('miss-only', '')).split(',').map(s => +s.trim()).filter(Boolean),
   chunk: Math.max(12, Math.round((+val('chunk', 300) || 300) / 12) * 12), w: +val('w', 1280), h: +val('h', 800),
   out: val('out', path.join(ROOT, 'qa', 'out', 'ride', new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19))), json: val('json', ''),
 };
@@ -99,7 +102,7 @@ function pageInit({ seed, teach }) {
 }
 
 // ---- the ride, in the page (after qa/lampbot.js has defined __bot)
-function rideSetup({ collect, miss, draw, shots }) {
+function rideSetup({ collect, miss, draw, shots, dieAfterStop }) {
   const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap(), draw,
     shots: shots ? ['why', 'again'] : [], pause: '', lamp: NR.lamp, rev: false, why: false, lostRev: 0, lostWhy: 0, whySec: 0, revFrames: 0,
     gate: null, gateAfterWhy: false, reads: [], dueTags: new Map() };
@@ -130,6 +133,7 @@ function rideSetup({ collect, miss, draw, shots }) {
     if (g0 && g0.fork.entry.due && g0.armed && !R.dueTags.has(g0.fork.entry.nl)) R.dueTags.set(g0.fork.entry.nl, document.querySelector('#card .again').textContent);   // the tag on a review fork's card
     if (why) R.whyEnded = true; else if (g0) R.whyEnded = false;
     if (NR.mode === 'dead') { R.ended = true; throw R; }   // the summary card is up: stop on this frame
+    if (dieAfterStop && !R.killed && NR.mode === 'ride' && NR.cp && NR.cp.passed && !NR.cp.used && NR.dist > NR.cp.d + 40) { R.killed = true; NR.lamp = 0; }   // --die-after-stop
     if (R.frame % 12 === 0) R.steer();
     if (R.shots.length && NR.mode === 'ride') {   // --shots: stop the chunk on the frame worth a picture
       const g = NR.activeFork;
@@ -166,6 +170,9 @@ function rideResult() {
       reading: (() => { const sum = list => ({ forks: list.length, short: list.filter(r => r.legT < r.budget - 1e-6).length, minRatio: list.length ? Math.round(Math.min(...list.map(r => r.legT / r.budget)) * 100) / 100 : null });
         return { afterWhy: sum(R.reads.filter(r => r.afterWhy)), others: sum(R.reads.filter(r => !r.afterWhy)) }; })(),
       log: NR.learn.log.map(r => ({ nl: r.nl, misses: r.misses, afterFork: r.at, gap: r.gap, full: r.full, paid: r.fare, result: r.result })) },
+    words: (() => { const w = NR.wordsBack || [], i = window.NRwords ? NRwords() : {}; return { right: w.length, lit: w.filter(x => x && x.relight && x.lamp).length, signs: w.filter(x => x && x.relight && !x.lamp).length,
+      flared: w.filter(x => x && !x.relight).length, none: w.filter(x => !x).length, lamps: i.lamps, lampsLit: i.lampsLit, shopSigns: i.signs, shopSignsLit: i.signsLit }; })(),
+    checkpoint: NR.cp ? { at: Math.round(NR.cp.d), afterDelivery: NR.cp.at, passed: NR.cp.passed, deliveredAtStop: NR.cp.deliveredAt, restarted: NR.cp.used, diedAt: Math.round(NR.cp.restartAt) } : null,
     title: $('sumtitle').textContent, stars: $('stars').textContent, score: NR.score, cents: NR.cents, mistakes: NR.mistakes.length,
     summaryShown: $('summary').style.display === 'flex', errBox: $('err').textContent.trim(), timersLeft: __vt.pending(),
     save: { ride: NRsave().ride, items: Object.keys(NRsave().items).length, rules: Object.keys(NRsave().rules).length, stored: (localStorage.getItem('nachtrit.save') || '').length,
@@ -198,7 +205,7 @@ async function rideLevel(browser, base, id) {
   const r0 = await page.evaluate(() => { document.querySelectorAll('img').forEach(i => { if (i.style.zIndex === '1') i.remove(); }); return { mode: NR.mode, level: NR.deliveriesTotal }; });
   if (r0.mode !== 'intro') errors.push(`harness: level ${id} did not start (mode ${r0.mode})`);
   await page.evaluate(async () => { eval(await (await fetch('qa/lampbot.js')).text()); });
-  await page.evaluate(rideSetup, { collect: opt.collect, miss, draw: opt.draw, shots: opt.shots });
+  await page.evaluate(rideSetup, { collect: opt.collect, miss, draw: opt.draw, shots: opt.shots, dieAfterStop: opt.dieAfterStop });
   let st, chunks = 0, maxMs = 0, evalMax = 0; const evalMs = [], shots = [];
   do {
     const e0 = Date.now();
@@ -233,7 +240,7 @@ try {
   for (const id of levels) {
     const r = await rideLevel(browser, base, id);
     results.push(r);
-    const died = r.result !== 'home', bad = r.errors.length || !r.summaryShown || (died && opt.collect && !opt.miss);
+    const restarted = !!(r.checkpoint && r.checkpoint.restarted), died = r.result !== 'home' || restarted, bad = r.errors.length || !r.summaryShown || (died && opt.collect && !opt.miss && !opt.dieAfterStop);   // a restart at the bus stop is a death too
     if (opt.keep) {
       const sv = r.save; console.log(`    save: ride ${sv.ride}, ${sv.items} items and ${sv.rules} rules in the learner model, nachtrit.save ${sv.stored} bytes`);
       for (const d of sv.due) console.log(`      review fork from L${d.level}, box ${d.box}, tag "${d.tag}", ${d.result || 'not ridden'}: ${d.nl}`);
@@ -241,6 +248,8 @@ try {
     }
     if (bad) fail++;
     console.log(`L${id}: ${r.result}, delivered ${r.delivered}/${r.total}, right ${r.right}, wrong ${r.wrong}, lamp left ${r.lamp} (lowest ${r.lampMin}), ${r.stars || '-'} ${r.title}, ${r.dist} m in ${r.gameSec} game s | ${r.wallSec} s wall, ${r.chunks} chunks, longest evaluate ${r.evaluateMsMax} ms | errors ${r.errors.length}${bad ? '  FAIL' : ''}`);
+    { const c = r.checkpoint; console.log(c ? `    bus stop: after delivery ${c.afterDelivery} at ${c.at} m, ${c.passed ? `passed with ${c.deliveredAtStop} delivered` : 'not reached'}${c.restarted ? `, lamp died at ${c.diedAt} m, restarted from the stop, stars ${r.stars || '-'}` : ', no restart'}` : '    bus stop: none on this ride'); }
+    { const w = r.words; if (w) console.log(`    words back: ${w.right} right answers, ${w.lit} lit a dark lamp, ${w.signs} gave a shop sign its word, ${w.flared} flared a lit lamp, ${w.none} found nothing in range; street now ${w.lampsLit}/${w.lamps} lamps, ${w.shopSignsLit}/${w.shopSigns} signs`); }
     const Ln = r.learn;
     if (Ln.whyCards || Ln.returns) {
       console.log(`    learning: ${Ln.returns} returns (right ${Ln.againRight}, wrong ${Ln.againWrong}), ${Ln.reviewM} m review road, lamp lost on it ${Ln.lampLostOnReview}; ${Ln.whyCards} why cards, ${Ln.whySec} s up, lamp lost under them ${Ln.lampLostUnderWhy}; ${Ln.missedItems} missed on the end card`);

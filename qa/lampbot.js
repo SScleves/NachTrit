@@ -19,10 +19,10 @@
   window.__sim = (key, collect, ms) => {
     const r = __runs[key] || (__runs[key] = { n: 0, minL: 100, traj: [] });
     const t0 = performance.now();
-    while (performance.now() - t0 < ms && NR.mode === 'ride') {
+    while (performance.now() - t0 < ms && NR.mode !== 'dead' && NR.mode !== 'start') {   // through a dead lamp and the restart at the bus stop (phase 5)
       __bot(collect); NRstep(12); r.n += 12; r.minL = Math.min(r.minL, NR.lamp);
       if (r.n % 360 === 0) r.traj.push(Math.round(NR.dist) + ':' + NR.delivered + ':' + Math.round(NR.lamp));
     }
-    return { mode: NR.mode, dist: Math.round(NR.dist), del: NR.delivered + '/' + NR.deliveriesTotal, lamp: Math.round(NR.lamp), minL: Math.round(r.minL), good: NR.good, bad: NR.bad, traj: r.traj.join(' ') };
+    return { restarted: !!(NR.cp && NR.cp.used), cpAt: NR.cp ? NR.cp.d : null, mode: NR.mode, dist: Math.round(NR.dist), del: NR.delivered + '/' + NR.deliveriesTotal, lamp: Math.round(NR.lamp), minL: Math.round(r.minL), good: NR.good, bad: NR.bad, traj: r.traj.join(' ') };
   };
 })();

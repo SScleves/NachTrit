@@ -263,7 +263,7 @@ function house(opts = {}) {
   if (shop) {
     const tex = labelTexture(opts.sign, { bg: '#1b1d21', fg: '#d4cdb9' });
     const sgn = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9), Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45 }));
-    sgn.position.set(ox + fx - 0.05, 3.5, oz); sgn.rotation.y = yaw; sgn.userData.ownTex = true; g.add(sgn);
+    sgn.position.set(ox + fx - 0.05, 3.5, oz); sgn.rotation.y = yaw; sgn.userData.ownTex = true; sgn.userData.shopWord = opts.sign; g.add(sgn);   // shopWord: src/words.js blanks it for a ride and gives it back
     kadd(k, PG[signIcon(opts.sign) === 'CAFÉ' ? 'shop1' : 'shop0'], PM.winAtlas, fx - 0.02, 1.4, -0.6, 0, yaw, 0, 3.6, 1.8);
     kadd(k, PG.winGlow, WIN_GLOW_MAT, fx - 0.08, 1.5, -0.6, 0, yaw, 0, 6.2, 4.2); kadd(k, PG.winStreak, WIN_GLOW_MAT, fx - 1.0, 0.09, -0.6, -Math.PI / 2, 0, 0, 2.6, 4.5);
     for (const bz of [-1.8, -0.6, 0.6]) kb(k, PM.pole, fx - 0.04, 1.4, bz, 0.04, 1.9, 0.07);

@@ -3,14 +3,16 @@
 // uses are in forks.js (the level queue), reading.js (budget, legibility) and tasks.js (the task label). A missed item that
 // comes back (src/review.js, put in the queue by src/flow.js) rides on review road: a quiet stretch, half fare.
 import { taskOf } from './tasks.js?v=43';
+import { halfway, ownDraws } from './payoff.js?v=43';
 import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=43';
 import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=43';
 import { camera, scene } from './render.js?v=43';
 import { mistTex } from './road.js?v=43';
-import { PG } from './props.js?v=43';
+import { LAMP_HALO_MAT, LAMP_POOL_MAT, PG, PM } from './props.js?v=43';
+import { Mat } from './materials.js?v=43';
 import { PROPS } from './houses.js?v=43';
 import { footprint, scenery } from './scenery.js?v=43';
-import { bigSign, G, signFit, signpost } from './signs.js?v=43';
+import { bigSign, G, labelTexture, signFit, signpost } from './signs.js?v=43';
 import { ghostFigure } from './cast.js?v=43';
 import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=43';
 import { BASE, L, LANE_X, S } from './state.js?v=43';
@@ -163,11 +165,56 @@ function plan() {
       const len = rnd(L.filler[0], L.filler[1]) + Math.max(0, (S.lastWords || 0) - 4) * 0.1 * BASE, e = S.queue.shift(), from = S.planCursor;
       planFiller(len, !!e.again); planSentence(e); S.plannedN++;
       if (e.again) S.reviewRoad.push([from, S.planCursor]);   // the road a return adds: the lamp does not drain on it (src/loop.js)
+      else if (++S.ownPlanned === halfway(S.deliveriesTotal) && !S.cp && S.deliveriesTotal >= 4) placeStop(S.planCursor + 4, false);   // halfway: the bus stop (phase 5)
       continue;
     }
     if (!S.finishPlanned) { S.finishPlanned = true; planFiller(30); const d = S.planCursor + 10; add(bigSign('THUIS'), d, null, 'finish', {}).mesh.position.x = 0; S.planCursor = d + 60; }
     else S.planCursor += 60;
   }
+}
+
+// ---------- the bus stop at halfway (PLAN.md phase 5 item 5) ----------
+// After half the level's own deliveries are planned, a lit bus stop stands on the right verge, 4 m on from the last sign, before
+// the filler that follows (so the road and its random draws are the same as without it). Passing it saves the ride there
+// (src/flow.js passStop); a dead lamp after it starts him again just before it with half a lamp, once a ride (restartFromStop).
+// Built from shared pieces, inside ownDraws: three.js draws Math.random for every uuid.
+let STOP = null;
+function stopParts() {
+  if (STOP) return STOP;
+  return (STOP = ownDraws(() => {
+    const box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+    PG.stopRoof = box(1.5, 0.1, 3.4); PG.stopPost = box(0.08, 2.5, 0.08); PG.stopGlass = new THREE.PlaneGeometry(3.2, 1.9); PG.stopAd = new THREE.PlaneGeometry(1.15, 1.75);
+    PG.stopSign = new THREE.PlaneGeometry(0.62, 0.62); PG.stopBench = box(0.4, 0.08, 1.8);
+    const tex = labelTexture('H', { bg: '#e6bd2a', fg: '#16233a', H: 512, grow: 300 });
+    const m = {
+      glass: new THREE.MeshBasicMaterial({ color: 0x7f98aa, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide }),
+      ad: new THREE.MeshBasicMaterial({ color: 0xf4ead2 }),   // the lit poster box: it reads as light, it casts none
+      sign: Mat({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.55, side: THREE.DoubleSide }),
+    };
+    for (const k in m) m[k].userData.shared = true;
+    return m;
+  }));
+}
+function busStop() {
+  const M = stopParts();
+  return ownDraws(() => {
+    const g = new THREE.Group(), put = (geo, mat, x, y, z, ry = 0) => { const o = new THREE.Mesh(geo, mat); o.position.set(x, y, z); o.rotation.y = ry; g.add(o); return o; };
+    put(PG.stopRoof, PM.pole, 0.35, 2.55, 0);
+    for (const z of [-1.6, 1.6]) for (const x of [-0.3, 1.0]) put(PG.stopPost, PM.pole, x, 1.25, z);
+    put(PG.stopGlass, M.glass, 1.02, 1.3, 0, -Math.PI / 2);
+    put(PG.stopAd, M.ad, 0.35, 1.35, 1.62, 0);   // the lit poster box at the near end, facing the bike as it comes
+    put(PG.stopBench, PM.pole, 0.75, 0.48, 0.2);
+    put(PG.pole, PM.pole, -0.6, 2.1, -2.4); put(PG.stopSign, M.sign, -0.6, 3.75, -2.4);   // the stop's pole beyond the shelter, its yellow H toward the bike
+    const halo = new THREE.Sprite(LAMP_HALO_MAT); halo.scale.set(3.2, 2.4, 1); halo.position.set(0.3, 2.3, 0); g.add(halo);
+    const pool = new THREE.Mesh(PG.pool, LAMP_POOL_MAT); pool.position.set(-0.6, 0.11, 0); pool.scale.set(0.7, 1, 0.9); pool.renderOrder = 2; g.add(pool);
+    return g;
+  });
+}
+// passed: true when the restart puts it back on the road he already passed it on (it does not save again)
+function placeStop(d, passed) {
+  const o = add(busStop(), d, null, 'halte', { bx: ROAD_W / 2 + 1.7, hit: !!passed });
+  if (!passed) S.cp = { d, at: S.ownPlanned, passed: false, used: false, snap: null, restartAt: -1, deliveredAt: -1 };
+  return o;
 }
 
 // a missed item went back in the queue after the finish was planned: take the finish sign away and plan on from where its
@@ -180,4 +227,4 @@ function unplanFinish() {
   return true;
 }
 
-export { add, plan, signFrac, unplanFinish };
+export { add, placeStop, plan, signFrac, unplanFinish };

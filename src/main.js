@@ -24,6 +24,7 @@ export * from './cast.js?v=43';
 export * from './zombies.js?v=43';
 export * from './state.js?v=43';
 export * from './plan.js?v=43';
+export * from './words.js?v=43';
 export * from './hud.js?v=43';
 export * from './audio.js?v=43';
 export * from './speech.js?v=43';

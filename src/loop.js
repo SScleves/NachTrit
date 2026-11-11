@@ -21,6 +21,7 @@ import { ghostFigure } from './cast.js?v=43';
 import { cart, fence, puddle, roadArrow, TEACH_HALO_MAT, wisp } from './zombies.js?v=43';
 import { BASE, L, LANE_X, MAXS, nightDepth, S, setFlag } from './state.js?v=43';
 import { plan, signFrac } from './plan.js?v=43';
+import { wordsTick } from './words.js?v=43';
 import { card, endWhy, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=43';
 import { bark, chime, thump, tick } from './audio.js?v=43';
 import { speak } from './speech.js?v=43';
@@ -28,7 +29,7 @@ import { goKnown, TOUCH } from './input.js?v=43';
 import { setIntroSeen, showIntro, startArt } from './intro.js?v=43';
 import { cineBegin, cineTick, setCineFrozen } from './cine.js?v=43';
 import { openMap, openTown, towns } from './map.js?v=43';
-import { die, lampHinted, levelDone, resolveFork, setLampHinted, showSummary, start } from './flow.js?v=43';
+import { die, lampHinted, levelDone, passStop, resolveFork, restartFromStop, setLampHinted, showSummary, start } from './flow.js?v=43';
 import { levelOf } from './book.js?v=43';
 import { payTikkie } from './wallet.js?v=43';
 import './debug.js?v=43';   // keeps the order the game's code runs in
@@ -56,7 +57,7 @@ function update(dt) {
     S.introT += dt; const k = smooth(clamp(S.introT / 3.6, 0, 1));
     camera.position.set(0, lerp(22, 2.85, k), lerp(14, 6.4, k));
     camera.lookAt(0, lerp(0, 1.25, k), lerp(-30, -8, k));
-    if (S.introT > 3.6) { S.mode = 'ride'; say(L ? L.mission.where : 'Ride through the right sign.', 'good', null, 2.2); }
+    if (S.introT > 3.6) { S.mode = 'ride'; if (S.introLine) { say(S.introLine[0], 'good', S.introLine[1], 4); S.introLine = null; } else say(L ? L.mission.where : 'Ride through the right sign.', 'good', null, 2.2); }   // introLine: after a restart at the bus stop
   }
   if (S.mode === 'dying') {
     if (S.dieT >= 10) return;
@@ -70,7 +71,7 @@ function update(dt) {
     lampLight.intensity = lerp(lampLight.intensity, 0, dt * 2);
     if (S.dieT > 1.0 && S.dieT - dt <= 1.0) thump(0.9);
     if (S.dieT > 2.2 && S.dieT - dt <= 2.2) thump(1.0);
-    if (S.dieT > 3.4) showSummary();
+    if (S.dieT > 3.4 && !restartFromStop()) showSummary();   // past the bus stop, once a ride: he starts again there (src/flow.js)
     return;
   }
   const riding = S.mode === 'ride', cine = S.mode === 'cine';   // cine: an intro shot, the world moves at the shot's pace and nothing is played
@@ -157,6 +158,7 @@ function update(dt) {
     w.position.x = w.userData.bx + bend(w.position.z);
     if (hills) w.position.y = w.scale.y * 0.12 + rise(w.position.z);
   }
+  wordsTick(dt);   // words in the air, lamps and signs that caught (src/words.js)
   // the far town turns a little with the bend of the road, and stays round the eye
   const farYaw = -Math.atan(bend(-120) / 120) * 0.7;
   for (const B of skyBands) { B.a.position.set(camera.position.x, 0, camera.position.z); B.b.position.copy(B.a.position); B.a.rotation.y = B.b.rotation.y = farYaw; }
@@ -198,6 +200,7 @@ function update(dt) {
       const fr = fareRow(o.st.fare, o.st.wrong, o.st.forks.length);
       if (!o.st.carded && !(S.whyT > 0)) { forkCard(o.st.fork0, fr); o.st.carded = true; } thump(0.5);   // under the why card: the gate shows it when it arms
     }
+    if (o.type === 'halte' && !o.hit && z > 0) { o.hit = true; passStop(); }   // the bus stop at halfway: the ride is saved here
     if (o.type === 'finish' && !o.hit && z > 0) { o.hit = true; levelDone(); return; }
   }
   // the clue light sits on the thing you are being asked about

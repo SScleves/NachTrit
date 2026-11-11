@@ -6,6 +6,7 @@
 // levels replace up to a quarter of its deliveries (addReview), each item's first try moves its box (noteLearn), and the
 // save is written when the end card shows.
 import { refuelRight, TUNE } from './lamp.js?v=43';
+import { canRestart, capStars, CHECKPOINT } from './payoff.js?v=43';
 import { itemToEntry, levelQueue } from './forks.js?v=43';
 import { duePositions, noteItem, noteRule, reviewCap, selectDue } from './learn.js?v=43';
 import { whyBudget } from './reading.js?v=43';
@@ -15,14 +16,17 @@ import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './re
 import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=43';
 import { camera, scene } from './render.js?v=43';
 import { setRoadLook } from './road.js?v=43';
+import { PG } from './props.js?v=43';
 import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=43';
 import { buildScenery, theme, THEMES } from './scenery.js?v=43';
 import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=43';
 import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=43';
-import { plan, unplanFinish } from './plan.js?v=43';
+import { placeStop, plan, unplanFinish } from './plan.js?v=43';
+import { wordBack, wordsStart } from './words.js?v=43';
 import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=43';
 import { chime, initAudio } from './audio.js?v=43';
 import { speak, speakSeq } from './speech.js?v=43';
+import { G } from './signs.js?v=43';
 import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=43';
 import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=43';
 import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=43';   // later modules, through the hub
@@ -39,6 +43,7 @@ function start(lv) {
   buildScenery(THEMES[qs.get('theme') || (L && L.theme) || 'polder'] || THEMES.polder);   // ?town= and ?theme= dress any level as another place, for looking at a town's art
   setRoadLook(LANE_X.length, theme);
   $('hud').classList.toggle('endless', !L);
+  wordsStart(false);   // the street's lamps go out, its shop signs go blank: right answers give them back (src/words.js)
   if (L) SAVE.ride++;   // the learner model counts rides, not days
   reset(); S.mode = 'intro'; S.introT = 0;
 }
@@ -60,7 +65,11 @@ function reset() {
     forkN: 0, plannedN: 0, missList: [], tally: {}, missN: new Map(), learn: { returns: 0, right: 0, wrong: 0, whyN: 0, log: [] },
     whyT: 0, reviewRoad: [], reviewM: 0, onReview: false,
     // the learner model: items from earlier rides on this one (key, text, box, level, result), keys noted this ride, the fare factor
-    due: [], noted: new Map(), fareK: (L && L.fareK) || 1 });
+    due: [], noted: new Map(), fareK: (L && L.fareK) || 1,
+    // words back (phase 5): one entry a right answer, what its word flew to (null: nothing in range)
+    wordsBack: [],
+    // the bus stop at halfway (phase 5): own entries planned, the checkpoint once placed (src/plan.js placeStop), the line after a restart
+    ownPlanned: 0, cp: null, introLine: null });
   $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
   follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); setRackGhost(null); }
   camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
@@ -106,12 +115,14 @@ function showSummary(won) {
     const ratio = S.delivered / S.deliveriesTotal;
     const three = L.deliveries >= 16 ? 0.95 : 1;   // long levels allow one miss for three stars
     stars = ratio >= three && S.lampMin >= 40 ? 3 : ratio >= 0.83 ? 2 : ratio >= 0.66 ? 1 : 0;
+    stars = capStars(stars, !!(S.cp && S.cp.used));   // a ride that started again at the bus stop earns two stars at most
     if (stars > (progress[L.id] || 0)) { progress[L.id] = stars; saveProgress(); }
   }
   $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : L.practice ? 'PRACTISED.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
   $('stars').textContent = L && won && !L.practice ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
   $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.missList.length} mistake${S.missList.length === 1 ? '' : 's'} to practise.`)
     : L.practice ? 'A practice ride gives no stars. What you got right on the first try moves up in the word book.'
+    : stars && S.cp && S.cp.used ? 'Delivered, after a restart at the bus stop. A ride that used the bus stop earns two stars at most.'
     : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (L.deliveries >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
   $('again').textContent = L && won && stars ? 'Next place' : 'Again';
   const wl = [...S.met.entries()];
@@ -177,6 +188,7 @@ function resolveFork(gate) {
     S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
     S.lamp = clamp(S.lamp + refuelRight(S.streak) + (gate.goEarly ? TUNE.fast : 0), 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
+    { const p = gate.posts.find(q => q.oi === fork.a); if (p) S.wordsBack.push(wordBack(fork.read ? fork.entry.nl : fork.o[fork.a], p.mesh, S.speed)); }   // the word flies to a dark lamp or a blank sign
     if (fork.read) { if (!back) { S.souls++; S.delivered++; } const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
     else {
       fork.st.chosen.push(fork.o[fork.a]);
@@ -252,4 +264,35 @@ function sendBack(fork) {
   if (S.finishPlanned) unplanFinish();   // the finish was already on the road: the return rides before it
 }
 
-export { die, lampHinted, levelDone, reset, resolveFork, setLampHinted, showSummary, start };
+// ---------- the bus stop at halfway (PLAN.md phase 5 item 5; the rules in src/payoff.js) ----------
+// He passed the bus stop: save the ride as it stands there. Every fork before the stop is answered by now (it stands after them);
+// the entries already planned beyond it go back to the front of the queue, in road order, so a restart rides them again.
+function passStop() {
+  const cp = S.cp; if (!cp || cp.passed) return;
+  const ahead = []; for (const o of S.objs) if (o.type === 'gate' && o.d > cp.d && !ahead.includes(o.gate.fork.entry)) ahead.push(o.gate.fork.entry);   // S.objs is in planned order
+  cp.passed = true; cp.deliveredAt = S.delivered;
+  cp.snap = { queue: ahead.concat(S.queue), plannedN: S.plannedN - ahead.length, ownPlanned: S.ownPlanned - ahead.filter(e => !e.again).length,
+    reviewRoad: S.reviewRoad.filter(r => r[0] < cp.d).map(r => r.slice()), reviewM: S.reviewM, missN: new Map(S.missN),
+    learn: { returns: S.learn.returns, right: S.learn.right, wrong: S.learn.wrong, logN: S.learn.log.length },
+    n: { good: S.good, bad: S.bad, delivered: S.delivered, souls: S.souls, cents: S.cents, paid: S.paid, tips: S.tips, tikkie: S.tikkie, missed: S.missed, tipN: S.tipN, cleanRow: S.cleanRow } };
+}
+// the lamp died: once a ride, after the bus stop, he starts again just before it with half a lamp. What happened after the stop is
+// taken back (deliveries, fares, returns queued); the misses he made stay on the end card and in the learner model, as they happened
+function restartFromStop() {
+  const cp = S.cp; if (!L || !canRestart(cp)) return false;
+  const sn = cp.snap; cp.used = true; cp.restartAt = S.dist;
+  for (const o of S.objs) if (o.mesh) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.material && m.material.map && !m.material.userData.shared) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); }
+  Object.assign(S, sn.n, { objs: [], queue: sn.queue.slice(), plannedN: sn.plannedN, ownPlanned: sn.ownPlanned, reviewRoad: sn.reviewRoad, reviewM: sn.reviewM, missN: sn.missN,
+    dist: cp.d - 30, planCursor: cp.d - 4, finishPlanned: false, lamp: CHECKPOINT.lamp, speed: BASE, slow: 1, slowTarget: 1, stumble: 0, held: false, streak: 0, wrongRow: 0,
+    activeFork: null, forkZoom: 0, whyT: 0, onReview: false, riding: null, teachPlan: 0, dieT: 0, mode: 'intro', introT: 0,
+    introLine: ['Terug bij de halte.', `Half a lamp. Ride on from here: this ride can earn ${CHECKPOINT.maxStars} stars at most.`] });
+  Object.assign(S.learn, { returns: sn.learn.returns, right: sn.learn.right, wrong: sn.learn.wrong }); S.learn.log.length = sn.learn.logN;
+  follower.visible = false; follower.userData.glow.intensity = 0; if (rackGhost) { bike.remove(rackGhost); setRackGhost(null); }
+  camera.position.set(0, 22, 14); camera.lookAt(0, 0, -30); camera.fov = 60; camera.updateProjectionMatrix();
+  hideCard(); toast.style.opacity = 0; $('vignette').style.opacity = 0; $('lanes').style.opacity = 0; setFace('deadpan', 0.1, false);
+  placeStop(cp.d, true);   // the stop stands where it stood, lit, already passed
+  plan();
+  return true;
+}
+
+export { die, lampHinted, levelDone, passStop, reset, resolveFork, restartFromStop, setLampHinted, showSummary, start };

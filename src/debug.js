@@ -11,6 +11,7 @@ import { modelsReady } from './models.js?v=43';
 import { bike, dogs, faceState, setFace } from './rider.js?v=43';
 import { signFit } from './signs.js?v=43';
 import { S, SAVE } from './state.js?v=43';
+import { wordsInfo } from './words.js?v=43';
 import { goNow } from './input.js?v=43';
 import { openMission } from './map.js?v=43';
 import { paidLine, payTikkie } from './wallet.js?v=43';
@@ -19,6 +20,7 @@ import { update } from './main.js?v=43';   // later modules, through the hub
 // the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
 window.NRTUNE = TUNE;
 window.NR = S; // debug handle
+window.NRwords = wordsInfo;   // qa: the street's lamps and shop signs, how many are lit, words in the air (src/words.js)
 window.NRsave = () => SAVE;   // qa: the live save (src/save.js), the learner model in it
 window.NRsetDPR = v => { setDPR(v); renderer.setPixelRatio(DPR); postSize(); };
 window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });

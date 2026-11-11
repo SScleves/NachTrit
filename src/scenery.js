@@ -105,7 +105,7 @@ function townKit() {
     get style() { return townStyle; }, get town() { return townId; },
   });
 }
-function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !m.geometry.userData.model && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); } scenery = []; }
+function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { (m.userData.ownMap || m.material.map).dispose(); m.material.dispose(); } if (m.geometry && !m.geometry.userData.model && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); } scenery = []; }
 function footprint(sp) { return sp.r != null ? sp.r : (sp.make === house || sp.make === 'shop') ? 4.5 : sp.make === church ? 10 : sp.make === windmill ? 4 : sp.make === tree || sp.make === deadTree ? 2.4 : sp.make === 'graffiti' ? 3.5 : sp.make === bridge ? 2 : sp.make === boat ? 2.5 : 0.6; }
 function overlaps(z, side, r, except) {
   for (const q of scenery) {
