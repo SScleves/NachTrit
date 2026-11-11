@@ -2947,7 +2947,7 @@ window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
 window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
 window.NRface = (n, secs) => setFace(n, secs || 3);
-window.NRbike = () => ({ bike, faceState });
+window.NRbike = () => ({ bike, faceState, dogs });   // dogs: the pair that runs beside him (qa/intro-sheet.mjs checks where they show)
 window.NRsnap = async () => { render(); const url = renderer.domElement.toDataURL('image/png'); const r = await fetch('http://localhost:8766/shot', { method: 'POST', body: url }); return r.text(); };
 window.NRstep = (n, each) => { for (let i = 0; i < (n || 60); i++) { update(1 / 60); if (each) each(); } render(); };   // each: qa bots sample every frame
 window.NRcam = () => camera;
