@@ -166,7 +166,7 @@ for (const line of IRREG.split('\n')) { const [lemma, forms] = line.split(':'); 
 // words that look alike but are not forms of one another (function words and pronouns)
 const CLOSED = new Set('ik je jij u hij zij ze het we wij jullie me mij hem haar ons hen hun zich mijn jouw jou uw zijn onze ons hun die dat deze dit de een er hier daar waar wat wie welk welke niet geen wel nog al ook maar dan als of en want omdat dus toen te om aan op in uit bij met van voor naar door over onder tegen na tot sinds zonder'.split(' '));
 const NUMBERS = new Set('nul een twee drie vier vijf zes zeven acht negen tien elf twaalf dertien veertien vijftien zestien zeventien achttien negentien twintig dertig veertig vijftig zestig zeventig tachtig negentig honderd duizend miljoen eerste tweede derde vierde vijfde zesde zevende achtste negende tiende'.split(' '));
-export const PARTICLES = ['terug', 'samen', 'langs', 'voorbij', 'tegen', 'door', 'over', 'onder', 'mee', 'aan', 'uit', 'op', 'af', 'in', 'weg', 'toe', 'na', 'bij', 'voor', 'om', 'vast', 'thuis', 'binnen', 'buiten'];
+export const PARTICLES = ['terug', 'samen', 'dicht', 'open', 'langs', 'voorbij', 'tegen', 'door', 'over', 'onder', 'mee', 'aan', 'uit', 'op', 'af', 'in', 'weg', 'toe', 'na', 'bij', 'voor', 'om', 'vast', 'thuis', 'binnen', 'buiten'];
 
 // a rough stem: what is left of a form once inflection is cut off. Not a lemma, but forms of one word usually meet.
 export function stem(w) {
