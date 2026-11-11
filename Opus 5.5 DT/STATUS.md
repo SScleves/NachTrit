@@ -1,4 +1,4 @@
-# Status: what is live, what is pending (11 November 2026)
+# Status: what is live, what is pending (12 November 2026)
 
 Play: https://sscleves.github.io/NachTrit/ (hard-refresh once after a release; the version number is
 in index.html as NR_VERSION). Santi is testing this week; the live site is frozen after the
@@ -40,6 +40,19 @@ The combined branch `dt/all` is merged into `main` and live.
   with about half a lamp; ignoring wisps dies from town 2 on, level 11 mostly survives), fork signs sit above
   the rider's head, ground mist costs 17 fewer draw calls. GPU run of 1, 12, 58, 75, 123 with 0 errors at
   59-60 fps; all 14 intro shots checked.
+
+## On branch `dt/save`, waiting for the GPU check and merge (NR_VERSION 43)
+
+Phase 4: save, learner model, word book, spaced review (`reports/dt-save.md`).
+- One versioned save, `nachtrit.save`: stars, scores, flags, the voice setting, a ride counter, the learner model (one short
+  array per item met) and the rules. The live site's old keys load without loss and are still written for one version.
+- From the third ride on, up to a quarter of a level's forks are items due from earlier levels, weakest first, with the AGAIN
+  tag, half fare and the quiet road. A miss on level 3 came back within two rides in the seeded test. First rides are
+  unchanged to the frame (levels 1 and 75, 72 fields, 0 differ from main).
+- The map's Word book: words with article, meaning, pictogram, town, speaker and strength, filtered by town and strength; the
+  rules with the weakest three on top; save to a file or a paste code and load it on another device.
+- Practice ride (the 20 weakest items, no stars, small fares) from the end card and the word book; a trophy ride per saved
+  town (30 deliveries from all its items, no hints, double fares).
 
 ## On branch `dt/learning-core`, waiting for the GPU check and merge (NR_VERSION 40)
 
