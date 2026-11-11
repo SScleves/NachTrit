@@ -122,7 +122,7 @@ It runs on every push to `main` and `dt/**`, and by hand.
   `report.json` as an artifact, and stops at 10 minutes.
 
 The first run (commit `273e1cf`, run 43064872116) passed. `checks` took 17 s. `ride` took 116 s, of which the browser
-install was 25 s and the ride 75 s. That run still drew each chunk; the ride now takes about a third of that locally.
+install was 25 s and the ride 75 s. That run still drew each chunk. The run on the final commit (`1926167`, run 43067089120) also passed: `checks` 20 s with `npm test` at 3 s, and `ride` 46 s with the ride itself at 19 s.
 The SwiftShader ride is well under the 10 minute limit, so it stays in CI.
 
 ## 5. What changed in `index.html`, and why the game is identical
