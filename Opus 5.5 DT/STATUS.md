@@ -21,24 +21,29 @@ reading-time change lands, until his feedback.
   lamp hint toast, the Endless night link.
 - Cache versioning on every script.
 
-## Built, not live yet (11 November 2026)
+## Landed on 11 November 2026 (NR_VERSION 36, tag v0.2-combined)
 
-Branch `dt/all` on GitHub holds the best version (NR_VERSION 35). It is not on the live site.
+The combined branch `dt/all` is merged into `main` and live.
 - New 3D models: the rider on the omafiets, two dogs, gabled houses, windmills, street props.
 - Reading time: every fork keeps a reading budget at every tier.
 - The go key: up arrow, W or swipe up ends the wait once the player has chosen.
-- Clear forks: a task label per fork, the gap marked on the card, level 75 split into one thing per fork.
+- Clear forks: a task label per fork (nine types, Spelling included), the gap marked on the card.
+- Content rewrite (`reports/dt-content-rewrite.md`): one thing per fork in every town (481 mixed forks to 0),
+  wrong options are real Dutch except in Spelling forks (650 non-words to 0), V2 practice in every level from 11,
+  short why lines. 104 new voice lines rendered. Audits run inside `npm run validate`.
 - three.js 0.187. The WebGPU renderer is opt-in with `?renderer=webgpu` and stays parked.
-- Fixed on 11 Nov: pale strips beside the rider's head, the 03:00 alarm clock in the intro, dogs in the
-  wrong intro scenes, the missing torso in the sofa scene. The wheels tumble the old way on purpose.
-- Phase 0 checks on 11 Nov (`reports/dt-phase0.md`): reading boards no longer make the bike creep for minutes, the fork
-  camera drops its speed pull-back so signs read where planned, the lamp retuned (level 75 with wisps finishes with about
-  half a lamp), fork signs sit above the rider's head, ground mist costs 17 fewer draw calls. Reading time 0 forks under
-  budget on 1, 75, 99, 123; GPU run of 1, 12, 58, 75, 123 with 0 errors at 60 fps; all 14 intro shots checked.
+- Fixed: pale strips beside the rider's head, the 03:00 alarm clock in the intro, dogs in the wrong intro
+  scenes, the missing torso in the sofa scene, listen cards asking for the wrong voice file. The wheels tumble
+  the old way on purpose.
+- Phase 0 checks (`reports/dt-phase0.md`): reading boards no longer make the bike creep for minutes, the fork
+  camera drops its speed pull-back so signs read where planned, the lamp retuned (level 75 with wisps finishes
+  with about half a lamp; ignoring wisps dies from town 2 on, level 11 mostly survives), fork signs sit above
+  the rider's head, ground mist costs 17 fewer draw calls. GPU run of 1, 12, 58, 75, 123 with 0 errors at
+  59-60 fps; all 14 intro shots checked.
 
 ## Pending
 
-The plan and its order are in `PLAN.md` in this folder. In short: land `dt/all`, tests, the code split,
+The plan and its order are in `PLAN.md` in this folder. In short: tests, the code split,
 the learning core (missed items return, one thing per fork everywhere, real Dutch wrong options, a why
 line that is seen), save with a word book and spaced review, the story payoff, writing mode, moves and
 hazards, then phone, native-speaker review and release.
