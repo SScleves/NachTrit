@@ -1,0 +1,2589 @@
+{
+ "generated": "2026-11-11T12:40:47.452Z",
+ "min": 3,
+ "introV2": 11,
+ "introDH": 1,
+ "perTown": {
+  "alblasserdam": {
+   "levels": 10,
+   "v2": 0,
+   "dehet": 81,
+   "v2Gap": 0,
+   "dehetGap": 3
+  },
+  "kinderdijk": {
+   "levels": 8,
+   "v2": 0,
+   "dehet": 80,
+   "v2Gap": 0,
+   "dehetGap": 0
+  },
+  "gouda": {
+   "levels": 7,
+   "v2": 44,
+   "dehet": 25,
+   "v2Gap": 0,
+   "dehetGap": 1
+  },
+  "zeeland": {
+   "levels": 8,
+   "v2": 16,
+   "dehet": 44,
+   "v2Gap": 6,
+   "dehetGap": 1
+  },
+  "utrecht": {
+   "levels": 8,
+   "v2": 27,
+   "dehet": 44,
+   "v2Gap": 3,
+   "dehetGap": 0
+  },
+  "denhaag": {
+   "levels": 8,
+   "v2": 19,
+   "dehet": 41,
+   "v2Gap": 4,
+   "dehetGap": 0
+  },
+  "rotterdam": {
+   "levels": 8,
+   "v2": 27,
+   "dehet": 45,
+   "v2Gap": 2,
+   "dehetGap": 0
+  },
+  "urk": {
+   "levels": 8,
+   "v2": 27,
+   "dehet": 34,
+   "v2Gap": 3,
+   "dehetGap": 1
+  },
+  "texel": {
+   "levels": 8,
+   "v2": 19,
+   "dehet": 62,
+   "v2Gap": 5,
+   "dehetGap": 0
+  },
+  "groningen": {
+   "levels": 8,
+   "v2": 26,
+   "dehet": 47,
+   "v2Gap": 2,
+   "dehetGap": 0
+  },
+  "maastricht": {
+   "levels": 8,
+   "v2": 19,
+   "dehet": 40,
+   "v2Gap": 5,
+   "dehetGap": 1
+  },
+  "nijmegen": {
+   "levels": 8,
+   "v2": 31,
+   "dehet": 39,
+   "v2Gap": 2,
+   "dehetGap": 0
+  },
+  "amsterdam": {
+   "levels": 8,
+   "v2": 42,
+   "dehet": 43,
+   "v2Gap": 0,
+   "dehetGap": 0
+  }
+ },
+ "levels": [
+  {
+   "id": 1,
+   "name": "De honden",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 0,
+   "dehetNew": 7,
+   "v2Examples": [],
+   "dehetExamples": [],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 2,
+   "name": "De buren",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 1,
+   "dehetNew": 5,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het kind"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 3,
+   "name": "De brievenbus",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 3,
+   "dehetNew": 3,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het bed",
+    "het raam",
+    "het ontbijt"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 4,
+   "name": "Ik ben",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 5,
+   "dehetNew": 3,
+   "v2Examples": [],
+   "dehetExamples": [
+    "Het kind",
+    "de buurman",
+    "De borrel",
+    "het kind",
+    "het meisje"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 5,
+   "name": "Nachtwinkel",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 0,
+   "dehetNew": 6,
+   "v2Examples": [],
+   "dehetExamples": [],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 41,
+   "name": "De of het",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 47,
+   "dehetNew": 39,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de hond",
+    "het huis",
+    "de vrouw",
+    "de tuin",
+    "de deur",
+    "de straat",
+    "de fiets",
+    "de lamp",
+    "de nacht",
+    "de mist",
+    "de melk",
+    "het brood",
+    "het ei",
+    "de kaas",
+    "de appel",
+    "het water",
+    "de koffie",
+    "de thee",
+    "het bier",
+    "de wijn",
+    "de kerk",
+    "de boom",
+    "de winkel",
+    "de honden",
+    "het biertje",
+    "het weekend",
+    "de buurman",
+    "de keuken",
+    "de sleutel",
+    "het eten",
+    "het ontbijt",
+    "het broodje",
+    "de borrel",
+    "de supermarkt",
+    "de aanbieding",
+    "de boodschappen",
+    "het tasje",
+    "het geld",
+    "de riem",
+    "de man",
+    "de buurvrouw",
+    "de buren",
+    "het kind",
+    "de kinderen",
+    "het meisje",
+    "de meisjes",
+    "het bezoek"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 42,
+   "name": "Eten en drinken",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 7,
+   "dehetNew": 6,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de koffie",
+    "het bier",
+    "het biertje",
+    "het weekend",
+    "de rekening",
+    "het geld",
+    "Het broodje"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 43,
+   "name": "Het station",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 5,
+   "dehetNew": 7,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het station",
+    "het kaartje",
+    "het station",
+    "Het kaartje",
+    "de trein"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 44,
+   "name": "Het werk",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 7,
+   "dehetNew": 4,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de vergadering",
+    "het dashboard",
+    "het kantoor",
+    "Het dashboard",
+    "De vergadering",
+    "het werk",
+    "het biertje"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 45,
+   "name": "De sport",
+   "town": "alblasserdam",
+   "v2": 0,
+   "dehet": 6,
+   "dehetNew": 7,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de bal",
+    "het balletje",
+    "het clubhuis",
+    "de hond",
+    "Het balletje",
+    "het weer"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 6,
+   "name": "De supermarkt",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 3,
+   "dehetNew": 4,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het brood",
+    "de aanbieding",
+    "de apotheek"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 7,
+   "name": "De slager",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het fruit",
+    "de rekening",
+    "het wisselgeld",
+    "het eten"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 8,
+   "name": "De of het",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 38,
+   "dehetNew": 13,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de hond",
+    "de deur",
+    "het brood",
+    "het ei",
+    "de kaas",
+    "de honden",
+    "het biertje",
+    "de naam",
+    "het adres",
+    "het tasje",
+    "het gangpad",
+    "de aanbieding",
+    "het vlees",
+    "de slager",
+    "het hondje",
+    "de huizen",
+    "het Nederlands",
+    "het gehakt",
+    "de woonkamer",
+    "het terras",
+    "de bank",
+    "de vaatwasser",
+    "het kopje",
+    "het bord",
+    "de vrouw",
+    "de ouders",
+    "het gezin",
+    "het meisje",
+    "de riem",
+    "het bot",
+    "de dierenarts",
+    "de douche",
+    "het water",
+    "de lamp",
+    "de molen",
+    "De badkamer",
+    "het ontbijt",
+    "De verwarming"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 9,
+   "name": "Afhalen",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 4,
+   "dehetNew": 2,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de menukaart",
+    "het biertje",
+    "de rekening",
+    "Het eten"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 10,
+   "name": "De kalender",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 7,
+   "dehetNew": 1,
+   "v2Examples": [],
+   "dehetExamples": [
+    "dit jaar",
+    "deze week",
+    "het station",
+    "het perron",
+    "het kaartje",
+    "het weekend",
+    "Het station"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 46,
+   "name": "Het werk",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 5,
+   "dehetNew": 1,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de vergadering",
+    "het dashboard",
+    "het probleem",
+    "het wachtwoord",
+    "het antwoord"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 47,
+   "name": "De sport",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 9,
+   "dehetNew": 4,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het balletje",
+    "het clubhuis",
+    "het clubhuis",
+    "het poepzakje",
+    "het park",
+    "het weer",
+    "het stuur",
+    "het fietspad",
+    "Het fietspad"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 48,
+   "name": "De mensen",
+   "town": "kinderdijk",
+   "v2": 0,
+   "dehet": 10,
+   "dehetNew": 3,
+   "v2Examples": [],
+   "dehetExamples": [
+    "de rekening",
+    "het biertje",
+    "de buurt",
+    "het kind",
+    "de verjaardag",
+    "het rondje",
+    "Het cadeautje",
+    "de naam",
+    "het land",
+    "Het feest"
+   ],
+   "v2Due": false,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 11,
+   "name": "Werkwoorden",
+   "town": "gouda",
+   "v2": 4,
+   "dehet": 6,
+   "dehetNew": 0,
+   "v2Examples": [
+    "'s Nachts krijg ik een melding.",
+    "Vanmiddag moet ik een storing oplossen.",
+    "Elke ochtend bekijk ik de dashboards."
+   ],
+   "dehetExamples": [
+    "het kantoor",
+    "het scherm",
+    "het wachtwoord",
+    "het probleem",
+    "het antwoord",
+    "het bureau"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 12,
+   "name": "De weg kwijt",
+   "town": "gouda",
+   "v2": 9,
+   "dehet": 3,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Waar woon jij?",
+    "Hoe kom ik bij de kerk?",
+    "Wat doe jij?"
+   ],
+   "dehetExamples": [
+    "het toilet",
+    "Deze trein",
+    "het perron"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 13,
+   "name": "Nieuwe mensen",
+   "town": "gouda",
+   "v2": 10,
+   "dehet": 3,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Hoe oud ben jij?",
+    "Morgen ga ik naar de kerk.",
+    "Vandaag werk ik thuis."
+   ],
+   "dehetExamples": [
+    "het feest",
+    "het gesprek",
+    "het land"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 14,
+   "name": "Niet of geen",
+   "town": "gouda",
+   "v2": 5,
+   "dehet": 0,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Maandag golf ik niet.",
+    "Op zondag is de winkel niet open.",
+    "Zaterdag moeten we boodschappen doen."
+   ],
+   "dehetExamples": [],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 15,
+   "name": "Mag ik?",
+   "town": "gouda",
+   "v2": 5,
+   "dehet": 4,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Vrijdag kan ik niet.",
+    "Zaterdag speel ik golf.",
+    "Elke ochtend wandel ik met de honden."
+   ],
+   "dehetExamples": [
+    "het clubhuis",
+    "het balletje",
+    "het weer",
+    "het park"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 49,
+   "name": "Thuis",
+   "town": "gouda",
+   "v2": 6,
+   "dehet": 4,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Om elf uur ga ik naar bed.",
+    "'s Avonds koken we in de keuken.",
+    "Elke ochtend moet ik de honden uitlaten."
+   ],
+   "dehetExamples": [
+    "de tafel",
+    "het toilet",
+    "het kussen",
+    "het ontbijt"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 50,
+   "name": "Eten en drinken",
+   "town": "gouda",
+   "v2": 5,
+   "dehet": 5,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Wat kost dat?",
+    "Elke donderdag is er kaasmarkt.",
+    "Vanavond eten we op de Markt."
+   ],
+   "dehetExamples": [
+    "de rekening",
+    "het restaurant",
+    "het glas",
+    "het toetje",
+    "het terras"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 51,
+   "name": "Thuis",
+   "town": "zeeland",
+   "v2": 2,
+   "dehet": 4,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Elke avond borstel ik ze.",
+    "Bij storm slapen de honden bij ons."
+   ],
+   "dehetExamples": [
+    "de verwarming",
+    "het kussen",
+    "het bord",
+    "het raam"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 52,
+   "name": "De winkels",
+   "town": "zeeland",
+   "v2": 0,
+   "dehet": 7,
+   "dehetNew": 4,
+   "v2Examples": [],
+   "dehetExamples": [
+    "deze trui",
+    "Deze winkel",
+    "de maat",
+    "het geld",
+    "het gehakt",
+    "het medicijn",
+    "het recept"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 53,
+   "name": "Eten en drinken",
+   "town": "zeeland",
+   "v2": 1,
+   "dehet": 5,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Vanavond zijn er verse oesters."
+   ],
+   "dehetExamples": [
+    "de mossel",
+    "de rekening",
+    "de bestelling",
+    "het glas",
+    "het broodje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 54,
+   "name": "Het station",
+   "town": "zeeland",
+   "v2": 2,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Ik zie de conducteur niet. Zie jij hem?",
+    "In Middelburg is de fiets het snelst."
+   ],
+   "dehetExamples": [
+    "het station",
+    "het spoor",
+    "het kaartje",
+    "het vertrek",
+    "het perron",
+    "het eiland"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 55,
+   "name": "Het werk",
+   "town": "zeeland",
+   "v2": 5,
+   "dehet": 9,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Na de standup bel ik hem.",
+    "Elke ochtend bellen de klanten ons.",
+    "Straks stuur ik haar de link."
+   ],
+   "dehetExamples": [
+    "de drukste",
+    "het scherm",
+    "het toetsenbord",
+    "het team",
+    "het mailtje",
+    "het koffieapparaat",
+    "het eiland",
+    "het wachtwoord",
+    "het probleem"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 56,
+   "name": "De sport",
+   "town": "zeeland",
+   "v2": 3,
+   "dehet": 2,
+   "dehetNew": 6,
+   "v2Examples": [
+    "Op de dijk is de wind het sterkst.",
+    "Vandaag is het kouder dan gisteren.",
+    "Na de wandeling geef ik ze water."
+   ],
+   "dehetExamples": [
+    "het eiland",
+    "het team"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 57,
+   "name": "De mensen",
+   "town": "zeeland",
+   "v2": 2,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Vrijdag zie ik je op de borrel.",
+    "Hier zijn de mosselen het lekkerst."
+   ],
+   "dehetExamples": [
+    "het meisje",
+    "het feest",
+    "het cadeautje",
+    "het gesprek",
+    "het eiland",
+    "het eiland"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 58,
+   "name": "De Deltawerken",
+   "town": "zeeland",
+   "v2": 1,
+   "dehet": 5,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Vannacht is er een storm op zee."
+   ],
+   "dehetExamples": [
+    "de zee",
+    "het eiland",
+    "het strand",
+    "het schip",
+    "het land"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 59,
+   "name": "Thuis",
+   "town": "utrecht",
+   "v2": 6,
+   "dehet": 7,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Elke zondag belt Paola haar moeder op.",
+    "Vanavond gaan we een film kijken.",
+    "Morgen ga ik de keuken opruimen."
+   ],
+   "dehetExamples": [
+    "het bed",
+    "het raam",
+    "het ontbijt",
+    "het gezin",
+    "het huisdier",
+    "het gordijn",
+    "het kussen"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 60,
+   "name": "De winkels",
+   "town": "utrecht",
+   "v2": 2,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Hoe laat gaat de apotheek dicht?",
+    "Morgen ga ik een nieuwe fiets kopen."
+   ],
+   "dehetExamples": [
+    "het bonnetje",
+    "het geld",
+    "het statiegeld",
+    "het broodje",
+    "de korting",
+    "het pasje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 61,
+   "name": "Eten en drinken",
+   "town": "utrecht",
+   "v2": 1,
+   "dehet": 5,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Zaterdag gaan we op de markt kaas kopen."
+   ],
+   "dehetExamples": [
+    "de rekening",
+    "het terras",
+    "de fooi",
+    "het mes",
+    "het bord"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 62,
+   "name": "Het station",
+   "town": "utrecht",
+   "v2": 2,
+   "dehet": 8,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Om half negen neem ik de trein.",
+    "Morgen ga ik de bus nemen."
+   ],
+   "dehetExamples": [
+    "het station",
+    "het perron",
+    "het kaartje",
+    "het fietspad",
+    "het vertrek",
+    "het kwartier",
+    "het uur",
+    "de minuut"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 63,
+   "name": "Het werk",
+   "town": "utrecht",
+   "v2": 6,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Om acht uur log ik in.",
+    "Paola is ook aan het bellen.",
+    "Vandaag ga ik de nieuwe monitoring uitrollen."
+   ],
+   "dehetExamples": [
+    "het scherm",
+    "het toetsenbord",
+    "het kantoor",
+    "het overleg"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 64,
+   "name": "De sport",
+   "town": "utrecht",
+   "v2": 3,
+   "dehet": 6,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Elke ochtend laat ik de honden uit.",
+    "Om half negen komen we bij de golfbaan aan.",
+    "Morgen gaan we naar de Domtoren fietsen."
+   ],
+   "dehetExamples": [
+    "het clubhuis",
+    "het balletje",
+    "het fietspad",
+    "het park",
+    "het weer",
+    "het zwembad"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 65,
+   "name": "De mensen",
+   "town": "utrecht",
+   "v2": 4,
+   "dehet": 3,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Na de borrel bel ik je terug.",
+    "Wanneer spreken we weer af?",
+    "Vrijdag gaan we wat drinken op de werf."
+   ],
+   "dehetExamples": [
+    "het gesprek",
+    "het rondje",
+    "het terras"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 66,
+   "name": "De Dom",
+   "town": "utrecht",
+   "v2": 3,
+   "dehet": 5,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Morgen gaan we de Domtoren beklimmen.",
+    "Vanavond ga ik mijn fiets ophalen.",
+    "Om kwart over tien slaat de Dom."
+   ],
+   "dehetExamples": [
+    "het terras",
+    "het fietspad",
+    "het zadel",
+    "het centrum",
+    "het kwartier"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 67,
+   "name": "Thuis",
+   "town": "denhaag",
+   "v2": 4,
+   "dehet": 4,
+   "dehetNew": 4,
+   "v2Examples": [
+    "In mei zijn we naar Den Haag verhuisd.",
+    "Zondag zijn we naar Scheveningen gefietst.",
+    "Op tv heeft de minister drie uur gepraat."
+   ],
+   "dehetExamples": [
+    "het licht",
+    "de ouders",
+    "het hondenvoer",
+    "het schilderij"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 68,
+   "name": "De winkels",
+   "town": "denhaag",
+   "v2": 2,
+   "dehet": 6,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Vanmorgen zijn we naar de Haagse Markt gegaan.",
+    "In Scheveningen hebben we haring gegeten."
+   ],
+   "dehetExamples": [
+    "het bakje",
+    "het mandje",
+    "het boodschappenlijstje",
+    "het plakje",
+    "het bonnetje",
+    "de aanbieding"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 69,
+   "name": "Eten en drinken",
+   "town": "denhaag",
+   "v2": 2,
+   "dehet": 5,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Vanmorgen ben ik naar de markt geweest.",
+    "Natuurlijk hebben we de rekening gedeeld."
+   ],
+   "dehetExamples": [
+    "de haring",
+    "de marktkraam",
+    "het bakje",
+    "het bonnetje",
+    "de kraam"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 70,
+   "name": "Het station",
+   "town": "denhaag",
+   "v2": 0,
+   "dehet": 6,
+   "dehetNew": 2,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het station",
+    "het perron",
+    "het kaartje",
+    "het poortje",
+    "het loket",
+    "het kruispunt"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 71,
+   "name": "Het werk",
+   "town": "denhaag",
+   "v2": 3,
+   "dehet": 3,
+   "dehetNew": 7,
+   "v2Examples": [
+    "Gisteren heb ik aan de dashboards gewerkt.",
+    "Zondag ben ik met de honden in Scheveningen geweest.",
+    "Na de standup heb ik hem teruggebeld."
+   ],
+   "dehetExamples": [
+    "het bureau",
+    "het netwerk",
+    "het salaris"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 72,
+   "name": "De sport",
+   "town": "denhaag",
+   "v2": 0,
+   "dehet": 7,
+   "dehetNew": 1,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het strand",
+    "het reuzenrad",
+    "het zand",
+    "het park",
+    "het poepzakje",
+    "het zwembad",
+    "het balletje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 73,
+   "name": "De mensen",
+   "town": "denhaag",
+   "v2": 4,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Gisteren heb ik de nieuwe buurvrouw ontmoet.",
+    "Hoe heb je het debat gevonden?",
+    "Na het werk zijn we naar de borrel gegaan."
+   ],
+   "dehetExamples": [
+    "het feest",
+    "het gesprek",
+    "het humeur",
+    "het bezoek"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 74,
+   "name": "Het Binnenhof",
+   "town": "denhaag",
+   "v2": 4,
+   "dehet": 6,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Zondag hebben we op de pier gewandeld.",
+    "Gisteren zijn we naar Scheveningen gegaan.",
+    "Op het strand hebben we kibbeling gegeten."
+   ],
+   "dehetExamples": [
+    "het debat",
+    "de politici",
+    "het antwoord",
+    "het strand",
+    "het reuzenrad",
+    "het ministerie"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 75,
+   "name": "Thuis",
+   "town": "rotterdam",
+   "v2": 3,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Gisteren werkte ik de hele dag thuis.",
+    "We hadden geen tijd, daarom bestelden we pizza.",
+    "Vandaag vervelen de honden zich weer."
+   ],
+   "dehetExamples": [
+    "het raam",
+    "het kussen",
+    "het gordijn",
+    "het ontbijt",
+    "het balkon",
+    "het gezin"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 76,
+   "name": "De winkels",
+   "town": "rotterdam",
+   "v2": 4,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Gisteren kocht ik twee broden bij de bakker.",
+    "De apotheek was dicht, want het was zondag.",
+    "In de apotheek moest ik lang wachten op mijn medicijnen."
+   ],
+   "dehetExamples": [
+    "het broodje",
+    "het mandje",
+    "het wisselgeld",
+    "het fruit",
+    "het tasje",
+    "het recept"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 77,
+   "name": "Eten en drinken",
+   "town": "rotterdam",
+   "v2": 2,
+   "dehet": 9,
+   "dehetNew": 0,
+   "v2Examples": [
+    "Gisteravond aten we een kapsalon in de Markthal.",
+    "Na het eten zijn we met de watertaxi naar huis gegaan."
+   ],
+   "dehetExamples": [
+    "de lekkerste",
+    "het café",
+    "het broodje",
+    "het zout",
+    "het bord",
+    "het patatje",
+    "het fruit",
+    "het ontbijt",
+    "het kopje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 78,
+   "name": "Het station",
+   "town": "rotterdam",
+   "v2": 3,
+   "dehet": 5,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Vroeger woonden we dichter bij het station.",
+    "Om acht uur kwam de trein eindelijk aan.",
+    "De standup begon om negen, maar ik zat nog in de metro."
+   ],
+   "dehetExamples": [
+    "het perron",
+    "het vertrek",
+    "het abonnement",
+    "het stoplicht",
+    "het kwartier"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 79,
+   "name": "Het werk",
+   "town": "rotterdam",
+   "v2": 5,
+   "dehet": 7,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Gisteravond ging ik laat naar huis. De honden wachtten al.",
+    "Tijdens de standup sprak ik Nederlands en niemand lachte.",
+    "Na de standup liep ik over de Erasmusbrug naar de Markthal."
+   ],
+   "dehetExamples": [
+    "de Markthal",
+    "het kantoor",
+    "het scherm",
+    "het wachtwoord",
+    "het dashboard",
+    "het team",
+    "de afspraak"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 80,
+   "name": "De sport",
+   "town": "rotterdam",
+   "v2": 6,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Vroeger golfte ik elke zaterdag.",
+    "Na het hardlopen voelde ik me geweldig.",
+    "Zondag liepen we langs de Maas naar de Erasmusbrug."
+   ],
+   "dehetExamples": [
+    "het gewicht",
+    "het fietspad",
+    "het rondje",
+    "het golfen"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 81,
+   "name": "De mensen",
+   "town": "rotterdam",
+   "v2": 1,
+   "dehet": 5,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Eigenlijk heb jij gelijk."
+   ],
+   "dehetExamples": [
+    "het Witte",
+    "het humeur",
+    "het rondje",
+    "de bitterballen",
+    "het gezelschap"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 82,
+   "name": "De haven",
+   "town": "rotterdam",
+   "v2": 3,
+   "dehet": 3,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Vroeger woonden we vlak bij de Maas.",
+    "Gisteren zag ik een enorme hijskraan.",
+    "Gisteren zijn we met de watertaxi naar de Markthal gevaren."
+   ],
+   "dehetExamples": [
+    "het centrum",
+    "het schip",
+    "de bom"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 83,
+   "name": "Thuis",
+   "town": "urk",
+   "v2": 7,
+   "dehet": 3,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Als het zondag is, gaat iedereen naar de kerk.",
+    "Toen ik gisteren thuis was, sliep Paola al.",
+    "Terwijl Paola kookt, ruim ik de keuken op."
+   ],
+   "dehetExamples": [
+    "het ontbijt",
+    "het fornuis",
+    "het visje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 84,
+   "name": "De winkels",
+   "town": "urk",
+   "v2": 5,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [
+    "De bakker is niet open, want hij is in de kerk.",
+    "Als het in de aanbieding is, neem ik twee.",
+    "Terwijl Paola betaalt, wacht ik buiten met de honden."
+   ],
+   "dehetExamples": [
+    "het merk",
+    "het recept",
+    "het pond",
+    "het wisselgeld"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 85,
+   "name": "Eten en drinken",
+   "town": "urk",
+   "v2": 4,
+   "dehet": 5,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Op de kade eet ik een bakje kibbeling omdat ik honger heb.",
+    "Paola eet geen vis, want ze lust het niet.",
+    "Ik wil bestellen, maar de ober komt niet."
+   ],
+   "dehetExamples": [
+    "het bier",
+    "het hoofdgerecht",
+    "het servet",
+    "het wisselgeld",
+    "de ober"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 86,
+   "name": "Het station",
+   "town": "urk",
+   "v2": 0,
+   "dehet": 5,
+   "dehetNew": 2,
+   "v2Examples": [],
+   "dehetExamples": [
+    "het station",
+    "het perron",
+    "het kaartje",
+    "het loket",
+    "het fietspad"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 87,
+   "name": "Het werk",
+   "town": "urk",
+   "v2": 2,
+   "dehet": 5,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Gisteren was er een storing bij de visafslag.",
+    "Vanmorgen heb ik de alerts opnieuw ingesteld."
+   ],
+   "dehetExamples": [
+    "het incident",
+    "het netwerk",
+    "het probleem",
+    "het project",
+    "de reorganisatie"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 88,
+   "name": "De sport",
+   "town": "urk",
+   "v2": 4,
+   "dehet": 1,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Vroeger zeilde ik elke zomer op het IJsselmeer.",
+    "Zaterdag zijn we naar de vuurtoren gewandeld.",
+    "Na de wedstrijd voelden we ons moe maar tevreden."
+   ],
+   "dehetExamples": [
+    "het clubhuis"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 89,
+   "name": "De mensen",
+   "town": "urk",
+   "v2": 2,
+   "dehet": 5,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Ik ga naar huis, want de honden wachten op me.",
+    "Het is zondag, dus de winkels zijn dicht."
+   ],
+   "dehetExamples": [
+    "de buren",
+    "het gesprek",
+    "het cadeau",
+    "het gezin",
+    "het probleem"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 90,
+   "name": "De haven van Urk",
+   "town": "urk",
+   "v2": 3,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "De kerk is vol, want het is zondag.",
+    "Ik wil kibbeling, maar de kraam is dicht.",
+    "Gisteren hebben we bij de haven kibbeling gegeten."
+   ],
+   "dehetExamples": [
+    "het net",
+    "het IJsselmeer",
+    "het Vissersmonument",
+    "het eiland",
+    "het weer",
+    "het zout"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 91,
+   "name": "Thuis",
+   "town": "texel",
+   "v2": 4,
+   "dehet": 5,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Als ik tijd had, zou ik met de honden naar de vuurtoren lopen.",
+    "Als je de laatste boot mist, dan woon je hier voortaan.",
+    "Voordat we naar bed gaan, geef ik de honden nog een koekje."
+   ],
+   "dehetExamples": [
+    "die altijd",
+    "dat nog",
+    "het schaap",
+    "het dak",
+    "het strand"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 92,
+   "name": "De winkels",
+   "town": "texel",
+   "v2": 0,
+   "dehet": 6,
+   "dehetNew": 3,
+   "v2Examples": [],
+   "dehetExamples": [
+    "die gisteren",
+    "dat voor",
+    "het tasje",
+    "het pak",
+    "de openingstijden",
+    "het bonnetje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 93,
+   "name": "Eten en drinken",
+   "town": "texel",
+   "v2": 2,
+   "dehet": 8,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Ik probeer in het Nederlands te bestellen, maar de ober antwoordt in het Engels.",
+    "Op de boot hebben we koffie gedronken en een broodje gegeten."
+   ],
+   "dehetExamples": [
+    "die soep",
+    "dat Texel",
+    "die Paola",
+    "dat hier",
+    "het lamsvlees",
+    "het toetje",
+    "het terras",
+    "het zout"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 94,
+   "name": "Het station",
+   "town": "texel",
+   "v2": 4,
+   "dehet": 9,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Als de boot door de mist niet vaart, dan blijven we hier.",
+    "Als ik meer tijd had, zou ik de fiets nemen.",
+    "Hoeveel kaartjes heb je? Ik heb er twee."
+   ],
+   "dehetExamples": [
+    "die vandaag",
+    "dat gekocht",
+    "die vanavond",
+    "het dek",
+    "het retourtje",
+    "het zadel",
+    "het kruispunt",
+    "het perron",
+    "de bushalte"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 95,
+   "name": "Het werk",
+   "town": "texel",
+   "v2": 2,
+   "dehet": 9,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Als de wifi beter was, dan zou ik thuis werken.",
+    "Gisteren moest ik de eerste boot nemen voor de vergadering."
+   ],
+   "dehetExamples": [
+    "dat mijn",
+    "die Dynatrace",
+    "het kantoor",
+    "het scherm",
+    "het overleg",
+    "het schaap",
+    "het lam",
+    "het rooster",
+    "de wol"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 96,
+   "name": "De sport",
+   "town": "texel",
+   "v2": 4,
+   "dehet": 9,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Als ik meer tijd had, zou ik vaker naar de sportschool gaan.",
+    "Op Texel zijn er meer schapen dan mensen.",
+    "Gisteren heb ik de honden langs het strand uitgelaten."
+   ],
+   "dehetExamples": [
+    "dat golfbaan",
+    "die daar",
+    "het clubhuis",
+    "het team",
+    "het zwembad",
+    "het abonnement",
+    "het strand",
+    "het ommetje",
+    "het zand"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 97,
+   "name": "De mensen",
+   "town": "texel",
+   "v2": 1,
+   "dehet": 9,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Op Texel zijn er meer schapen dan mensen."
+   ],
+   "dehetExamples": [
+    "dat jaren",
+    "die gisteren",
+    "die laat",
+    "het geheim",
+    "het humeur",
+    "het plezier",
+    "het eiland",
+    "het schaap",
+    "de vriendschap"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 98,
+   "name": "Het eiland",
+   "town": "texel",
+   "v2": 2,
+   "dehet": 7,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Op Texel zijn er meer schapen dan mensen.",
+    "Gisteren zijn we met de veerboot naar Texel gevaren."
+   ],
+   "dehetExamples": [
+    "het schaap",
+    "het lam",
+    "het strand",
+    "het eiland",
+    "het zand",
+    "het kaartje",
+    "het lammetje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 100,
+   "name": "De winkels",
+   "town": "groningen",
+   "v2": 3,
+   "dehet": 7,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Volgens mij is de bakker op maandag dicht.",
+    "Hoewel de trui duur is, koop ik hem toch.",
+    "Hoewel de bakker pas om zeven uur opengaat, staat er al een rij."
+   ],
+   "dehetExamples": [
+    "Het tasje",
+    "het schap",
+    "het medicijn",
+    "het statiegeld",
+    "het boodschappenlijstje",
+    "het wisselgeld",
+    "het koekje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 101,
+   "name": "Eten en drinken",
+   "town": "groningen",
+   "v2": 3,
+   "dehet": 6,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Volgens mij hebben ze de metworst zelf gemaakt.",
+    "Ondanks de regen zitten we buiten op het terras.",
+    "Gisteravond zijn we uit eten gegaan en hebben we de rekening gesplitst."
+   ],
+   "dehetExamples": [
+    "het tafeltje",
+    "het hoofdgerecht",
+    "het nagerecht",
+    "het bonnetje",
+    "het broodje",
+    "het café"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 102,
+   "name": "Het station",
+   "town": "groningen",
+   "v2": 3,
+   "dehet": 8,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Volgens mij is de fiets in de stad sneller dan de bus.",
+    "Hoewel de trein te laat is, heb ik geen haast.",
+    "Omdat ik morgen vroeg opsta, ga ik vanavond vroeg naar bed."
+   ],
+   "dehetExamples": [
+    "het kaartje",
+    "dat gisteren",
+    "het spoor",
+    "het abonnement",
+    "het fietsslot",
+    "het kwartier",
+    "het bankje",
+    "de treinreis"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 103,
+   "name": "Het werk",
+   "town": "groningen",
+   "v2": 2,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Ondanks de storing ging de release toch live.",
+    "Vanochtend heb ik de melding opgepakt."
+   ],
+   "dehetExamples": [
+    "Het foutje",
+    "het scherm",
+    "het bureau",
+    "het toetsenbord",
+    "het koffieapparaat",
+    "het systeem"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 104,
+   "name": "De sport",
+   "town": "groningen",
+   "v2": 1,
+   "dehet": 4,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Volgens mij wint Groningen vanavond de derby."
+   ],
+   "dehetExamples": [
+    "het meer",
+    "het fietspad",
+    "het doelpunt",
+    "het stadion"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 105,
+   "name": "De mensen",
+   "town": "groningen",
+   "v2": 3,
+   "dehet": 5,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Hoewel de brug dicht is, fietsen de studenten gewoon door.",
+    "Hoewel de buurman vroeg opstaat, is hij altijd chagrijnig.",
+    "Ondanks de ruzie zijn ze nog vrienden."
+   ],
+   "dehetExamples": [
+    "het hondje",
+    "het gesprek",
+    "het humeur",
+    "het feestje",
+    "het misverstand"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 106,
+   "name": "De Martinitoren",
+   "town": "groningen",
+   "v2": 5,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Volgens mij is de Grote Markt op zaterdag te druk.",
+    "Volgens mij is de Martinitoren het hoogste gebouw van de stad.",
+    "Ondanks de regen fietsen de studenten gewoon door."
+   ],
+   "dehetExamples": [
+    "Het kopje",
+    "het weiland",
+    "het café",
+    "het meisje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 99,
+   "name": "Thuis",
+   "town": "groningen",
+   "v2": 6,
+   "dehet": 7,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Volgens mij past de grote bank niet door de deur.",
+    "Hoewel het regent, laat ik de honden uit.",
+    "Hoewel het huis oud is, is de keuken helemaal nieuw."
+   ],
+   "dehetExamples": [
+    "Dat hondje",
+    "het bureau",
+    "het fornuis",
+    "het ontbijt",
+    "het stopcontact",
+    "het kopje",
+    "het studentenhuis"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 107,
+   "name": "Thuis",
+   "town": "maastricht",
+   "v2": 2,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Na het werk kleed ik me eerst even om.",
+    "Afgelopen zondag zijn we met de honden naar de Helpoort gelopen."
+   ],
+   "dehetExamples": [
+    "het raam",
+    "het gordijn",
+    "het kussen",
+    "het ontbijt",
+    "het kamertje",
+    "de verdieping"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 108,
+   "name": "De winkels",
+   "town": "maastricht",
+   "v2": 1,
+   "dehet": 6,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Toen ik bij de bakker kwam, had hij alle vlaai al verkocht."
+   ],
+   "dehetExamples": [
+    "die gisteren",
+    "het merk",
+    "het recept",
+    "het gangpad",
+    "het wisselgeld",
+    "de bestelling"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 109,
+   "name": "Eten en drinken",
+   "town": "maastricht",
+   "v2": 2,
+   "dehet": 7,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Gisteren werd de vlaai vers gebakken.",
+    "Zaterdag hebben we op het Vrijthof gegeten en de rekening gesplitst."
+   ],
+   "dehetExamples": [
+    "dat Paola",
+    "het terras",
+    "het avondeten",
+    "het servet",
+    "het nagerecht",
+    "het bestek",
+    "het menu"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 110,
+   "name": "Het station",
+   "town": "maastricht",
+   "v2": 1,
+   "dehet": 6,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Met carnaval wordt het hele station versierd."
+   ],
+   "dehetExamples": [
+    "die vanavond",
+    "het perron",
+    "het retourtje",
+    "het kruispunt",
+    "het treinkaartje",
+    "het stationsplein"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 111,
+   "name": "Het werk",
+   "town": "maastricht",
+   "v2": 1,
+   "dehet": 4,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Terwijl ik presenteerde, viel het geluid uit."
+   ],
+   "dehetExamples": [
+    "het ticket",
+    "het verdrag",
+    "het koffieapparaat",
+    "het dashboard"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 112,
+   "name": "De sport",
+   "town": "maastricht",
+   "v2": 3,
+   "dehet": 4,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Vanwege de regen wordt de wedstrijd uitgesteld.",
+    "Hoe laat wordt de wedstrijd morgen gespeeld?",
+    "Voor de mist had ik nooit in de Maas gezwommen."
+   ],
+   "dehetExamples": [
+    "het terras",
+    "het hardlopen",
+    "het weerbericht",
+    "het weer"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 113,
+   "name": "De mensen",
+   "town": "maastricht",
+   "v2": 6,
+   "dehet": 5,
+   "dehetNew": 1,
+   "v2Examples": [
+    "Met carnaval wordt er drie dagen gefeest.",
+    "Voor de borrel moet de vaatwasser nog uitgeruimd worden.",
+    "Toen we bij de Helpoort aankwamen, was iedereen al vertrokken."
+   ],
+   "dehetExamples": [
+    "het gezelschap",
+    "het gezin",
+    "het verdrag",
+    "de vriendschap",
+    "het geheim"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 114,
+   "name": "Het Vrijthof",
+   "town": "maastricht",
+   "v2": 3,
+   "dehet": 2,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Voor de mist had hij altijd in Rotterdam gewerkt.",
+    "Nadat we in België gegeten hadden, fietsten we terug.",
+    "Gisteren hebben we de honden langs de Maas uitgelaten."
+   ],
+   "dehetExamples": [
+    "het plein",
+    "het verdrag"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": true
+  },
+  {
+   "id": 115,
+   "name": "Thuis",
+   "town": "nijmegen",
+   "v2": 5,
+   "dehet": 6,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Doe maar gewoon, dan doe je al gek genoeg.",
+    "In het studentenhuis hiernaast wonen zes studenten.",
+    "Het regent pijpenstelen, dus de honden willen niet naar buiten."
+   ],
+   "dehetExamples": [
+    "De voordeur",
+    "De hondenmand",
+    "het studentenhuis",
+    "dat huren",
+    "het studentenhuis",
+    "het plafond"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 116,
+   "name": "De winkels",
+   "town": "nijmegen",
+   "v2": 1,
+   "dehet": 6,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Toen ik bij de bakker kwam, hadden de wandelaars alle broodjes al opgekocht."
+   ],
+   "dehetExamples": [
+    "het bonnetje",
+    "die bestelde",
+    "die hier",
+    "het kleingeld",
+    "het pashokje",
+    "het prijskaartje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 117,
+   "name": "Eten en drinken",
+   "town": "nijmegen",
+   "v2": 5,
+   "dehet": 3,
+   "dehetNew": 5,
+   "v2Examples": [
+    "Van wijn heb ik geen kaas gegeten.",
+    "Na vijftig kilometer willen de wandelaars nog steeds naar het feest.",
+    "In de week van de Vierdaagse is er elke avond feest in de stad."
+   ],
+   "dehetExamples": [
+    "het terras",
+    "het pilsje",
+    "het koffiekopje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 118,
+   "name": "Het station",
+   "town": "nijmegen",
+   "v2": 2,
+   "dehet": 5,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Het is nou eenmaal zo: bij mist zijn de treinen te laat.",
+    "Op vrijdag krijgen de wandelaars gladiolen langs de Via Gladiola."
+   ],
+   "dehetExamples": [
+    "het perron",
+    "het vertrekbord",
+    "het busstation",
+    "het enkeltje",
+    "het fietspad"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": true,
+   "dehetGap": false
+  },
+  {
+   "id": 119,
+   "name": "Het werk",
+   "town": "nijmegen",
+   "v2": 6,
+   "dehet": 6,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Sinds de fix loopt alles op rolletjes.",
+    "Geachte heer Jansen, naar aanleiding van ons gesprek stuur ik u de offerte.",
+    "Mocht u nog vragen hebben, dan hoor ik het graag."
+   ],
+   "dehetExamples": [
+    "De koffieautomaat",
+    "het koffieapparaat",
+    "dat vorige",
+    "het wachtwoord",
+    "het teamoverleg",
+    "het ticket"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 120,
+   "name": "De sport",
+   "town": "nijmegen",
+   "v2": 4,
+   "dehet": 4,
+   "dehetNew": 5,
+   "v2Examples": [
+    "Na veertig kilometer loop ik op mijn tandvlees.",
+    "We moeten een tandje bijzetten, anders halen we de finish niet.",
+    "Op de derde dag lopen de wandelaars over de zeven heuvels naar Groesbeek."
+   ],
+   "dehetExamples": [
+    "Het doelpunt",
+    "het doelpunt",
+    "het parcours",
+    "het zwembad"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 121,
+   "name": "De mensen",
+   "town": "nijmegen",
+   "v2": 3,
+   "dehet": 5,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Op de woensdag van de Vierdaagse kleurt de hele stad roze.",
+    "Met carnaval heet Nijmegen Knotsenburg.",
+    "Voordat we hier kwamen wonen, hadden we nog nooit van de Vierdaagse gehoord."
+   ],
+   "dehetExamples": [
+    "die boven",
+    "het feest",
+    "het gezelschap",
+    "het praatje",
+    "de gewoonte"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 122,
+   "name": "De Vierdaagse",
+   "town": "nijmegen",
+   "v2": 5,
+   "dehet": 4,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Op dinsdag lopen de wandelaars over de Waalbrug naar Elst.",
+    "In 2020 en 2021 ging de Vierdaagse niet door.",
+    "Na vier dagen hadden we honderdzestig kilometer gelopen."
+   ],
+   "dehetExamples": [
+    "de Waalbrug",
+    "het publiek",
+    "het Valkhof",
+    "het feest"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 123,
+   "name": "Thuis",
+   "town": "amsterdam",
+   "v2": 3,
+   "dehet": 4,
+   "dehetNew": 4,
+   "v2Examples": [
+    "Omdat de trap te smal is, wordt de bank met de hijsbalk naar boven gehesen.",
+    "Kun je het touw even vasthouden? Dan trek ik de bank door het raam naar binnen.",
+    "Als we een lift hadden, zouden we de hijsbalk niet nodig hebben."
+   ],
+   "dehetExamples": [
+    "het hek",
+    "het hek",
+    "het dakraam",
+    "het balkon"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 124,
+   "name": "De winkels",
+   "town": "amsterdam",
+   "v2": 4,
+   "dehet": 4,
+   "dehetNew": 2,
+   "v2Examples": [
+    "Met twintig procent korting kost de jas tachtig euro in plaats van honderd.",
+    "Als je twee kilo neemt, krijg je er een zak uien gratis bij.",
+    "Op de Albert Cuyp worden de stroopwafels vers voor je ogen gebakken."
+   ],
+   "dehetExamples": [
+    "deze kaasboer",
+    "die sinds",
+    "het kleingeld",
+    "het kraampje"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 125,
+   "name": "Eten en drinken",
+   "town": "amsterdam",
+   "v2": 5,
+   "dehet": 6,
+   "dehetNew": 6,
+   "v2Examples": [
+    "In een proeflokaal neem je het eerste slokje zonder handen, voorovergebogen over de bar.",
+    "Hebt u gereserveerd? Dan breng ik u naar uw tafel.",
+    "Toen de rijsttafel kwam, hadden we alle kroepoek al opgegeten."
+   ],
+   "dehetExamples": [
+    "het eerste slokje zonder",
+    "die jaren",
+    "het rondje",
+    "het Tikkie",
+    "het bierviltje",
+    "het bord"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 126,
+   "name": "Het station",
+   "town": "amsterdam",
+   "v2": 7,
+   "dehet": 9,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Vergeet niet uit te checken, anders betaal je te veel.",
+    "In de tram kun je niet meer contant betalen, alleen met je pinpas.",
+    "Ga maar rechts op de roltrap staan, dan kunnen mensen erlangs."
+   ],
+   "dehetExamples": [
+    "Het pontje",
+    "het laatste pontje nog",
+    "deze plaats",
+    "het fietspad",
+    "welk spoor",
+    "het pontje",
+    "het eindstation",
+    "het spoor",
+    "het perron"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 127,
+   "name": "Het werk",
+   "town": "amsterdam",
+   "v2": 7,
+   "dehet": 6,
+   "dehetNew": 5,
+   "v2Examples": [
+    "Geachte mevrouw Bakker, naar aanleiding van uw e-mail van 3 maart stuur ik u het rapport.",
+    "Tot onze spijt moeten wij u laten weten dat het project twee weken vertraging oploopt.",
+    "Na twee jaar heb ik het nieuwe systeem eindelijk onder de knie."
+   ],
+   "dehetExamples": [
+    "Het dashboard",
+    "Het kantoor",
+    "het rapport",
+    "het cijfer",
+    "het wachtwoord",
+    "het budget"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 128,
+   "name": "De sport",
+   "town": "amsterdam",
+   "v2": 4,
+   "dehet": 4,
+   "dehetNew": 6,
+   "v2Examples": [
+    "Als ik meer had getraind, had ik sneller gelopen.",
+    "Als de grachten bevriezen, gaat de hele stad schaatsen.",
+    "Om zes uur 's ochtends zitten de roeiers al op de Amstel."
+   ],
+   "dehetExamples": [
+    "de sloot",
+    "het zuiden",
+    "het stadion",
+    "het doelpunt"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 129,
+   "name": "De Wallen",
+   "town": "amsterdam",
+   "v2": 7,
+   "dehet": 3,
+   "dehetNew": 5,
+   "v2Examples": [
+    "Tweede brug links, dan zie je de toren al. Pas op voor de fietsen.",
+    "In Mokum bellen de doden als je in de weg staat, en nog een keer voor de zekerheid.",
+    "'s Nachts worden de steegjes verlicht door rood neon."
+   ],
+   "dehetExamples": [
+    "het oudste gebouw",
+    "die fietsen",
+    "het gezelschap"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  },
+  {
+   "id": 130,
+   "name": "De grachten",
+   "town": "amsterdam",
+   "v2": 5,
+   "dehet": 7,
+   "dehetNew": 3,
+   "v2Examples": [
+    "Van de drie grote grachten is de Keizersgracht het breedst.",
+    "De Magere Brug werd in 1934 herbouwd, en 's nachts wordt hij verlicht door honderden lampjes.",
+    "Elke keer als ik het probeerde, schakelden de Nederlanders over op Engels, dus de taal vertrok."
+   ],
+   "dehetExamples": [
+    "Het grachtenpand",
+    "het laatste stuk met",
+    "het grammaticaboek",
+    "het grammaticaboek",
+    "het grachtenpand",
+    "het grachtje",
+    "het woord"
+   ],
+   "v2Due": true,
+   "dehetDue": true,
+   "v2Gap": false,
+   "dehetGap": false
+  }
+ ]
+}
