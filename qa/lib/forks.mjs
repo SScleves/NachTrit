@@ -3,7 +3,7 @@
 //   form     another form of the same word (werkt / werkte, groot / grote, ben / is, an extra or missing te)
 //   word     a different word (deze / dit, met / aan, an extra or missing function word)
 //   spelling a token that is not a Dutch word (werkde, groote, pizzas)
-import { tokens, sameLemma, isWord, PARTICLES } from './nl.mjs';
+import { tokens, sameLemma, isWord, PARTICLES, CLOSED } from './nl.mjs';
 
 function take(list, x) { const i = list.indexOf(x); if (i >= 0) { list.splice(i, 1); return true; } return false; }
 
@@ -22,7 +22,7 @@ export function compare(answer, wrong, allow) {
   for (const d of remD.slice()) for (const a1 of remA) for (const a2 of remA) if (a1 !== a2 && (a1 + a2 === d || a2 + a1 === d)) { if (remD.includes(d) && remA.includes(a1) && remA.includes(a2)) { take(remD, d); take(remA, a1); take(remA, a2); dims.add('order'); notes.push(`${a1} ${a2} -> ${d}`); repl.set(d, [a1, a2]); } }
   for (const a of remA.slice()) for (const d1 of remD) for (const d2 of remD) if (d1 !== d2 && (d1 + d2 === a || d2 + d1 === a)) { if (remA.includes(a) && remD.includes(d1) && remD.includes(d2)) { take(remA, a); take(remD, d1); take(remD, d2); dims.add('order'); notes.push(`${a} -> ${d1} ${d2}`); } }
   // a separable particle glued on or cut off: lever / inlever, op / opbellen
-  const glued = (x, y) => PARTICLES.some(p => y.startsWith(p) && (y.slice(p.length) === x || x === p || sameLemma(y.slice(p.length), x)));
+  const glued = (x, y) => !(CLOSED.has(x) && CLOSED.has(y)) && PARTICLES.some(p => y.startsWith(p) && (y.slice(p.length) === x || x === p || sameLemma(y.slice(p.length), x)));
   for (const d of remD.slice()) { const a = remA.find(x => glued(x, d) || glued(d, x)); if (a) { take(remA, a); take(remD, d); dims.add('order'); const p = PARTICLES.find(p => a.startsWith(p) && remD.includes(p)); if (p) take(remD, p); notes.push(`${a} -> ${d}${p ? ' ' + p : ''} (particle)`); repl.set(d, [a]); } }
   // forms of one word
   for (const d of remD.slice()) { const a = remA.find(x => sameLemma(x, d)); if (a) { take(remA, a); take(remD, d); const ok = real(d); dims.add(ok ? 'form' : 'spelling'); notes.push(`${a} -> ${d}${ok ? '' : ' (not a word)'}`); repl.set(d, [a]); } }

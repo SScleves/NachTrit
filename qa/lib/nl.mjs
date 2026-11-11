@@ -85,7 +85,7 @@ kunnen: kan kunt kun kunnen kon konden gekund
 willen: wil wilt willen wou wilde wouden wilden gewild
 mogen: mag mogen mocht mochten gemogen
 moeten: moet moeten moest moesten gemoeten
-zullen: zal zult zullen zou zouden
+zullen: zal zult zul zullen zou zouden
 gaan: ga gaat gaan ging gingen gegaan
 doen: doe doet doen deed deden gedaan
 zien: zie ziet zien zag zagen gezien
@@ -164,7 +164,7 @@ een: een 'n`;
 const IRREG_OF = new Map();
 for (const line of IRREG.split('\n')) { const [lemma, forms] = line.split(':'); for (const f of forms.trim().split(/\s+/)) if (!IRREG_OF.has(f)) IRREG_OF.set(f, lemma.replace(/_pos$/, '')); }
 // words that look alike but are not forms of one another (function words and pronouns)
-const CLOSED = new Set('ik je jij u hij zij ze het we wij jullie me mij hem haar ons hen hun zich mijn jouw jou uw zijn onze ons hun die dat deze dit de een er hier daar waar wat wie welk welke niet geen wel nog al ook maar dan als of en want omdat dus toen te om aan op in uit bij met van voor naar door over onder tegen na tot sinds zonder'.split(' '));
+export const CLOSED = new Set('ik je jij u hij zij ze het we wij jullie me mij hem haar ons hen hun zich mijn jouw jou uw zijn onze ons hun die dat deze dit de een er hier daar waar wat wie welk welke niet geen wel nog al ook maar dan als of en want omdat dus toen te om aan op in uit bij met van voor naar door over onder tegen na tot sinds zonder'.split(' '));
 const NUMBERS = new Set('nul een twee drie vier vijf zes zeven acht negen tien elf twaalf dertien veertien vijftien zestien zeventien achttien negentien twintig dertig veertig vijftig zestig zeventig tachtig negentig honderd duizend miljoen eerste tweede derde vierde vijfde zesde zevende achtste negende tiende'.split(' '));
 export const PARTICLES = ['terug', 'samen', 'dicht', 'open', 'langs', 'voorbij', 'tegen', 'door', 'over', 'onder', 'mee', 'aan', 'uit', 'op', 'af', 'in', 'weg', 'toe', 'na', 'bij', 'voor', 'om', 'vast', 'thuis', 'binnen', 'buiten'];
 
