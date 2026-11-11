@@ -41,7 +41,7 @@
       w: 'Cash only. contant is cash. Paying by card is pinnen.' },
     { read: true, nl: 'Twee euro per stuk.', en: 'Two euros each.', o: ['Two euros each.', 'Two euros a kilo.', 'Two for one euro.'], a: 0, r: 'woord',
       w: 'Two euros each. per stuk is per piece. By weight the sign says per kilo.' },
-    { read: true, nl: 'De rest is voor u.', en: 'Keep the change.', o: ['Keep the change.', 'You pay the rest.', 'The rest is for later.'], a: 0, r: 'woord',
+    { read: true, nl: 'Laat maar zitten.', en: 'Keep the change.', o: ['Keep the change.', 'You pay the rest.', 'The rest is for later.'], a: 0, r: 'woord',
       w: 'Keep the change. You say it when you pay, and the rest becomes the tip.' },
 
     // ---- listens: a price by ear, and the oe, ei and uu sounds

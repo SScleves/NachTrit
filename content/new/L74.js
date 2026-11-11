@@ -35,7 +35,7 @@
         'Lasting is not going anywhere: hebben.'), 'de hele nacht', FK(['geduurd', 'geduurt'], 0, 'kof', 'duur ends in r, not a ketchup letter, so the participle ends in d.', 'spell'), '.'] },
       { en: 'The dogs ran into the sea.', parts: ['De honden', FK(['zijn', 'hebben'], 0, 'aux',
         'Running into the sea goes somewhere: zijn.'), 'de zee in', FK(['gerend', 'gerent'], 0, 'kof',
-        'ren ends in n, no ketchup letter: gerend with a d.'), '.'] },
+        'ren ends in n, no ketchup letter: gerend with a d.', 'spell'), '.'] },
       { en: 'I have been to the Peace Palace.', parts: ['Ik', FK(['ben', 'heb'], 0, 'aux',
         'zijn makes its own perfect with zijn: ik ben geweest.'), 'bij het Vredespaleis', FK(['geweest', 'was', 'ben'], 0, 'perf', 'zijn is irregular: the participle is geweest.'), '.'] },
 

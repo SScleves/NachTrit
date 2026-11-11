@@ -5,7 +5,7 @@
 // New at tier 11 and drilled here: the passive with worden (wordt opgelost, werd uitgesteld, worden beantwoord, moet
 // herstart worden), the finished passive with zijn (is gefixt), the plusquamperfectum with hadden and was (had gewerkt,
 // was afgelopen, was in slaap gevallen), indirect speech (Mark zei dat hij ziek was, ze vroeg of ..., hij vroeg wat er mis was
-// gegaan) and words with dialect colour, always marked as dialect (de bomma, Noondezju, salu).
+// gegaan) and words with dialect colour, always marked as dialect (de bomma, Noondezju, bompa).
 // Review of earlier tiers: zou plus infinitive for a polite request, terwijl with the main clause starting on its verb,
 // the superlative de snelste, kof participles (gewerkt, getekend, uitgesteld, gefixt) and separable participles (opgelost).
 // Still inside the fence: 16 words max, no idioms with modal particles, no formal register.
@@ -71,7 +71,7 @@
       { en: 'This is the fastest solution of the whole team.', parts: ['Dit is', FK(['de snelste', 'de snelst', 'de sneller'], 0, 'vergelijk', 'Before a noun the superlative takes -e: de snelste oplossing.'), 'oplossing van het hele team.'] },
 
       // ---- words: the desk, the sprint, the review, the treaty, the tart
-      { w: 'the release', nl: 'de release' }, { w: 'the bug', nl: 'de bug' }, { w: 'the ticket', nl: 'het ticket', wrong: 'de ticket' },
+      { w: 'the release', nl: 'de release' }, { w: 'the bug', nl: 'de bug' }, { w: 'the ticket', nl: 'het ticket' },
       { w: 'the sprint', nl: 'de sprint' }, { w: 'the backup', nl: 'de back-up' }, { w: 'the office chair', nl: 'de bureaustoel' },
       { w: 'the home office', nl: 'het thuiskantoor', wrong: 'de thuiskantoor' }, { w: 'the video call', nl: 'het videogesprek' },
       { w: 'the projector', nl: 'de beamer' }, { w: 'the annual review', nl: 'het jaargesprek', wrong: 'de jaargesprek' },
@@ -95,14 +95,14 @@
 
       // ---- listens: a participle by ear, two landmarks, one word of dialect
       { listen: true, nl: 'afgehandeld', en: 'dealt with' }, { listen: true, nl: 'het Gouvernement', en: 'the Gouvernement' },
-      { listen: true, nl: 'de Helpoort', en: 'the Hell Gate' }, { listen: true, nl: 'salu', en: 'hi, or bye (Maastricht dialect, from French salut)' },
+      { listen: true, nl: 'de Helpoort', en: 'the Hell Gate' }, { listen: true, nl: 'de bompa', en: 'grandpa (Maastricht dialect, in Dutch opa)' },
 
       // ---- looks: the dog on the lead, the basilica church on the Vrijthof, the old bridge over the Maas
       { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'kerk', nl: 'de kerk', en: 'the church' },
       { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
 
       // ---- de of het
-      { dehet: true, nl: 'dashboard', art: 'het', en: 'the dashboard', w: 'het dashboard. The plural is de dashboards, because every plural is de.' },
+      { dehet: true, nl: 'scherm', art: 'het', en: 'the screen', w: 'het scherm. The plural is de schermen, because every plural is de.' },
       { dehet: true, nl: 'werkgever', art: 'de', en: 'the employer', w: 'de werkgever. Words for a person who does something end in -er and are de: de werkgever, de bakker.' },
     ] }]);
 })();

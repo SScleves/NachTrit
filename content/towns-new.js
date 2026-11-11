@@ -84,8 +84,8 @@
       // ---- words: students, the market, paying, returns and the bag, plus a few replayed
       { w: 'the student discount', nl: 'de studentenkorting' }, { w: 'the second-hand shop', nl: 'de kringloopwinkel' },
       { w: 'the bookshop', nl: 'de boekhandel' }, { w: 'the bike mender', nl: 'de fietsenmaker' },
-      { w: 'the shelf in a shop', nl: 'het schap', wrong: 'de schap' }, { w: 'the spiced breakfast cake', nl: 'de ontbijtkoek' },
-      { w: 'the Groningen minced-pork sausage', nl: 'de metworst' }, { w: 'the medicine', nl: 'het medicijn', wrong: 'de medicijn' },
+      { w: 'the shelf in a shop', nl: 'het schap' }, { w: 'the spiced breakfast cake', nl: 'de ontbijtkoek' },
+      { w: 'the Groningen minced-pork sausage', nl: 'de metworst' }, { w: 'the medicine', nl: 'het medicijn' },
       { w: 'the painkiller', nl: 'de pijnstiller' }, { w: 'the deposit on a bottle', nl: 'het statiegeld', wrong: 'de statiegeld' },
       { w: 'the proof of purchase', nl: 'het aankoopbewijs', wrong: 'de aankoopbewijs' }, { w: 'the little shopping list', nl: 'het boodschappenlijstje', wrong: 'de boodschappenlijstje' },
       { w: 'the clearance sale', nl: 'de uitverkoop' }, { w: 'the zip', nl: 'de rits' }, { w: 'the customer service', nl: 'de klantenservice' },
@@ -738,7 +738,7 @@
       { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
 
       // ---- de of het
-      { dehet: true, nl: 'ontmoeting', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de: de ontmoeting, de afspraak, de uitnodiging.' },
+      { dehet: true, nl: 'ontmoeting', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de: de ontmoeting, de uitnodiging, de vergadering.' },
       { dehet: true, nl: 'gezeur', art: 'het', en: 'the nagging', w: 'Most nouns starting with ge- are het: het gezeur, het gesprek, het gevoel.' },
     ] }]);
 })();
@@ -817,7 +817,7 @@
       { en: 'The cup of coffee is empty.', parts: [FK(['Het', 'De'], 0, 'verklein',
         'Every word ending in -je is a het-word: het kopje.'), FK(['kopje', 'koppje'], 0, 'verklein', 'kop plus -je is kopje; the p does not double before -je.', 'spell'), 'koffie is leeg.'] },
       { en: 'Many students cycle over the little bridge to the city.', parts: ['Over het', FK(['bruggetje', 'brugje'], 0, 'verklein',
-        'brug has a short vowel, so the g doubles and the ending is -etje: bruggetje.'), 'fietsen veel studenten naar de stad.'] },
+        'brug has a short vowel, so the g doubles and the ending is -etje: bruggetje.', 'spell'), 'fietsen veel studenten naar de stad.'] },
 
       // ---- builds: the adjective -e
       { en: 'The white town hall stands on a big square.', parts: ['Het', FK(['witte', 'wit'], 0, 'adj',
@@ -950,7 +950,7 @@
 
       // ---- words: rooms, furniture, the house, the family, with Maastricht colour
       { w: 'the kitchen', nl: 'de keuken' }, { w: 'the bedroom', nl: 'de slaapkamer' },
-      { w: 'the window', nl: 'het raam', wrong: 'de raam' }, { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' },
+      { w: 'the window', nl: 'het raam', wrong: 'de raam' }, { w: 'the curtain', nl: 'het gordijn' },
       { w: 'the cupboard', nl: 'de kast' }, { w: 'the mirror', nl: 'de spiegel' },
       { w: 'the cushion', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the drawer', nl: 'de la' },
       { w: 'the ceiling', nl: 'het plafond', wrong: 'de plafond' }, { w: 'the cellar', nl: 'de kelder' },
@@ -1351,7 +1351,7 @@
 // New at tier 11 and drilled here: the passive with worden (wordt opgelost, werd uitgesteld, worden beantwoord, moet
 // herstart worden), the finished passive with zijn (is gefixt), the plusquamperfectum with hadden and was (had gewerkt,
 // was afgelopen, was in slaap gevallen), indirect speech (Mark zei dat hij ziek was, ze vroeg of ..., hij vroeg wat er mis was
-// gegaan) and words with dialect colour, always marked as dialect (de bomma, Noondezju, salu).
+// gegaan) and words with dialect colour, always marked as dialect (de bomma, Noondezju, bompa).
 // Review of earlier tiers: zou plus infinitive for a polite request, terwijl with the main clause starting on its verb,
 // the superlative de snelste, kof participles (gewerkt, getekend, uitgesteld, gefixt) and separable participles (opgelost).
 // Still inside the fence: 16 words max, no idioms with modal particles, no formal register.
@@ -1417,7 +1417,7 @@
       { en: 'This is the fastest solution of the whole team.', parts: ['Dit is', FK(['de snelste', 'de snelst', 'de sneller'], 0, 'vergelijk', 'Before a noun the superlative takes -e: de snelste oplossing.'), 'oplossing van het hele team.'] },
 
       // ---- words: the desk, the sprint, the review, the treaty, the tart
-      { w: 'the release', nl: 'de release' }, { w: 'the bug', nl: 'de bug' }, { w: 'the ticket', nl: 'het ticket', wrong: 'de ticket' },
+      { w: 'the release', nl: 'de release' }, { w: 'the bug', nl: 'de bug' }, { w: 'the ticket', nl: 'het ticket' },
       { w: 'the sprint', nl: 'de sprint' }, { w: 'the backup', nl: 'de back-up' }, { w: 'the office chair', nl: 'de bureaustoel' },
       { w: 'the home office', nl: 'het thuiskantoor', wrong: 'de thuiskantoor' }, { w: 'the video call', nl: 'het videogesprek' },
       { w: 'the projector', nl: 'de beamer' }, { w: 'the annual review', nl: 'het jaargesprek', wrong: 'de jaargesprek' },
@@ -1441,14 +1441,14 @@
 
       // ---- listens: a participle by ear, two landmarks, one word of dialect
       { listen: true, nl: 'afgehandeld', en: 'dealt with' }, { listen: true, nl: 'het Gouvernement', en: 'the Gouvernement' },
-      { listen: true, nl: 'de Helpoort', en: 'the Hell Gate' }, { listen: true, nl: 'salu', en: 'hi, or bye (Maastricht dialect, from French salut)' },
+      { listen: true, nl: 'de Helpoort', en: 'the Hell Gate' }, { listen: true, nl: 'de bompa', en: 'grandpa (Maastricht dialect, in Dutch opa)' },
 
       // ---- looks: the dog on the lead, the basilica church on the Vrijthof, the old bridge over the Maas
       { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'kerk', nl: 'de kerk', en: 'the church' },
       { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
 
       // ---- de of het
-      { dehet: true, nl: 'dashboard', art: 'het', en: 'the dashboard', w: 'het dashboard. The plural is de dashboards, because every plural is de.' },
+      { dehet: true, nl: 'scherm', art: 'het', en: 'the screen', w: 'het scherm. The plural is de schermen, because every plural is de.' },
       { dehet: true, nl: 'werkgever', art: 'de', en: 'the employer', w: 'de werkgever. Words for a person who does something end in -er and are de: de werkgever, de bakker.' },
     ] }]);
 })();
@@ -2457,7 +2457,7 @@
       { w: 'the coffee vending machine', nl: 'de koffieautomaat' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
       { w: 'the working-from-home day', nl: 'de thuiswerkdag' }, { w: 'the leave, the time off', nl: 'het verlof', wrong: 'de verlof' },
       { w: 'the start-up', nl: 'de start-up' }, { w: 'the soup factory', nl: 'de soepfabriek' },
-      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket', wrong: 'de ticket' },
+      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket' },
       { w: 'the backup', nl: 'de back-up' }, { w: 'the alert', nl: 'de melding' },
       { w: 'the Friday drinks', nl: 'de vrijmibo' }, { w: 'the payslip', nl: 'de loonstrook' },
 
@@ -3243,7 +3243,7 @@
       { w: 'the croquette', nl: 'de kroket' }, { w: 'the chips with mayonnaise, peanut sauce and onions', nl: 'het patatje oorlog', wrong: 'de patatje oorlog' },
       { w: 'the rice table', nl: 'de rijsttafel' }, { w: 'the prawn crackers', nl: 'de kroepoek' },
       { w: 'the barman', nl: 'de barman' }, { w: 'the round of drinks', nl: 'het rondje', wrong: 'de rondje' },
-      { w: 'the payment request in the app', nl: 'het Tikkie', wrong: 'de Tikkie' }, { w: 'the snack bar', nl: 'de snackbar' },
+      { w: 'the payment request in the app', nl: 'het Tikkie' }, { w: 'the snack bar', nl: 'de snackbar' },
       { w: 'the bitterbal', nl: 'de bitterbal' }, { w: 'the beer mat', nl: 'het bierviltje', wrong: 'de bierviltje' },
       { w: 'the regular customer', nl: 'de stamgast' }, { w: 'the brown café', nl: 'het bruine café', wrong: 'de bruine café' },
 
@@ -3484,8 +3484,8 @@
         'Na twee jaar fills slot 1, so the verb comes second: heb ik.'), 'het nieuwe systeem', FK(['eindelijk', 'eigenlijk'], 0, 'woord',
         'eindelijk means at last. eigenlijk means actually.'), FK(['onder de knie', 'onder de voet', 'op de knie'], 0, 'idioom',
         'iets onder de knie hebben means to have mastered it. Only onder de knie.'), '.'] },
-      { en: 'The dashboard has been red since this morning, and nobody knows why.', parts: [FK(['Het', 'De'], 0, 'dehet',
-        'dashboard is a het-word: het dashboard.'), 'dashboard', FK(['staat', 'stond'], 0, 'al', 'It is still red, so the present with al: staat al sinds vanochtend.'), 'al sinds vanochtend op rood, en niemand weet waarom.'] },
+      { en: 'The screen has been red since this morning, and nobody knows why.', parts: [FK(['Het', 'De'], 0, 'dehet',
+        'scherm is a het-word: het scherm.'), 'scherm', FK(['staat', 'stond'], 0, 'al', 'It is still red, so the present with al: staat al sinds vanochtend.'), 'al sinds vanochtend op rood, en niemand weet waarom.'] },
       { en: "I'll just forward the email.", parts: ['Ik stuur de mail', FK(['even door', 'door even'], 0, 'soft',
         'even stands in the middle, and door closes the sentence.'), '.'] },
       { en: 'Since the mist my manager has been working his socks off.', parts: ['Sinds de mist', FK(['werkt mijn manager', 'mijn manager werkt'], 0, 'v2',
@@ -3742,7 +3742,7 @@
         'More slowly is the comparative: langzaam, langzamer.'), 'praten?'] },
       { en: 'In Mokum the dead ring their bell when you are in the way, and once more to be sure.', parts: ['In Mokum', FK(['bellen de doden', 'de doden bellen'], 0, 'v2', 'In Mokum fills slot 1, so the verb comes second: bellen de doden.'), 'als je in de weg staat, en nog een keer', FK(['voor de zekerheid', 'voor het zekerheid', 'naar de zekerheid'], 0, 'idioom', 'voor de zekerheid means to be sure, and every -heid word is a de-word.'), '.'] },
       { en: "Cycling is not allowed here; you have to walk with your bike.", parts: ['Hier', FK(['mag je niet', 'hoef je niet'], 0, 'mag',
-        'Not allowed is mag niet. hoeven niet would need te and means not necessary.'), 'fietsen, je moet met de fiets', FK(['aan de hand', 'in de hand', 'op de hand'], 0, 'idioom',
+        'Not allowed is mag niet. hoeven niet would need te and means not necessary.'), 'fietsen, je moet met de fiets', FK(['aan de hand', 'bij de hand', 'op de hand'], 0, 'idioom',
         'met de fiets aan de hand lopen is how Dutch says walking your bike.'), 'lopen.'] },
 
       // ---- builds: the place itself
@@ -3891,7 +3891,7 @@
         'als sends the verb to the end of its clause: als ik het probeerde.'), ',', FK(['schakelden de Nederlanders', 'de Nederlanders schakelden'], 0, 'v2', 'The time clause fills slot 1, so the main clause starts with its verb.'), 'over op Engels, dus de taal', FK(['vertrok', 'vertrokken', 'vertrekken'], 0, 'imp',
         'vertrekken is irregular: vertrok, and one language takes no -en.'), '.'] },
       { en: 'The language said that nobody had let it speak for years.', parts: ['De taal zei', FK(['dat', 'of'], 0, 'indirect', 'zei dat reports a statement; of belongs to a reported question.', 'word'), 'niemand', FK(['hem', 'zich'], 0, 'obj',
-        'de taal is a de-word, so it is hem. zich would point back at niemand.'), 'jarenlang', FK(['had laten praten', 'had gelaten praten'], 0, 'perf',
+        'de taal is a de-word; in the Netherlands that is hem. zich would point back at niemand.'), 'jarenlang', FK(['had laten praten', 'had gelaten praten'], 0, 'perf',
         'laten plus another verb keeps both infinitives in the perfect: had laten praten.'), '.'] },
       { en: 'At dawn the bells of the Westertoren ring over the whole canal ring.', parts: ['Bij', FK(['zonsopgang', 'zonopgang'], 0, 'samen', 'zon and opgang are glued with an s, like zonsondergang.', 'spell'), FK(['luiden de klokken', 'de klokken luiden'], 0, 'v2',
         'Bij zonsopgang fills slot 1, so the verb comes second: luiden de klokken.'), 'van de Westertoren over de', FK(['hele', 'heel'], 0, 'adj',
@@ -4007,7 +4007,7 @@
       // the house, room by room
       { w: 'the hallway', nl: 'de gang' }, { w: 'the attic', nl: 'de zolder' }, { w: 'the chair', nl: 'de stoel' },
       { w: 'the cupboard', nl: 'de kast' }, { w: 'the fridge', nl: 'de koelkast' }, { w: 'the wall', nl: 'de muur' },
-      { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' }, { w: 'the mirror', nl: 'de spiegel' },
+      { w: 'the curtain', nl: 'het gordijn' }, { w: 'the mirror', nl: 'de spiegel' },
       { w: 'the heating', nl: 'de verwarming', wrong: 'het verwarming' }, { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' },
       { w: 'the plate', nl: 'het bord', wrong: 'de bord' },
       // replay from Alblasserdam and Gouda
@@ -4147,7 +4147,7 @@
       { w: 'the receipt', nl: 'de kassabon', wrong: 'het kassabon' }, { w: 'the price', nl: 'de prijs' },
       { w: 'the size', nl: 'de maat', wrong: 'het maat' }, { w: 'the sweater', nl: 'de trui' },
       { w: 'the money', nl: 'het geld', wrong: 'de geld' }, { w: 'the minced meat', nl: 'het gehakt', wrong: 'de gehakt' },
-      { w: 'the bread roll', nl: 'het broodje' }, { w: 'the medicine', nl: 'het medicijn', wrong: 'de medicijn' },
+      { w: 'the bread roll', nl: 'het broodje' }, { w: 'the medicine', nl: 'het medicijn' },
       { w: 'the headache', nl: 'de hoofdpijn' }, { w: 'the Zeeland sticky bun', nl: 'de Zeeuwse bolus' },
       { w: 'the offer', nl: 'de aanbieding' }, { w: 'the debit card', nl: 'de pinpas' },
       { w: 'to exchange', nl: 'ruilen' }, { w: 'cheaper', nl: 'goedkoper' }, { w: 'more expensive', nl: 'duurder' },
@@ -4789,7 +4789,7 @@
         { en: 'Every evening I walk the dogs.', parts: ['Elke avond', FK(['laat', 'uitlaat'], 0, 'sep',
           'uitlaten splits in the present: laat in slot 2, uit at the very end.'), 'ik de honden uit.'] },
         { en: 'The Dom wakes me up every morning.', parts: ['De Dom', FK(['maakt', 'maken', 'maak'], 0, 'sep', 'One Dom, so stem plus t: maakt, and wakker waits at the end.'), 'me elke ochtend wakker.'] },
-        { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt', 'opbelt Paola'], 0, 'v2',
+        { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt'], 0, 'v2',
           'A time in slot 1 pushes Paola behind the verb: belt Paola.'), 'haar moeder', FK(['op', 'opbellen'], 0, 'sep',
           'opbellen splits in the present. Only op goes to the end.'), '.'] },
         { en: 'The neighbours are coming round tonight.', parts: ['De buren', FK(['komen', 'langskomen'], 0, 'sep', 'langskomen splits: komen in slot 2, langs at the end.'), 'vanavond langs.'] },
@@ -4852,7 +4852,7 @@
         { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
         // ---- de of het
-        { dehet: true, nl: 'gordijn', art: 'het', en: 'the curtain' },
+        { dehet: true, nl: 'huis', art: 'het', en: 'the house' },
         { dehet: true, nl: 'kussen', art: 'het', en: 'the cushion', w: 'het kussen. Only the plural is de: de kussens.' },
       ] },
   ]);
@@ -5503,7 +5503,7 @@
       { w: 'the square', nl: 'het plein' },
       { w: 'the church bell', nl: 'de kerkklok' },
       { w: 'the lock', nl: 'het slot', wrong: 'de slot' },
-      { w: 'the saddle', nl: 'het zadel', wrong: 'de zadel' },
+      { w: 'the saddle', nl: 'het zadel' },
       { w: 'the handlebars', nl: 'het stuur' },
       { w: 'the tyre', nl: 'de band' },
       { w: 'the brake', nl: 'de rem' },
@@ -5685,7 +5685,7 @@
 
       // ---- de of het
       { dehet: true, nl: 'meubel', art: 'het', en: 'the piece of furniture', w: 'het meubel. The plural is de meubels, because every plural is de.' },
-      { dehet: true, nl: 'schilderij', art: 'het', en: 'the painting' },
+      { dehet: true, nl: 'gezin', art: 'het', en: 'the family' },
     ] }]);
 })();
 
@@ -5831,7 +5831,7 @@
 
       // ---- words
       { w: 'the herring', nl: 'de haring', wrong: 'het haring' }, { w: 'the battered fish bites', nl: 'de kibbeling' },
-      { w: 'the market stall', nl: 'de marktkraam', wrong: 'het marktkraam' }, { w: 'the punnet', nl: 'het bakje', wrong: 'de bakje' },
+      { w: 'the market stall', nl: 'de marktkraam' }, { w: 'the punnet', nl: 'het bakje', wrong: 'de bakje' },
       { w: 'the strawberries', nl: 'de aardbeien' }, { w: 'the terrace', nl: 'het terras' },
       { w: 'the bill', nl: 'de rekening' }, { w: 'the receipt', nl: 'het bonnetje', wrong: 'de bonnetje' },
       { w: 'the tip', nl: 'de fooi' }, { w: 'the waitress', nl: 'de serveerster' },
@@ -5864,7 +5864,7 @@
 
       // ---- de of het
       { dehet: true, nl: 'menu', art: 'het', en: 'the menu', w: 'het menu, but de menukaart: a compound takes the article of its last word.' },
-      { dehet: true, nl: 'kraam', art: 'de', en: 'the stall' },
+      { dehet: true, nl: 'haringkar', art: 'de', en: 'the herring cart', w: 'de kar, so de haringkar. A compound takes the article of its last word.' },
     ] }]);
 })();
 
@@ -6333,7 +6333,7 @@
         'Lasting is not going anywhere: hebben.'), 'de hele nacht', FK(['geduurd', 'geduurt'], 0, 'kof', 'duur ends in r, not a ketchup letter, so the participle ends in d.', 'spell'), '.'] },
       { en: 'The dogs ran into the sea.', parts: ['De honden', FK(['zijn', 'hebben'], 0, 'aux',
         'Running into the sea goes somewhere: zijn.'), 'de zee in', FK(['gerend', 'gerent'], 0, 'kof',
-        'ren ends in n, no ketchup letter: gerend with a d.'), '.'] },
+        'ren ends in n, no ketchup letter: gerend with a d.', 'spell'), '.'] },
       { en: 'I have been to the Peace Palace.', parts: ['Ik', FK(['ben', 'heb'], 0, 'aux',
         'zijn makes its own perfect with zijn: ik ben geweest.'), 'bij het Vredespaleis', FK(['geweest', 'was', 'ben'], 0, 'perf', 'zijn is irregular: the participle is geweest.'), '.'] },
 
@@ -6487,7 +6487,7 @@
       // ---- words: rooms, furniture, the routine, the dogs, Rotterdam
       { w: 'the kitchen', nl: 'de keuken' }, { w: 'the bedroom', nl: 'de slaapkamer' }, { w: 'the bathroom', nl: 'de badkamer' },
       { w: 'the couch', nl: 'de bank' }, { w: 'the fridge', nl: 'de koelkast' }, { w: 'the window', nl: 'het raam', wrong: 'de raam' },
-      { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' },
+      { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the curtain', nl: 'het gordijn' },
       { w: 'the lift', nl: 'de lift' }, { w: 'the stairs', nl: 'de trap' }, { w: 'the alarm clock', nl: 'de wekker' },
       { w: 'the breakfast', nl: 'het ontbijt', wrong: 'de ontbijt' }, { w: 'the dinner', nl: 'het avondeten' },
       { w: 'the key', nl: 'de sleutel' }, { w: 'the balcony', nl: 'het balkon', wrong: 'de balkon' },
@@ -6906,7 +6906,7 @@
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip
       { en: 'Last year I worked at a bank in Rotterdam.', parts: ['Vorig jaar', FK(['werkte', 'werkt', 'werkten'], 0, 'kof', 'Vorig jaar is past, so werkte; werkt is now and werkten is for more people.'), 'ik bij een bank in Rotterdam.'] },
-      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurden', 'duurt'], 0, 'kof', 'Gisteren asks for the past, and one meeting takes no -n: duurde.'), 'de vergadering twee uur.'] },
+      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurden', 'geduurd'], 0, 'kof', 'Gisteren asks for the past, and one meeting takes no -n: duurde. geduurd needs heeft.'), 'de vergadering twee uur.'] },
       { en: 'Last night there was an outage at the office.', parts: ['Gisteravond', FK(['was', 'waren', 'geweest'], 0, 'imp', 'zijn is irregular in the past: was for one thing, and one outage is one thing.'), 'er een storing op kantoor.'] },
       { en: 'Last night I went home late. The dogs were already waiting.', parts: ['Gisteravond', FK(['ging ik', 'ik ging'], 0, 'v2',
         'Gisteravond takes slot 1, so the verb comes second, then ik.'), 'laat naar huis. De honden', FK(['wachtten', 'wachtte', 'gewacht'], 0, 'kof', 'De honden is plural, so the past takes -ten: wachtten.'), 'al.'] },
@@ -6955,7 +6955,7 @@
       { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' }, { w: 'the screen', nl: 'het scherm', wrong: 'de scherm' },
       { w: 'the keyboard', nl: 'het toetsenbord' }, { w: 'the charger', nl: 'de oplader' },
       { w: 'the password', nl: 'het wachtwoord', wrong: 'de wachtwoord' }, { w: 'the meeting', nl: 'de vergadering' },
-      { w: 'the dashboard', nl: 'het dashboard', wrong: 'de dashboard' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
+      { w: 'the dashboard', nl: 'het dashboard' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
       { w: 'the colleagues', nl: "de collega's" }, { w: 'the desk', nl: 'het bureau' }, { w: 'the boss', nl: 'de baas' },
       { w: 'the customer', nl: 'de klant' }, { w: 'the alert', nl: 'de melding' }, { w: 'the outage', nl: 'de storing' },
       { w: 'the coffee machine', nl: 'het koffieapparaat' }, { w: 'the lunch break', nl: 'de lunchpauze' },
@@ -7464,7 +7464,7 @@
       { en: 'I see that the checkout is closed.', parts: ['Ik zie dat de kassa', FK(['dicht is', 'is dicht'], 0, 'bijzin', 'dat sends the verb to the end: dat de kassa dicht is.'), '.'] },
       { en: 'If it is on offer, I take two.', parts: ['Als het in de aanbieding is,', FK(['neem ik', 'ik neem'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'twee.'] },
-      { en: 'When I got to the chemist, it was already closed.', parts: ['Toen ik bij de apotheek', FK(['kwam', 'kwamen', 'kom'], 0, 'bijzin', 'komen is irregular in the past: ik kwam, at the end of the toen clause.', 'past'), ', was ze al dicht.'] },
+      { en: 'When I got to the chemist, it was already closed.', parts: ['Toen ik bij de apotheek', FK(['kwam', 'kwamen', 'kom'], 0, 'bijzin', 'komen is irregular in the past: ik kwam, at the end of the toen clause.', 'past'), ', was die al dicht.'] },
       { en: 'While Paola pays, I wait outside with the dogs.', parts: [FK(['Terwijl Paola betaalt', 'Terwijl betaalt Paola'], 0, 'bijzin',
         'terwijl sends the verb to the end: terwijl Paola betaalt.'), ',', FK(['wacht ik', 'ik wacht'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: wacht ik.'), 'buiten met de honden.'] },
@@ -7847,7 +7847,7 @@
       { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
 
       // ---- de of het
-      { dehet: true, nl: 'rooster', art: 'het', en: 'the schedule', w: 'het rooster. The plural is de roosters, because every plural is de.' },
+      { dehet: true, nl: 'incident', art: 'het', en: 'the incident', w: 'het incident. Learn it with its article: het incident.' },
       { dehet: true, nl: 'reorganisatie', art: 'de', en: 'the reorganisation', w: 'Words ending in -atie are de.' },
     ] }]);
 })();
@@ -8492,9 +8492,9 @@
       { en: 'The bitterballen that Paola ordered are already gone.', parts: ['De bitterballen', FK(['die', 'dat'], 0, 'diedat',
         'bitterballen is a plural, and a plural always takes die, whatever the singular is.'), 'Paola', FK(['bestelde', 'bestelden'], 0, 'imp',
         'Paola is one person: bestelde. bestel ends in l, which is no ketchup letter, so -de.'), ', zijn al op.'] },
-      { en: 'The terrace that is here is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
-        'terras is a het-word, so dat.'), FK(['hier ligt', 'ligt hier'], 0, 'bijzin',
-        'The verb of a dat-clause stands at the end: dat hier ligt.'), ', is al vol.'] },
+      { en: 'The terrace that is so well placed is already full.', parts: ['Het terras', FK(['dat', 'die'], 0, 'diedat',
+        'terras is a het-word, so dat.'), FK(['zo mooi ligt', 'ligt zo mooi'], 0, 'bijzin',
+        'The verb of a dat-clause stands at the end: dat zo mooi ligt.'), ', is al vol.'] },
 
       // ---- builds: te plus infinitive and om te
       { en: 'I go to the market in Den Burg to buy fresh fish.', parts: ['Ik ga naar de markt in Den Burg om verse vis', FK(['te kopen', 'kopen'], 0, 'omte', 'A purpose takes om ... te, with te right before the infinitive: te kopen.'), '.'] },
@@ -8620,8 +8620,8 @@
         'kaartje is a het-word, so dat: het kaartje dat.'), FK(['ik gekocht heb', 'heb ik gekocht'], 0, 'bijzin',
         'A relative clause is a sub-clause: the subject comes first and the verb goes to the end.'), ', ligt in mijn tas.'] },
       { en: 'The sheep that has been standing for hours does not want to leave the cycle path.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat: het schaap dat.'), FK(['al uren staat', 'staat al uren'], 0, 'bijzin',
-        'The verb of the dat clause goes to the end: dat al uren staat.'), ', wil niet van het fietspad af.'] },
+        'schaap is a het-word, so dat: het schaap dat.'), 'er', FK(['al uren staat', 'staat al uren'], 0, 'bijzin',
+        'The verb of the dat clause goes to the end: dat er al uren staat.'), ', wil niet van het fietspad af.'] },
       { en: 'Is this the bus to De Koog that leaves tonight?', parts: ['Is dit de bus naar De Koog', FK(['die', 'dat'], 0, 'diedat',
         'bus is a de-word, so die: de bus die.'), FK(['vanavond vertrekt', 'vertrekt vanavond'], 0, 'bijzin',
         'die sends the verb to the end of its clause: die vanavond vertrekt.'), '?'] },
@@ -8671,7 +8671,7 @@
       { w: 'the crossing', nl: 'de overtocht' }, { w: 'the deck', nl: 'het dek', wrong: 'de dek' }, { w: 'the queue', nl: 'de wachtrij' },
       { w: 'the return ticket', nl: 'het retourtje', wrong: 'de retourtje' }, { w: 'the single ticket', nl: 'de enkele reis' },
       { w: 'the fare', nl: 'het tarief' }, { w: 'the driver', nl: 'de chauffeur' }, { w: 'the suitcase', nl: 'de koffer' },
-      { w: 'the rental bike', nl: 'de huurfiets' }, { w: 'the flat tyre', nl: 'de lekke band' }, { w: 'the saddle', nl: 'het zadel', wrong: 'de zadel' },
+      { w: 'the rental bike', nl: 'de huurfiets' }, { w: 'the flat tyre', nl: 'de lekke band' }, { w: 'the saddle', nl: 'het zadel' },
       { w: 'the helmet', nl: 'de helm' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' },
       { w: 'the detour', nl: 'de omleiding' }, { w: 'the destination', nl: 'de bestemming' },
       // replay from level 86 (Urk)
@@ -8747,7 +8747,7 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that is already waiting wants to join the standup.', parts: ['Het schaap', FK(['dat al wacht', 'dat wacht al'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, wacht.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already in place wants to join the standup.', parts: ['Het schaap dat', FK(['al klaarstaat', 'staat al klaar'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, klaarstaat.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
       { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte', 'om ... te means in order to: om opens the clause, te comes before the last verb.', 'word'), 'de dashboards in de gaten', FK(['te houden', 'houden te'], 0, 'omte', 'te sits right in front of the infinitive: te houden.'), '.'] },
@@ -8814,7 +8814,7 @@
       { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
       // ---- de of het
-      { dehet: true, nl: 'rooster', art: 'het', en: 'the schedule', w: 'het rooster. The plural is de roosters, because every plural is de.' },
+      { dehet: true, nl: 'overleg', art: 'het', en: 'the consultation', w: 'het overleg. Learn it with its article: het overleg.' },
       { dehet: true, nl: 'wol', art: 'de', en: 'the wool' },
     ] }]);
 })();
@@ -8983,8 +8983,8 @@
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the very end of the clause
       { en: 'The sheep that has lived here for years knows everyone.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so the pointer is dat: het schaap dat.'), 'al jaren', FK(['hier woont', 'woont hier'], 0, 'bijzin',
-        'A relative clause is a sub-clause: the verb goes to the end, hier woont.'), ', kent iedereen.'] },
+        'schaap is a het-word, so the pointer is dat: het schaap dat.'), 'hier', FK(['al jaren woont', 'woont al jaren'], 0, 'bijzin',
+        'A relative clause is a sub-clause: the verb goes to the end, hier al jaren woont.'), ', kent iedereen.'] },
       { en: 'The man I met yesterday is a farmer.', parts: ['De man', FK(['die', 'dat'], 0, 'diedat',
         'man is a de-word, so die.'), 'ik gisteren', FK(['ontmoette', 'ontmoetten', 'ontmoet'], 0, 'imp', 'ontmoet ends in t, so the past takes -te, and ik takes no -n: ontmoette.'), ', is boer.'] },
       { en: 'The tourists who come too late miss the boat.', parts: ['De toeristen', FK(['die', 'dat'], 0, 'diedat',
@@ -9111,7 +9111,7 @@
       // ---- builds: te plus infinitive, om ... te
       { en: 'I have no time to look at seals.', parts: ['Ik heb geen tijd om naar zeehonden', FK(['te kijken', 'kijken te'], 0, 'omte', 'te sits right before the infinitive at the very end: te kijken.'), '.'] },
       { en: 'We cycle to the beach to see seals.', parts: ['We fietsen naar het strand om zeehonden', FK(['te zien', 'zien'], 0, 'omte', 'Purpose takes om ... te, and te stands directly in front of zien.'), '.'] },
-      { en: 'I forgot to walk the dogs.', parts: ['Ik ben vergeten de honden', FK(['uit te laten', 'uitte laten', 'te uitlaten'], 0, 'sep',
+      { en: 'I forgot to walk the dogs.', parts: ['Ik ben vergeten de honden', FK(['uit te laten', 'te uitlaten'], 0, 'sep',
         'With a separable verb te goes between the prefix and the verb: uit te laten.'), '.'] },
 
       // ---- builds: conditions with als ... dan, was and zouden, polite zou
@@ -9293,7 +9293,7 @@
         w: 'zal nu wel is a guess about now: she is probably tired. Wants would be wil.' },
       { read: true, nl: 'Volgens Paola is de bank te groot.', o: ['According to Paola the couch is too big.', 'Paola thinks that I find the couch too big.', 'Paola says the couch is big enough.'], a: 0, r: 'mening',
         w: 'volgens Paola is according to Paola, and te groot is too big. Big enough would be groot genoeg.' },
-      { read: true, nl: 'Er zit een scheur in de muur sinds de beving.', en: 'There has been a crack in the wall since the quake.' },
+      { read: true, nl: 'Er zit een scheur in de muur.', en: 'There is a crack in the wall.' },
       { read: true, nl: 'Ik vind dat het te vroeg is om op te staan.', en: 'I think it is too early to get up.' },
       { read: true, nl: 'Hoe was je dag? Kon minder.', en: 'How was your day? Could be worse.' },
 

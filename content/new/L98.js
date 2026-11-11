@@ -47,7 +47,7 @@
       // ---- builds: te plus infinitive, om ... te
       { en: 'I have no time to look at seals.', parts: ['Ik heb geen tijd om naar zeehonden', FK(['te kijken', 'kijken te'], 0, 'omte', 'te sits right before the infinitive at the very end: te kijken.'), '.'] },
       { en: 'We cycle to the beach to see seals.', parts: ['We fietsen naar het strand om zeehonden', FK(['te zien', 'zien'], 0, 'omte', 'Purpose takes om ... te, and te stands directly in front of zien.'), '.'] },
-      { en: 'I forgot to walk the dogs.', parts: ['Ik ben vergeten de honden', FK(['uit te laten', 'uitte laten', 'te uitlaten'], 0, 'sep',
+      { en: 'I forgot to walk the dogs.', parts: ['Ik ben vergeten de honden', FK(['uit te laten', 'te uitlaten'], 0, 'sep',
         'With a separable verb te goes between the prefix and the verb: uit te laten.'), '.'] },
 
       // ---- builds: conditions with als ... dan, was and zouden, polite zou

@@ -142,11 +142,11 @@ got
 ut
 # Groningen greeting
 moi
-# Maastricht: curse and goodbye
+# Maastricht: mild curse (Wikipedia, Maastrichtian dialect)
 noondezju
-salu
-# Flemish and Limburg grandma; native review point 5
+# Flemish and Limburg grandma and grandpa; native review point 5, Wiktionary Maastrichtian bomma, bompa
 bomma
+bompa
 # Brabant and Rotterdam: a cup of coffee, to throw
 bakkie
 pleur

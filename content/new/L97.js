@@ -36,8 +36,8 @@
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the very end of the clause
       { en: 'The sheep that has lived here for years knows everyone.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so the pointer is dat: het schaap dat.'), 'al jaren', FK(['hier woont', 'woont hier'], 0, 'bijzin',
-        'A relative clause is a sub-clause: the verb goes to the end, hier woont.'), ', kent iedereen.'] },
+        'schaap is a het-word, so the pointer is dat: het schaap dat.'), 'hier', FK(['al jaren woont', 'woont al jaren'], 0, 'bijzin',
+        'A relative clause is a sub-clause: the verb goes to the end, hier al jaren woont.'), ', kent iedereen.'] },
       { en: 'The man I met yesterday is a farmer.', parts: ['De man', FK(['die', 'dat'], 0, 'diedat',
         'man is a de-word, so die.'), 'ik gisteren', FK(['ontmoette', 'ontmoetten', 'ontmoet'], 0, 'imp', 'ontmoet ends in t, so the past takes -te, and ik takes no -n: ontmoette.'), ', is boer.'] },
       { en: 'The tourists who come too late miss the boat.', parts: ['De toeristen', FK(['die', 'dat'], 0, 'diedat',

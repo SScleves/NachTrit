@@ -27,7 +27,7 @@
         { en: 'Every evening I walk the dogs.', parts: ['Elke avond', FK(['laat', 'uitlaat'], 0, 'sep',
           'uitlaten splits in the present: laat in slot 2, uit at the very end.'), 'ik de honden uit.'] },
         { en: 'The Dom wakes me up every morning.', parts: ['De Dom', FK(['maakt', 'maken', 'maak'], 0, 'sep', 'One Dom, so stem plus t: maakt, and wakker waits at the end.'), 'me elke ochtend wakker.'] },
-        { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt', 'opbelt Paola'], 0, 'v2',
+        { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt'], 0, 'v2',
           'A time in slot 1 pushes Paola behind the verb: belt Paola.'), 'haar moeder', FK(['op', 'opbellen'], 0, 'sep',
           'opbellen splits in the present. Only op goes to the end.'), '.'] },
         { en: 'The neighbours are coming round tonight.', parts: ['De buren', FK(['komen', 'langskomen'], 0, 'sep', 'langskomen splits: komen in slot 2, langs at the end.'), 'vanavond langs.'] },
@@ -90,7 +90,7 @@
         { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
         // ---- de of het
-        { dehet: true, nl: 'gordijn', art: 'het', en: 'the curtain' },
+        { dehet: true, nl: 'huis', art: 'het', en: 'the house' },
         { dehet: true, nl: 'kussen', art: 'het', en: 'the cushion', w: 'het kussen. Only the plural is de: de kussens.' },
       ] },
   ]);

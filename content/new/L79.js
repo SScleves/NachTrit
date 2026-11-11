@@ -33,7 +33,7 @@
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip
       { en: 'Last year I worked at a bank in Rotterdam.', parts: ['Vorig jaar', FK(['werkte', 'werkt', 'werkten'], 0, 'kof', 'Vorig jaar is past, so werkte; werkt is now and werkten is for more people.'), 'ik bij een bank in Rotterdam.'] },
-      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurden', 'duurt'], 0, 'kof', 'Gisteren asks for the past, and one meeting takes no -n: duurde.'), 'de vergadering twee uur.'] },
+      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurden', 'geduurd'], 0, 'kof', 'Gisteren asks for the past, and one meeting takes no -n: duurde. geduurd needs heeft.'), 'de vergadering twee uur.'] },
       { en: 'Last night there was an outage at the office.', parts: ['Gisteravond', FK(['was', 'waren', 'geweest'], 0, 'imp', 'zijn is irregular in the past: was for one thing, and one outage is one thing.'), 'er een storing op kantoor.'] },
       { en: 'Last night I went home late. The dogs were already waiting.', parts: ['Gisteravond', FK(['ging ik', 'ik ging'], 0, 'v2',
         'Gisteravond takes slot 1, so the verb comes second, then ik.'), 'laat naar huis. De honden', FK(['wachtten', 'wachtte', 'gewacht'], 0, 'kof', 'De honden is plural, so the past takes -ten: wachtten.'), 'al.'] },
@@ -82,7 +82,7 @@
       { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' }, { w: 'the screen', nl: 'het scherm', wrong: 'de scherm' },
       { w: 'the keyboard', nl: 'het toetsenbord' }, { w: 'the charger', nl: 'de oplader' },
       { w: 'the password', nl: 'het wachtwoord', wrong: 'de wachtwoord' }, { w: 'the meeting', nl: 'de vergadering' },
-      { w: 'the dashboard', nl: 'het dashboard', wrong: 'de dashboard' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
+      { w: 'the dashboard', nl: 'het dashboard' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
       { w: 'the colleagues', nl: "de collega's" }, { w: 'the desk', nl: 'het bureau' }, { w: 'the boss', nl: 'de baas' },
       { w: 'the customer', nl: 'de klant' }, { w: 'the alert', nl: 'de melding' }, { w: 'the outage', nl: 'de storing' },
       { w: 'the coffee machine', nl: 'het koffieapparaat' }, { w: 'the lunch break', nl: 'de lunchpauze' },

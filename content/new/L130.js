@@ -63,7 +63,7 @@
         'als sends the verb to the end of its clause: als ik het probeerde.'), ',', FK(['schakelden de Nederlanders', 'de Nederlanders schakelden'], 0, 'v2', 'The time clause fills slot 1, so the main clause starts with its verb.'), 'over op Engels, dus de taal', FK(['vertrok', 'vertrokken', 'vertrekken'], 0, 'imp',
         'vertrekken is irregular: vertrok, and one language takes no -en.'), '.'] },
       { en: 'The language said that nobody had let it speak for years.', parts: ['De taal zei', FK(['dat', 'of'], 0, 'indirect', 'zei dat reports a statement; of belongs to a reported question.', 'word'), 'niemand', FK(['hem', 'zich'], 0, 'obj',
-        'de taal is a de-word, so it is hem. zich would point back at niemand.'), 'jarenlang', FK(['had laten praten', 'had gelaten praten'], 0, 'perf',
+        'de taal is a de-word; in the Netherlands that is hem. zich would point back at niemand.'), 'jarenlang', FK(['had laten praten', 'had gelaten praten'], 0, 'perf',
         'laten plus another verb keeps both infinitives in the perfect: had laten praten.'), '.'] },
       { en: 'At dawn the bells of the Westertoren ring over the whole canal ring.', parts: ['Bij', FK(['zonsopgang', 'zonopgang'], 0, 'samen', 'zon and opgang are glued with an s, like zonsondergang.', 'spell'), FK(['luiden de klokken', 'de klokken luiden'], 0, 'v2',
         'Bij zonsopgang fills slot 1, so the verb comes second: luiden de klokken.'), 'van de Westertoren over de', FK(['hele', 'heel'], 0, 'adj',

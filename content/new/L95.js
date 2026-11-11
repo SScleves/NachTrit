@@ -42,7 +42,7 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that is already waiting wants to join the standup.', parts: ['Het schaap', FK(['dat al wacht', 'dat wacht al'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, wacht.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already in place wants to join the standup.', parts: ['Het schaap dat', FK(['al klaarstaat', 'staat al klaar'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, klaarstaat.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
       { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte', 'om ... te means in order to: om opens the clause, te comes before the last verb.', 'word'), 'de dashboards in de gaten', FK(['te houden', 'houden te'], 0, 'omte', 'te sits right in front of the infinitive: te houden.'), '.'] },
@@ -109,7 +109,7 @@
       { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
       // ---- de of het
-      { dehet: true, nl: 'rooster', art: 'het', en: 'the schedule', w: 'het rooster. The plural is de roosters, because every plural is de.' },
+      { dehet: true, nl: 'overleg', art: 'het', en: 'the consultation', w: 'het overleg. Learn it with its article: het overleg.' },
       { dehet: true, nl: 'wol', art: 'de', en: 'the wool' },
     ] }]);
 })();

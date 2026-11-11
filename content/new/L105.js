@@ -116,7 +116,7 @@
       { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
 
       // ---- de of het
-      { dehet: true, nl: 'ontmoeting', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de: de ontmoeting, de afspraak, de uitnodiging.' },
+      { dehet: true, nl: 'ontmoeting', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de: de ontmoeting, de uitnodiging, de vergadering.' },
       { dehet: true, nl: 'gezeur', art: 'het', en: 'the nagging', w: 'Most nouns starting with ge- are het: het gezeur, het gesprek, het gevoel.' },
     ] }]);
 })();

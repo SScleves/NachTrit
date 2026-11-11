@@ -54,7 +54,7 @@
         'More slowly is the comparative: langzaam, langzamer.'), 'praten?'] },
       { en: 'In Mokum the dead ring their bell when you are in the way, and once more to be sure.', parts: ['In Mokum', FK(['bellen de doden', 'de doden bellen'], 0, 'v2', 'In Mokum fills slot 1, so the verb comes second: bellen de doden.'), 'als je in de weg staat, en nog een keer', FK(['voor de zekerheid', 'voor het zekerheid', 'naar de zekerheid'], 0, 'idioom', 'voor de zekerheid means to be sure, and every -heid word is a de-word.'), '.'] },
       { en: "Cycling is not allowed here; you have to walk with your bike.", parts: ['Hier', FK(['mag je niet', 'hoef je niet'], 0, 'mag',
-        'Not allowed is mag niet. hoeven niet would need te and means not necessary.'), 'fietsen, je moet met de fiets', FK(['aan de hand', 'in de hand', 'op de hand'], 0, 'idioom',
+        'Not allowed is mag niet. hoeven niet would need te and means not necessary.'), 'fietsen, je moet met de fiets', FK(['aan de hand', 'bij de hand', 'op de hand'], 0, 'idioom',
         'met de fiets aan de hand lopen is how Dutch says walking your bike.'), 'lopen.'] },
 
       // ---- builds: the place itself
