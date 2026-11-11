@@ -33,7 +33,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 118, act: 12, name: 'Het station', town: 'nijmegen', place: 'station', theme: 'square', ...P,
     intro: 'In the oldest city in the country the trains are late the old-fashioned way. The mist changed nothing about that.',
@@ -52,58 +52,50 @@
         'toch at the end of a statement asks for a yes, like right? maar cannot end a question.'), '?'] },
       { en: 'The train is not running, but the bus is.', parts: ['De trein rijdt niet, maar de bus rijdt', FK(['wel', 'geen'], 0, 'soft',
         'wel answers a niet and says: this one does. geen needs a noun right after it.'), '.'] },
-      { en: "That's just how it is: in mist the trains are late.", parts: ['Het is', FK(['nou eenmaal', 'nou eenmalig'], 0, 'soft',
-        'nou eenmaal means that is how it is, and nothing can be done. eenmalig means one-off.'), 'zo: bij mist', FK(['zijn de treinen', 'de treinen zijn'], 0, 'v2',
+      { en: "That's just how it is: in mist the trains are late.", parts: ['Het is', FK(['nou eenmaal', 'nou ooit'], 0, 'soft', 'nou eenmaal means that is just how it is, and nothing changes it.'), 'zo: bij mist', FK(['zijn de treinen', 'de treinen zijn'], 0, 'v2',
         'Bij mist fills slot 1, so the verb comes second: zijn de treinen.'), 'te laat.'] },
-      { en: 'Excuse me, may I get past for a moment?', parts: ['Pardon, mag ik', FK(['er even langs', 'er langs even'], 0, 'soft',
-        'The little word er comes first, then even softens the request, and langs closes it: er even langs. Nothing comes after langs.'), '?'] },
+      { en: 'Excuse me, may I get past for a moment?', parts: ['Pardon, mag ik', FK(['er even langs', 'er langs even'], 0, 'soft', 'er comes first, then even, and langs closes it: er even langs.'), '?'] },
 
       // ---- builds: idioms
-      { en: 'We caught the train just in time.', parts: ['We haalden de trein', FK(['op het nippertje', 'bij het nippertje'], 0, 'idioom',
-        'Fixed phrase: op het nippertje means just in time. The preposition cannot be swapped.'), '.'] },
-      { en: 'If you miss the connection, nobody helps you: you fall between two stools.', parts: ['Als je de overstap mist,', FK(['dan val je', 'dan je valt', 'dan valt je'], 0, 'bijzin',
-        'After an als-clause the main clause may start with dan, and then the verb comes right after it: dan val je. With je after it, the verb loses its -t.'), FK(['tussen wal en schip', 'tussen wal en boot', 'tussen kade en schip'], 0, 'idioom',
-        'Fixed phrase from a river country: tussen wal en schip vallen, to fall between the quay and the ship.'), '.'] },
-      { en: "Excuse me, I'm lost. Could you help me?", parts: ['Pardon, ik ben de weg', FK(['kwijt', 'verdwaald'], 0, 'idioom',
-        'de weg kwijt zijn is the fixed way to say you are lost. verdwaald takes no object: ik ben verdwaald.'), '. Zou u mij kunnen helpen?'] },
-      { en: 'Nijmegen is the oldest city in the Netherlands, but Maastricht thinks otherwise.', parts: ['Nijmegen is de', FK(['oudste', 'oudst', 'meest oud'], 0, 'vergelijk',
-        'After de the superlative takes -ste: de oudste stad.'), 'stad van Nederland, maar Maastricht', FK(['denkt van niet', 'denkt niet van', 'denkt geen'], 0, 'idioom',
-        'denkt van niet is the fixed way to say thinks otherwise, with van before niet.'), '.'] },
+      { en: 'Yesterday we caught the train just in time.', parts: ['Gisteren', FK(['haalden we', 'we haalden'], 0, 'v2',
+        'Gisteren fills slot 1, so the verb comes second: haalden we.'), 'de trein', FK(['op', 'bij'], 0, 'idioom',
+        'op het nippertje means just in time, and it always takes op.'), 'het nippertje.'] },
+      { en: 'If you miss the connection, nobody helps you: you fall between two stools.', parts: ['Als je de overstap mist,', FK(['dan val je', 'dan valt je'], 0, 'presens',
+        'When je comes right after the verb, the t drops: dan val je.'), 'tussen wal en', FK(['schip', 'boot'], 0, 'idioom',
+        'tussen wal en schip vallen: between quay and ship, and the saying always has schip.'), '.'] },
+      { en: "Excuse me, I'm lost. Could you help me?", parts: ['Pardon, ik ben de weg', FK(['kwijt', 'verdwaald'], 0, 'idioom', 'de weg kwijt zijn is the fixed way to say you are lost.'), '. Zou u mij kunnen helpen?'] },
+      { en: 'Nijmegen is the oldest city in the Netherlands, but Maastricht thinks otherwise.', parts: ['Nijmegen is de', FK(['oudste', 'oudst', 'ouder'], 0, 'vergelijk',
+        'After de the superlative takes -ste: de oudste stad.'), 'stad van Nederland, maar Maastricht denkt', FK(['van niet', 'niet van'], 0, 'idioom',
+        'denken van niet means to think otherwise, with van before niet.'), '.'] },
 
       // ---- builds: compound nouns
       { en: 'At the ticket machine on the station square the queue is long.', parts: ['Bij', FK(['de', 'het'], 0, 'samen',
-        'kaart + automaat: automaat is de, so de kaartautomaat.'), 'kaartautomaat op', FK(['het stationsplein', 'het stationplein', 'de stationsplein'], 0, 'samen',
-        'station + s + plein: the linking s stays in, and plein is het, so het stationsplein.'), 'is de rij lang.'] },
+        'kaart + automaat: automaat is de, so de kaartautomaat.'), 'kaartautomaat op', FK(['het stationsplein', 'het stationplein'], 0, 'samen', 'station and plein are glued with an s: het stationsplein.', 'spell'), 'is de rij lang.'] },
 
       // ---- builds: the formal register
       { en: 'Good afternoon, may I see your ticket?', parts: ['Goedemiddag, mag ik', FK(['uw', 'u'], 0, 'formeel',
         'With u the possessive is uw: uw vervoersbewijs. u alone is the person, not what belongs to them.'), 'vervoersbewijs zien?'] },
-      { en: 'Dear Ms De Vries, I am writing to you about my delayed train.', parts: [FK(['Geachte', 'Geacht'], 0, 'formeel',
-        'mevrouw is a person and a de-word, so the adjective takes -e: Geachte mevrouw.'), 'mevrouw De Vries, ik schrijf u over mijn', FK(['vertraagde', 'vertraagd', 'vertraagt'], 0, 'adj',
+      { en: 'Dear Ms De Vries, I am writing to you about my delayed train.', parts: [FK(['Geachte', 'Geacht'], 0, 'adj', 'mevrouw is a de-word, so the adjective takes -e: Geachte mevrouw.'), 'mevrouw De Vries, ik schrijf u over mijn', FK(['vertraagde', 'vertraagd', 'vertraagt'], 0, 'adj',
         'After mijn the adjective always takes -e: mijn vertraagde trein.'), 'trein.'] },
       { en: 'Thank you in advance for your reply. Kind regards, Santi Sanchez.', parts: [FK(['Bij voorbaat', 'Bij vooruit', 'Op voorbaat'], 0, 'formeel',
         'Bij voorbaat dank is the fixed formal line for thanks in advance.'), 'dank voor uw antwoord. Met vriendelijke groet, Santi Sanchez.'] },
-      { en: 'Could you tell me how I get to the Valkhof?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
-        'u takes the singular verb, like jij: zou u. zouden is plural.'), 'mij kunnen zeggen', FK(['hoe ik bij het Valkhof kom', 'hoe kom ik bij het Valkhof'], 0, 'bijzin',
-        'A question inside a question becomes a sub-clause, so the verb goes to the end: hoe ik ... kom.'), '?'] },
+      { en: 'Could you tell me what time it is?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
+        'u takes the singular verb, like jij: zou u. zouden is plural.'), 'mij kunnen zeggen hoe laat', FK(['het is', 'is het'], 0, 'bijzin',
+        'A question inside a question becomes a sub-clause, so the verb goes to the end.'), '?'] },
 
       // ---- builds: the Vierdaagse
       { en: 'The Vierdaagse has been walked since 1909.', parts: ['De Vierdaagse', FK(['wordt', 'worden'], 0, 'passief',
-        'De Vierdaagse is one event, so wordt. The participle comes at the end.'), 'al sinds 1909', FK(['gelopen', 'geloopt', 'gelopt'], 0, 'perf',
-        'lopen is irregular: gelopen.'), '.'] },
+        'De Vierdaagse is one event, so wordt. The participle comes at the end.'), 'al sinds 1909', FK(['gelopen', 'lopen', 'liep'], 0, 'perf', 'After wordt the participle closes the clause: lopen, gelopen.'), '.'] },
       { en: 'The first Vierdaagse was in 1909, the hundredth in 2016.', parts: ['De', FK(['eerste', 'één'], 0, 'datum',
-        'The first is eerste. één counts, it does not put things in order.'), 'Vierdaagse was in 1909, de', FK(['honderdste', 'honderd', 'honderdtste'], 0, 'datum',
-        'Most ordinals end in -ste after a round number: de honderdste, de twintigste.'), 'in 2016.'] },
+        'The first is eerste. één counts, it does not put things in order.'), 'Vierdaagse was in 1909, de', FK(['honderdste', 'duizendste', 'tiende'], 0, 'datum', 'The hundredth is de honderdste: honderd plus -ste.'), 'in 2016.'] },
       { en: 'On Friday the walkers get gladioli along the Via Gladiola.', parts: ['Op vrijdag', FK(['krijgen de wandelaars', 'de wandelaars krijgen'], 0, 'v2',
-        'Op vrijdag fills slot 1, so the verb comes second: krijgen de wandelaars.'), FK(['gladiolen', 'gladioolen', 'gladiolens'], 0, 'meervoud',
-        'de gladiool becomes gladiolen: the syllable is open, so one o is enough.'), 'langs de Via Gladiola.'] },
+        'Op vrijdag fills slot 1, so the verb comes second: krijgen de wandelaars.'), FK(['gladiolen', 'gladioolen', 'gladiolens'], 0, 'meervoud', 'de gladiool becomes gladiolen: the syllable is open, so one o is enough.', 'spell'), 'langs de Via Gladiola.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'The road to the Stevenskerk is steeper than you think.', parts: ['De weg naar de Stevenskerk is', FK(['steiler', 'steilder', 'meer steil'], 0, 'vergelijk',
-        'A short adjective takes -er: steil becomes steiler. -der only comes after an r.'), 'dan je denkt.'] },
-      { en: 'Paola said that she had missed the bus.', parts: ['Paola zei', FK(['dat', 'of'], 0, 'indirect',
-        'zei dat reports a statement. of belongs to a reported question.'), FK(['ze de bus gemist had', 'ze had de bus gemist', 'had ze de bus gemist'], 0, 'bijzin',
-        'After dat the verbs go to the end: ze de bus gemist had.'), '.'] },
+      { en: 'The road to the Stevenskerk is steeper than you think.', parts: ['De weg naar de Stevenskerk is', FK(['steiler', 'steilst', 'steil'], 0, 'vergelijk', 'Comparing with dan takes -er: steil, steiler dan.'), 'dan je denkt.'] },
+      { en: 'Paola said that the bus had already gone.', parts: ['Paola zei', FK(['dat', 'of'], 0, 'indirect',
+        'zei dat reports a statement; of belongs to a reported question.', 'word'), 'de bus al', FK(['weg was', 'was weg'], 0, 'bijzin',
+        'After dat the verb goes to the end: dat de bus al weg was.'), '.'] },
       { en: 'The last train to Arnhem leaves at 11:45.', parts: ['De laatste trein naar Arnhem vertrekt om', FK(['kwart voor twaalf', 'kwart over twaalf', 'kwart voor elf'], 0, 'klok',
         'Eleven forty-five is a quarter before twelve: kwart voor twaalf.'), '.'] },
 

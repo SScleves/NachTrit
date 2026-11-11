@@ -17,7 +17,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 58, act: 4, name: 'De Deltawerken', town: 'zeeland', place: 'eigen', theme: 'dyke', ...P,
     intro: 'Zeeland built 62 doors in the sea to keep the water out. The mist came in through the letterbox.',
@@ -51,14 +51,14 @@
       { w: 'the helmet', nl: 'de helm' },
 
       // ---- builds: er is / er zijn
-      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Sixty-two doors is plural, so er zijn.'), 'tweeënzestig deuren in de zee.'] },
-      { en: 'There is a museum in Ouwerkerk.', parts: ['Er', FK(['is', 'zijn'], 0, 'eris', 'One museum, so er is.'), 'een museum in Ouwerkerk.'] },
-      { en: 'Tonight there is a storm at sea.', parts: ['Vannacht', FK(['is er', 'er is', 'zijn er'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it. One storm, so is.'), 'een storm op zee.'] },
+      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
+      { en: 'There is a museum in Ouwerkerk.', parts: ['In Ouwerkerk', FK(['is er', 'er is'], 0, 'v2', 'In Ouwerkerk takes slot 1, so the verb comes next and er follows it.'), 'een museum.'] },
+      { en: 'Tonight there is a storm at sea.', parts: ['Vannacht', FK(['is er', 'er is'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it.'), 'een storm op zee.'] },
 
       // ---- builds: comparing
       { en: 'The sea is bigger than the river.', parts: ['De zee is', FK(['groter', 'groot', 'grootst'], 0, 'vergelijk', 'Two things with dan between them: add -er, groter.'), 'dan de rivier.'] },
       { en: 'The women are still taller than me.', parts: ['De vrouwen zijn nog steeds', FK(['langer', 'lang', 'langst'], 0, 'vergelijk', 'Comparing two with dan: lang plus -er, langer.'), 'dan ik.'] },
-      { en: 'The Oosterscheldekering is the biggest.', parts: ['De Oosterscheldekering is', FK(['het grootst', 'de grootst', 'het groter'], 0, 'vergelijk', 'With no dan and no noun after it, the top step is het plus -st: het grootst.'), '.'] },
+      { en: 'The Oosterscheldekering is the biggest.', parts: ['De Oosterscheldekering is', FK(['het grootst', 'het groter', 'het groot'], 0, 'vergelijk', 'With no dan and no noun after it, the top step is het plus -st.'), '.'] },
       { en: 'A Zeeland bolus is sweeter than a stroopwafel.', parts: ['Een Zeeuwse bolus is', FK(['zoeter', 'zoet', 'zoetst'], 0, 'vergelijk', 'Two things with dan between them: zoet plus -er, zoeter.'), 'dan een stroopwafel.'] },
       { en: 'The barrier is stronger than the old dyke.', parts: ['De kering is', FK(['sterker', 'sterk', 'sterkst'], 0, 'vergelijk', 'Comparing two with dan: sterk plus -er, sterker.'), 'dan de',
         FK(['oude', 'oud'], 0, 'adj', 'de dijk, adjective in front of the noun: -e, de oude dijk.'), 'dijk.'] },
@@ -70,7 +70,7 @@
 
       // ---- builds: object pronouns
       { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'objpron', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
-      { en: "I can't see her in the mist.", parts: ['Ik zie', FK(['haar', 'zij'], 0, 'objpron', 'After the verb, her is haar. zij only does things herself.'), 'niet in de mist.'] },
+      { en: "In the mist I can't see her.", parts: ['In de mist', FK(['zie ik', 'ik zie'], 0, 'v2', 'In de mist takes slot 1, so the verb comes second, then ik.'), 'haar niet.'] },
       { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'objpron', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
       { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'objpron', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
       { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'objpron', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },

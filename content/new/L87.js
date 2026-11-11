@@ -19,7 +19,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 87, act: 8, name: 'Het werk', town: 'urk', place: 'werk', theme: 'dyke', ...P,
     intro: 'On Urk even the outages keep the Sunday rest. The standup starts on Monday at nine, and the dead are already in their seats.',
@@ -30,62 +30,47 @@
       want: 'The mist came and everyone who spoke Dutch changed. On Urk they now hold the standup in sub-clauses: omdat, dat, als, and the verb sails to the very end of the sentence like a cutter and does not come back before Monday. The women in their Sunday dress are still taller than you, and the dead keep the front row, in their Sunday clothes.' },
     items: [
       // ---- builds: omdat, want, dat (the verb goes to the end, or it stays second)
-      { en: "I'm late because the cutter is blocking the harbour.", parts: ['Ik ben te laat', FK(['omdat de kotter de haven blokkeert', 'omdat de kotter blokkeert de haven', 'omdat blokkeert de kotter de haven'], 0, 'bijzin',
-        'omdat sends the verb to the very end: omdat de kotter de haven blokkeert.'), '.'] },
-      { en: "I work at home because the wifi at the office doesn't work.", parts: ['Ik werk thuis', FK(['omdat', 'want'], 0, 'bijzin',
-        'omdat sends doet to the end, as here. want would keep it second: want de wifi doet het niet.'), 'de wifi op kantoor het niet doet.'] },
-      { en: 'Mark says the server works again.', parts: ['Mark zegt', FK(['dat de server weer werkt', 'dat de server werkt weer', 'dat werkt de server weer'], 0, 'bijzin',
-        'dat opens a sub-clause, so werkt is not second but goes to the end: dat de server weer werkt.'), '.'] },
-      { en: "I'm tired because I solved an outage last night.", parts: ['Ik ben moe', FK(['omdat ik vannacht een storing heb opgelost', 'omdat ik heb vannacht een storing opgelost', 'omdat ik vannacht een storing opgelost'], 0, 'bijzin',
-        'In a sub-clause the helper heb goes to the end with the participle, and it may not be missing: heb opgelost.'), '.'] },
-      { en: 'My boss says I may work from home today.', parts: ['Mijn baas zegt', FK(['dat ik vandaag thuis mag werken', 'dat ik mag vandaag thuis werken', 'dat ik vandaag thuis te werken mag'], 0, 'bijzin',
-        'After dat the verbs go to the end: mag werken. No te after a modal.'), '.'] },
+      { en: "I'm late because the cutter is blocking the harbour.", parts: ['Ik ben te laat omdat de kotter', FK(['de haven blokkeert', 'blokkeert de haven'], 0, 'bijzin', 'omdat sends the verb to the very end: de haven blokkeert.'), '.'] },
+      { en: "I work at home because the wifi at the office doesn't work.", parts: ['Ik werk thuis', FK(['omdat', 'want'], 0, 'bijzin', 'omdat sends doet to the end, as here; want would keep it second.', 'word'), 'de wifi op kantoor het niet doet.'] },
+      { en: 'Mark says the server works again.', parts: ['Mark zegt dat de server', FK(['weer werkt', 'werkt weer'], 0, 'bijzin', 'dat opens a sub-clause, so werkt goes to the end: weer werkt.'), '.'] },
+      { en: "I'm tired because I solved an outage last night.", parts: ['Ik ben moe omdat ik vannacht een storing', FK(['heb opgelost', 'opgelost'], 0, 'bijzin', 'The helper heb cannot be left out: heb opgelost goes to the end together.', 'word'), '.'] },
+      { en: 'My boss says I may work from home today.', parts: ['Mijn baas zegt dat ik vandaag', FK(['thuis mag werken', 'mag thuis werken'], 0, 'bijzin', 'After dat the verbs go to the end: thuis mag werken.'), '.'] },
 
       // ---- builds: als, toen, terwijl, voordat, and the main clause that follows
       { en: 'If there is an outage on Sunday, I wait until Monday.', parts: ['Als er op zondag een storing', FK(['is', 'zijn', 'ben'], 0, 'zijn',
-        'een storing is one thing, so is. zijn is for several, ben for ik.'), ',', FK(['wacht ik', 'ik wacht'], 0, 'bijzin',
+        'een storing is one thing, so is. zijn is for several, ben for ik.'), ',', FK(['wacht ik', 'ik wacht'], 0, 'v2',
         'When the sub-clause comes first, the main clause starts with its verb: wacht ik.'), 'tot maandag.'] },
-      { en: 'When I got to the fish auction, the colleagues were already at the table.', parts: ['Toen ik bij de visafslag', FK(['kwam', 'kwamen', 'komde'], 0, 'bijzin',
-        'toen sends the verb to the end, and komen is irregular in the past: ik kwam.'), ',', FK(["zaten de collega's", "de collega's zaten"], 0, 'bijzin',
+      { en: 'When I got to the fish auction, the colleagues were already at the table.', parts: ['Toen ik bij de visafslag', FK(['kwam', 'kwamen', 'kom'], 0, 'bijzin', 'komen is irregular in the past: ik kwam, at the end of the toen clause.', 'past'), ',', FK(["zaten de collega's", "de collega's zaten"], 0, 'bijzin',
         'The sub-clause came first, so the next clause starts with its verb: zaten de collega\'s.'), 'al aan tafel.'] },
-      { en: 'While I am building a dashboard, the dogs sleep under my desk.', parts: ['Terwijl ik een dashboard', FK(['aan het bouwen ben', 'aan het ben bouwen'], 0, 'bijzin',
-        'terwijl sends the verb to the end, even behind aan het bouwen: aan het bouwen ben. aan het and its infinitive stay together.'), ',', FK(['slapen de honden', 'de honden slapen'], 0, 'bijzin',
+      { en: 'While I am building a dashboard, the dogs sleep under my desk.', parts: ['Terwijl ik een dashboard aan het', FK(['bouwen ben', 'ben bouwen'], 0, 'bijzin', 'aan het and its infinitive stay together, and terwijl sends ben to the end.'), ',', FK(['slapen de honden', 'de honden slapen'], 0, 'bijzin',
         'The sub-clause is first, so the main clause begins with its verb: slapen de honden.'), 'onder mijn bureau.'] },
-      { en: 'I first get a coffee before I start.', parts: ['Ik haal eerst koffie', FK(['voordat ik begin', 'voordat begin ik', 'voordat ik beginnen'], 0, 'bijzin',
-        'voordat sends the verb to the end, and ik takes begin: voordat ik begin.'), '.'] },
-      { en: 'When it blows hard, the cutters stay in the harbour.', parts: [FK(['Als', 'Toen'], 0, 'bijzin',
-        'toen is for one moment in the past. waait is the present, so als.'), 'het hard waait,', FK(['blijven de kotters', 'de kotters blijven'], 0, 'bijzin',
+      { en: 'I first get a coffee before I start.', parts: ['Ik haal eerst koffie', FK(['voordat ik begin', 'voordat begin ik'], 0, 'bijzin', 'voordat sends the verb to the end: voordat ik begin.'), '.'] },
+      { en: 'When it blows hard, the cutters stay in the harbour.', parts: [FK(['Als', 'Toen'], 0, 'bijzin', 'toen is for one moment in the past; waait is the present, so als.', 'word'), 'het hard waait,', FK(['blijven de kotters', 'de kotters blijven'], 0, 'bijzin',
         'The sub-clause comes first, so the main clause starts with its verb: blijven de kotters.'), 'in de haven.'] },
       { en: 'If it stays dry on Saturday, I will go golfing with Paola.', parts: ['Als het zaterdag droog', FK(['blijft', 'blijf', 'blijven'], 0, 'presens',
-        'het takes the hij-form: blijft, with the t.'), ',', FK(['ga ik', 'ik ga'], 0, 'bijzin',
+        'het takes the hij-form: blijft, with the t.'), ',', FK(['ga ik', 'ik ga'], 0, 'v2',
         'After a sub-clause the main clause starts with its verb: ga ik.'), 'met Paola golfen.'] },
 
       // ---- builds: want and maar keep V2
-      { en: 'I wanted to start early, but the mist was too thick.', parts: ['Ik', FK(['wilde', 'wildde'], 0, 'imp',
-        'wil ends in l, not a ketchup letter, so the past is wilde.'), 'vroeg beginnen,', FK(['maar de mist was te dik', 'maar de mist te dik was', 'maar was de mist te dik'], 0, 'bijzin',
-        'maar is not a sub-clause word. Normal order stays, the verb is second: de mist was.'), '.'] },
+      { en: 'I wanted to start early, but the mist was too thick.', parts: ['Ik', FK(['wilde', 'wildde'], 0, 'imp', 'wil ends in l, not a ketchup letter, so the past is wilde.', 'spell'), 'vroeg beginnen, maar de mist', FK(['was te dik', 'te dik was'], 0, 'bijzin', 'maar is not a sub-clause word, so was stays second: de mist was.'), '.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'Yesterday there was an outage at the fish auction.', parts: ['Gisteren', FK(['was er', 'er was', 'waren er'], 0, 'v2',
-        'Gisteren takes slot 1, so the verb comes second, then er. One outage, so was.'), 'een storing bij de visafslag.'] },
+      { en: 'Yesterday there was an outage at the fish auction.', parts: ['Gisteren', FK(['was er', 'er was'], 0, 'v2', 'Gisteren takes slot 1, so the verb comes second, then er.'), 'een storing bij de visafslag.'] },
       { en: 'This morning I reconfigured the alerts.', parts: ['Vanmorgen', FK(['heb ik', 'ik heb'], 0, 'v2',
-        'Vanmorgen takes slot 1, so heb comes second, then ik.'), 'de alerts opnieuw', FK(['ingesteld', 'ingestelt'], 0, 'sep',
-        'The ge goes in the middle: in + gesteld, one word. stel ends in l, so -d.'), '.'] },
+        'Vanmorgen takes slot 1, so heb comes second, then ik.'), 'de alerts opnieuw', FK(['ingesteld', 'ingestelt'], 0, 'sep', 'stel ends in l, not a ketchup letter, so -d: ingesteld.', 'spell'), '.'] },
       { en: "I'm staying home today because I don't feel well.", parts: ['Ik blijf vandaag thuis omdat ik', FK(['me', 'zich'], 0, 'refl',
         'voelen is reflexive and the self word matches ik: ik voel me. zich is for hij, zij, het.'), 'niet lekker', FK(['voel', 'voelt'], 0, 'presens',
         'ik takes the bare stem: voel, no t.'), '.'] },
       { en: 'Could you help me before the standup starts?', parts: ['Zou je me', FK(['kunnen', 'kan', 'kon'], 0, 'zou',
-        'zou is the polite opener and the next verb stays an infinitive: zou je kunnen.'), 'helpen', FK(['voordat de standup begint', 'voordat begint de standup'], 0, 'bijzin',
-        'voordat sends the verb to the end: voordat de standup begint.'), '?'] },
-      { en: 'I would rather work on the cutter because the wifi is faster there.', parts: ['Ik werk', FK(['liever', 'graager', 'meer graag'], 0, 'vergelijk',
-        'graag, liever, liefst: the comparative of graag is liever.'), 'op de kotter', FK(['omdat de wifi daar sneller is', 'omdat de wifi daar is sneller'], 0, 'bijzin',
+        'zou is the polite opener and the next verb stays an infinitive: zou je kunnen.'), 'helpen voordat', FK(['de standup begint', 'begint de standup'], 0, 'bijzin', 'voordat sends the verb to the end: voordat de standup begint.'), '?'] },
+      { en: 'I would rather work on the cutter than at home, because the wifi is faster there.', parts: ['Ik werk', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk',
+        'With dan you compare, and the comparative of graag is liever.'), 'op de kotter dan thuis, omdat de wifi daar', FK(['sneller is', 'is sneller'], 0, 'bijzin',
         'omdat sends the verb to the very end: sneller is.'), '.'] },
       { en: "I have no time today because I'm in meetings all day.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
         'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd', FK(['omdat ik de hele dag in vergaderingen zit', 'omdat ik zit de hele dag in vergaderingen', 'omdat zit ik de hele dag in vergaderingen'], 0, 'bijzin',
         'omdat sends the verb to the end: omdat ik de hele dag in vergaderingen zit.'), '.'] },
       { en: 'On Sunday all the colleagues went to church, so there was nobody at the office.', parts: ['Zondag', FK(['zijn', 'hebben'], 0, 'aux',
-        'Going somewhere takes zijn: zijn gegaan.'), "alle collega's naar de kerk", FK(['gegaan', 'gegaat'], 0, 'perf',
-        'gaan has its own participle: gegaan.'), ', dus er was niemand op kantoor.'] },
+        'Going somewhere takes zijn: zijn gegaan.'), "alle collega's naar de kerk", FK(['gegaan', 'gaan', 'gingen'], 0, 'perf', 'gaan has its own participle: gegaan.'), ', dus er was niemand op kantoor.'] },
 
       // ---- words: the incident, the laptop, the harbour office
       { w: 'the incident', nl: 'het incident', wrong: 'de incident' }, { w: 'the standup', nl: 'de standup' },

@@ -14,7 +14,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers here mean the same
   //   thing: no de regen next to de bui, no de baan next to de golfbaan, no de bal next to het balletje, no de sloot
   //   next to the water prop. `wrong` sits only on nouns whose other article is wrong in every variety of Dutch.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
 
   window.extendLevel(47, { deliveries: 20, items: [
@@ -49,10 +49,10 @@
     { look: true, prop: 'nummer', value: 14, nl: 'veertien', en: '14' },
 
     // builds: one fork each, on the number, the article or the present tense
-    { en: 'My handicap is 20.', parts: ['Ik speel handicap', FK(['twintig', 'tweetig', 'twaalf'], 0, 'getal', '20 is twintig. There is no tweetig, and twaalf is 12.'), '.'] },
+    { en: 'My handicap is 20.', parts: ['Ik speel handicap', FK(['twintig', 'twaalf', 'tweeëntwintig'], 0, 'getal', '20 is twintig; twaalf is 12 and tweeëntwintig is 22.'), '.'] },
     { en: 'The subscription costs € 30.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Words ending in -ment are het: het abonnement, het moment.'), 'abonnement kost dertig euro.'] },
     { en: 'The dogs always pull.', parts: ['De honden', FK(['trekken', 'trekt', 'trek'], 0, 'pres', 'Two dogs, plural: the whole infinitive, trekken.'), 'altijd.'] },
-    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt', 'sporten'], 0, 'pres', 'Paola is a zij, so stem plus t. The stem sport already ends in t, so it stays sport.'), 'op zondag.'] },
+    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt'], 0, 'pres', 'The stem sport already ends in t, and Dutch never writes tt at the end.', 'spell'), 'op zondag.'] },
     { en: 'I cycle to the gym.', parts: ['Ik', FK(['fiets', 'fietst', 'fietsen'], 0, 'pres', 'ik takes the bare stem: fiets, the same word as de fiets.'), 'naar de sportschool.'] },
 
     // ---- second pass: the bike on the dyke path, the polder animals, the weather on the course, the sore legs after

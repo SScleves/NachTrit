@@ -10,7 +10,7 @@ export const VOICE = { rider: 'nl-NL-MaartenNeural', narrator: 'nl-NL-MaartenNeu
 export const voiceId = (voice, text) => crypto.createHash('sha1').update(voice + '|' + text, 'utf8').digest('hex').slice(0, 12);
 
 // load the classic scripts the way the browser does (bundles replaced by their source folders, as validate-content does)
-const listed = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]).filter(s => /^(data|levels|fares)\.js$|^content\/|^intro\/(art|panel-\d+)\.js$/.test(s));
+const listed = [...html.matchAll(/<script src="([^"?]+)(?:\?[^"]*)?"><\/script>/g)].map(m => m[1]).filter(s => /^(data|levels|fares)\.js$|^content\/|^intro\/(art|panel-\d+)\.js$/.test(s));
 const BUNDLES = { 'content/extra.js': 'content/extra', 'content/towns-new.js': 'content/new' };
 for (let i = 0; i < listed.length; i++) { const dir = BUNDLES[listed[i]]; if (dir && fs.existsSync(path.join(ROOT, dir))) { const files = fs.readdirSync(path.join(ROOT, dir)).filter(f => f.endsWith('.js')).sort().map(f => `${dir}/${f}`); listed.splice(i, 1, ...files); i += files.length - 1; } }
 const ctx = { console, Math, document: { createElement: () => ({ getContext: () => ({}) }) } }; ctx.window = ctx; vm.createContext(ctx);

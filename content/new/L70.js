@@ -11,7 +11,7 @@
 // New rules: none. aux, perf, kof, sep and mag come from data.js. New props: none (fiets, water, deur).
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 70, act: 6, name: 'Het station', town: 'denhaag', place: 'station', theme: 'street', ...P,
     intro: 'Since the mist, nobody at Den Haag Centraal asks when the train leaves. The dead only ask when it left, and why nobody said anything.',
@@ -22,29 +22,29 @@
     items: [
       // ---- builds: the perfectum, zijn or hebben, 't kofschip, irregular and separable participles
       { en: 'I missed the train.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux', 'missen is not movement to a place, so hebben: ik heb.'), 'de trein',
-        FK(['gemist', 'gemisd'], 0, 'kof', 'The stem mis ends in s, which is in soft ketchup, so -t: gemist.'), '.'] },
+        FK(['gemist', 'gemisd'], 0, 'kof', 'mis ends in s, a ketchup letter, so the participle ends in t: gemist.', 'spell'), '.'] },
       { en: 'Has the train to Rotterdam already left?', parts: [FK(['Is', 'Heeft'], 0, 'aux', 'vertrekken is movement, so it runs on zijn: is de trein vertrokken.'), 'de trein naar Rotterdam al',
-        FK(['vertrokken', 'gevertrokken'], 0, 'perf', 'Verbs that start with ver- take no ge-: vertrokken.'), '?'] },
+        FK(['vertrokken', 'vertrok', 'vertrekt'], 0, 'perf', 'vertrekken is irregular and takes no ge: vertrokken.'), '?'] },
       { en: 'At half past nine we arrived at Den Haag Centraal.', parts: ['Om half tien', FK(['zijn', 'hebben'], 0, 'aux', 'aankomen is arriving somewhere, so zijn.'), 'we op Den Haag Centraal',
-        FK(['aangekomen', 'geaankomen'], 0, 'sep', 'A separable verb tucks ge into the middle: aan-ge-komen.'), '.'] },
-      { en: 'Paola checked in at the gate.', parts: ['Paola heeft bij het poortje', FK(['ingecheckt', 'ingecheckd', 'incheckt'], 0, 'sep', 'in-ge-checkt: ge goes in the middle, and the stem ends in k, so -t.'), '.'] },
+        FK(['aangekomen', 'aankwamen', 'aankomen'], 0, 'sep', 'A separable verb puts ge between aan and the verb: aangekomen.'), '.'] },
+      { en: 'Paola checked in at the gate.', parts: ['Paola heeft bij het poortje', FK(['ingecheckt', 'ingecheckd'], 0, 'sep', 'check ends in k, a ketchup letter, so the participle ends in t: ingecheckt.', 'spell'), '.'] },
       { en: 'The dogs have never been on the tram.', parts: ['De honden', FK(['zijn', 'hebben'], 0, 'aux', 'zijn itself takes zijn in the perfectum: ze zijn geweest.'), 'nog nooit in de tram',
-        FK(['geweest', 'gezijn'], 0, 'perf', 'The participle of zijn is irregular: geweest.'), '.'] },
+        FK(['geweest', 'waren', 'zijn'], 0, 'perf', 'zijn is irregular: the participle is geweest.'), '.'] },
       { en: 'I took tram 1 to Scheveningen.', parts: ['Ik', FK(['ben', 'heb'], 0, 'aux', 'gaan is movement to a place, so zijn: ik ben gegaan.'), 'met tram 1 naar Scheveningen',
         FK(['gegaan', 'gaan'], 0, 'perf', 'gaan is irregular: the participle is gegaan, and it sits at the very end.'), '.'] },
       { en: 'Have you seen the conductor?', parts: [FK(['Heb', 'Ben'], 0, 'aux', 'zien is not movement, so hebben: heb je gezien.'), 'je de conducteur',
-        FK(['gezien', 'gezient'], 0, 'perf', 'gezien is irregular and ends in n, no t after it.'), '?'] },
-      { en: 'The train was twenty minutes late.', parts: ['De trein heeft twintig minuten vertraging', FK(['gehad', 'gehebt'], 0, 'perf', 'The participle of hebben is irregular: gehad.'), '.'] },
-      { en: 'I waited an hour on track five.', parts: ['Ik heb een uur op spoor vijf', FK(['gewacht', 'gewachtd'], 0, 'kof', 'The stem wacht already ends in t, so only ge- is added: gewacht. Not gewachtd.'), '.'] },
-      { en: 'Paola just called me.', parts: ['Paola heeft me net', FK(['opgebeld', 'geopbeld', 'opgebelt'], 0, 'sep', 'op-ge-beld: ge in the middle, and bel ends in l, not in soft ketchup, so -d.'), '.'] },
-      { en: 'I bought a return ticket to Rotterdam.', parts: ['Ik heb een retourtje Rotterdam', FK(['gekocht', 'gekoopt'], 0, 'perf', 'kopen is irregular: gekocht.'), '.'] },
+        FK(['gezien', 'zag', 'ziet'], 0, 'perf', 'zien is irregular: the participle is gezien.'), '?'] },
+      { en: 'The train was twenty minutes late.', parts: ['De trein heeft twintig minuten vertraging', FK(['gehad', 'had', 'heeft'], 0, 'perf', 'hebben is irregular: the participle is gehad.'), '.'] },
+      { en: 'I waited an hour on track five.', parts: ['Op spoor vijf', FK(['heb ik', 'ik heb'], 0, 'v2', 'Op spoor vijf takes slot 1, so the verb comes next, then ik.'), 'een uur', FK(['gewacht', 'gewachtd'], 0, 'kof', 'The stem wacht already ends in t, so nothing is added: gewacht.', 'spell'), '.'] },
+      { en: 'Paola just called me.', parts: ['Paola heeft me net', FK(['opgebeld', 'opbelde', 'opbelt'], 0, 'sep', 'A separable verb puts ge between op and the verb: opgebeld.'), '.'] },
+      { en: 'I bought a return ticket to Rotterdam.', parts: ['Ik heb een retourtje Rotterdam', FK(['gekocht', 'kocht', 'koop'], 0, 'perf', 'kopen is irregular: the participle is gekocht.'), '.'] },
       { en: 'What did you do in Den Haag?', parts: ['Wat', FK(['heb', 'ben'], 0, 'aux', 'doen is not movement, so hebben.'), 'je in Den Haag',
-        FK(['gedaan', 'gedoet'], 0, 'perf', 'doen is irregular: gedaan.'), '?'] },
-      { en: 'We ate fish on the Pier.', parts: ['We hebben op de Pier vis', FK(['gegeten', 'geëet'], 0, 'perf', 'eten is irregular: gegeten.'), '.'] },
+        FK(['gedaan', 'deed', 'doet'], 0, 'perf', 'doen is irregular: the participle is gedaan.'), '?'] },
+      { en: 'We ate fish on the Pier.', parts: ['Op de Pier', FK(['hebben we', 'we hebben'], 0, 'v2', 'Op de Pier takes slot 1, so the verb comes next, then we.'), 'vis', FK(['gegeten', 'aten', 'eten'], 0, 'perf', 'eten is irregular: the participle is gegeten.'), '.'] },
       { en: 'The politicians got off at the Binnenhof.', parts: ['De politici', FK(['zijn', 'hebben'], 0, 'aux', 'uitstappen is moving out of the tram, so zijn.'), 'bij het Binnenhof',
-        FK(['uitgestapt', 'geuitstapt'], 0, 'sep', 'uit-ge-stapt: ge goes between the prefix and the stem.'), '.'] },
-      { en: 'I changed trains in Rotterdam.', parts: ['Ik ben in Rotterdam', FK(['overgestapt', 'geoverstapt', 'overgestapd'], 0, 'sep', 'over-ge-stapt: ge in the middle, and stap ends in p, so -t.'), '.'] },
-      { en: 'We travelled by train all day.', parts: ['We hebben de hele dag met de trein', FK(['gereisd', 'gereist'], 0, 'kof', 'reizen has the stem reis, but the sound underneath is z, so -d: gereisd.'), '.'] },
+        FK(['uitgestapt', 'uitstapten', 'uitstappen'], 0, 'sep', 'A separable verb puts ge between uit and the verb: uitgestapt.'), '.'] },
+      { en: 'I changed trains in Rotterdam.', parts: ['Ik ben in Rotterdam', FK(['overgestapt', 'overstapte', 'overstap'], 0, 'sep', 'A separable verb puts ge between over and the verb: overgestapt.'), '.'] },
+      { en: 'We travelled by train all day.', parts: ['De hele dag', FK(['hebben we', 'we hebben'], 0, 'v2', 'De hele dag takes slot 1, so the verb comes next, then we.'), 'met de trein', FK(['gereisd', 'gereist'], 0, 'kof', 'reizen has a z underneath, not a ketchup letter, so the participle ends in d.', 'spell'), '.'] },
 
       // ---- words
       { w: 'the station', nl: 'het station', wrong: 'de station' }, { w: 'the train', nl: 'de trein' },

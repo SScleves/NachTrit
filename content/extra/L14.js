@@ -8,12 +8,12 @@
   // tasje erbij?, Kan ik pinnen?), _site/situations/butcher (gehakt, Anders nog iets?); _site/words (de apotheek,
   // de broek, ruilen, kopen, afrekenen); content/towns.js for Gouda (de kaasmarkt, belegen, de siroopwafel).
   // Rules used: neg, v2, modal, presens, bezit. No new rules. Props: nummer, lamp.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(14, { deliveries: 20, items: [
     // at the supermarket and the bakery
     { en: 'We have no bread left.', parts: ['We hebben', FK(['geen', 'niet'], 0, 'neg', 'brood has no article here, so geen. geen brood meer means no bread anymore.'), 'brood meer.'] },
     { en: "No, I don't need a bag.", parts: ['Nee, ik heb', FK(['geen', 'niet'], 0, 'neg', 'een tasje becomes geen tasje.'), 'tasje nodig.'] },
-    { en: "No, I don't need the receipt.", parts: ['Nee, ik hoef', FK(['het bonnetje niet', 'geen het bonnetje', 'het bonnetje geen'], 0, 'neg', 'het pins the noun down, so it stays and niet goes after it.'), '.'] },
+    { en: "No, I don't need the receipt.", parts: ['Nee, ik hoef het bonnetje', FK(['niet', 'geen'], 0, 'neg', 'het bonnetje already has het, so geen cannot cancel it: niet, at the end.'), '.'] },
     { en: "On Sunday the shop isn't open.", parts: ['Op zondag', FK(['is de winkel', 'de winkel is'], 0, 'v2', 'Op zondag takes slot 1, so the verb comes second and de winkel follows.'),
       FK(['niet', 'geen'], 0, 'neg', 'open is an adjective, so niet.'), 'open.'] },
     { en: 'On Saturday we have to do the shopping.', parts: ['Zaterdag', FK(['moeten we', 'we moeten'], 0, 'v2', 'Zaterdag takes slot 1, so the modal comes before we.'), 'boodschappen',
@@ -21,8 +21,8 @@
 
     // paying
     { en: "I don't have any cash.", parts: ['Ik heb', FK(['geen', 'niet'], 0, 'neg', 'contant geld has no article, so geen.'), 'contant geld.'] },
-    { en: "You can't pay by card here. (polite)", parts: ['U kunt hier', FK(['niet pinnen', 'pinnen niet', 'geen pinnen'], 0, 'neg', 'niet goes right before the infinitive at the end.'), '.'] },
-    { en: "My debit card doesn't work.", parts: ['Mijn pinpas', FK(['doet het niet', 'doet niet het', 'doet het geen'], 0, 'neg', 'doet het is the fixed phrase for works, and niet comes after het: doet het niet.'), '.'] },
+    { en: "You can't pay by card here. (polite)", parts: ['U kunt hier', FK(['niet pinnen', 'pinnen niet'], 0, 'neg', 'niet goes right before the infinitive at the end.'), '.'] },
+    { en: "My debit card doesn't work.", parts: ['Mijn pinpas', FK(['doet het niet', 'doet niet het'], 0, 'neg', 'Het doet het niet: niet comes last, after the second het.'), '.'] },
     { en: "My wallet isn't in my bag.", parts: ['Mijn portemonnee zit', FK(['niet', 'geen'], 0, 'neg', 'niet goes before the place: niet in mijn tas.'), 'in',
       FK(['mijn', 'mij', 'ik'], 0, 'bezit', 'Before a noun, my is mijn. mij and ik never stand in front of a noun.'), 'tas.'] },
 
@@ -34,7 +34,7 @@
       FK(['geen', 'niet'], 0, 'neg', 'kaas has no article here, so geen.'), 'kaas meer.'] },
     { en: 'Do you have any syrup waffles left? (polite)', parts: [FK(['Heeft u', 'Heb u', 'Hebben u'], 0, 'presens', 'A question starts with the verb, and u takes heeft: heeft u.'), 'nog stroopwafels?'] },
     { en: "On Thursday I'm not going to the cheese market.", parts: ['Donderdag', FK(['ga ik', 'ik ga'], 0, 'v2', 'Donderdag takes slot 1, so the verb comes before ik.'),
-      FK(['niet naar de kaasmarkt', 'naar de kaasmarkt niet', 'geen naar de kaasmarkt'], 0, 'neg', 'niet goes before the place.'), '.'] },
+      FK(['niet', 'geen'], 0, 'neg', 'There is no een or bare noun to cancel, so niet, before the place.'), 'naar de kaasmarkt.'] },
 
     // shop words, three with the wrong article as the second sign
     { w: 'the cheese farmer', nl: 'de kaasboer' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },

@@ -218,10 +218,12 @@
   }
   // the alarm clock's face: 03:00 in red, the colon drawn apart so it can blink
   function clockTex(W) {
-    const [c, g] = H.canvas(128, 64);
-    g.fillStyle = '#100808'; g.fillRect(0, 0, 128, 64);
-    g.fillStyle = '#ff3a22'; g.font = '700 42px "Segoe UI", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText('03', 34, 34); g.fillText('00', 94, 34);
+    const [c, g] = H.canvas(256, 128);
+    g.fillStyle = '#0c0606'; g.fillRect(0, 0, 256, 128);
+    // seven-segment digits, drawn as bars so they stay whole and readable at the size the clock has on screen
+    const SEG = { 0: 'abcdef', 3: 'abcdg' }, w = 40, h = 76, t = 11, y0 = 26;
+    const digit = (n, x) => { const on = SEG[n]; for (const [k, rx, ry, rw, rh] of [['a', x, y0, w, t], ['g', x, y0 + (h - t) / 2, w, t], ['d', x, y0 + h - t, w, t], ['f', x, y0, t, h / 2], ['b', x + w - t, y0, t, h / 2], ['e', x, y0 + h / 2, t, h / 2], ['c', x + w - t, y0 + h / 2, t, h / 2]]) { g.fillStyle = on.includes(k) ? '#ff3a22' : '#2a0c0a'; g.fillRect(rx, ry, rw, rh); } };
+    digit(0, 22); digit(3, 72); digit(0, 144); digit(0, 194);
     return H.tex(st, W, c, true);
   }
   // a soft round wash with no visible edge, for light on a wall (dithered, so the dark room shows no rings)
@@ -319,8 +321,8 @@
       W.kadd(k, W.KG.ball, M.mould, p0[0] + x, p0[1] + y, p0[2] + z, 0, 0, 0, s, s * 0.7, s);
       W.kadd(k, W.KG.ball, M.fuzz, p0[0] + x + 0.004, p0[1] + y + 0.01, p0[2] + z, 0, 0, 0, s * 0.45, s * 0.45, s * 0.45);
     }
-    const c0 = [0.62, NS.top, 0.84];
-    W.kb(k, M.black, c0[0], c0[1] + 0.04, c0[2], 0.07, 0.08, 0.14, 0, 0, 0.12);
+    const c0 = [0.62, NS.top, 0.87];
+    W.kb(k, M.black, c0[0], c0[1] + 0.06, c0[2], 0.08, 0.12, 0.23, 0, 0, 0.12);
     // the curtain, drawn back to the right of the window, and its rod
     const pleat = H.geo(st, new THREE.PlaneGeometry(0.46, 2.36, 14, 1));
     { const p = pleat.attributes.position; for (let i = 0; i < p.count; i++) p.setZ(i, Math.sin(p.getX(i) * 52) * 0.035); pleat.computeVertexNormals(); }
@@ -349,11 +351,11 @@
     const pt = paperTex(W), paper = new THREE.Mesh(W.KG.plane, mk({ map: pt, emissive: 0xffffff, emissiveMap: pt, emissiveIntensity: 0.035 }));
     paper.rotation.order = 'YXZ'; paper.rotation.set(-0.13, Math.PI / 2, 0); paper.position.set(WT0 + 0.035, NS.top + 0.15, 0.5); paper.scale.set(0.24, 0.3, 1); g.add(paper);
     const face = new THREE.Mesh(W.KG.plane, H.mat(st, new THREE.MeshBasicMaterial({ map: clockTex(W) })));
-    face.rotation.order = 'YXZ'; face.rotation.set(0.12, Math.PI / 2, 0); face.position.set(c0[0] + 0.037, c0[1] + 0.042, c0[2]); face.scale.set(0.12, 0.06, 1); g.add(face);
+    face.rotation.order = 'YXZ'; face.rotation.set(-0.12, Math.PI / 2, 0); face.position.set(c0[0] + 0.045, c0[1] + 0.062, c0[2]); face.scale.set(0.2, 0.1, 1); g.add(face);
     st.colon = new THREE.Group(); st.colon.position.copy(face.position); st.colon.rotation.copy(face.rotation); g.add(st.colon);
     const red = H.mat(st, new THREE.MeshBasicMaterial({ color: 0xff3a22 }));
-    for (const y of [-0.008, 0.01]) { const d = new THREE.Mesh(W.KG.box, red); d.scale.set(0.006, 0.006, 0.002); d.position.set(0, y, 0.002); st.colon.add(d); }
-    const cg = new THREE.Sprite(glow(0xff3a22, 0.25, true)); cg.position.set(c0[0] + 0.06, c0[1] + 0.04, c0[2]); cg.scale.set(0.22, 0.14, 1); g.add(cg);
+    for (const y of [-0.014, 0.016]) { const d = new THREE.Mesh(W.KG.box, red); d.scale.set(0.009, 0.009, 0.002); d.position.set(0, y, 0.002); st.colon.add(d); }
+    const cg = new THREE.Sprite(glow(0xff3a22, 0.1, true)); cg.position.set(c0[0] + 0.07, c0[1] + 0.06, c0[2]); cg.scale.set(0.4, 0.24, 1); g.add(cg);
     // the street lamp's cold light through the window, a faint shape of the panes on the floor and the bed's foot
     const [lc, lg] = H.canvas(128, 128);
     lg.fillStyle = '#000'; lg.fillRect(0, 0, 128, 128); lg.filter = 'blur(4px)'; lg.fillStyle = '#fff';

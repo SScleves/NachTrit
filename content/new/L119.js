@@ -26,7 +26,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 119, act: 12, name: 'Het werk', town: 'nijmegen', place: 'werk', theme: 'street', ...P,
     intro: 'In the old soup factory on the Waal the dead now run start-ups. The standup still takes forty minutes, and nobody stands.',
@@ -37,12 +37,12 @@
       want: 'Since the mist the dead still come to work, and they still hold a standup where nobody stands. They ask for things with small words: mag ik je even storen, kun je er even naar kijken, ik stuur het je wel even. They write to clients with u, uw and naar aanleiding van, and they build the whole day out of compound words: de werkplek, het wachtwoord, de thuiswerkdag. In the third week of July half the office walks the Vierdaagse and the other half is at the party. The women in the meeting are still taller than you.' },
     items: [
       // ---- builds: particles at work, the small pronoun first
-      { en: 'Can I bother you for a second?', parts: [FK(['Mag ik je even storen', 'Mag ik even je storen'], 0, 'soft',
-        'A small pronoun like je comes before even: mag ik je even storen.'), '?'] },
-      { en: "I'll just send it to you.", parts: ['Ik', FK(['stuur het je wel even', 'stuur wel even het je'], 0, 'soft',
-        'Small pronouns come first, het before je, and then the particles: ik stuur het je wel even.'), '.'] },
-      { en: 'Could you have a quick look at it?', parts: ['Kun je', FK(['er even naar kijken', 'er even kijken naar'], 0, 'soft',
-        'er goes early, even follows it, and naar stays right before the verb at the end: er even naar kijken. The preposition never trails behind the verb as in English.'), '?'] },
+      { en: 'Can I bother you for a second?', parts: ['Mag ik', FK(['je even', 'even je'], 0, 'soft',
+        'A small pronoun like je comes before even: mag ik je even storen.'), 'storen?'] },
+      { en: "I'll just send it to you.", parts: ['Ik stuur', FK(['het je wel', 'wel het je'], 0, 'soft',
+        'Small pronouns come before the particles: ik stuur het je wel even.'), 'even.'] },
+      { en: 'Could you have a quick look at it?', parts: ['Kun je er even', FK(['naar kijken', 'kijken naar'], 0, 'soft',
+        'naar stays in front of the verb at the end, never behind it as in English.'), '?'] },
       { en: "Got a minute? I've got a quick question.", parts: ['Heb je even? Ik heb een', FK(['korte', 'kort'], 0, 'adj',
         'vraag is a de-word, so the adjective takes -e, also after een: een korte vraag.'), 'vraag.'] },
 
@@ -50,48 +50,41 @@
       { en: 'Since the fix everything has been running like clockwork.', parts: ['Sinds de fix', FK(['loopt alles', 'alles loopt'], 0, 'v2',
         'Sinds de fix fills slot 1, so the verb comes second: loopt alles.'), FK(['op rolletjes', 'op wieltjes'], 0, 'idioom',
         'op rolletjes lopen means to go smoothly. The saying only knows rolletjes.'), '.'] },
-      { en: 'After the outage we put the release on the back burner.', parts: ['Na de storing schuiven we de release', FK(['op de lange baan', 'op de lange weg', 'in de lange baan'], 0, 'idioom',
-        'iets op de lange baan schuiven means to put it off, maybe for good. Only op and only baan.'), '.'] },
-      { en: "You've hit the nail on the head.", parts: ['Je slaat', FK(['de spijker op de kop', 'de spijker op het hoofd', 'de nagel op de kop'], 0, 'idioom',
-        'de spijker op de kop slaan: a spijker is a nail you hammer, a nagel is on your finger, and a nail has a kop, not a hoofd.'), '.'] },
-      { en: 'The intern did a sloppy job on that dashboard.', parts: ['Bij dat dashboard heeft de stagiair er', FK(['met de pet naar gegooid', 'met de hoed naar gegooid'], 0, 'idioom',
-        'er met de pet naar gooien means to do something carelessly. Only the cap, never the hat.'), '.'] },
+      { en: 'After the outage we put the release on the back burner.', parts: ['Na de storing schuiven we de release op de lange', FK(['baan', 'weg'], 0, 'idioom',
+        'iets op de lange baan schuiven means to put it off; the saying always has baan.'), '.'] },
+      { en: "You've hit the nail on the head.", parts: ['Je slaat de spijker op de', FK(['kop', 'hoofd'], 0, 'idioom',
+        'de spijker op de kop slaan: a nail has a kop, never a hoofd.'), '.'] },
+      { en: 'The intern did a sloppy job on that dashboard.', parts: ['Bij dat dashboard heeft de stagiair er met de', FK(['pet', 'hoed'], 0, 'idioom',
+        'er met de pet naar gooien means doing it carelessly, and it is always the pet.'), 'naar gegooid.'] },
 
       // ---- builds: compound nouns
       { en: 'The coffee vending machine is broken, but the coffee maker still works.', parts: [FK(['De', 'Het'], 0, 'samen',
         'koffie + automaat: automaat is de, so de koffieautomaat.'), 'koffieautomaat is kapot, maar', FK(['het', 'de'], 0, 'samen',
         'koffie + apparaat: apparaat is het, so het koffieapparaat. Same coffee, different last part.'), 'koffieapparaat doet het nog.'] },
-      { en: 'I have forgotten the password again.', parts: ['Ik ben', FK(['het wachtwoord', 'de wachtwoord', 'het wachtswoord'], 0, 'samen',
-        'wacht + woord: woord is het, so het wachtwoord, with no s in between.'), 'weer vergeten.'] },
-      { en: 'On Tuesday I work at home, that is my working-from-home day.', parts: ['Op dinsdag werk ik thuis, dat is mijn', FK(['thuiswerkdag', 'thuiswerksdag', 'werkthuisdag'], 0, 'samen',
-        'thuiswerken + dag, in that order and without a linking s: de thuiswerkdag.'), '.'] },
+      { en: 'I have forgotten the password again.', parts: ['Ik ben', FK(['het', 'de'], 0, 'samen',
+        'A compound takes the article of its last part: het woord, so het wachtwoord.'), 'wachtwoord weer vergeten.'] },
+      { en: 'On Tuesday I work at home, that is my working-from-home day.', parts: ['Op dinsdag werk ik thuis, dat is mijn', FK(['thuiswerkdag', 'thuiswerksdag'], 0, 'samen', 'thuiswerk and dag are glued without a linking s: de thuiswerkdag.', 'spell'), '.'] },
 
       // ---- builds: a formal email
-      { en: 'Dear Mr Jansen, further to our conversation I am sending you the quote.', parts: ['Geachte heer Jansen,', FK(['naar aanleiding van', 'door aanleiding van', 'na aanleiding van'], 0, 'formeel',
-        'naar aanleiding van is the fixed formal way to say following or further to.'), 'ons gesprek', FK(['stuur ik u', 'ik stuur u'], 0, 'v2',
-        'The whole phrase naar aanleiding van ons gesprek fills slot 1, so the verb comes second: stuur ik.'), 'de offerte.'] },
+      { en: 'Dear Mr Jansen, further to our conversation I am sending you the quote.', parts: ['Geachte heer Jansen,', FK(['naar', 'door'], 0, 'formeel', 'naar aanleiding van is the fixed formal way to say further to.'), 'aanleiding van ons gesprek', FK(['stuur ik u', 'ik stuur u'], 0, 'v2',
+        'The whole naar aanleiding phrase fills slot 1, so the verb comes second: stuur ik.'), 'de offerte.'] },
       { en: 'Should you have any questions, I would be glad to hear from you.', parts: [FK(['Mocht u', 'Mag u'], 0, 'formeel',
-        'Mocht u ... hebben is a formal if, should you have. mag u means you are allowed to.'), 'nog vragen hebben,', FK(['dan hoor ik het graag', 'dan ik hoor het graag'], 0, 'v2',
-        'dan takes slot 1 of the main clause, so the verb comes right after it: dan hoor ik.'), '.'] },
+        'Mocht u ... hebben is a formal if, should you have.', 'verb'), 'nog vragen hebben, dan', FK(['hoor ik', 'ik hoor'], 0, 'v2',
+        'dan takes slot 1 of the main clause, so the verb comes right after it.'), 'het graag.'] },
 
       // ---- builds: the Vierdaagse week
-      { en: 'In the third week of July half the office takes time off.', parts: ['In de derde week van juli', FK(['neemt het halve kantoor', 'neemt het half kantoor', 'het halve kantoor neemt'], 0, 'v2',
-        'The time phrase fills slot 1, so the verb comes second. And after het the adjective takes -e: het halve kantoor.'), 'vrij.'] },
-      { en: 'I am off from Tuesday the 21st up to and including Friday the 24th of July.', parts: ['Ik ben vrij van dinsdag 21', FK(['tot en met', 'tot met', 'tot en'], 0, 'datum',
-        'tot en met means up to and including: the Friday counts too. It is always the three words together.'), 'vrijdag 24 juli.'] },
+      { en: 'In the third week of July everyone takes time off.', parts: ['In de derde week van juli', FK(['neemt iedereen', 'iedereen neemt'], 0, 'v2',
+        'The time phrase fills slot 1, so the verb comes second: neemt iedereen.'), 'vrij.'] },
+      { en: 'I am off from Tuesday the 21st up to and including Friday the 24th of July.', parts: ['Ik ben vrij van dinsdag 21', FK(['tot en met', 'tot met', 'tot en'], 0, 'datum', 'tot en met means up to and including, always the three words together.'), 'vrijdag 24 juli.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'The release is postponed until after the Vierdaagse.', parts: ['De release', FK(['wordt', 'worden'], 0, 'passief',
-        'One release, so wordt plus the participle at the end.'), 'tot na de Vierdaagse', FK(['uitgesteld', 'uitgestelt', 'geuitsteld'], 0, 'kof',
-        'uit + gesteld: stel ends in l, not a ketchup letter, so -d, and the ge sits in the middle.'), '.'] },
+        'One release, so wordt plus the participle at the end.'), 'tot na de Vierdaagse', FK(['uitgesteld', 'uitgestelt'], 0, 'kof', 'stel ends in l, not a ketchup letter, so -d: uitgesteld.', 'spell'), '.'] },
       { en: 'When I logged in, my colleague had already solved the incident.', parts: ['Toen ik inlogde,', FK(['had mijn collega', 'mijn collega had'], 0, 'v2',
-        'After a toen-clause the main clause starts with its verb: had mijn collega.'), 'het incident al', FK(['opgelost', 'geopgelost', 'opgelossen'], 0, 'sep',
-        'The ge goes in the middle of a separable verb: op + gelost.'), '.'] },
-      { en: 'My manager asked whether I had a moment.', parts: ['Mijn manager vroeg', FK(['of', 'dat'], 0, 'indirect',
-        'A reported yes-or-no question starts with of.'), 'ik', FK(['even tijd had', 'had even tijd'], 0, 'bijzin',
+        'After a toen-clause the main clause starts with its verb: had mijn collega.'), 'het incident al', FK(['opgelost', 'oplossen', 'oplost'], 0, 'sep', 'After had the participle closes the clause: op + gelost.'), '.'] },
+      { en: 'My manager asked whether I had a moment.', parts: ['Mijn manager vroeg', FK(['of', 'dat'], 0, 'indirect', 'A reported yes-or-no question starts with of.', 'word'), 'ik', FK(['even tijd had', 'had even tijd'], 0, 'bijzin',
         'of sends the verb to the end of its clause: even tijd had.'), '.'] },
-      { en: 'Although I am off, I still read my email.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
-        'hoewel opens a clause with its own verb: hoewel ik vrij ben. ondanks needs a noun.'), 'ik vrij ben,', FK(['lees ik', 'ik lees'], 0, 'v2',
+      { en: 'Although I am off, I still read my email.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel', 'hoewel opens a clause with its own verb; ondanks needs a noun.', 'word'), 'ik vrij ben,', FK(['lees ik', 'ik lees'], 0, 'v2',
         'The sub-clause fills slot 1, so the main clause starts with its verb: lees ik.'), 'toch mijn mail.'] },
       { en: 'The dashboard I built last week is now used by the whole team.', parts: ['Het dashboard', FK(['dat', 'die'], 0, 'diedat',
         'dashboard is a het-word, so the relative pronoun is dat.'), 'ik vorige week bouwde,', FK(['wordt', 'worden'], 0, 'passief',

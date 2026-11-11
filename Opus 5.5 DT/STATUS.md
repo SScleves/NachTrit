@@ -23,7 +23,7 @@ reading-time change lands, until his feedback.
 
 ## Built, not live yet (11 November 2026)
 
-Branch `dt/all` on GitHub holds the best version (NR_VERSION 34). It is not on the live site.
+Branch `dt/all` on GitHub holds the best version (NR_VERSION 35). It is not on the live site.
 - New 3D models: the rider on the omafiets, two dogs, gabled houses, windmills, street props.
 - Reading time: every fork keeps a reading budget at every tier.
 - The go key: up arrow, W or swipe up ends the wait once the player has chosen.
@@ -31,6 +31,10 @@ Branch `dt/all` on GitHub holds the best version (NR_VERSION 34). It is not on t
 - three.js 0.187. The WebGPU renderer is opt-in with `?renderer=webgpu` and stays parked.
 - Fixed on 11 Nov: pale strips beside the rider's head, the 03:00 alarm clock in the intro, dogs in the
   wrong intro scenes, the missing torso in the sofa scene. The wheels tumble the old way on purpose.
+- Phase 0 checks on 11 Nov (`reports/dt-phase0.md`): reading boards no longer make the bike creep for minutes, the fork
+  camera drops its speed pull-back so signs read where planned, the lamp retuned (level 75 with wisps finishes with about
+  half a lamp), fork signs sit above the rider's head, ground mist costs 17 fewer draw calls. Reading time 0 forks under
+  budget on 1, 75, 99, 123; GPU run of 1, 12, 58, 75, 123 with 0 errors at 60 fps; all 14 intro shots checked.
 
 ## Pending
 

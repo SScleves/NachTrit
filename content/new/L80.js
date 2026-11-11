@@ -24,7 +24,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 80, act: 7, name: 'De sport', town: 'rotterdam', place: 'sport', theme: 'square', ...P,
     intro: 'In Rotterdam you do not talk about sport, you do it. Since the mist the dead do it too, and nobody can tell who is winning.',
@@ -35,53 +35,39 @@
       want: 'The dead run, cycle and referee beside you, and all they want to know is what happened yesterday: was, zag, kocht, liep. Rotterdam says niet lullen maar poetsen, so answer fast and keep moving. At the clubhouse they still split the bill, and the women on the treadmills are still taller than you.' },
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip
-      { en: 'I used to play golf every Saturday.', parts: ['Vroeger', FK(['golfte ik', 'ik golfte', 'golfde ik'], 0, 'imp',
-        'golf ends in f, a ketchup letter, so -te: golfte. Vroeger takes slot 1, so the verb comes before ik.'), 'elke zaterdag.'] },
-      { en: 'I cycled along the Maas every day.', parts: ['Ik', FK(['fietste', 'fietsde', 'fietsten'], 0, 'imp',
-        'fiets ends in s, a ketchup letter, so -te: fietste. -ten is for we, jullie and zij.'), 'elke dag langs de Maas.'] },
-      { en: 'After the run I felt great.', parts: ['Na het hardlopen', FK(['voelde ik', 'ik voelde', 'voelte ik'], 0, 'imp',
-        'voel ends in l, not a ketchup letter, so -de: voelde. Na het hardlopen takes slot 1, so the verb comes before ik.'), FK(['me', 'zich', 'je'], 0, 'refl',
+      { en: 'I used to play golf every Saturday.', parts: ['Vroeger', FK(['golfte ik', 'ik golfte'], 0, 'v2', 'Vroeger takes slot 1, so the verb comes second, then ik.'), 'elke zaterdag.'] },
+      { en: 'I cycled along the Maas every day.', parts: ['Ik', FK(['fietste', 'fietsde'], 0, 'imp', 'fiets ends in s, a ketchup letter, so the past ends in -te: fietste.', 'spell'), 'elke dag langs de Maas.'] },
+      { en: 'After the run I felt great.', parts: ['Na het hardlopen', FK(['voelde ik', 'ik voelde'], 0, 'v2', 'Na het hardlopen takes slot 1, so the verb comes next, then ik.'), FK(['me', 'zich', 'je'], 0, 'refl',
         'The self-word matches the subject: ik goes with me, and it sits right after ik.'), 'geweldig.'] },
-      { en: 'We were late because we got the time wrong.', parts: ['We kwamen te laat, want we', FK(['vergisten', 'vergisden', 'vergist'], 0, 'imp',
-        'vergis ends in s, a ketchup letter, so -ten for we: vergisten.'), FK(['ons', 'zich', 'me'], 0, 'refl',
+      { en: 'We were late because we got the time wrong.', parts: ['We kwamen te laat, want we', FK(['vergisten', 'vergisden'], 0, 'imp', 'vergis ends in s, a ketchup letter, so we takes -ten: vergisten.', 'spell'), FK(['ons', 'zich', 'me'], 0, 'refl',
         'we goes with ons, and it sits right after the verb.'), 'in de tijd.'] },
-      { en: 'The dogs get bored in the rain.', parts: ['De honden', FK(['vervelen zich', 'zich vervelen', 'verveelt zich'], 0, 'refl',
-        'For he, she and they the self-word is zich, and it follows the verb. Two dogs keep the plural verb: vervelen.'), 'in de regen.'] },
+      { en: 'The dogs get bored in the rain.', parts: ['De honden', FK(['vervelen zich', 'zich vervelen'], 0, 'refl', 'The self-word zich comes right after the verb: vervelen zich.'), 'in de regen.'] },
 
       // ---- builds: the common irregulars
-      { en: 'On Sunday we walked along the Maas to the Erasmus Bridge.', parts: ['Zondag', FK(['liepen we', 'we liepen', 'liep we'], 0, 'imp',
-        'lopen is irregular: liep, liepen for we. Zondag takes slot 1, so the verb comes before we.'), 'langs de Maas naar de Erasmusbrug.'] },
-      { en: 'After the match I was dead tired.', parts: ['Na de wedstrijd', FK(['was ik', 'ik was', 'waren ik'], 0, 'imp',
-        'zijn becomes was with ik. Na de wedstrijd takes slot 1, so was comes before ik.'), 'doodmoe.'] },
+      { en: 'On Sunday we walked along the Maas to the Erasmus Bridge.', parts: ['Zondag', FK(['liepen we', 'we liepen'], 0, 'v2', 'Zondag takes slot 1, so the verb comes before we.'), 'langs de Maas naar de Erasmusbrug.'] },
+      { en: 'After the match I was dead tired.', parts: ['Na de wedstrijd', FK(['was ik', 'ik was'], 0, 'v2', 'Na de wedstrijd takes slot 1, so was comes before ik.'), 'doodmoe.'] },
       { en: 'I saw the Euromast above the trees.', parts: ['Ik', FK(['zag', 'zagen', 'zien'], 0, 'imp',
         'zien is irregular: zag for ik, zagen for we. zien is only the infinitive.'), 'de Euromast boven de bomen.'] },
-      { en: 'Yesterday I bought a new golf bag.', parts: ['Ik', FK(['kocht', 'kochte', 'kochten'], 0, 'imp',
-        'kopen is irregular: kocht, with no extra -e and no plural.'), 'gisteren een', FK(['nieuwe', 'nieuw'], 0, 'adj',
+      { en: 'Yesterday I bought a new golf bag.', parts: ['Ik', FK(['kocht', 'kochten', 'gekocht'], 0, 'imp', 'kopen is irregular: the past is kocht, and ik takes no ending.'), 'gisteren een', FK(['nieuwe', 'nieuw'], 0, 'adj',
         'golftas is a de-word, so the adjective takes -e: een nieuwe golftas.'), 'golftas.'] },
-      { en: 'What did you do after training?', parts: ['Wat', FK(['deed je', 'je deed', 'doede je'], 0, 'imp',
-        'doen is irregular: deed. A question word takes slot 1, so the verb comes before je.'), 'na de training?'] },
-      { en: 'I walked the dogs along the Maas at seven.', parts: ['Ik', FK(['liet', 'laatte', 'liette'], 0, 'imp',
-        'laten is irregular: liet.'), 'om zeven uur de honden langs de Maas', FK(['uit', 'uitliet', 'uitgelaten'], 0, 'sep',
+      { en: 'What did you do after training?', parts: ['Wat', FK(['deed je', 'je deed'], 0, 'v2', 'A question word takes slot 1, so the verb comes before je.'), 'na de training?'] },
+      { en: 'I walked the dogs along the Maas at seven.', parts: ['Ik', FK(['liet', 'lieten', 'gelaten'], 0, 'imp', 'laten is irregular: the past is liet, and ik takes no ending.'), 'om zeven uur de honden langs de Maas', FK(['uit', 'uitliet', 'uitgelaten'], 0, 'sep',
         'In the imperfectum the prefix stays behind at the very end: liet ... uit.'), '.'] },
 
       // ---- builds: polite requests with zou
-      { en: 'Could you hold my bag for a moment?', parts: [FK(['Zou', 'Zouden', 'Zoud'], 0, 'zou',
-        'zou plus infinitive is the polite request. With je it is zou, never zouden.'), 'je mijn tas even', FK(['kunnen vasthouden', 'te kunnen vasthouden', 'kan vasthouden'], 0, 'modal',
+      { en: 'Could you hold my bag for a moment?', parts: [FK(['Zou', 'Zouden'], 0, 'zou', 'zou plus an infinitive is the polite request, and je takes zou.'), 'je mijn tas even', FK(['kunnen vasthouden', 'te kunnen vasthouden', 'kan vasthouden'], 0, 'modal',
         'After zou the infinitive pair goes to the end, with the modal first and no te: kunnen vasthouden.'), '?'] },
       { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['zou', 'zal', 'zouden'], 0, 'zou',
         'Ik zou graag is the polite way to ask for something.'), 'graag een starttijd', FK(['willen reserveren', 'te willen reserveren', 'wil reserveren'], 0, 'modal',
-        'zou needs an infinitive, and the pair sits at the end with the modal first and no te: willen reserveren.'), 'voor zaterdag.'] },
+        'After zou the verbs go to the end, the modal first and without te.'), 'voor zaterdag.'] },
 
       // ---- builds: comparatives and superlatives
-      { en: 'Today I cycle faster than yesterday.', parts: ['Vandaag fiets ik', FK(['sneller', 'snellere', 'meer snel'], 0, 'vergelijk',
-        'A short adjective takes -er: snel becomes sneller. -e is only for an adjective before a noun.'), 'dan gisteren.'] },
+      { en: 'Today I cycle faster than yesterday.', parts: ['Vandaag fiets ik', FK(['sneller', 'snellere', 'snelst'], 0, 'vergelijk', 'A short adjective takes -er before dan: snel becomes sneller.'), 'dan gisteren.'] },
       { en: 'You are the furthest from the flag, so you go first.', parts: ['Jij ligt', FK(['het verst', 'het verder', 'de verst'], 0, 'vergelijk',
         'The superlative of ver is verst, and after liggen it takes het: het verst. verder is the comparative.'), 'van de vlag, dus jij mag eerst.'] },
 
       // ---- builds: review
-      { en: 'On Saturday we went to De Kuip.', parts: ['Zaterdag', FK(['zijn we', 'we zijn', 'hebben we'], 0, 'aux',
-        'Going somewhere takes zijn. Zaterdag takes slot 1, so the verb comes before we.'), 'naar De Kuip', FK(['gegaan', 'gegaat', 'gegaand'], 0, 'perf',
-        'gaan is irregular: gegaan.'), '.'] },
+      { en: 'On Saturday we went to De Kuip.', parts: ['Zaterdag', FK(['zijn we', 'hebben we'], 0, 'aux', 'Going somewhere takes zijn in the perfect: zijn we gegaan.'), 'naar De Kuip', FK(['gegaan', 'gingen', 'gaan'], 0, 'perf', 'gaan is irregular: the participle is gegaan.'), '.'] },
       { en: 'Today I have no time for the gym.', parts: ['Vandaag heb ik', FK(['geen', 'niet'], 0, 'neg',
         'A noun with no article after it takes geen: geen tijd, not niet tijd.'), 'tijd voor de sportschool.'] },
 

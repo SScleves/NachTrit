@@ -7,13 +7,22 @@
     "serve": "python3 serve.py 8765",
     "qa": "node qa/run.mjs",
     "build:content": "node qa/build-content.mjs",
-    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs",
+    "models": "node tools/models/build.mjs",
+    "validate": "node qa/build-content.mjs --check && node qa/validate-content.mjs && node qa/audit-forks.mjs --check --fail && node qa/audit-distractors.mjs --check --fail && node qa/audit-threads.mjs --check --fail",
     "voice": "node qa/voice-batch.mjs && ../venv/bin/python qa/voice-render.py && node qa/voice-check.mjs",
     "voice:lines": "node qa/voice-batch.mjs",
     "voice:render": "../venv/bin/python qa/voice-render.py",
-    "voice:check": "node qa/voice-check.mjs"
+    "voice:check": "node qa/voice-check.mjs",
+    "audit:content": "node qa/audit-forks.mjs && node qa/audit-distractors.mjs && node qa/audit-threads.mjs && node qa/audit-vocab.mjs",
+    "review": "node qa/make-review.mjs"
   },
   "devDependencies": {
-    "playwright": "^1.47.2"
+    "@gltf-transform/core": "^3.10.1",
+    "@gltf-transform/extensions": "^3.10.1",
+    "@gltf-transform/functions": "^3.10.1",
+    "dictionary-nl": "^2.0.0",
+    "nspell": "^2.1.5",
+    "playwright": "^1.47.2",
+    "three": "^0.152.2"
   }
 }

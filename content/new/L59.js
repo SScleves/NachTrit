@@ -12,7 +12,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 59, act: 5, name: 'Thuis', town: 'utrecht', place: 'thuis', theme: 'street', ...P,
@@ -24,40 +24,33 @@
         want: 'In every room someone asks what you are doing, what you are going to do and what time it is. The students upstairs want the rent split to the cent. Paola, still taller than you, checks where you put the prefix.' },
       items: [
         // ---- builds: separable verbs split in the present, the prefix at the end
-        { en: 'Every evening I walk the dogs.', parts: ['Elke avond', FK(['laat ik de honden uit', 'uitlaat ik de honden', 'laat ik uit de honden'], 0, 'sep',
-          'Elke avond takes slot 1, laat comes second, and uit waits at the very end.'), '.'] },
-        { en: 'The Dom wakes me up every morning.', parts: ['De Dom', FK(['maakt', 'wakker maakt', 'maken'], 0, 'sep',
-          'wakker maken splits in the present: maakt in slot 2, wakker at the end, like a prefix. One Dom, so maakt.'), 'me elke ochtend wakker.'] },
+        { en: 'Every evening I walk the dogs.', parts: ['Elke avond', FK(['laat', 'uitlaat'], 0, 'sep',
+          'uitlaten splits in the present: laat in slot 2, uit at the very end.'), 'ik de honden uit.'] },
+        { en: 'The Dom wakes me up every morning.', parts: ['De Dom', FK(['maakt', 'maken', 'maak'], 0, 'sep', 'One Dom, so stem plus t: maakt, and wakker waits at the end.'), 'me elke ochtend wakker.'] },
         { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt', 'opbelt Paola'], 0, 'v2',
           'A time in slot 1 pushes Paola behind the verb: belt Paola.'), 'haar moeder', FK(['op', 'opbellen'], 0, 'sep',
           'opbellen splits in the present. Only op goes to the end.'), '.'] },
-        { en: 'The neighbours are coming round tonight.', parts: ['De buren', FK(['komen', 'langskomen', 'komt'], 0, 'sep',
-          'langskomen splits: komen in slot 2, langs at the end. Two neighbours, so komen.'), 'vanavond langs.'] },
+        { en: 'The neighbours are coming round tonight.', parts: ['De buren', FK(['komen', 'langskomen'], 0, 'sep', 'langskomen splits: komen in slot 2, langs at the end.'), 'vanavond langs.'] },
         // ---- builds: zijn + aan het + infinitive
-        { en: 'The dogs are barking again.', parts: ['De honden', FK(['zijn', 'hebben', 'is'], 0, 'aanhet',
-          'aan het always runs on zijn. Two dogs, so zijn.'), 'weer aan het', FK(['blaffen', 'blaft'], 0, 'aanhet',
+        { en: 'The dogs are barking again.', parts: ['De honden', FK(['zijn', 'hebben'], 0, 'aanhet', 'aan het always runs on zijn, never on hebben.'), 'weer aan het', FK(['blaffen', 'blaft'], 0, 'aanhet',
           'After aan het comes the whole infinitive: blaffen.'), '.'] },
-        { en: 'We are doing the dishes.', parts: ['We zijn', FK(['aan het afwassen', 'aan het wassen af', 'afwassen aan het'], 0, 'aanhet',
-          'aan het first, then the separable verb in one piece: afwassen. With aan het it never splits.'), '.'] },
-        { en: 'The students upstairs are having a party.', parts: ['De studenten boven', FK(['zijn aan het feesten', 'is aan het feesten', 'zijn feesten aan het'], 0, 'aanhet',
-          'Students, plural: zijn. Then aan het, then the infinitive last.'), '.'] },
+        { en: 'We are doing the dishes.', parts: ['We zijn aan het', FK(['afwassen', 'afwast', 'af te wassen'], 0, 'aanhet',
+          'After aan het the separable verb stays whole as an infinitive: afwassen.'), '.'] },
+        { en: 'The students upstairs are having a party.', parts: ['De studenten boven', FK(['zijn', 'is'], 0, 'aanhet',
+          'Students are plural, so zijn: zij zijn aan het feesten.'), 'aan het feesten.'] },
         // ---- builds: gaan + infinitive for the future
-        { en: 'Tonight we are going to watch a film.', parts: ['Vanavond', FK(['gaan we', 'we gaan', 'gaat we'], 0, 'v2',
-          'Vanavond in slot 1, gaan second, then we.'), 'een film', FK(['kijken', 'kijk', 'te kijken'], 0, 'fut',
+        { en: 'Tonight we are going to watch a film.', parts: ['Vanavond', FK(['gaan we', 'we gaan'], 0, 'v2', 'Vanavond in slot 1, gaan second, then we.'), 'een film', FK(['kijken', 'kijk', 'te kijken'], 0, 'fut',
           'gaan sends the second verb to the end, whole, no te.'), '.'] },
         { en: 'Tomorrow I am going to tidy the kitchen.', parts: ['Morgen', FK(['ga ik', 'ik ga'], 0, 'v2',
-          'Morgen takes slot 1, so the verb jumps in front of ik.'), 'de keuken', FK(['opruimen', 'ruim op', 'ruimt op'], 0, 'fut',
-          'After gaan the separable verb comes back together at the end: opruimen.'), '.'] },
+          'Morgen takes slot 1, so the verb jumps in front of ik.'), 'de keuken', FK(['opruimen', 'opruimt', 'op te ruimen'], 0, 'fut', 'After gaan the separable verb goes whole to the end, without te: opruimen.'), '.'] },
         { en: 'What are we going to eat tonight?', parts: ['Wat', FK(['gaan we', 'we gaan'], 0, 'v2',
           'Question word in slot 1, the verb next: gaan we.'), 'vanavond', FK(['eten', 'eet', 'te eten'], 0, 'fut',
           'The real verb closes the sentence as an infinitive: eten.'), '?'] },
         // ---- builds: the imperative
         { en: "Come in, the dogs don't bite.", parts: [FK(['Kom', 'Gekomen', 'Komen'], 0, 'gebod',
           'A command is the bare stem: kom. No ge-, no -en. (Komt belongs to Komt u binnen.)'), 'binnen, de honden bijten niet.'] },
-        { en: 'Get up, the dogs need to go out.', parts: [FK(['Sta op', 'Opsta', 'Staan op'], 0, 'gebod',
-          'Imperative of opstaan: the stem sta first, op after it. The prefix does not go in front.'), ', de honden moeten uit.'] },
-        { en: 'Tidy up your mess, honey.', parts: [FK(['Ruim', 'Ruimt', 'Opruim'], 0, 'gebod',
-          'The command is the stem, ruim, and the separable prefix still goes to the end.'), 'je rommel', FK(['op', 'opruimen'], 0, 'sep',
+        { en: 'Get up, the dogs need to go out.', parts: [FK(['Sta op', 'Opsta'], 0, 'sep', 'In a command the separable verb still splits: sta op.'), ', de honden moeten uit.'] },
+        { en: 'Tidy up your mess, honey.', parts: [FK(['Ruim', 'Ruimt', 'Ruimen'], 0, 'gebod', 'A command is the bare stem: ruim; op still goes to the end.'), 'je rommel', FK(['op', 'opruimen'], 0, 'sep',
           'Only op goes to the end, not the whole verb.'), ', schat.'] },
         // ---- builds: telling the time
         { en: 'At quarter to seven the alarm goes off.', parts: ['Om', FK(['kwart voor zeven', 'kwart over zeven'], 0, 'klok',

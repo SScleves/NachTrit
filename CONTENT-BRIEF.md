@@ -103,6 +103,59 @@ need, then `window.defineLevels([...])` with the five levels in id order. No oth
 syntax with `node --check content/district<N>.js` before you finish.
 
 
+## Word limits are reading limits (2 Nov 2026)
+
+`maxWords` in `window.TIER_PRESET` is how much a player can read at a fork, not a speed target. The
+game gives every fork a reading budget from the words on its signs: 0.35 s per word over all options
+plus 1.2 s to decide, at least 3 s and at most 7 s; listen and read items get 1.5 times that, de/het
+and single-word items the 3 s minimum. At the fork the bike slows (`forkSlow` is now only the
+ceiling) so the signs stay legible for that budget at the tier's speed, the card and the voice come
+up before the signs are readable, and the stretch after a long sentence is longer. The game gets
+harder with the tier between the forks (speed, obstacles, wisps, the lamp), never at the fork itself.
+
+What this means when you write content:
+- Short options read from further away. A sign shows one option on a board 2.1 m wide. Long words
+  are first set narrower (down to 0.72 of their width), then smaller, and the text wraps; an option
+  of seven words or more often gets a taller board with up to four lines. Measured over every fork
+  option in the content (`node qa/dt/sign-reach.mjs`, 11 Nov 2026, median distance at which the
+  letters become legible, 1280 x 800):
+
+  | Words on one sign | Tier 1 (Alblasserdam, letters 1.3x) | Tiers 2 to 13 |
+  |---|---|---|
+  | 1 to 3 | 19.5 to 20.5 m | 13.5 to 14 m |
+  | 4 | 19.5 m | 13.5 m |
+  | 5 | 18.5 m | 11.5 m |
+  | 6 | 17 m | 8.5 m |
+  | 7 to 9 | (none in tier 1) | 7.5 m, so the bike nearly stops |
+
+  14 m is the most the fork camera allows at tiers 2 and up, and 20.5 m at tier 1. A long single
+  word (a compound) can drop to 4.5 to 9 m on its own. Reading boards (read items, a whole sentence
+  over the road) become legible at about 7.5 m. These are the engine's prediction (`legDist`); the ridden check
+  (`qa/dt/reading-time.mjs`) measures within a metre of it. Prefer gaps of one to three words; at four words
+  the sign still reads from 13.5 m, from five words on it costs the player distance and time.
+- The budget counts every option on screen, so long distractors cost as much time as a long answer.
+- The `maxWords` limit stays a hard cap on the sentence.
+
+## One thing per fork (11 Nov 2026)
+
+The card asks, the signs answer, the player sets the pace. Each fork asks exactly one thing, and the card says which with a label. Do not mix word order and spelling in one fork: `werkte ik / ik werkte / werkde ik` is two forks, a "Past tense" fork (`werkte / werkde / werkt`) and a "Word order" fork (`werkte ik / ik werkte`). Level 75 is the prototype.
+
+The engine derives the label from the fork (`taskOf` in index.html), in this order:
+
+| Label | Colour | When |
+|---|---|---|
+| Word order | blue | every option has two or more words and all options are the same words in another order (any rule id); also rule ids v2, bijzin, tmp, sepbz, hoewel, indirect, alsdan, cond, conditie, voorwaarde |
+| Past tense | orange | imp, kof, perf, plusq, aux |
+| Verb form | purple | sep, modal, zou, fut, zullen, aanhet, presens, pres, passief, gebod, omte, al, zijn, hebben, om |
+| Comparison | pink | vergelijk |
+| de or het | gold | de/het items (rule dehet) |
+| Listen | teal | listen items |
+| Meaning | cream | read items |
+| Which word | green | word and look items, and every other rule id (woord, neg, diedat, refl, adj, bezit, obj, idioom, soft, er, ...) |
+| Spelling | coral `#ff8a7a` | only with `task: 'spell'` on the fork (never derived from a rule id) |
+
+Override per fork with `task` on the fork object (`{ o, a, r, w, task: 'order' }`) or per item (`task` on a build or read item). Ids: `order`, `past`, `verb`, `comp`, `dehet`, `listen`, `meaning`, `word`, `spell`. An unknown id shows "Which word". `FK` takes the task as a fifth argument: `FK(['werkte', 'werkde'], 0, 'kof', 'why', 'spell')`. Signs carry only the missing piece; the card shows the full sentence with the gap marked, so keep the fixed parts of the sentence in `parts`.
+
 ## Tier fences for towns 7 to 13 (added 23 Oct 2026; word limits are in `window.TIER_PRESET`)
 
 Each tier includes everything below it. A tier may drill only what it introduces, but earlier
@@ -133,3 +186,32 @@ grammar returns in builds as review.
 - Ids: Rotterdam 75 to 82, Urk 83 to 90, Texel 91 to 98, Groningen 99 to 106, Maastricht 107 to 114,
   Nijmegen 115 to 122, Amsterdam 123 to 130, in the place order thuis, winkels, eten, station, werk, sport,
   mensen, eigen.
+
+## Spelling forks, real wrong options, short why lines (11 Nov 2026, PLAN 3b, 3c, 3d.3, 3e)
+
+**Spelling** is the ninth label. It is the only fork where a wrong option may be a form that does not exist.
+
+- A Spelling fork asks for the written form of one word and nothing else: d or t ('t kofschip, wordt,
+  snijdt, kost not kostt), open and closed syllables (broden not brooden, groter not grooter), the
+  plural and diminutive spelling (pizza's, broodjes), compound linking letters (stadscentrum), ei or
+  ij and similar. Every wrong option is the same word misspelled. `[werkte | werkde]` is a Spelling
+  fork; `[werkte | werkde | werkt]` is not, because werkt is a real tense contrast. Mark it with
+  `task: 'spell'` (fifth argument of `FK`), whatever the rule id.
+- How a form is built is not spelling. An invented participle or a regularised strong verb (geverbouwd,
+  koopte, gegaand, slaapten, graager, tweetig) is never a wrong option. Use a real Dutch form that is
+  wrong in the sentence instead: kocht / koopt / gekocht, verbouwd / verbouwde / verbouwen.
+- A wrong option outside a Spelling fork must be a real Dutch word, and it must not be acceptable in
+  the sentence (the October rule).
+- One thing per fork: the wrong options differ from the answer in one dimension only (word order, form
+  of the same word, word choice, or spelling). Where a sentence asks two things, split it into two
+  forks or narrow the options. The verb-second drill is a two-option word-order fork
+  (`[krijg ik | ik krijg]`), with the verb form fixed.
+- Signs carry at most three words.
+- The why line is one plain English sentence of at most 18 words that names the rule in the learner's
+  terms ("After a time word the verb comes second, so ik moves behind it."). The validator warns above
+  18 words.
+- Threads: from Gouda on, every level has at least three verb-second forks after a fronted word, and
+  at least three de/het forks on nouns met in earlier levels. Build them from words of earlier levels.
+
+`npm run validate` enforces these with the audits in `qa/` (0 mixed forks, 0 non-words outside a
+Spelling fork, the thread minimums).

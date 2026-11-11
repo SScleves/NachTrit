@@ -3,7 +3,7 @@
 //             {read:true, nl:'Hallo', en:'Hello'} reading (Dutch on the board, English signs)
 //             {listen:true, nl:'de hond', en:'the dog'} listening (you hear it, Dutch signs)
 //             {en:'I am', parts:[...]} build, same shape as data.js
-// Level knobs: lanes, speed, maxSpeed, ramp, lampDecay, forkSlow (fraction of speed at a fork), hint, obstacles, filler [min,max]
+// Level knobs: lanes, speed, maxSpeed, ramp, lampDecay, forkSlow (the most of its speed the bike keeps at a fork; it slows further when the signs need more reading time, see readBudget in index.html), hint, obstacles, filler [min,max]
 
 window.RULES.woord = { name: 'Vocabulary', note: 'MOC Woordenschat' };
 window.RULES.getal = { name: 'Numbers', note: 'MOC Getallen' };
@@ -11,7 +11,7 @@ window.RULES.groet = { name: 'Greetings', note: 'H01 — Welkom' };
 window.RULES.zijn = { name: 'zijn (to be)', note: 'zijn' };
 
 const A1 = { lanes: 2, speed: 11, maxSpeed: 13, ramp: false, lampDecay: 0.35, forkSlow: 0.25, hint: 'glow', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 6 };
-const FK = (o, a, r, w) => ({ o, a, r, w });
+const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
 window.LEVELS = [
   { id: 1, act: 1, name: 'De honden', ...A1, theme: 'street', intro: 'The dogs need a walk. The dogs always need a walk. The apocalypse changed nothing about that.', introNl: 'De honden moeten uit. De honden moeten altijd uit. Daar heeft de apocalyps niets aan veranderd.',

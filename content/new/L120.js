@@ -27,7 +27,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 120, act: 12, name: 'De sport', town: 'nijmegen', place: 'sport', theme: 'dyke', ...P,
     intro: 'Nijmegen trains all year for four days in July. The dead train too. They have more time.',
@@ -38,8 +38,8 @@
       want: 'Since the mist the dead train every day for the Vierdaagse. They have the time. They cheer you on with small words, zet nog even door, doe maar rustig aan, je kunt het wel, and they know every saying about being tired: op je tandvlees lopen, de handdoek in de ring gooien. The forms for the start come in the formal register. Paola, still taller than you, walks the forty kilometres. You walk the thirty and say it was fifty.' },
     items: [
       // ---- builds: particles from the side of the road
-      { en: 'Come on, just keep going a bit longer.', parts: ['Kom op,', FK(['zet nog even door', 'zet door nog even'], 0, 'soft',
-        'nog even sits in the middle, and the prefix of doorzetten goes to the very end: zet nog even door.'), '.'] },
+      { en: 'Come on, just keep going a bit longer.', parts: ['Kom op, zet', FK(['nog even door', 'door nog even'], 0, 'soft',
+        'nog even sits in the middle, and door goes to the very end: zet nog even door.'), '.'] },
       { en: 'Just take it easy, it is still a long way.', parts: ['Doe', FK(['maar rustig aan', 'rustig aan maar'], 0, 'soft',
         'maar comes straight after the verb, and aan closes the phrase: doe maar rustig aan.'), ', het is nog ver.'] },
       { en: 'Ten more kilometres. You can do it, really.', parts: ['Nog tien kilometer. Je', FK(['kunt het wel', 'kunt wel het'], 0, 'soft',
@@ -49,15 +49,13 @@
 
       // ---- builds: idioms of effort and fatigue
       { en: 'After forty kilometres I am running on empty.', parts: ['Na veertig kilometer', FK(['loop ik', 'ik loop'], 0, 'v2',
-        'Na veertig kilometer fills slot 1, so the verb comes second: loop ik.'), 'op mijn', FK(['tandvlees', 'tanden'], 0, 'idioom',
-        'op je tandvlees lopen means to go on with nothing left. The saying is about your gums, not your teeth.'), '.'] },
-      { en: 'On the third hill he threw in the towel.', parts: ['Op de derde heuvel gooide hij', FK(['de handdoek in de ring', 'de handdoek op de grond', 'de handdoek in het water'], 0, 'idioom',
-        'de handdoek in de ring gooien means to give up, from boxing. Only in de ring.'), '.'] },
+        'Na veertig kilometer fills slot 1, so the verb comes second: loop ik.'), 'op mijn', FK(['tandvlees', 'tanden'], 0, 'idioom', 'op je tandvlees lopen means going on with nothing left, on your gums.'), '.'] },
+      { en: 'On the third hill he threw in the towel.', parts: ['Op de derde heuvel gooide hij de handdoek in de', FK(['ring', 'sloot'], 0, 'idioom',
+        'de handdoek in de ring gooien means to give up, from boxing.'), '.'] },
       { en: 'We have to step it up, or we will not make the finish.', parts: ['We moeten', FK(['een tandje bijzetten', 'een tandje bijleggen'], 0, 'idioom',
         'een tandje bijzetten means to go a gear faster. bijleggen means to settle a quarrel.'), ', anders', FK(['halen we', 'we halen'], 0, 'v2',
         'anders takes slot 1, so the verb comes right after it: anders halen we.'), 'de finish niet.'] },
-      { en: "After a night's sleep I am as fresh as a daisy again.", parts: ['Na een nacht slapen ben ik weer zo fris als', FK(['een hoentje', 'een kippetje'], 0, 'idioom',
-        'The saying is zo fris als een hoentje. A hoentje is an old word for a young hen, and only that word works.'), '.'] },
+      { en: "After a night's sleep I am as fresh as a daisy again.", parts: ['Na een nacht slapen ben ik weer zo fris als', FK(['een hoentje', 'een kippetje'], 0, 'idioom', 'The saying is zo fris als een hoentje, an old word for a young hen.'), '.'] },
 
       // ---- builds: compound nouns
       { en: 'The goal came in the last minute.', parts: [FK(['Het', 'De'], 0, 'samen',
@@ -65,35 +63,29 @@
       { en: 'NEC plays in the Goffert stadium, on the edge of the Goffert park.', parts: ['NEC speelt in', FK(['het', 'de'], 0, 'samen',
         'The last part decides: het stadion, so het Goffertstadion.'), 'Goffertstadion, aan de rand van', FK(['het', 'de'], 0, 'samen',
         'The last part decides again: het park, so het Goffertpark.'), 'Goffertpark.'] },
-      { en: 'For the Zevenheuvelenloop I am buying new running shoes.', parts: ['Voor de Zevenheuvelenloop koop ik nieuwe', FK(['hardloopschoenen', 'hardloopsschoenen', 'hardlopenschoenen'], 0, 'samen',
-        'The stem hardloop + schoenen, with nothing in between: hardloopschoenen.'), '.'] },
+      { en: 'For the Zevenheuvelenloop I am buying new running shoes.', parts: ['Voor de Zevenheuvelenloop koop ik nieuwe', FK(['hardloopschoenen', 'hardloopsschoenen', 'hardlopenschoenen'], 0, 'samen', 'hardloop and schoenen are glued with nothing in between: hardloopschoenen.', 'spell'), '.'] },
 
       // ---- builds: the formal register of the race
       { en: 'Dear participant, would you bring your start card to the start?', parts: ['Geachte deelnemer, wilt u uw startbewijs', FK(['meenemen', 'mee te nemen'], 0, 'modal',
         'After wilt the infinitive goes to the end without te: wilt u ... meenemen.'), 'naar de start?'] },
-      { en: 'Do bring a bottle of water.', parts: [FK(['Neemt u', 'Neem u'], 0, 'formeel',
-        'With u the verb takes -t, also in a polite command: neemt u.'), 'gerust een flesje water mee.'] },
+      { en: 'Do bring a bottle of water.', parts: [FK(['Neemt u', 'Neem u'], 0, 'formeel', 'With u the verb keeps its -t, even when u comes after it: neemt u.', 'verb'), 'gerust een flesje water mee.'] },
 
       // ---- builds: the Vierdaagse and the race in November
       { en: 'The Zevenheuvelenloop is held every year in November.', parts: ['De Zevenheuvelenloop is elk jaar', FK(['in november', 'op november', 'in de november'], 0, 'datum',
         'Months take in and no article: in november.'), '.'] },
       { en: 'On the third day the walkers go over the seven hills to Groesbeek.', parts: ['Op de derde dag', FK(['lopen de wandelaars', 'de wandelaars lopen'], 0, 'v2',
         'Op de derde dag fills slot 1, so the verb comes second: lopen de wandelaars.'), 'over de zeven heuvels naar Groesbeek.'] },
-      { en: 'I get up at four to walk the fifty kilometres.', parts: ['Ik sta om vier uur op', FK(['om de vijftig kilometer te lopen', 'om te lopen de vijftig kilometer'], 0, 'omte',
-        'om goes first, then everything else, and te plus the verb close it: om de vijftig kilometer te lopen.'), '.'] },
+      { en: 'I get up at four to walk the fifty kilometres.', parts: ['Ik sta om vier uur op om de vijftig kilometer', FK(['te lopen', 'lopen'], 0, 'omte',
+        'om always takes te before the verb at the end: om ... te lopen.'), '.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday the match was called off because of the rain.', parts: ['De wedstrijd', FK(['werd', 'wordt'], 0, 'passief',
-        'gisteren is the past, so werd: werd afgelast.'), 'gisteren door de regen', FK(['afgelast', 'afgelasd', 'geafgelast'], 0, 'kof',
-        'las ends in s, a ketchup letter: af + gelast with a t.'), '.'] },
+        'gisteren is the past, so werd: werd afgelast.'), 'gisteren door de regen', FK(['afgelast', 'afgelasd'], 0, 'kof', 'las ends in s, a ketchup letter, so -t: afgelast.', 'spell'), '.'] },
       { en: 'When I got to the finish, Paola had already been waiting for an hour.', parts: ['Toen ik bij de finish kwam,', FK(['had Paola', 'Paola had'], 0, 'v2',
-        'After a toen-clause the main clause starts with its verb: had Paola.'), 'al een uur', FK(['gewacht', 'gewachtd', 'gewachten'], 0, 'kof',
-        'wacht already ends in t, so nothing is added: gewacht.'), '.'] },
-      { en: 'The coach asked whether I wanted to walk the Vierdaagse.', parts: ['De trainer vroeg', FK(['of', 'dat'], 0, 'indirect',
-        'A reported yes-or-no question starts with of.'), 'ik de Vierdaagse', FK(['wilde lopen', 'wilde te lopen'], 0, 'modal',
+        'After a toen-clause the main clause starts with its verb: had Paola.'), 'al een uur', FK(['gewacht', 'gewachtd'], 0, 'kof', 'wacht already ends in t, so nothing is added: gewacht.', 'spell'), '.'] },
+      { en: 'The coach asked whether I wanted to walk the Vierdaagse.', parts: ['De trainer vroeg', FK(['of', 'dat'], 0, 'indirect', 'A reported yes-or-no question starts with of.', 'word'), 'ik de Vierdaagse', FK(['wilde lopen', 'wilde te lopen'], 0, 'modal',
         'After wilde the infinitive comes without te: wilde lopen.'), '.'] },
-      { en: 'The seventh hill is harder than the first.', parts: ['De zevende heuvel is', FK(['zwaarder', 'zwaarer', 'meer zwaar'], 0, 'vergelijk',
-        'After an r the comparative takes -der: zwaarder.'), 'dan de eerste.'] },
+      { en: 'The seventh hill is harder than the first.', parts: ['De zevende heuvel is', FK(['zwaarder', 'zwaar'], 0, 'vergelijk', 'After an r the comparative takes -der: zwaar, zwaarder dan.'), 'dan de eerste.'] },
 
       // ---- words: the dyke, the hills, the race, five replayed from Maastricht
       { w: 'the floodplain along the river', nl: 'de uiterwaard' }, { w: 'the racing cyclist', nl: 'de wielrenner' },

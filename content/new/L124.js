@@ -27,7 +27,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 124, act: 13, name: 'De winkels', town: 'amsterdam', place: 'winkels', theme: 'shops', ...P,
     intro: 'At the Albert Cuyp the traders have been calling out their prices since 1905. The mist has not managed to shut them up.',
@@ -42,62 +42,50 @@
         'kaas is a de-word, so the adjective takes -e: jonge kaas.'), 'kaas?', FK(['Twee ons', 'Twee onsen', 'Twee onzen'], 0, 'getal',
         'A unit after a number stays singular: twee ons, twee kilo. One ons is a hundred grams.'), 'dus.'] },
       { en: 'A pound of cherries, that is five hundred grams, costs three euros fifty.', parts: ['Een pond kersen, dat is', FK(['vijfhonderd', 'vijftig', 'honderd'], 0, 'getal',
-        'At a Dutch stall een pond is half a kilo: vijfhonderd gram.'), 'gram, kost', FK(['drie euro vijftig', 'drie vijftig euro'], 0, 'getal',
-        'Euros first, then the cents: drie euro vijftig. In speech you may drop euro, but it never comes last.'), '.'] },
+        'At a Dutch stall een pond is half a kilo: vijfhonderd gram.'), 'gram, kost', FK(['drie euro vijftig', 'drie vijftig euro'], 0, 'getal', 'Euros first, then the cents: drie euro vijftig.'), '.'] },
       { en: 'With twenty percent discount the jacket costs eighty euros instead of a hundred.', parts: ['Met twintig procent korting', FK(['kost de jas', 'de jas kost'], 0, 'v2',
-        'The discount phrase fills slot 1, so the verb comes second: kost de jas.'), FK(['tachtig', 'achttig', 'tachttig'], 0, 'getal',
-        'Eighty is tachtig, with a t in front: the one ten that does not sound like its number.'), 'euro', FK(['in plaats van', 'in plaats voor'], 0, 'woord',
+        'The discount phrase fills slot 1, so the verb comes second: kost de jas.'), FK(['tachtig', 'achttien', 'achtentachtig'], 0, 'getal', 'Eighty is tachtig, the one ten that starts with a t.'), 'euro', FK(['in plaats van', 'in plaats voor'], 0, 'woord',
         'in plaats van means instead of. The preposition is always van.'), 'honderd.'] },
-      { en: 'That comes to fourteen euros eighty, please.', parts: ['Dat is dan', FK(['veertien', 'viertien'], 0, 'getal',
-        'vier becomes veer- in veertien and veertig.'), 'euro', FK(['tachtig', 'achttig'], 0, 'getal',
-        'Eighty is tachtig.'), ', alstublieft.'] },
-      { en: 'If you take two kilos, you get a bag of onions free with it.', parts: ['Als je twee kilo neemt,', FK(['krijg je er', 'je krijgt er'], 0, 'v2',
-        'The als-clause fills slot 1, so the main clause starts with its verb: krijg je.'), FK(['een zak uien gratis bij', 'een zak uien bij gratis'], 0, 'pronadv',
+      { en: 'That comes to fourteen euros eighty, please.', parts: ['Dat is dan', FK(['veertien', 'veertig'], 0, 'getal', 'vier becomes veer- in veertien (14) and veertig (40).'), 'euro', FK(['tachtig', 'achttien'], 0, 'getal', 'Eighty is tachtig; achttien is 18.'), ', alstublieft.'] },
+      { en: 'If you take two kilos, you get a bag of onions free with it.', parts: ['Als je twee kilo neemt,', FK(['krijg je er', 'krijgt je er'], 0, 'presens', 'When je comes right after the verb, the t drops: krijg je.'), 'een zak uien', FK(['gratis bij', 'bij gratis'], 0, 'pronadv',
         'erbij krijgen splits: er comes early, bij goes to the very end.'), '.'] },
       { en: 'Can I pay by card? No, this cheese seller takes cash only.', parts: ['Kan ik pinnen? Nee, bij', FK(['deze', 'dit'], 0, 'dehet',
         'kaasboer is a person, and people are de-words: deze kaasboer. dit goes with het-words.'), 'kaasboer', FK(['kan alleen contant', 'kan contant alleen'], 0, 'woord',
         'alleen comes before what it limits: alleen contant, cash only.'), '.'] },
-      { en: 'The fresh syrup waffles are sold out, just come back tomorrow.', parts: ['De verse stroopwafels', FK(['zijn uitverkocht', 'hebben uitverkocht'], 0, 'passief',
-        'The waffles are the ones sold, so zijn plus the participle: zijn uitverkocht.'), ',', FK(['kom morgen maar terug', 'kom morgen terug maar'], 0, 'soft',
-        'maar sits in the middle, and the prefix terug closes the command.'), '.'] },
+      { en: 'The fresh syrup waffles are sold out, just come back tomorrow.', parts: ['De verse stroopwafels', FK(['zijn uitverkocht', 'hebben uitverkocht'], 0, 'passief', 'The waffles are the ones sold, so zijn plus the participle: zijn uitverkocht.'), ', kom morgen', FK(['maar terug', 'terug maar'], 0, 'soft',
+        'maar sits in the middle, and terug closes the command.'), '.'] },
 
       // ---- builds: the market as a place
       { en: 'At the Albert Cuyp the syrup waffles are baked fresh in front of you.', parts: ['Op de Albert Cuyp', FK(['worden de stroopwafels', 'de stroopwafels worden'], 0, 'v2',
-        'Op de Albert Cuyp fills slot 1, so the verb comes second: worden de stroopwafels.'), 'vers voor je ogen', FK(['gebakken', 'gebakt'], 0, 'perf',
-        'bakken is irregular: gebakken.'), '.'] },
+        'Op de Albert Cuyp fills slot 1, so the verb comes second: worden de stroopwafels.'), 'vers voor je ogen', FK(['gebakken', 'bakken', 'bakte'], 0, 'perf', 'bakken is irregular: gebakken, and worden takes the participle at the end.'), '.'] },
       { en: 'The market, which has been there since 1905, has about two hundred and sixty stalls.', parts: ['De markt,', FK(['die', 'dat'], 0, 'diedat',
-        'markt is a de-word, so the relative pronoun is die.'), 'er al sinds 1905 is, heeft ongeveer tweehonderdzestig', FK(['kramen', 'kraamen', 'kraams'], 0, 'meervoud',
-        'de kraam becomes kramen: the syllable is open, so one a is enough.'), '.'] },
-      { en: "Just have a look, you don't have to buy anything.", parts: ['Kijk maar rustig rond, je', FK(['hoeft niks te kopen', 'moet niks te kopen'], 0, 'mag',
-        'Not necessary is hoeft ... te: je hoeft niks te kopen. moeten never takes te.'), '.'] },
+        'markt is a de-word, so the relative pronoun is die.'), 'er al sinds 1905 is, heeft ongeveer tweehonderdzestig', FK(['kramen', 'kraamen', 'kraams'], 0, 'meervoud', 'de kraam becomes kramen: the syllable is open, so one a is enough.', 'spell'), '.'] },
+      { en: "Just have a look, you don't have to buy anything.", parts: ['Kijk maar rustig rond, je', FK(['hoeft', 'moet'], 0, 'mag',
+        'Not necessary is hoeven ... te; moeten never takes te.'), 'niks te kopen.'] },
 
       // ---- builds: registers, the tourist and the trader
-      { en: 'Can I help you? This cheese is for tasting.', parts: ['Kan ik u helpen? Deze kaas is', FK(['om te proeven', 'voor te proeven'], 0, 'omte',
-        'Purpose with a verb is om ... te: om te proeven. voor te is not standard Dutch.'), '.'] },
-      { en: 'Excuse me, would you know where I can buy tulip bulbs?', parts: ['Pardon, weet u misschien', FK(['waar ik tulpenbollen kan kopen', 'waar kan ik tulpenbollen kopen'], 0, 'bijzin',
-        'A question inside a question becomes a sub-clause, so the verbs go to the end.'), '?'] },
-      { en: 'At the flower market on the Singel, love, five minutes from here.', parts: ['Op de', FK(['bloemenmarkt', 'bloemmarkt'], 0, 'samen',
-        'This compound is glued with -en-: de bloemenmarkt, like het bloemenstalletje.'), 'aan het Singel, schat, vijf minuten', FK(['hiervandaan', 'hierheen'], 0, 'weg',
+      { en: 'Can I help you? This cheese is for tasting.', parts: ['Kan ik u helpen? Deze kaas is', FK(['om', 'voor'], 0, 'omte',
+        'Purpose with a verb is om ... te: om te proeven.', 'word'), 'te proeven.'] },
+      { en: 'Excuse me, would you know where they sell tulip bulbs?', parts: ['Pardon, weet u misschien waar', FK(['ze tulpenbollen verkopen', 'verkopen ze tulpenbollen'], 0, 'bijzin',
+        'A question inside a question becomes a sub-clause, so the verb goes to the end.'), '?'] },
+      { en: 'At the flower market on the Singel, love, five minutes from here.', parts: ['Op de', FK(['bloemenmarkt', 'bloemmarkt'], 0, 'samen', 'This compound is glued with -en-: de bloemenmarkt, like het bloemenstalletje.', 'spell'), 'aan het Singel, schat, vijf minuten', FK(['hiervandaan', 'hierheen'], 0, 'weg',
         'hiervandaan means away from here, how far. hierheen means to here.'), '.'] },
-      { en: 'Could you wrap it as a present? It is for my wife.', parts: ['Zou u het als cadeau', FK(['willen inpakken', 'willen in te pakken'], 0, 'zou',
-        'zou and willen take a bare infinitive at the end: willen inpakken, no te.'), '? Het is voor mijn vrouw.'] },
+      { en: 'Could you wrap it as a present? It is for my wife.', parts: ['Zou u het als cadeau willen', FK(['inpakken', 'in te pakken'], 0, 'zou',
+        'zou and willen take a bare infinitive at the end: inpakken, no te.'), '? Het is voor mijn vrouw.'] },
       { en: 'Dear customer, from Monday our shop is open again.', parts: ['Beste klant, vanaf maandag', FK(['is onze winkel', 'onze winkel is'], 0, 'v2',
         'vanaf maandag fills slot 1, so the verb comes second.'), 'weer open.'] },
 
       // ---- builds: directions to the shops
-      { en: 'The cheese shop? Walk straight on, take the second street on the right, and it is on the corner.', parts: ['De kaaswinkel? Loop rechtdoor, neem', FK(['de tweede straat rechts', 'de twee straat rechts', 'de tweede rechts straat'], 0, 'weg',
-        'An order needs the ordinal, tweede, and the side comes after the street: de tweede straat rechts.'), ', en hij zit', FK(['op de hoek', 'in de hoek'], 0, 'weg',
-        'A shop on a street corner is op de hoek. in de hoek is inside a room.'), '.'] },
-      { en: 'The Nine Streets lie between the Singel and the Prinsengracht.', parts: ['De Negen Straatjes', FK(['liggen', 'leggen'], 0, 'woord',
-        'liggen is where something is. leggen is putting something down.'), FK(['tussen', 'tegen'], 0, 'weg',
+      { en: 'The cheese shop? Walk straight on, take the second street on the right, and it is on the corner.', parts: ['De kaaswinkel? Loop rechtdoor, neem de', FK(['tweede', 'twee'], 0, 'weg',
+        'An order needs the ordinal: de tweede straat.'), 'straat rechts, en hij zit', FK(['op de hoek', 'in de hoek'], 0, 'weg', 'A shop on a street corner is op de hoek. in de hoek is inside a room.'), '.'] },
+      { en: 'The Nine Streets lie between the Singel and the Prinsengracht.', parts: ['De Negen Straatjes', FK(['liggen', 'leggen'], 0, 'woord', 'liggen is where something is; leggen is putting something down.', 'verb'), FK(['tussen', 'tegen'], 0, 'weg',
         'tussen is between two things. tegen is against.'), 'het Singel en de Prinsengracht.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'The trader said that he had already sold all the tulips.', parts: ['De koopman zei dat hij alle tulpen', FK(['al had verkocht', 'had al verkocht'], 0, 'bijzin',
         'In a dat-clause al stays in front of the verbs, which stand together at the end.'), '.'] },
       { en: 'The Nine Streets are smaller, quieter and much more expensive than the Kalverstraat.', parts: ['De Negen Straatjes zijn kleiner, rustiger en', FK(['veel', 'erg'], 0, 'vergelijk',
-        'A comparative is made stronger with veel: veel duurder. erg goes with the plain adjective, erg duur.'), FK(['duurder', 'durer', 'meer duur'], 0, 'vergelijk',
-        'After an r the comparative takes -der: duurder.'), 'dan de Kalverstraat.'] },
+        'A comparative is made stronger with veel: veel duurder. erg goes with the plain adjective, erg duur.'), FK(['duurder', 'duur'], 0, 'vergelijk', 'After an r the comparative takes -der: duur, duurder dan.'), 'dan de Kalverstraat.'] },
 
       // ---- words: the market, the shops, units, five replayed from Nijmegen
       { w: 'the market stall', nl: 'de marktkraam' }, { w: 'the market trader', nl: 'de koopman' },

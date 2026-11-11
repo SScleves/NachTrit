@@ -16,7 +16,7 @@
   window.RULES.pres = { name: 'Present tense', note: 'presens' };
 
   const WIJK = { lanes: 3, speed: 12, maxSpeed: 14, ramp: false, lampDecay: 0.45, forkSlow: 0.3, hint: 'letter', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 5 };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 6, act: 2, name: 'De supermarkt', theme: 'shops', ...WIJK,
@@ -39,8 +39,8 @@
         { look: true, prop: 'nummer', value: 16, nl: 'zestien', en: '16' },
         { en: 'Where do I find the bread?', parts: ['Waar vind ik', FK(['het', 'de'], 0, 'dehet', 'brood is a het-word. Learn it as het brood, never just brood.'), 'brood?'] },
         { en: 'Is this on offer?', parts: ['Is dit in', FK(['de', 'het'], 0, 'dehet', 'aanbieding is a de-word. Words ending in -ing are always de.'), 'aanbieding?'] },
-        { en: 'Can I have two loaves, please?', parts: ['Mag ik twee', FK(['broden', 'brooden', 'broods'], 0, 'spel', 'brood, broden. The syllable opens up, so one o is enough: bro-den.'), ', alstublieft?'] },
-        { en: '€ 2,20', parts: ['Twee', FK(['euro', "euro's"], 0, 'getal', 'In a price euro stays singular: twee euro twintig.'), 'twintig'] },
+        { en: 'Can I have two loaves, please?', parts: ['Mag ik twee', FK(['broden', 'brooden', 'broods'], 0, 'spel', 'brood opens up in the plural, so one o is enough: bro-den.', 'spell'), ', alstublieft?'] },
+        { en: '€ 2,20', parts: ['Twee', FK(['euro', 'euro\'s'], 0, 'meervoud', 'In a price euro stays singular: twee euro twintig.'), 'twintig'] },
       ] },
 
     { id: 7, act: 2, name: 'De slager', theme: 'shops', ...WIJK,
@@ -62,8 +62,8 @@
         { look: true, prop: 'winkel', nl: 'de winkel', en: 'the shop' },
         { en: 'Can I have 200 grams of mince?', parts: ['Mag ik', FK(['twee ons', 'twintig ons', 'twee pond'], 0, 'getal', 'One ons is 100 grams, so 200 grams is twee ons. A pond is 500.'), 'gehakt?'] },
         { en: 'How much is the mince?', parts: ['Wat kost', FK(['het', 'de'], 0, 'dehet', 'Short words that start with ge- are het-words: het gehakt.'), 'gehakt?'] },
-        { en: 'That is €40.', parts: ['Dat is', FK(['veertig', 'veertien', 'vierentig'], 0, 'getal', 'Tens end in -tig: veertig. The teens end in -tien: veertien.'), 'euro.'] },
-        { en: 'That is €42.', parts: ['Dat is', FK(['tweeënveertig', 'veertigtwee', 'tweeveertig'], 0, 'getal', 'Units first, then en, then the tens: twee-en-veertig. The trema keeps ee and e apart.'), 'euro.'] },
+        { en: 'That is €40.', parts: ['Dat is', FK(['veertig', 'veertien', 'vierentwintig'], 0, 'getal', 'Tens end in -tig and teens in -tien: 40 is veertig, 14 is veertien.'), 'euro.'] },
+        { en: 'That is €42.', parts: ['Dat is', FK(['tweeënveertig', 'vierentwintig', 'tweeëntwintig'], 0, 'getal', 'Dutch says the units first: twee-en-veertig is 42, and vierentwintig is 24.'), 'euro.'] },
       ] },
 
     { id: 8, act: 2, name: 'De of het', theme: 'street', ...WIJK,
@@ -131,7 +131,7 @@
         { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
         { en: 'this year', parts: [FK(['dit', 'deze'], 0, 'dehet', 'jaar is a het-word, so dit jaar. A de-word takes deze: deze week.'), 'jaar'] },
         { en: 'this week', parts: [FK(['deze', 'dit'], 0, 'dehet', 'week is a de-word, so deze week.'), 'week'] },
-        { en: 'My birthday is in May.', parts: ['Mijn verjaardag is in', FK(['mei', 'mai', 'maai'], 0, 'woord', 'mei, with ei. Months take no capital in Dutch.')] },
+        { en: 'My birthday is in May.', parts: ['Mijn verjaardag is in', FK(['mei', 'mai'], 0, 'woord', 'May is mei, written with ei and without a capital.', 'spell')] },
         { en: 'It is Monday today.', parts: ['Het', FK(['is', 'zijn', 'ben'], 0, 'zijn', 'het is, like hij is.'), 'vandaag maandag.'] },
       ] },
   ]);

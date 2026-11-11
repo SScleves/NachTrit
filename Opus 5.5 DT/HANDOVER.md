@@ -103,18 +103,20 @@ cache, only the glow pulse and the cyclist animate.
 
 ## 6. Lamp and night mechanic, as measured
 
-`TUNE = { drain: 2.5, wisp: 2.0, right: 3, cap: 0.6 }` in index.html. Drain per second is
-`min(lampDecay, cap) * drain * (0.6 + 1.1 * nightDepth())`, where `nightDepth()` runs 0 to 1
-over the level. Right answer refuels `right + min(streak,4)*0.3`; a wisp gives `wisp`. The
-scene darkens with nightDepth (hemisphere 0.6 to 0.2, fog density up, town light decals down
-45 percent; wisps keep full strength). Bot results (`qa/lampbot.js`, always-right autopilot):
+`TUNE = { drain: 2.8, wisp: 2.0, right: 3, cap: 0.6, fast: 1 }` in index.html (drain was 2.5 until 11 Nov). Drain per
+second is `readK * min(lampDecay, cap) * drain * (0.6 + 1.1 * nightDepth())`, where `nightDepth()` runs 0 to 1 over the
+level and `readK` is 1 on open road and `S.slow / 0.85` while a fork is armed (slowing to read costs lamp in proportion
+to the speed; 0 while the first gate holds). Right answer refuels `right + min(streak,4)*0.3` (+`fast` after the go key);
+a wisp gives `wisp`. The scene darkens with nightDepth (hemisphere 0.6 to 0.2, fog density up, town light decals down
+45 percent; wisps keep full strength). Bot results on 11 Nov (`qa/dt/lamp-balance.mjs --gpu`, always-right autopilot,
+two runs each; ignore runs vary a lot):
 
 | Level | collects wisps | ignores wisps |
 |---|---|---|
-| 1 (Alblasserdam) | not run | finishes, 40 left |
-| 11 (Kinderdijk) | finishes, 43 left | dies at 17 of 20 |
-| 58 (Zeeland) | finishes, 59 left | dies at 18 of 20 |
-| 75 (Rotterdam) | finishes, 60 left | dies at 15 of 20 |
+| 1 (Alblasserdam) | finishes, 97 and 97 left | finishes, 70 and 90 |
+| 11 (Kinderdijk) | finishes, 92 and 61 | five runs: dies 18/20, finishes 2, 3, 22, 41 |
+| 58 (Zeeland) | finishes, 60 and 58 | dies 17/20 and 18/20 |
+| 75 (Rotterdam) | finishes, 73 and 51 | dies 17/20 twice |
 
 Keep this balance when you add power-ups or hazards; re-run the bot (load `qa/lampbot.js` in the
 page, then `__sim(name, collectWisps, msBudget)` in chunks under 30 s per call).

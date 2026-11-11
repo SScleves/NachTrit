@@ -1,5 +1,5 @@
 (() => {
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(4, { deliveries: 20, items: [
     // zijn with people, feelings and age. Sources: 03 - Verbs/zijn, situations/daily-life (Mijn buren zijn vriendelijk),
     // De nieuwe buren ontmoeten (Dit is mijn vrouw, en dit zijn onze twee honden), meeting-people (Ja, ik ben getrouwd).

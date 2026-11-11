@@ -19,7 +19,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 53, act: 4, name: 'Eten en drinken', town: 'zeeland', place: 'eten', theme: 'square', ...P,
     intro: 'The mussels come from Yerseke, the wind comes off the sea, and they still split the bill to the cent.',
@@ -57,23 +57,22 @@
       { look: true, prop: 'nummer', value: 62, nl: 'tweeënzestig', en: '62' },
 
       // builds: object pronouns
-      { en: "The mussels? I'll take them.", parts: ['De mosselen? Ik neem', FK(['ze', 'zij', 'hun'], 0, 'obj', 'The mussels are what you take, so ze. zij is the one doing it, and hun is not used for things.'), '.'] },
+      { en: "The mussels? I'll take them.", parts: ['De mosselen? Ik neem', FK(['ze', 'zij', 'hun'], 0, 'obj', 'The mussels are the object, so ze; zij is a subject and hun is for people.'), '.'] },
       { en: 'The waiter brings us the bill.', parts: ['De ober', FK(['brengt', 'breng', 'brengen'], 0, 'presens', 'One waiter, a hij: stem plus t, brengt.'),
         FK(['ons', 'we', 'onze'], 0, 'obj', 'After the verb, us is ons. we only does things, onze goes before a noun.'), 'de rekening.'] },
       { en: "Where is the waiter? I don't see him.", parts: ['Waar is de ober? Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'obj', 'The waiter is the one you see, so hem. hij does the seeing.'), 'niet.'] },
-      { en: "I'll send you a Tikkie.", parts: ['Ik stuur', FK(['je', 'jij', 'jouw'], 0, 'obj', 'The one it goes to sits after the verb: je. jij does things, jouw goes before a noun.'), 'een Tikkie.'] },
+      { en: "Later I'll send you a Tikkie.", parts: ['Straks', FK(['stuur ik', 'ik stuur'], 0, 'v2', 'Straks takes slot 1, so the verb comes second, then ik.'), 'je een Tikkie.'] },
 
       // builds: er is, er zijn
-      { en: 'There are no mussels today.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'mosselen is plural, so er zijn.'), 'vandaag',
-        FK(['geen', 'niet'], 0, 'neg', 'mosselen has no article in front, so geen.'), 'mosselen.'] },
-      { en: 'Is there still a table free?', parts: [FK(['Is er', 'Zijn er', 'Heeft er'], 0, 'er', 'One table, so is. The question puts the verb first: is er.'), 'nog een tafel vrij?'] },
-      { en: "There's a cosy café by the harbour.", parts: [FK(['Er is', 'Er zijn'], 0, 'er', 'One café, so er is.'), 'een',
+      { en: 'There are no mussels today.', parts: ['Vandaag', FK(['zijn er', 'er zijn'], 0, 'v2', 'Vandaag takes slot 1, so the verb comes next and er follows it.'), 'geen mosselen.'] },
+      { en: 'Is there still a table free?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One table, so is, and the question puts the verb first: is er.', 'verb'), 'nog een tafel vrij?'] },
+      { en: "There's a cosy café by the harbour.", parts: [FK(['Er is', 'Er zijn'], 0, 'er', 'One café, so er is.', 'verb'), 'een',
         FK(['gezellig', 'gezellige'], 0, 'adj', 'café is a het-word after een: the one place with no -e.'), 'café bij de haven.'] },
 
       // builds: comparison
       { en: 'Mussels are cheaper than oysters.', parts: ['Mosselen zijn', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing two things: the adjective plus -er, then dan.'), 'dan oesters.'] },
-      { en: 'A beer is more expensive than a coffee.', parts: ['Een biertje is', FK(['duurder', 'duurer', 'duurst'], 0, 'vergelijk', 'duur ends in -r, so a d slips in: duurder.'), 'dan een koffie.'] },
-      { en: "I'd rather drink tea than coffee.", parts: ['Ik drink', FK(['liever', 'graagder', 'meer graag'], 0, 'vergelijk', 'graag has its own ladder: graag, liever, liefst.'), 'thee dan koffie.'] },
+      { en: 'A beer is more expensive than a coffee.', parts: ['Een biertje is', FK(['duurder', 'duur', 'duurst'], 0, 'vergelijk', 'After r the comparative takes -der: duur, duurder, duurst.'), 'dan een koffie.'] },
+      { en: "I'd rather drink tea than coffee.", parts: ['Ik drink', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk', 'graag has its own ladder: graag, liever, liefst.'), 'thee dan koffie.'] },
       { en: 'The waitress is taller than me.', parts: ['De serveerster is', FK(['langer', 'lang', 'langst'], 0, 'vergelijk', 'Tall for people is lang. Taller than: langer dan.'), 'dan ik.'] },
       { en: 'The mussels from Yerseke are the tastiest.', parts: ['De mosselen uit Yerseke zijn', FK(['het lekkerst', 'het lekkerder'], 0, 'vergelijk', 'The best of all: het plus -st. -er is only for two things.'), '.'] },
 

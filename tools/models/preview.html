@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><title>model preview</title>
+<style>html,body{margin:0;background:#2a3038}canvas{display:block}</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/" } }</script>
+</head><body><script type="module">
+// tools/models/preview.html?m=rider,dog&d=4&y=1  four views of each model (back, side, three-quarter, front), for checking a model by eye
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const q = new URLSearchParams(location.search), names = (q.get('m') || 'rider').split(','), D = +(q.get('d') || 4), Y = +(q.get('y') || 1);
+const W = 1600, H = 400 * names.length, r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setSize(W, H); r.setScissorTest(true); document.body.appendChild(r.domElement);
+r.outputColorSpace = THREE.SRGBColorSpace;
+const loader = new GLTFLoader(), scenes = [];
+for (const n of names) {
+  const g = await loader.loadAsync(`../../assets/models/${n}.glb`), s = new THREE.Scene(); s.background = new THREE.Color(0x2a3038);
+  s.add(new THREE.HemisphereLight(0xc8d4e8, 0x302a28, 1.2)); const d = new THREE.DirectionalLight(0xffffff, 1.4); d.position.set(3, 5, 4); s.add(d);
+  g.scene.traverse(o => { if (o.isMesh) { const m = o.material; o.material = new THREE.MeshToonMaterial({ color: m.color, emissive: m.emissive }); } });
+  const grid = new THREE.GridHelper(10, 20, 0x556070, 0x3a4250); s.add(grid);
+  const sp = +(q.get('spread') || 0); if (sp) { const kids = g.scene.children[0].children; kids.forEach((c, i) => { c.position.x += (i - (kids.length - 1) / 2) * sp; }); }
+  s.add(g.scene); scenes.push(s);
+}
+const cam = new THREE.PerspectiveCamera(35, 1, 0.05, 200);
+scenes.forEach((s, j) => [Math.PI, Math.PI / 2, Math.PI * 0.78, 0].forEach((a, i) => {
+  r.setViewport(i * 400, H - (j + 1) * 400, 400, 400); r.setScissor(i * 400, H - (j + 1) * 400, 400, 400);
+  cam.position.set(Math.sin(a) * D, Y + D * 0.25, -Math.cos(a) * D); cam.lookAt(0, Y, 0); r.render(s, cam);
+}));
+window.DONE = true;
+</script></body></html>

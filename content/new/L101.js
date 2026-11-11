@@ -30,7 +30,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 101, act: 10, name: 'Eten en drinken', town: 'groningen', place: 'eten', theme: 'square', ...P,
     intro: 'In Groningen everyone eats mustard soup and nobody finds that strange. The dead have an opinion about it, then split the bill.',
@@ -41,35 +41,30 @@
       want: 'Since the mist the dead have opinions about the food, and in Groningen an opinion needs an argument. Ik vind dat and hoewel send the verb all the way to the end, ondanks only wants a noun. The women are still taller than you, the students at the next table still have not paid for the first round, and the dogs always need a walk afterwards.' },
     items: [
       // ---- builds: opinions, with dat and with volgens mij
-      { en: 'I think the soup is too salty.', parts: ['Ik vind', FK(['dat de soep te zout is', 'dat de soep is te zout'], 0, 'mening',
+      { en: 'I think the soup is too salty.', parts: ['Ik vind dat de soep', FK(['te zout is', 'is te zout'], 0, 'mening',
         'vind dat opens a sub-clause, so is goes to the very end: dat de soep te zout is.'), '.'] },
       { en: 'In my opinion the metworst is tastier than the Groninger koek.', parts: ['Volgens mij is de metworst', FK(['lekkerder', 'lekker', 'lekkerste'], 0, 'vergelijk',
         'dan asks for the -er form: lekkerder dan.'), 'dan de Groninger koek.'] },
       { en: 'I think they made the metworst themselves.', parts: ['Volgens mij', FK(['hebben ze', 'ze hebben'], 0, 'v2',
-        'Volgens mij fills slot 1, so the verb comes second: hebben ze.'), 'de metworst zelf', FK(['gemaakt', 'gemaakd', 'gemaken'], 0, 'kof',
-        'maak ends in k, a ketchup letter: gemaakt with a t.'), '.'] },
+        'Volgens mij fills slot 1, so the verb comes second: hebben ze.'), 'de metworst zelf', FK(['gemaakt', 'gemaakd'], 0, 'kof', 'maak ends in k, a ketchup letter: gemaakt with a t.', 'spell'), '.'] },
       { en: 'What do you think of the dessert?', parts: ['Wat vind je', FK(['van', 'over'], 0, 'mening',
         'Opinions use van: wat vind je van het nagerecht.'), 'het nagerecht?'] },
 
       // ---- builds: hoewel against ondanks
-      { en: 'Although the kitchen is closed, we still get soup.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
-        'hoewel opens a whole clause with its own verb. ondanks would need a noun.'), 'de keuken dicht is,', FK(['krijgen we', 'we krijgen'], 0, 'bijzin',
+      { en: 'Although the kitchen is closed, we still get soup.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel', 'hoewel opens a whole clause with its own verb; ondanks only goes before a noun.', 'word'), 'de keuken dicht is,', FK(['krijgen we', 'we krijgen'], 0, 'bijzin',
         'After a sub-clause the main clause starts with its verb: krijgen we.'), 'nog soep.'] },
-      { en: 'Despite the rain we sit outside on the terrace.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks goes with a noun: ondanks de regen. hoewel needs a clause with a verb.'), 'de regen', FK(['zitten we', 'we zitten'], 0, 'v2',
+      { en: 'Despite the rain we sit outside on the terrace.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen', FK(['zitten we', 'we zitten'], 0, 'v2',
         'The opening phrase fills slot 1, so the verb comes second: zitten we.'), 'buiten op het terras.'] },
 
       // ---- builds: separable verbs inside sub-clauses
-      { en: 'I think the waiter pours the wine too late.', parts: ['Ik vind dat de ober de wijn te laat', FK(['inschenkt', 'schenkt in', 'inschenk'], 0, 'sep',
-        'Inside a dat-clause the separable verb stays in one piece at the end: inschenkt.'), '.'] },
+      { en: 'I think the waiter pours the wine too late.', parts: ['Ik vind dat de ober de wijn te laat', FK(['inschenkt', 'schenkt in'], 0, 'sep', 'Inside a dat-clause the separable verb stays in one piece at the end: inschenkt.'), '.'] },
       { en: 'We order a dessert while the waiter clears the table.', parts: ['We bestellen een toetje terwijl de ober de tafel', FK(['afruimt', 'ruimt af'], 0, 'sep',
         'After terwijl the verb goes to the end, and a separable verb stays whole: afruimt.'), '.'] },
       { en: 'I pay cash because the card machine keeps failing.', parts: ['Ik betaal contant omdat de pinautomaat steeds', FK(['uitvalt', 'valt uit', 'uit valt'], 0, 'sep',
         'omdat sends the verb to the end, and uitvallen stays in one piece there: uitvalt.'), '.'] },
 
       // ---- builds: zullen for probability
-      { en: 'The kitchen is probably closed already.', parts: ['De keuken', FK(['zal wel', 'zullen wel', 'wel zal'], 0, 'fut',
-        'One kitchen, so zal. wel turns it into a guess: it is probably closed.'), 'al dicht zijn.'] },
+      { en: 'The kitchen is probably closed already.', parts: ['De keuken', FK(['zal wel', 'zullen wel'], 0, 'fut', 'One kitchen, so zal, and wel makes it a guess: it is probably closed.'), 'al dicht zijn.'] },
       { en: 'It will probably be busy on the Grote Markt on Friday night.', parts: ['Het', FK(['zal', 'zullen'], 0, 'fut',
         'Het is singular, so zal.'), 'vrijdagavond wel druk', FK(['zijn', 'is'], 0, 'fut',
         'zal sends the second verb to the end as an infinitive: zijn.'), 'op de Grote Markt.'] },
@@ -77,8 +72,7 @@
       // ---- builds: diminutives, het and the spelling
       { en: 'Is that little glass still clean?', parts: ['Is', FK(['dat', 'die'], 0, 'dehet',
         'glaasje ends in -je, so it is a het-word: dat glaasje.'), 'glaasje nog schoon?'] },
-      { en: 'May I have a small bowl of soup, please?', parts: ['Mag ik een', FK(['kommetje', 'komje', 'komtje'], 0, 'verklein',
-        'A short vowel before m doubles the m and takes -etje: kommetje.'), 'soep, alstublieft?'] },
+      { en: 'May I have a small bowl of soup, please?', parts: ['Mag ik een', FK(['kommetje', 'komje', 'komtje'], 0, 'verklein', 'A short vowel before m doubles the m and takes -etje: kommetje.', 'spell'), 'soep, alstublieft?'] },
 
       // ---- builds: the adjective -e in all its cells
       { en: 'I will take a warm roll and the cold beer.', parts: ['Ik neem een', FK(['warm', 'warme'], 0, 'adj',
@@ -98,8 +92,7 @@
       { en: 'Could you bring us the bill?', parts: ['Zou u ons de rekening', FK(['kunnen brengen', 'kunt brengen', 'te kunnen brengen'], 0, 'zou',
         'zou makes the request polite and is followed by an infinitive, not a second finite verb: kunnen brengen.'), '?'] },
       { en: 'Last night we went out for dinner and split the bill.', parts: ['Gisteravond', FK(['zijn we', 'we zijn'], 0, 'v2',
-        'Gisteravond fills slot 1, so the verb comes second: zijn we.'), 'uit eten gegaan en hebben we de rekening', FK(['gesplitst', 'gesplitsd'], 0, 'kof',
-        'splits ends in s, a ketchup letter: gesplitst with a t.'), '.'] },
+        'Gisteravond fills slot 1, so the verb comes second: zijn we.'), 'uit eten gegaan en hebben we de rekening', FK(['gesplitst', 'gesplitsd'], 0, 'kof', 'splits ends in s, a ketchup letter: gesplitst with a t.', 'spell'), '.'] },
 
       // ---- words: the menu, the bar, the market, the bill
       { w: 'the mustard soup (Groningen speciality)', nl: 'de mosterdsoep' }, { w: 'the spiced sausage', nl: 'de metworst' },

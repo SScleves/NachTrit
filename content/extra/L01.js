@@ -11,7 +11,7 @@
   // this level), het dak (the look marker floats right above the roof of the huis prop), de avond (next to de nacht),
   // a boom look (the tuin prop is five trees behind a fence, so de boom would be a right-looking wrong sign on it).
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(1, { deliveries: 20, items: [
     // the house, room by room
     { w: 'the kitchen', nl: 'de keuken', wrong: 'het keuken' }, { w: 'the living room', nl: 'de woonkamer' },

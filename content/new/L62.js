@@ -19,7 +19,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 62, act: 5, name: 'Het station', town: 'utrecht', place: 'station', theme: 'square', ...P,
     intro: 'The mist came and the trains kept running, with a delay. Under the station 12,500 bikes wait in the dark, and the dead still cannot find theirs.',
@@ -29,14 +29,14 @@
       want: 'They ask what time it is, and half negen is not half past nine. They ask where you change and when the ferry goes. The conductor is a woman, and still taller than you. Send the prefix to the end, or the train leaves without you.' },
     items: [
       // ---- builds: separable verbs, aan het, gaan + infinitive, the clock, the imperative
-      { en: 'The train leaves at ten past two.', parts: ['De trein', FK(['vertrekt', 'trekt'], 0, 'sep', 'ver- never breaks off. vertrekt stays in one piece.'), 'om',
+      { en: 'The train leaves at ten past two.', parts: ['De trein', FK(['vertrekt', 'trekt'], 0, 'sep', 'ver- never breaks off. vertrekt stays in one piece.', 'word'), 'om',
         FK(['tien over twee', 'twee over tien'], 0, 'klok', 'Minutes first, then over, then the hour: tien over twee is 2:10.'), '.'] },
       { en: 'At half past eight I take the train.', parts: ['Om', FK(['half negen', 'half acht'], 0, 'klok', 'Dutch counts the half towards the next hour: half negen is 8:30.'),
         FK(['neem ik', 'ik neem'], 0, 'v2', 'A time in slot 1, then the verb, then ik.'), 'de trein.'] },
-      { en: "It's twenty past four.", parts: ['Het is', FK(['tien voor half vijf', 'tien voor half vier', 'twintig voor vijf'], 0, 'klok', 'From twenty past, Dutch counts from the half: tien voor half vijf is 4:20.'), '.'] },
+      { en: "It's twenty past four.", parts: ['Het is tien voor', FK(['half vijf', 'half vier', 'vijf'], 0, 'klok', 'From twenty past, Dutch counts from the half: tien voor half vijf is 4:20.'), '.'] },
       { en: 'The train arrives at a quarter past nine.', parts: ['De trein', FK(['komt', 'aankomt'], 0, 'sep', 'aankomen splits in the present: komt in slot 2, aan at the very end.'), 'om',
         FK(['kwart over negen', 'kwart voor negen'], 0, 'klok', 'A quarter past is kwart over. kwart voor is a quarter to.'), 'aan.'] },
-      { en: 'Do I change here, or is it direct?', parts: [FK(['Stap ik', 'Overstap ik', 'Stapt ik'], 0, 'sep', 'Question: the verb first without its prefix, ik takes no t, and over waits at the end.'), 'hier over of is het rechtstreeks?'] },
+      { en: 'Do I change here, or is it direct?', parts: [FK(['Stap ik', 'Stapt ik'], 0, 'sep', 'ik takes the bare stem, also in a question: stap ik, and over waits at the end.'), 'hier over of is het rechtstreeks?'] },
       { en: 'Paola picks me up at the station.', parts: ['Paola', FK(['haalt', 'ophaalt'], 0, 'sep', 'ophalen splits: haalt in slot 2, op behind me.'),
         FK(['me', 'ik', 'mijn'], 0, 'obj', 'I am the one being picked up, so the object form: me.'), 'op bij het station.'] },
       { en: "Paola is on the phone.", parts: ['Paola', FK(['is', 'heeft'], 0, 'aanhet', 'aan het always runs on zijn: Paola is aan het ...'), 'aan het',
@@ -45,12 +45,12 @@
         FK(['aan het zoeken', 'zoeken aan het'], 0, 'aanhet', 'What you look for comes first, then aan het, then the infinitive: aan het zoeken.'), '.'] },
       { en: "Tomorrow I'm going to take the bus.", parts: ['Morgen', FK(['ga ik', 'ik ga'], 0, 'v2', 'Morgen in slot 1 pushes ik behind the verb: ga ik.'), 'de bus',
         FK(['nemen', 'neem'], 0, 'fut', 'gaan holds slot 2, the infinitive waits at the end: nemen.'), '.'] },
-      { en: "We're going to cycle to the Dom tower.", parts: ['We', FK(['gaan', 'gaat'], 0, 'fut', 'we is plural: gaan.'), 'naar de Domtoren',
+      { en: "Later we're going to cycle to the Dom tower.", parts: ['Straks', FK(['gaan we', 'we gaan'], 0, 'v2', 'Straks takes slot 1, so the verb comes second, then we.'), 'naar de Domtoren',
         FK(['fietsen', 'fietst'], 0, 'fut', 'The second verb goes whole to the end: fietsen.'), '.'] },
-      { en: 'Are you going to walk the dogs tonight?', parts: [FK(['Ga jij', 'Gaat jij'], 0, 'v2', 'When jij comes after the verb, the t drops: ga jij.'), 'vanavond de honden',
+      { en: 'Are you going to walk the dogs tonight?', parts: [FK(['Ga jij', 'Gaat jij'], 0, 'presens', 'When jij comes after the verb, the t drops: ga jij.'), 'vanavond de honden',
         FK(['uitlaten', 'laat uit', 'uit laten'], 0, 'sep', 'After gaan the separable verb glues back together at the end: uitlaten.'), '?'] },
       { en: 'Get in, the train is leaving.', parts: [FK(['Stap', 'Stapt', 'Stappen'], 0, 'gebod', 'A command is the bare stem: stap. No t, no -en.'), 'maar in, de trein vertrekt.'] },
-      { en: 'Cross the Stationsplein.', parts: [FK(['Steek', 'Oversteek', 'Steekt'], 0, 'gebod', 'A command is the bare stem, and the prefix still jumps to the end: steek ... over.'), 'het Stationsplein over.'] },
+      { en: 'Cross the Stationsplein.', parts: [FK(['Steek', 'Steekt', 'Steken'], 0, 'gebod', 'A command is the bare stem: steek; over still goes to the end.'), 'het Stationsplein over.'] },
       { en: "Just keep cycling, it's close by.", parts: [FK(['Fiets', 'Fietst', 'Fietsen'], 0, 'gebod', 'A command is the bare stem: fiets. The t only comes with jij, hij or u.'), 'maar door, het is vlakbij.'] },
       { en: 'Please check in at the gates.', parts: [FK(['Checkt u', 'Check u'], 0, 'gebod', 'The polite command puts u after the verb, and the verb keeps its t: checkt u.'), 'even',
         FK(['in', 'inchecken'], 0, 'sep', 'In a command the prefix breaks off too: checkt u even in.'), 'bij de poortjes.'] },

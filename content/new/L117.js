@@ -28,7 +28,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 117, act: 12, name: 'Eten en drinken', town: 'nijmegen', place: 'eten', theme: 'square', ...P,
     intro: 'During the Vierdaagse the dead walk fifty kilometres a day. Then they ask where the party is, and they still split the bill.',
@@ -41,40 +41,35 @@
       // ---- builds: ordering with particles
       { en: "I'll have a draught beer.", parts: [FK(['Doe mij maar', 'Doe maar mij'], 0, 'soft',
         'The fixed way to order: doe mij maar. The pronoun comes first, then maar.'), 'een biertje van de tap.'] },
-      { en: 'Have another one, my treat.', parts: [FK(['Neem er nog maar een', 'Neem nog maar een er'], 0, 'er',
-        'er stands for the beer you mean and comes early, right after the verb: neem er nog maar een. It does not go at the end.'), ', ik trakteer.'] },
+      { en: 'Have another one, my treat.', parts: ['Neem', FK(['er nog maar', 'nog maar er'], 0, 'er',
+        'er stands for the beer and comes early, right after the verb: neem er nog maar een.'), 'een, ik trakteer.'] },
       { en: 'Try the smoked sausage, it is really good here.', parts: ['Probeer de rookworst', FK(['eens', 'een'], 0, 'soft',
         'eens makes it a friendly suggestion: probeer eens. een is only the article a.'), ', die is hier echt goed.'] },
-      { en: "The bill? Stay seated, I'll get it.", parts: ['De rekening? Blijf zitten, ik', FK(['haal hem wel even', 'haal wel even hem'], 0, 'soft',
-        'A small pronoun like hem comes before the particles: ik haal hem wel even.'), '.'] },
+      { en: "The bill? Stay seated, I'll get it.", parts: ['De rekening? Blijf zitten, ik haal', FK(['hem wel even', 'wel even hem'], 0, 'soft',
+        'A small pronoun like hem comes before wel and even: ik haal hem wel even.'), '.'] },
       { en: 'Careful, the soup is hot.', parts: ['Pas op, de soep is heet,', FK(['hoor', 'maar'], 0, 'soft',
         'hoor at the end of a statement makes a warning friendly. maar cannot end a sentence.'), '.'] },
 
       // ---- builds: the waiter's formal register
-      { en: 'Good evening, what will it be?', parts: ['Goedenavond, wat', FK(['mag', 'mogen'], 0, 'formeel',
-        'The waiter asks wat mag het zijn? het is singular, so mag.'), 'het zijn?'] },
-      { en: 'Are you ready to order?', parts: [FK(['Bent u', 'Is u'], 0, 'formeel',
-        'u takes bent, just like jij: bent u. is belongs to hij and zij.'), 'klaar', FK(['om te bestellen', 'te bestellen om'], 0, 'omte',
+      { en: 'Good evening, what will it be?', parts: ['Goedenavond, wat', FK(['mag', 'mogen'], 0, 'formeel', 'The waiter asks wat mag het zijn? het is singular, so mag.', 'verb'), 'het zijn?'] },
+      { en: 'Are you ready to order?', parts: [FK(['Bent u', 'Is u'], 0, 'formeel', 'u takes bent, just like jij: bent u.', 'verb'), 'klaar', FK(['om te bestellen', 'te bestellen om'], 0, 'omte',
         'om comes first and te goes right before the verb: om te bestellen.'), '?'] },
       { en: 'Could you bring us the bill?', parts: [FK(['Zou u', 'Zouden u'], 0, 'zou',
-        'u takes the singular verb: zou u. zouden is for wij, jullie and zij.'), 'ons de rekening', FK(['willen brengen', 'wil brengen', 'te brengen'], 0, 'zou',
-        'zou takes infinitives at the end, without te: zou u ... willen brengen.'), '?'] },
+        'u takes the singular verb: zou u. zouden is for wij, jullie and zij.'), 'ons de rekening', FK(['willen brengen', 'wil brengen'], 0, 'zou', 'zou takes the infinitive at the end: zou u ... willen brengen.'), '?'] },
 
       // ---- builds: food idioms
       { en: 'I know nothing about wine.', parts: ['Van wijn', FK(['heb ik', 'ik heb'], 0, 'v2',
         'Van wijn fills slot 1, so the verb comes second: heb ik.'), FK(['geen kaas', 'geen brood', 'geen vlees'], 0, 'idioom',
         'ergens geen kaas van gegeten hebben means to know nothing about it. Only kaas works in this saying.'), 'gegeten.'] },
-      { en: 'Saying sorry only now is too little, too late.', parts: ['Nu pas sorry zeggen is', FK(['mosterd', 'mayonaise', 'ketchup'], 0, 'idioom',
-        'mosterd na de maaltijd is help that comes when it is no longer needed. The saying only knows mustard.'), 'na de maaltijd.'] },
-      { en: 'We both gave a little: we split the bill.', parts: ['We hebben allebei', FK(['water bij de wijn', 'wijn bij het water', 'water bij het bier'], 0, 'idioom',
-        'water bij de wijn doen means to meet each other halfway. The words of the saying are fixed.'), 'gedaan: we delen de rekening.'] },
+      { en: 'Saying sorry only now is too little, too late.', parts: ['Nu pas sorry zeggen is', FK(['mosterd', 'mayonaise', 'ketchup'], 0, 'idioom', 'mosterd na de maaltijd is help that comes too late; the saying only knows mustard.'), 'na de maaltijd.'] },
+      { en: 'We both gave a little: we split the bill.', parts: ['We hebben allebei water bij de', FK(['wijn', 'bier', 'thee'], 0, 'idioom',
+        'water bij de wijn doen means to meet halfway, and the saying always has wijn.'), 'gedaan: we delen de rekening.'] },
       { en: 'Ordinary sausage is nice, but smoked sausage from Gelderland is another story.', parts: ['Gewone worst is lekker, maar', FK(['Gelderse', 'Gelders'], 0, 'adj',
-        'rookworst is a de-word, so the adjective takes -e: Gelderse rookworst.'), 'rookworst is', FK(['andere koek', 'ander brood', 'andere taart'], 0, 'idioom',
-        'Dat is andere koek: that is something else entirely. Only koek works in this saying.'), '.'] },
+        'rookworst is a de-word, so the adjective takes -e: Gelderse rookworst.'), 'rookworst is andere', FK(['koek', 'taart', 'soep'], 0, 'idioom',
+        'Dat is andere koek means something else entirely, and only koek works.'), '.'] },
 
       // ---- builds: compound nouns
-      { en: 'The pea soup in the brown café is the best in town.', parts: ['De', FK(['erwtensoep', 'erwtesoep', 'erwtsoep'], 0, 'samen',
-        'Since the spelling of 1995 the glue is -en- here: erwtensoep, like pannenkoek.'), 'in het', FK(['bruine', 'bruin'], 0, 'adj',
+      { en: 'The pea soup in the brown café is the best in town.', parts: ['De', FK(['erwtensoep', 'erwtesoep', 'erwtsoep'], 0, 'samen', 'Since 1995 the glue here is -en-: erwtensoep, like pannenkoek.', 'spell'), 'in het', FK(['bruine', 'bruin'], 0, 'adj',
         'After het the adjective takes -e: het bruine café.'), 'café is de beste van de stad.'] },
       { en: 'The beer mat is under the wine glass.', parts: [FK(['Het', 'De'], 0, 'samen',
         'A compound takes the article of its last part, and het viltje is het: het bierviltje.'), 'bierviltje ligt onder', FK(['het', 'de'], 0, 'samen',
@@ -89,14 +84,12 @@
 
       // ---- builds: review of earlier tiers
       { en: 'On the Waalkade the bitterballen are fried fresh.', parts: ['Op de Waalkade', FK(['worden de bitterballen', 'de bitterballen worden'], 0, 'v2',
-        'Op de Waalkade fills slot 1, so the verb comes second: worden de bitterballen.'), 'vers', FK(['gefrituurd', 'gefrituurt', 'gefrituren'], 0, 'kof',
-        'frituur ends in r, not a ketchup letter, so -d: gefrituurd. With worden it is the passive.'), '.'] },
+        'Op de Waalkade fills slot 1, so the verb comes second: worden de bitterballen.'), 'vers', FK(['gefrituurd', 'gefrituurt'], 0, 'kof', 'frituur ends in r, not a ketchup letter, so -d: gefrituurd.', 'spell'), '.'] },
       { en: 'We had booked a table, but nobody had written it down.', parts: ['We', FK(['hadden', 'waren'], 0, 'plusq',
-        'reserveren takes hebben, so the plusquamperfectum is hadden plus the participle.'), 'een tafel', FK(['gereserveerd', 'gereserveert'], 0, 'kof',
-        'reserveer ends in r, so -d: gereserveerd.'), ', maar niemand had het opgeschreven.'] },
-      { en: 'Paola asked whether there were nuts in the sauce.', parts: ['Paola vroeg', FK(['of', 'dat'], 0, 'indirect',
-        'A reported yes-or-no question starts with of.'), FK(['er noten in de saus zaten', 'zaten er noten in de saus'], 0, 'bijzin',
-        'of sends the verb to the very end: er noten in de saus zaten.'), '.'] },
+        'reserveren takes hebben, so the plusquamperfectum is hadden plus the participle.'), 'een tafel', FK(['gereserveerd', 'gereserveert'], 0, 'kof', 'reserveer ends in r, not a ketchup letter, so -d: gereserveerd.', 'spell'), ', maar niemand had het opgeschreven.'] },
+      { en: 'Paola asked whether it was spicy.', parts: ['Paola vroeg', FK(['of', 'dat'], 0, 'indirect',
+        'A reported yes-or-no question starts with of.', 'word'), FK(['het pittig was', 'was het pittig'], 0, 'bijzin',
+        'of sends the verb to the very end: of het pittig was.'), '.'] },
       { en: 'According to Nijmegen the bitterballen on the Waalkade are the tastiest in the country.', parts: ['Volgens Nijmegen', FK(['zijn de bitterballen', 'de bitterballen zijn'], 0, 'v2',
         'Volgens Nijmegen fills slot 1, so the verb comes second.'), 'aan de Waalkade', FK(['de lekkerste', 'de lekkerst', 'de lekkerder'], 0, 'vergelijk',
         'After de the superlative takes -e: de lekkerste. lekkerder is the comparative.'), 'van het land.'] },

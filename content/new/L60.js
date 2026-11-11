@@ -18,7 +18,7 @@
   window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 60, act: 5, name: 'De winkels', town: 'utrecht', place: 'winkels', theme: 'shops', ...P,
@@ -29,13 +29,13 @@
         want: 'They tell you when the shop opens and ask what you are doing. Split the verb, send the half to the end, read the clock the Dutch way. The grammar book had a chapter on this. It is still in the plastic.' },
       items: [
         // ---- separable verbs: the stem in slot 2, the prefix at the end
-        { en: 'I am taking these shoes back.', parts: ['Ik', FK(['breng', 'terugbreng', 'brengt'], 0, 'sep', 'terugbrengen splits in the present: breng in slot 2, terug waits at the end.'), 'deze schoenen terug.'] },
+        { en: 'I am taking these shoes back.', parts: ['Ik', FK(['breng', 'terugbreng'], 0, 'sep', 'terugbrengen splits in the present: breng in slot 2, terug at the end.'), 'deze schoenen terug.'] },
         { en: 'What time does the pharmacy close?', parts: ['Hoe laat', FK(['gaat de apotheek', 'de apotheek gaat'], 0, 'v2', 'Question word first, then the verb, then the subject.'),
           FK(['dicht', 'dichtgaat'], 0, 'sep', 'dichtgaan splits: gaat sits in slot 2, dicht closes the sentence.'), '?'] },
         { en: 'I am handing in the empty bottles.', parts: ['Ik', FK(['lever', 'inlever'], 0, 'sep', 'inleveren splits: lever in slot 2, in at the end.'), 'de',
           FK(['lege', 'leeg'], 0, 'adj', 'Before a plural noun the adjective takes -e: de lege flessen.'), 'flessen in.'] },
-        { en: 'Students spend little money.', parts: ['Studenten', FK(['geven', 'uitgeven', 'geeft'], 0, 'sep', 'uitgeven splits: geven in slot 2, uit at the end. Plural, so geven.'), 'weinig geld uit.'] },
-        { en: 'I still have to pick up my medicines.', parts: ['Ik moet mijn medicijnen nog', FK(['ophalen', 'haal op', 'halen op'], 0, 'modal', 'After moet the separable verb comes back together at the end: ophalen.'), '.'] },
+        { en: 'Students spend little money.', parts: ['Studenten', FK(['geven', 'uitgeven'], 0, 'sep', 'uitgeven splits: geven in slot 2, uit at the end.'), 'weinig geld uit.'] },
+        { en: 'I still have to pick up my medicines.', parts: ['Ik moet mijn medicijnen nog', FK(['ophalen', 'ophaalt', 'op te halen'], 0, 'modal', 'After moet the separable verb stays whole at the end, without te: ophalen.'), '.'] },
         { en: 'The baker opens at half past seven.', parts: ['De bakker gaat om', FK(['half acht', 'half zeven'], 0, 'klok', 'Dutch counts the half towards the next hour: 7:30 is half acht.'),
           FK(['open', 'opengaat'], 0, 'sep', 'opengaan splits: gaat in slot 2, open at the very end.'), '.'] },
         // ---- telling the time
@@ -43,19 +43,19 @@
         // ---- zijn + aan het + infinitive
         { en: 'The baker is baking bread.', parts: ['De bakker', FK(['is', 'heeft'], 0, 'aanhet', 'aan het always rides on zijn: hij is aan het bakken.'), 'brood aan het',
           FK(['bakken', 'bakt'], 0, 'aanhet', 'After aan het comes the infinitive: bakken.'), '.'] },
-        { en: 'We are doing the shopping.', parts: ['We zijn boodschappen', FK(['aan het doen', 'aan het doet', 'doen aan het'], 0, 'aanhet', 'zijn, then aan het, then the infinitive last.'), '.'] },
+        { en: 'We are doing the shopping.', parts: ['We zijn boodschappen aan het', FK(['doen', 'doet', 'te doen'], 0, 'aanhet', 'After aan het comes the bare infinitive: doen.'), '.'] },
         // ---- gaan + infinitive
         { en: "Tomorrow I'm going to buy a new bike.", parts: ['Morgen', FK(['ga ik', 'ik ga'], 0, 'v2', 'Morgen takes slot 1, so the verb comes next, then ik.'), 'een nieuwe fiets',
           FK(['kopen', 'koop', 'te kopen'], 0, 'fut', 'gaan in slot 2, the infinitive at the end, no te.'), '.'] },
-        { en: "We're going to split the bill.", parts: ['We', FK(['gaan', 'gaat'], 0, 'presens', 'we is plural: gaan.'), 'de rekening',
+        { en: "Tonight we're going to split the bill.", parts: ['Vanavond', FK(['gaan we', 'we gaan'], 0, 'v2', 'Vanavond takes slot 1, so the verb comes second, then we.'), 'de rekening',
           FK(['delen', 'deel', 'te delen'], 0, 'fut', 'gaan plus the bare infinitive at the end: delen.'), '.'] },
         // ---- the imperative
-        { en: 'Go on, take a bag with you.', parts: [FK(['Neem', 'Neemt', 'Meeneem'], 0, 'gebod', 'A command is the bare stem: neem. meenemen splits, so mee goes to the end. Neemt only goes with u.'), 'maar een tasje mee.'] },
+        { en: 'Go on, take a bag with you.', parts: [FK(['Neem', 'Neemt', 'Nemen'], 0, 'gebod', 'A command is the bare stem: neem; mee still goes to the end.'), 'maar een tasje mee.'] },
         { en: 'Just pay at the checkout. (polite)', parts: [FK(['Betaalt u', 'Betaal u', 'Betalen u'], 0, 'gebod', 'With u the command keeps its t: Betaalt u maar.'), 'maar bij de kassa.'] },
-        { en: 'Go ahead and put the trousers on.', parts: [FK(['Trek', 'Trekt', 'Aantrek'], 0, 'gebod', 'A command is the bare stem: trek. aan from aantrekken waits at the end.'), 'de broek maar even aan.'] },
+        { en: 'Go ahead and put the trousers on.', parts: [FK(['Trek', 'Trekt', 'Trekken'], 0, 'gebod', 'A command is the bare stem: trek; aan still goes to the end.'), 'de broek maar even aan.'] },
         // ---- tier 4 kept alive
         { en: "The jumper is nice. I'll take it.", parts: ['De trui is mooi. Ik neem', FK(['hem', 'hij'], 0, 'objpron', 'trui is a de-word, and as the object it is hem. hij only does the doing.'), '.'] },
-        { en: 'The market is cheaper than the Albert Heijn.', parts: ['De markt is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk', 'Comparing: add -er, then dan. goedkoop becomes goedkoper.'), 'dan de Albert Heijn.'] },
+        { en: 'The market is cheaper than the Albert Heijn.', parts: ['De markt is', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Comparing with dan: add -er, goedkoop becomes goedkoper.'), 'dan de Albert Heijn.'] },
 
         // ---- words, all with their article
         { w: 'the price', nl: 'de prijs' }, { w: 'the size', nl: 'de maat' }, { w: 'the receipt', nl: 'het bonnetje', wrong: 'de bonnetje' },

@@ -20,7 +20,7 @@
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 51, act: 4, name: 'Thuis', town: 'zeeland', place: 'thuis', theme: 'dyke', ...P,
     intro: 'A small house behind the sea dyke. Tonight there is a storm, so the barrier shuts all 62 of its doors. Someone still knocks on yours.',
@@ -67,7 +67,7 @@
 
       // building: object pronouns
       { en: 'My mother-in-law calls me every Sunday.', parts: ['Mijn schoonmoeder belt',
-        FK(['me', 'ik', 'mijn'], 0, 'obj', 'She calls, I get called: the object form, me. ik only does things, mijn needs a noun after it.'), 'elke zondag.'] },
+        FK(['me', 'ik', 'mijn'], 0, 'obj', 'Someone calls you, so the object form: me; ik is only a subject.'), 'elke zondag.'] },
       { en: 'I love her more than golf.', parts: ['Ik hou meer van',
         FK(['haar', 'zij'], 0, 'obj', 'After van you need the object form: haar. zij is she, the one doing it.'),
         FK(['dan', 'dat'], 0, 'vergelijk', 'meer, groter, beter: a comparison is always followed by dan.'), 'van golf.'] },
@@ -77,7 +77,7 @@
         FK(['borstel ik', 'ik borstel'], 0, 'v2', 'Elke avond takes slot 1, so the verb comes second and ik after it.'),
         FK(['ze', 'zij'], 0, 'obj', 'The dogs get brushed: the object form is ze. zij only does the doing.'), '.'] },
       { en: "I'll see you all Friday at the borrel.", parts: ['Ik zie',
-        FK(['jullie', 'jij', 'jouw'], 0, 'obj', 'You all as an object is jullie, the same word as the subject. jij is only a subject and jouw needs a noun.'), 'vrijdag op de borrel.'] },
+        FK(['jullie', 'jij', 'jouw'], 0, 'obj', 'You all as an object is still jullie; jij is only a subject.'), 'vrijdag op de borrel.'] },
       { en: 'Honey, can I help you for a moment?', parts: ['Schat, kan ik',
         FK(['je', 'jij', 'jouw'], 0, 'obj', 'You get helped, so the object form: je. jij does things, jouw needs a noun.'), 'even',
         FK(['helpen', 'te helpen', 'help'], 0, 'modal', 'After kan the verb goes whole to the end, no te.'), '?'] },
@@ -87,16 +87,14 @@
 
       // building: er is, er zijn
       { en: 'Is there any milk left in the fridge?', parts: [
-        FK(['Is er', 'Zijn er'], 0, 'er', 'melk is one mass, so singular: is er. zijn er is for things you count.'), 'nog melk in de koelkast?'] },
-      { en: "There's no heating in the attic.", parts: ['Er',
-        FK(['is', 'zijn'], 0, 'er', 'One heating, so er is.'),
-        FK(['geen', 'niet'], 0, 'neg', 'verwarming is a noun with no article, so you negate it with geen. niet does not go before a noun.'), 'verwarming op zolder.'] },
+        FK(['Is er', 'Zijn er'], 0, 'er', 'melk is one mass, so singular: is er. zijn er is for things you count.', 'verb'), 'nog melk in de koelkast?'] },
+      { en: "There's no heating in the attic.", parts: ['Op zolder', FK(['is er', 'er is'], 0, 'v2', 'Op zolder takes slot 1, so the verb comes next and er follows it.'), 'geen verwarming.'] },
       { en: 'Someone is knocking on the door.', parts: ['Er',
-        FK(['klopt', 'kloppen'], 0, 'er', 'er fills slot 1, the verb follows the real subject: iemand is one person, so klopt.'), 'iemand op de deur.'] },
+        FK(['klopt', 'kloppen'], 0, 'er', 'er fills slot 1, the verb follows the real subject: iemand is one person, so klopt.', 'verb'), 'iemand op de deur.'] },
 
       // building: comparing
       { en: 'My wife is taller than me.', parts: ['Mijn vrouw is',
-        FK(['groter', 'grootst', 'groot'], 0, 'vergelijk', 'Two people side by side: -er plus dan. grootst is for the top of the ladder.'), 'dan ik.'] },
+        FK(['groter', 'groot', 'grootst'], 0, 'vergelijk', 'Two people side by side: -er plus dan.'), 'dan ik.'] },
       { en: 'Our house is the coldest in the street.', parts: [
         FK(['Ons', 'Onze'], 0, 'bezit', 'huis is a het-word, so ons huis. onze is for de-words and plurals.'), 'huis is',
         FK(['het koudst', 'het kouder'], 0, 'vergelijk', 'The top of the ladder is het plus -st: het koudst.'), 'van de straat.'] },

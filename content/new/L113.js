@@ -26,7 +26,7 @@
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 113, act: 11, name: 'De mensen', town: 'maastricht', place: 'mensen', theme: 'square', ...P,
     intro: 'In Maastricht nobody asks who is alive and who is in costume. Everyone is polite to everyone, just in case, and they still split the bill.',
@@ -38,38 +38,28 @@
     items: [
       // ---- builds: the passive with worden and zijn
       { en: 'The neighbours are invited to the borrel today.', parts: ['De buren', FK(['worden', 'wordt'], 0, 'passief',
-        'Plural subject, so worden: de buren worden uitgenodigd.'), 'vandaag', FK(['uitgenodigd', 'geuitnodigd', 'uitnodigd'], 0, 'sep',
-        'The ge sits in the middle of a separable verb: uit + genodigd, one word at the end.'), 'voor de borrel.'] },
+        'Plural subject, so worden: de buren worden uitgenodigd.'), 'vandaag', FK(['uitgenodigd', 'uitnodigen', 'uitnodigde'], 0, 'sep', 'After worden comes the participle, with ge in the middle: uit-ge-nodigd.'), 'voor de borrel.'] },
       { en: 'Everyone is warmly welcomed with a piece of vlaai.', parts: ['Iedereen', FK(['wordt', 'worden'], 0, 'passief',
-        'iedereen is singular, even though it means many people: wordt.'), 'hartelijk', FK(['ontvangen', 'geontvangen', 'ontvangt'], 0, 'perf',
-        'ont- verbs never take ge, and the passive needs the participle: wordt ontvangen.'), 'met een stuk vlaai.'] },
+        'iedereen is singular, even though it means many people: wordt.'), 'hartelijk', FK(['ontvangen', 'ontvangt', 'ontving'], 0, 'perf', 'After wordt comes the participle, and ont- verbs take no ge: ontvangen.'), 'met een stuk vlaai.'] },
       { en: 'The treaty was signed here in 1992.', parts: ['Het verdrag', FK(['werd', 'werden'], 0, 'passief',
-        'One treaty, in the past: werd getekend. werden is for several things.'), 'hier in 1992', FK(['getekend', 'getekent', 'geteken'], 0, 'kof',
-        'teken ends in n, no ketchup letter, so -d: getekend.'), '.'] },
+        'One treaty, in the past: werd getekend. werden is for several things.'), 'hier in 1992', FK(['getekend', 'getekent'], 0, 'kof', 'teken ends in n, no ketchup letter, so the participle ends in d: getekend.', 'spell'), '.'] },
       { en: 'At carnaval people party for three days.', parts: ['Met carnaval', FK(['wordt er', 'er wordt'], 0, 'v2',
-        'Met carnaval fills slot 1, so the verb comes next: wordt er.'), 'drie dagen', FK(['gefeest', 'gefeesd', 'gefeestt'], 0, 'kof',
-        'feest already ends in a t, and Dutch does not add a second one: gefeest.'), '.'] },
+        'Met carnaval fills slot 1, so the verb comes next: wordt er.'), 'drie dagen', FK(['gefeest', 'gefeesd', 'gefeestt'], 0, 'kof', 'feest already ends in t, and Dutch does not add a second one: gefeest.', 'spell'), '.'] },
       { en: 'Before the borrel the dishwasher still has to be emptied.', parts: ['Voor de borrel', FK(['moet de vaatwasser', 'de vaatwasser moet'], 0, 'v2',
-        'Voor de borrel fills slot 1, so the verb comes next: moet de vaatwasser.'), 'nog', FK(['uitgeruimd worden', 'uitgeruimd wordt', 'geuitruimd worden'], 0, 'passief',
-        'After moet the second verb is an infinitive at the end: uitgeruimd worden. The ge goes in the middle of uit + geruimd.'), '.'] },
-      { en: 'I am happy that I am invited every Friday.', parts: ['Ik ben blij dat ik elke vrijdag', FK(['uitgenodigd word', 'uitgenodigd wordt', 'uitgenodigd worden'], 0, 'passief',
-        'dat sends the verbs to the end. ik takes the bare stem: ik word. The -t belongs to hij, zij and het.'), '.'] },
+        'Voor de borrel fills slot 1, so the verb comes next: moet de vaatwasser.'), 'nog', FK(['uitgeruimd worden', 'uitgeruimd wordt'], 0, 'passief', 'After moet the second verb is an infinitive at the end: uitgeruimd worden.'), '.'] },
+      { en: 'I am happy that I am invited every Friday.', parts: ['Ik ben blij dat ik elke vrijdag', FK(['uitgenodigd word', 'uitgenodigd wordt', 'uitgenodigd worden'], 0, 'passief', 'dat sends the verbs to the end, and ik takes the bare stem: word.'), '.'] },
       { en: 'Unfortunately the borrel has been cancelled.', parts: ['De borrel', FK(['is', 'heeft'], 0, 'passief',
-        'A passive in the perfect takes zijn, never hebben: de borrel is afgezegd.'), 'helaas', FK(['afgezegd', 'geafzegd', 'afzegd'], 0, 'sep',
-        'The ge goes in the middle: af + gezegd. zeg ends in g, no ketchup letter, so -d.'), '.'] },
+        'A passive in the perfect takes zijn, never hebben: de borrel is afgezegd.'), 'helaas', FK(['afgezegd', 'afzeggen', 'afzei'], 0, 'sep', 'is plus participle describes the result, with ge in the middle: af-ge-zegd.'), '.'] },
       { en: 'The party is always organised by the neighbours.', parts: ['Het feestje wordt altijd georganiseerd', FK(['door', 'van'], 0, 'passief',
         'The one who does it in a passive sentence comes with door: door de buren.'), 'de buren.'] },
 
       // ---- builds: the plusquamperfectum
       { en: 'When we arrived at the Helpoort, everyone had already left.', parts: ['Toen we bij de Helpoort aankwamen,', FK(['was iedereen', 'iedereen was'], 0, 'v2',
-        'After a toen-clause the main clause starts with its verb: was iedereen.'), 'al', FK(['vertrokken', 'gevertrokken', 'vertrokt'], 0, 'plusq',
-        'was + participle is the plusquamperfectum. vertrekken is irregular and has no ge: vertrokken.'), '.'] },
+        'After a toen-clause the main clause starts with its verb: was iedereen.'), 'al', FK(['vertrokken', 'vertrekken', 'vertrok'], 0, 'plusq', 'was plus participle makes the pluperfect, and vertrekken is irregular: vertrokken.'), '.'] },
       { en: 'Before that evening I had never met the neighbours.', parts: ['Voor die avond', FK(['had ik', 'ik had'], 0, 'v2',
-        'Voor die avond fills slot 1, so the verb comes next: had ik.'), 'de buren nog nooit', FK(['ontmoet', 'ontmoetd', 'geontmoet'], 0, 'kof',
-        'ont- verbs take no ge, and ontmoet already ends in a t, so no second one: ontmoet.'), '.'] },
+        'Voor die avond fills slot 1, so the verb comes next: had ik.'), 'de buren nog nooit', FK(['ontmoet', 'ontmoeten', 'ontmoette'], 0, 'kof', 'had plus participle, and ont- verbs take no ge: ontmoet, with one t.'), '.'] },
       { en: 'Paola had already gone to bed.', parts: ['Paola', FK(['was', 'had'], 0, 'plusq',
-        'Going somewhere takes zijn, so the plusquamperfectum is was gegaan.'), 'al naar bed', FK(['gegaan', 'gegaat', 'gaan'], 0, 'perf',
-        'gaan has its own participle: gegaan.'), '.'] },
+        'Going somewhere takes zijn, so the plusquamperfectum is was gegaan.'), 'al naar bed', FK(['gegaan', 'gaan', 'ging'], 0, 'perf', 'was plus participle makes the pluperfect, and gaan is irregular: gegaan.'), '.'] },
       { en: 'Santi had worked until late, so he was tired at the borrel.', parts: ['Santi', FK(['had', 'was'], 0, 'plusq',
         'Working goes nowhere, so hebben: had gewerkt.'), 'tot laat gewerkt, daarom', FK(['was hij', 'hij was'], 0, 'v2',
         'daarom is not a conjunction: it fills slot 1, so the verb comes right after it.'), 'moe op de borrel.'] },
@@ -79,23 +69,17 @@
       // ---- builds: indirect speech
       { en: 'Paola said that she was tired.', parts: ['Paola zei dat ze', FK(['moe was', 'was moe'], 0, 'indirect',
         'dat opens a sub-clause, so the verb goes to the very end: moe was.'), '.'] },
-      { en: 'He asked whether I knew the neighbour.', parts: ['Hij vroeg', FK(['of', 'om'], 0, 'indirect',
-        'A reported yes-or-no question takes of: vroeg of ik ... kende. om does not open a clause here.'), 'ik de buurman', FK(['kende', 'kenden'], 0, 'imp',
+      { en: 'He asked whether I knew the neighbour.', parts: ['Hij vroeg', FK(['of', 'om'], 0, 'indirect', 'A reported yes-or-no question takes of: vroeg of ik de buurman kende.', 'word'), 'ik de buurman', FK(['kende', 'kenden'], 0, 'imp',
         'One person, ik: kende. kenden belongs to wij and zij.'), '.'] },
       { en: 'My neighbours said that they are moving next month.', parts: ['Mijn buren', FK(['zeiden', 'zei'], 0, 'imp',
-        'Several neighbours, so the plural zeiden.'), 'dat ze volgende maand', FK(['verhuizen', 'verhuist', 'verhuisd'], 0, 'indirect',
-        'After dat the verb goes to the end. ze is plural here, so verhuizen.'), '.'] },
-      { en: 'He said that he had already invited the neighbours.', parts: ['Hij zei dat hij de buren al', FK(['had uitgenodigd', 'had uitnodigd', 'had geuitnodigd'], 0, 'sep',
-        'dat sends the verbs to the end. The participle of uitnodigen has its ge in the middle: uitgenodigd.'), '.'] },
+        'Several neighbours, so the plural zeiden.'), 'dat ze volgende maand', FK(['verhuizen', 'verhuist', 'verhuisd'], 0, 'indirect', 'After dat the verb goes to the end, and plural ze takes verhuizen.', 'verb'), '.'] },
+      { en: 'He said that he had already invited the neighbours.', parts: ['Hij zei dat hij de buren al', FK(['had uitgenodigd', 'had uitnodigen'], 0, 'sep', 'had needs the participle, with ge in the middle: uitgenodigd.'), '.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'The vlaai in Maastricht is tastier than in Rotterdam.', parts: ['De vlaai in Maastricht is', FK(['lekkerder', 'lekkerer', 'meer lekker'], 0, 'vergelijk',
-        'After an r the comparative takes -der: lekkerder, followed by dan.'), 'dan in Rotterdam.'] },
+      { en: 'The vlaai in Maastricht is tastier than in Rotterdam.', parts: ['De vlaai in Maastricht is', FK(['lekkerder', 'lekker', 'lekkerst'], 0, 'vergelijk', 'An adjective ending in r takes -der to compare: lekkerder dan.'), 'dan in Rotterdam.'] },
       { en: 'Sorry, I made a mistake, that is not my coat.', parts: ['Sorry, ik', FK(['heb', 'ben'], 0, 'aux',
-        'A reflexive verb takes hebben in the perfectum: ik heb me vergist.'), 'me', FK(['vergist', 'gevergist', 'vergissen'], 0, 'refl',
-        'ver- verbs take no ge, and zich vergissen is reflexive: vergist.'), ', dat is niet mijn jas.'] },
-      { en: 'While the neighbours argue, we drink coffee.', parts: ['Terwijl de buren ruzie', FK(['maken', 'maakt'], 0, 'bijzin',
-        'terwijl sends the verb to the end. De buren is plural, so maken.'), ',', FK(['drinken we', 'we drinken'], 0, 'v2',
+        'A reflexive verb takes hebben in the perfectum: ik heb me vergist.'), 'me', FK(['vergist', 'vergissen', 'vergiste'], 0, 'perf', 'heb plus participle makes the perfect, and ver- verbs take no ge: vergist.'), ', dat is niet mijn jas.'] },
+      { en: 'While the neighbours argue, we drink coffee.', parts: ['Terwijl de buren ruzie', FK(['maken', 'maakt'], 0, 'bijzin', 'terwijl sends the verb to the end, and de buren is plural: maken.', 'verb'), ',', FK(['drinken we', 'we drinken'], 0, 'v2',
         'The sub-clause fills slot 1, so the main clause starts with its verb: drinken we.'), 'koffie.'] },
 
       // ---- words: people, feelings, the borrel, the carnaval

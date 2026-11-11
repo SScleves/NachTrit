@@ -16,7 +16,7 @@
 // New props: none. Only hond, kerk and winkel are used (not boom, deur or lamp; de kerk and de winkel are not in the word pool).
 (() => {
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 84, act: 8, name: 'De winkels', town: 'urk', place: 'winkels', theme: 'shops', ...P,
     intro: 'The shops on Urk are shut on Sunday. The mist did not change that. It only made the queue on Saturday longer.',
@@ -27,34 +27,22 @@
       want: 'Since the mist the dead stand behind every counter in their Sunday clothes and speak in sentences with a because, an if and a while. In those the verb runs to the end, and the main clause after them starts with its verb. They still split the bill to the cent, the women at the till are still taller than you, and the dogs still need a walk.' },
     items: [
       // ---- builds: sub-clauses, the verb at the end
-      { en: 'The shops are closed because it is Sunday.', parts: ['De winkels zijn dicht', FK(['omdat het zondag is', 'omdat het is zondag', 'omdat is het zondag'], 0, 'bijzin',
-        'omdat sends every verb to the end of its clause: omdat het zondag is.'), '.'] },
-      { en: 'The baker is not open, because he is in church.', parts: ['De bakker is niet open,', FK(['want hij is in de kerk', 'want hij in de kerk is', 'want is hij in de kerk'], 0, 'v2',
-        'want is not a sub-clause word. It keeps the normal order, with the verb second: want hij is.'), '.'] },
-      { en: 'I see that the checkout is closed.', parts: ['Ik zie dat de kassa', FK(['dicht is', 'is dicht', 'dicht zijn'], 0, 'bijzin',
-        'dat sends the verb to the end: dat de kassa dicht is. One checkout, so is.'), '.'] },
-      { en: 'If it is on offer, I take two.', parts: ['Als het in de aanbieding', FK(['is', 'is het', 'zijn'], 0, 'bijzin',
-        'als sends the verb to the end of its clause: in de aanbieding is.'), ',', FK(['neem ik', 'ik neem', 'ik nemen'], 0, 'v2',
+      { en: 'The shops are closed because it is Sunday.', parts: ['De winkels zijn dicht omdat het', FK(['zondag is', 'is zondag'], 0, 'bijzin', 'omdat sends every verb to the end of its clause: omdat het zondag is.'), '.'] },
+      { en: 'The baker is not open, because he is in church.', parts: ['De bakker is niet open, want', FK(['hij is', 'is hij'], 0, 'v2', 'want is not a sub-clause word and changes nothing: want hij is.'), 'in de kerk.'] },
+      { en: 'I see that the checkout is closed.', parts: ['Ik zie dat de kassa', FK(['dicht is', 'is dicht'], 0, 'bijzin', 'dat sends the verb to the end: dat de kassa dicht is.'), '.'] },
+      { en: 'If it is on offer, I take two.', parts: ['Als het in de aanbieding is,', FK(['neem ik', 'ik neem'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'twee.'] },
-      { en: 'When I got to the chemist, it was already closed.', parts: ['Toen ik bij de apotheek', FK(['kwam', 'komde', 'kwamen'], 0, 'bijzin',
-        'toen sends the verb to the end, and komen is irregular in the past: ik kwam.'), ', was ze al dicht.'] },
+      { en: 'When I got to the chemist, it was already closed.', parts: ['Toen ik bij de apotheek', FK(['kwam', 'kwamen', 'kom'], 0, 'bijzin', 'komen is irregular in the past: ik kwam, at the end of the toen clause.', 'past'), ', was ze al dicht.'] },
       { en: 'While Paola pays, I wait outside with the dogs.', parts: [FK(['Terwijl Paola betaalt', 'Terwijl betaalt Paola'], 0, 'bijzin',
         'terwijl sends the verb to the end: terwijl Paola betaalt.'), ',', FK(['wacht ik', 'ik wacht'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: wacht ik.'), 'buiten met de honden.'] },
-      { en: 'Before we go to the shop, we have to walk the dogs.', parts: ['Voordat we naar de winkel', FK(['gaan', 'gaan we', 'gaat'], 0, 'bijzin',
-        'voordat sends the verb to the end: voordat we gaan. Plural we, so gaan.'), ',', FK(['moeten we', 'we moeten'], 0, 'v2',
+      { en: 'Before we go to the shop, we have to walk the dogs.', parts: ['Voordat we naar de winkel', FK(['gaan', 'gaat'], 0, 'bijzin', 'we is plural, so gaan, at the end of the voordat clause.', 'verb'), ',', FK(['moeten we', 'we moeten'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: moeten we.'), 'de honden uitlaten.'] },
-      { en: 'I hope I can still find the receipt.', parts: ['Ik hoop dat ik de kassabon nog', FK(['kan vinden', 'kan gevonden', 'vindt kan'], 0, 'bijzin',
-        'dat sends all the verbs to the end, the modal first: kan vinden.'), '.'] },
-      { en: 'The herring is sold out, because the tourists bought everything.', parts: ['De haring is op, omdat de toeristen alles', FK(['hebben gekocht', 'hebben gekoopt', 'hebben gekopen'], 0, 'perf',
-        'kopen is irregular: gekocht. In the sub-clause hebben stands before the participle at the very end.'), '.'] },
-      { en: 'I see that the fish on Urk is fresher than in the supermarket.', parts: ['Ik zie dat de vis op Urk', FK(['verser', 'versder', 'versere'], 0, 'vergelijk',
-        'vers gets -er for the comparative: verser. After is the adjective takes no -e, so not versere.'), 'is dan in de supermarkt.'] },
-      { en: 'This is the best herring on Urk because the cutters are moored close by.', parts: ['Dit is de', FK(['beste', 'best', 'goedste'], 0, 'vergelijk',
-        'goed is irregular: goed, beter, best. After de the superlative takes -e: de beste.'), 'haring van Urk, omdat de kotters vlakbij', FK(['liggen', 'ligt'], 0, 'bijzin',
-        'omdat sends the verb to the end, and the plural kotters takes liggen.'), '.'] },
-      { en: 'I want to return this jumper because it is too small.', parts: ['Ik wil deze trui', FK(['terugbrengen', 'brengen terug', 'teruggebracht'], 0, 'sep',
-        'After wil the infinitive stays in one piece at the end: wil terugbrengen.'), ', omdat hij', FK(['te klein is', 'is te klein'], 0, 'bijzin',
+      { en: 'I hope I can still find the receipt.', parts: ['Ik hoop dat ik de kassabon nog', FK(['kan vinden', 'kan gevonden', 'kan te vinden'], 0, 'bijzin', 'After the modal kan comes a bare infinitive, without te: kan vinden.', 'verb'), '.'] },
+      { en: 'The herring is sold out, because the tourists bought everything.', parts: ['De haring is op, omdat de toeristen alles hebben', FK(['gekocht', 'kochten', 'kopen'], 0, 'perf', 'kopen is irregular, and after hebben comes the participle: gekocht.'), '.'] },
+      { en: 'I see that the fish on Urk is fresher than in the supermarket.', parts: ['Ik zie dat de vis op Urk', FK(['verser', 'vers', 'versere'], 0, 'vergelijk', 'With dan you need the comparative, and after is there is no -e: verser.'), 'is dan in de supermarkt.'] },
+      { en: 'This is the best herring on Urk because the cutters are moored close by.', parts: ['Dit is de', FK(['beste', 'best', 'beter'], 0, 'vergelijk', 'goed, beter, best is irregular, and after de the superlative takes -e: de beste.'), 'haring van Urk, omdat de kotters vlakbij', FK(['liggen', 'ligt'], 0, 'bijzin', 'The kotters are plural, so liggen, at the end of the omdat clause.', 'verb'), '.'] },
+      { en: 'I want to return this jumper because it is too small.', parts: ['Ik wil deze trui', FK(['terugbrengen', 'terugbrengt', 'terug te brengen'], 0, 'sep', 'After wil the verb stays whole at the end, without te: terugbrengen.'), ', omdat hij', FK(['te klein is', 'is te klein'], 0, 'bijzin',
         'omdat sends the verb to the end: omdat hij te klein is.'), '.'] },
 
       // ---- builds: review of earlier tiers
@@ -62,15 +50,13 @@
         'zou makes the request polite and the other verbs stay as infinitives at the end: kunnen inpakken.'), '?'] },
       { en: 'I did not feel well, so I went to the chemist.', parts: ['Ik voelde', FK(['me', 'zich', 'ik'], 0, 'refl',
         'With ik the reflexive pronoun is me: ik voelde me.'), 'niet lekker, dus ik ging naar de apotheek.'] },
-      { en: 'When I was small, my grandfather went to the fish auction every day.', parts: ['Toen ik klein', FK(['was', 'ben', 'waren'], 0, 'bijzin',
-        'toen sends the verb to the end, and a past story needs the past: was.'), ',', FK(['ging mijn opa', 'mijn opa ging'], 0, 'v2',
+      { en: 'When I was small, my grandfather went to the fish auction every day.', parts: ['Toen ik klein', FK(['was', 'ben', 'waren'], 0, 'bijzin', 'toen tells a past story, and ik takes was.', 'past'), ',', FK(['ging mijn opa', 'mijn opa ging'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: ging mijn opa.'), 'elke dag naar de visafslag.'] },
       { en: 'At the bakery I buy a big loaf and two tasty biscuits.', parts: ['Bij de bakker koop ik een', FK(['groot', 'grote'], 0, 'adj',
         'After een a het-word has no -e: een groot brood.'), 'brood en twee', FK(['lekkere', 'lekker'], 0, 'adj',
         'A plural noun takes -e: twee lekkere koekjes.'), 'koekjes.'] },
       { en: 'Paola went to the shop with the dogs.', parts: ['Paola', FK(['is', 'heeft'], 0, 'aux',
-        'Going to a place takes zijn: Paola is gegaan.'), 'met de honden naar de winkel', FK(['gegaan', 'gegaand', 'gegaat'], 0, 'perf',
-        'gaan is irregular and has its own participle: gegaan.'), '.'] },
+        'Going to a place takes zijn: Paola is gegaan.'), 'met de honden naar de winkel', FK(['gegaan', 'gaan', 'ging'], 0, 'perf', 'gaan is irregular and has its own participle: gegaan.'), '.'] },
 
       // ---- words: shops, paying and things in the bag, plus a few from Urk and a few replayed
       { w: 'the fish stall', nl: 'de viskraam' }, { w: 'the breastcloth of the dress', nl: 'de kraplap' }, { w: 'the wallet', nl: 'de portemonnee' },

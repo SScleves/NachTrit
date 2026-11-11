@@ -17,7 +17,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vraag = window.RULES.vraag || { name: 'Question words', note: 'MOC Vraagwoorden' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(50, { deliveries: 20, items: [
     // words: the table, the drinks, the food, the market
@@ -47,19 +47,19 @@
     // builds: present tense, verb-first questions, V2, modals, niet/geen, onze, de/het and a number
     { en: 'We have a reservation for two.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural, so the plural form: hebben.'), 'een reservering voor twee.'] },
     { en: 'Do you have a table for four?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'jullie takes the plural: hebben. The verb first makes it a question.'), 'jullie een tafel voor vier?'] },
-    { en: 'What would you like to drink?', parts: ['Wat', FK(['willen jullie', 'jullie willen', 'wil jullie'], 0, 'v2', 'Wat takes slot 1, the verb comes second, then jullie.'), 'drinken?'] },
+    { en: 'What would you like to drink?', parts: ['Wat', FK(['willen jullie', 'jullie willen'], 0, 'v2', 'Wat takes slot 1, the verb comes second, then jullie.'), 'drinken?'] },
     { en: 'My wife is having the fish.', parts: [FK(['Mijn', 'Mij'], 0, 'bezit', 'My before a noun is mijn. mij is me.'), 'vrouw',
       FK(['neemt', 'neem', 'nemen'], 0, 'presens', 'mijn vrouw is a zij: stem plus t, neemt.'), 'de vis.'] },
     { en: 'We want to sit on the terrace.', parts: ['We willen op', FK(['het', 'de'], 0, 'dehet', 'terras is a het-word: het terras.'), 'terras',
       FK(['zitten', 'zit', 'te zitten'], 0, 'modal', 'After willen the infinitive goes to the end, no te: zitten.'), '.'] },
-    { en: 'On Saturday we go to the market.', parts: ['Zaterdag', FK(['gaan we', 'we gaan', 'gaat we'], 0, 'v2', 'Zaterdag takes slot 1, so the verb comes second, then we.'), 'naar de markt.'] },
+    { en: 'On Saturday we go to the market.', parts: ['Zaterdag', FK(['gaan we', 'we gaan'], 0, 'v2', 'Zaterdag takes slot 1, so the verb comes second, then we.'), 'naar de markt.'] },
     { en: "My colleague doesn't eat meat.", parts: ['Mijn collega eet', FK(['geen', 'niet'], 0, 'neg', 'vlees has no article in front, so geen.'), 'vlees.'] },
     { en: "The soup isn't warm.", parts: ['De soep is', FK(['niet', 'geen'], 0, 'neg', 'warm is an adjective, not a noun, so niet.'), 'warm.'] },
     { en: 'Can I pay by card?', parts: ['Kan ik', FK(['pinnen', 'pin', 'te pinnen'], 0, 'modal', 'After kan the infinitive closes the question: pinnen.'), '?'] },
     { en: "You don't have to give a tip.", parts: ['Je', FK(['hoeft', 'moet', 'mag'], 0, 'mag', 'Not necessary is hoeven, and hoeven takes te: je hoeft geen fooi te geven.'), 'geen fooi te geven.'] },
     { en: "Our bill doesn't add up.", parts: [FK(['Onze', 'Ons'], 0, 'bezit', 'rekening is a de-word: onze rekening. ons is for het-words.'), 'rekening klopt niet.'] },
     { en: 'We each pay €18.', parts: ['We betalen ieder', FK(['achttien', 'tachtig'], 0, 'getal', '18 is achttien. tachtig is 80.'), 'euro.'] },
-    { en: 'Can we settle up?', parts: ['Mogen we', FK(['afrekenen', 'rekenen af', 'afrekent'], 0, 'modal', 'After mogen the whole verb goes to the end, prefix glued on: afrekenen.'), '?'] },
+    { en: 'Can we settle up?', parts: ['Mogen we', FK(['afrekenen', 'afrekent', 'af te rekenen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: afrekenen.'), '?'] },
     { en: 'Where is the toilet?', parts: [FK(['Waar', 'Wanneer', 'Wie'], 0, 'vraag', 'waar asks for a place.'), 'is het toilet?'] },
   ] });
 })();

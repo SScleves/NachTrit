@@ -1,0 +1,83 @@
+// PLAN.md 3e.2: the two threads that must run through every level from the level that introduces them.
+//   V2   forks that test verb-second after a fronted element (Gisteren werkte ik, not Gisteren ik werkte)
+//   dehet forks that test de or het of a noun the player met in an earlier level
+// Target: at least three of each per level. usage: node qa/audit-threads.mjs [--fail]
+// Writes Opus 5.5 DT/reports/dt-threads.{md,json}. --fail exits 1 when a level is under three (for npm run validate later).
+import fs from 'node:fs'; import path from 'node:path';
+import { loadContent, forksOf, kindOf } from './lib/load.mjs';
+import { tokens, stem } from './lib/nl.mjs';
+import { wordBag } from './lib/tasks.mjs';
+
+const ROOT = process.cwd(), OUT = path.join(ROOT, 'Opus 5.5 DT', 'reports'), MIN = 3;
+const { levels, towns } = loadContent(ROOT);
+const SUBCLAUSE = new Set(['bijzin', 'indirect', 'hoewel', 'sepbz', 'cond', 'conditie', 'alsdan', 'voorwaarde', 'diedat', 'omte', 'mening']);
+const SUBJ = new Set('ik je jij u hij zij ze we wij jullie het er men'.split(' '));
+const ART = [['de', 'het'], ['deze', 'dit'], ['die', 'dat'], ['welke', 'welk']];
+const isArtFork = o => ART.some(pair => o.every(x => pair.includes(String(x).trim().toLowerCase())));
+
+// V2 after a fronted element: rule v2, or a main-clause fork with text in front of it whose wrong option puts the subject first
+function v2Fork(item, f) {
+  const k = item.parts.indexOf(item.parts.filter(p => typeof p !== 'string')[f.idx]);
+  const before = item.parts.slice(0, k).map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').trim();
+  const ans = f.o[f.a], at = tokens(ans).map(t => t.toLowerCase());
+  if (!before && !(at.length >= 3 && f.r === 'v2')) return false;           // no fronted element: a question or a plain subject-first clause
+  if (SUBCLAUSE.has(f.r)) return false;
+  if (f.r === 'v2') return true;
+  const swapped = f.o.some((o, i) => i !== f.a && wordBag(o) === wordBag(ans) && SUBJ.has(tokens(o)[0]?.toLowerCase()));
+  return swapped && at.length >= 2 && SUBJ.has(at[1]);
+}
+
+const met = new Set();            // noun stems met in right text of earlier levels
+const rows = []; let introV2 = null, introDH = null;
+for (const lv of levels) {
+  const R = { id: lv.id, name: lv.name, town: lv._town, v2: 0, dehet: 0, dehetNew: 0, v2Examples: [], dehetExamples: [] };
+  for (const it of lv.items) {
+    const kind = kindOf(it);
+    if (kind === 'dehet') { const known = met.has(stem(it.nl)); if (known) { R.dehet++; R.dehetExamples.push(`${it.art} ${it.nl}`); } else R.dehetNew++; continue; }
+    if ((kind === 'word' || kind === 'look' || kind === 'listen') && it.wrong && /^(de|het) /.test(it.nl || '') && it.wrong.replace(/^(de|het) /, '') === it.nl.replace(/^(de|het) /, '')) {
+      const noun = it.nl.replace(/^(de|het) /, ''); if (met.has(stem(noun))) { R.dehet++; R.dehetExamples.push(it.nl); } else R.dehetNew++; continue;
+    }
+    if (!it.parts) continue;
+    for (const f of forksOf(it)) {
+      if (v2Fork(it, f)) { R.v2++; if (R.v2Examples.length < 3) R.v2Examples.push(it.parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').replace(/\s+([,.?!])/g, '$1')); }
+      if (f.r === 'dehet' || isArtFork(f.o)) {
+        const k = it.parts.indexOf(it.parts.filter(p => typeof p !== 'string')[f.idx]);
+        const after = it.parts.slice(k + 1).map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ');
+        const noun = tokens(after).find(t => t.length > 2 && !/^(kleine|grote|oude|nieuwe|mooie|leuke|lekkere|hele|eigen)$/i.test(t));
+        if (noun && met.has(stem(noun))) { R.dehet++; R.dehetExamples.push(`${f.o[f.a]} ${noun}`); } else R.dehetNew++;
+      }
+    }
+  }
+  if (R.v2 && !introV2) introV2 = lv.id;
+  if (R.dehet + R.dehetNew && !introDH) introDH = lv.id;
+  rows.push(R);
+  // everything right in this level counts as met from the next level on
+  for (const it of lv.items) { const text = it.parts ? it.parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ') : (it.read && it.o ? it.nl : it.nl || ''); for (const t of tokens(text)) met.add(stem(t)); }
+}
+// de or het reviews known nouns: in the first town nothing is known yet (its word items teach the articles), so the thread
+// is due from the first level of the second town on
+const iV2 = rows.findIndex(r => r.id === introV2), iDH = Math.max(rows.findIndex(r => r.id === introDH), rows.findIndex(r => r.town !== rows[0].town));
+rows.forEach((r, i) => { r.v2Due = i >= iV2; r.dehetDue = i >= iDH; r.v2Gap = r.v2Due && r.v2 < MIN; r.dehetGap = r.dehetDue && r.dehet < MIN; });
+const gapV2 = rows.filter(r => r.v2Gap), gapDH = rows.filter(r => r.dehetGap), both = rows.filter(r => r.v2Gap && r.dehetGap);
+const perTown = {}; for (const r of rows) { const t = perTown[r.town] ||= { levels: 0, v2: 0, dehet: 0, v2Gap: 0, dehetGap: 0 }; t.levels++; t.v2 += r.v2; t.dehet += r.dehet; t.v2Gap += r.v2Gap; t.dehetGap += r.dehetGap; }
+
+const WRITE = !process.argv.includes('--check');
+if (WRITE) fs.mkdirSync(OUT, { recursive: true });
+if (WRITE) fs.writeFileSync(path.join(OUT, 'dt-threads.json'), JSON.stringify({ generated: new Date().toISOString(), min: MIN, introV2, introDH, perTown, levels: rows }, null, 1));
+const md = ['# Threads: verb-second and de or het across levels (PLAN 3e.2)', '', 'Generated by `node qa/audit-threads.mjs`. Target: from the level where a thread starts, every level has at least three forks of it.', '',
+  '- **V2 thread**: forks with rule `v2`, or a main-clause fork with text in front of it whose wrong option puts the subject first. Questions with nothing in front of the verb do not count.',
+  '- **de or het thread**: `dehet` items, word items whose wrong option only swaps the article, and build forks that choose de/het, deze/dit, die/dat, when the noun appeared in right text of an **earlier** level. New nouns are counted apart; they teach the article but do not review it.', '',
+  `V2 starts at level ${introV2}. de or het starts at level ${introDH} and is due from level ${rows[iDH].id}, the first level of the second town (the first town teaches the articles; no noun is known yet).`, '',
+  '| Measure | Count |', '|---|---|', `| Levels | ${rows.length} |`, `| Levels under three V2 forks | ${gapV2.length} |`, `| Levels under three de/het forks on known nouns | ${gapDH.length} |`, `| Levels under three in both | ${both.length} |`, '',
+  '## Per town', '', '| Town | Levels | V2 forks | de/het on known nouns | Levels short of V2 | Levels short of de/het |', '|---|---|---|---|---|---|',
+  ...towns.filter(t => perTown[t.id]).map(t => { const T = perTown[t.id]; return `| ${t.name} | ${T.levels} | ${T.v2} | ${T.dehet} | ${T.v2Gap} | ${T.dehetGap} |`; }),
+  '', '## Per level (play order)', '', '| Level | Town | Name | V2 | de/het known | de/het new | Short |', '|---|---|---|---|---|---|---|',
+  ...rows.map(r => `| ${r.id} | ${r.town} | ${r.name} | ${r.v2Due ? r.v2 : '-'} | ${r.dehetDue ? r.dehet : '-'} | ${r.dehetNew} | ${[r.v2Gap ? 'V2' : '', r.dehetGap ? 'de/het' : ''].filter(Boolean).join(', ')} |`),
+  '', '## Levels under three', '', `**V2** (${gapV2.length}): ${gapV2.map(r => `${r.id} (${r.v2})`).join(', ')}`, '', `**de or het** (${gapDH.length}): ${gapDH.map(r => `${r.id} (${r.dehet})`).join(', ')}`, ''];
+if (WRITE) fs.writeFileSync(path.join(OUT, 'dt-threads.md'), md.join('\n'));
+console.log(`V2 starts at level ${introV2}, de/het at level ${introDH}`);
+console.log(`levels under ${MIN} V2 forks: ${gapV2.length}: ${gapV2.map(r => r.id).join(' ')}`);
+console.log(`levels under ${MIN} de/het forks on known nouns: ${gapDH.length}: ${gapDH.map(r => r.id).join(' ')}`);
+console.log(`under in both: ${both.length}`);
+if (WRITE) console.log('wrote Opus 5.5 DT/reports/dt-threads.md and .json');
+if (process.argv.includes('--fail') && (gapV2.length || gapDH.length)) process.exit(1);
