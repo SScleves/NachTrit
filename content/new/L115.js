@@ -111,13 +111,13 @@
 
       // ---- reads: four traps with their own options, two plain lines
       { read: true, nl: 'Ik doe de afwas wel.', o: ['I will do the washing-up, do not worry.', 'I am doing the washing-up well.', 'I have already done the washing-up.'], a: 0, r: 'soft',
-        w: 'wel here means leave it to me. Doing it well would be goed, and already done would be al gedaan.' },
+        w: 'wel here means leave it to me. Doing it well would be goed. Already done is al gedaan.' },
       { read: true, nl: 'De huisbaas kijkt de kat uit de boom.', o: ['The landlord is waiting to see what happens.', 'The landlord is looking at a cat in a tree.', 'The landlord is getting the cat out of the tree.'], a: 0, r: 'idioom',
-        w: 'de kat uit de boom kijken is a fixed phrase: wait and see before you act. There is no cat.' },
+        w: 'de kat uit de boom kijken is a fixed phrase: wait and see before you act.' },
       { read: true, nl: 'Wij verzoeken u de vuilniszak pas op dinsdag buiten te zetten.', o: ['We ask you not to put the rubbish bag out before Tuesday.', 'We ask you to put the rubbish bag out before Tuesday.', 'We will pick up your rubbish bag on Tuesday.'], a: 0, r: 'formeel',
-        w: 'pas op dinsdag means not until Tuesday. verzoeken is the formal word for asking, and u is the reader.' },
+        w: 'pas op dinsdag means not until Tuesday. verzoeken is the formal word for asking.' },
       { read: true, nl: 'Kom maar eens langs, hoor.', o: ['Do drop by some time.', 'Come by right now.', 'Do not drop by again.'], a: 0, r: 'soft',
-        w: 'maar and eens make it an open invitation for some time, and hoor makes it warm. Right now would be nu meteen.' },
+        w: 'maar and eens make it an open invitation, and hoor makes it warm. Right now is nu meteen.' },
       { read: true, nl: 'Oost west, thuis best.', en: 'East, west, home is best.' },
       { read: true, nl: 'Bij de verbouwing vonden we een Romeinse munt onder de vloer.', en: 'During the renovation we found a Roman coin under the floor.' },
 

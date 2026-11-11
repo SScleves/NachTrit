@@ -34,8 +34,8 @@
     items: [
       // ---- builds: sub-clauses with the verb at the end (new at tier 8)
       { en: "I'm happy because the neighbours are giving a borrel.", parts: ['Ik ben blij omdat de buren', FK(['een borrel geven', 'geven een borrel'], 0, 'bijzin', 'omdat opens a sub-clause: the verb goes to the very end, geven.'), '.'] },
-      { en: 'When we got to Urk, the whole village was in church.', parts: ['Toen we op Urk', FK(['kwam', 'kwamen', 'komen'], 1, 'bijzin', 'Past and plural: we kwamen, at the end of the toen clause.', 'past'), ',', FK(['het hele dorp zat', 'zat het hele dorp'], 1, 'bijzin',
-        'The sub-clause came first, so the main clause starts with its verb: zat het hele dorp.'), 'in de kerk.'] },
+      { en: 'When we got to Urk, everyone was in church.', parts: ['Toen we op Urk', FK(['kwam', 'kwamen', 'komen'], 1, 'bijzin', 'Past and plural: we kwamen, at the end of the toen clause.', 'past'), ',', FK(['iedereen zat', 'zat iedereen'], 1, 'bijzin',
+        'The sub-clause came first, so the main clause starts with its verb: zat iedereen.'), 'in de kerk.'] },
       { en: 'If it rains on Sunday, we stay at home.', parts: ['Als', FK(['regent het zondag', 'het zondag regent'], 1, 'bijzin',
         'als opens a sub-clause: the verb goes to the end, so het zondag regent.'), ',', FK(['blijven we', 'we blijven'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: blijven we.'), 'thuis.'] },
@@ -88,11 +88,11 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Ik ben boos omdat je mijn fiets hebt meegenomen.', o: ['I am angry because you took my bike.', 'You are angry because I took your bike.', 'I took your bike because I was angry.'], a: 0, r: 'bijzin',
-        w: 'omdat gives the reason: you took the bike, so I am angry. The one who is angry is ik, the one who took the bike is je.' },
+        w: 'omdat gives the reason: you took the bike, so I am angry. The angry one is ik.' },
       { read: true, nl: 'Terwijl de honden slapen, drinken de buren koffie.', o: ['While the dogs sleep, the neighbours drink coffee.', 'After the dogs sleep, the neighbours drink coffee.', 'While the neighbours sleep, the dogs drink coffee.'], a: 0, r: 'bijzin',
         w: 'terwijl means while, both things happen at once. The dogs sleep, the neighbours drink. After would be nadat.' },
       { read: true, nl: 'Voordat je gaat, moet je even bij de buurvrouw langs.', o: ["Before you go, you have to stop by the neighbour's.", "After you go, you have to stop by the neighbour's.", 'When you go, the neighbour has to stop by.'], a: 0, r: 'bijzin',
-        w: 'voordat means before. Moet je langs means you are the one who has to stop by, not the neighbour.' },
+        w: 'voordat means before. Moet je langs means you are the one who has to stop by.' },
       { read: true, nl: 'Het was gezellig, maar ik moet nu echt naar huis.', en: 'It was lovely, but I really have to go home now.' },
       { read: true, nl: 'Omdat het zondag is, vaart hier niemand uit.', en: 'Because it is Sunday, nobody sails out here.' },
       { read: true, nl: 'Op Urk kent iedereen elkaar, dus de buren weten het al.', en: 'On Urk everyone knows each other, so the neighbours already know.' },

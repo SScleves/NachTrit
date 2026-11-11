@@ -36,7 +36,7 @@
     { read: true, nl: 'Wat vind je van Gouda?', en: 'What do you think of Gouda?' },
     { read: true, nl: 'Ik vind het hier gezellig.', en: "I think it's cosy here.",
       o: ["I think it's cosy here.", 'I found it here.', "It's quiet here."], a: 0, r: 'woord',
-      w: "I think it's cosy here. vinden is to find, but ik vind het gezellig gives an opinion: I think it is cosy." },
+      w: "vinden is to find, but ik vind het gezellig gives an opinion: I think it is cosy." },
     { read: true, nl: 'Ik heb het druk.', en: "I'm busy.",
       o: ["I'm busy.", "I'm bored.", "It's crowded here."], a: 0, r: 'woord',
       w: "I'm busy. Dutch says I have it busy: ik heb het druk." },

@@ -95,7 +95,7 @@
 
       // ---- reads: three traps with their own options, three lines from the road and the course
       { read: true, nl: 'We liepen langs de Maas.', o: ['We walked along the Maas.', 'We are walking along the Maas.', 'We will walk along the Maas.'], a: 0, r: 'imp',
-        w: 'liepen is the past of lopen, so it is over. Walking now would be we lopen, and later we gaan lopen.' },
+        w: 'liepen is the past of lopen, so it is over. Now would be we lopen.' },
       { read: true, nl: 'Zou u mijn fiets even in de gaten kunnen houden?', o: ['Could you keep an eye on my bike for a moment?', 'Did you keep an eye on my bike?', 'I will keep an eye on your bike.'], a: 0, r: 'zou',
         w: 'zou plus kunnen is a polite request. A question about the past would use heeft u ... gehouden.' },
       { read: true, nl: 'De tegenwind was erger dan gisteren.', o: ['The headwind was worse than yesterday.', 'The headwind is the worst of the week.', 'The headwind will be worse than yesterday.'], a: 0, r: 'vergelijk',

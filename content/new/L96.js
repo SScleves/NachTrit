@@ -99,11 +99,11 @@
 
       // ---- reads: a trap on dat, a trap on te, a trap on er zin in, then the island's own lines
       { read: true, nl: 'Het schaap dat op het fietspad staat, wil niet weg.', o: ['The sheep standing on the cycle path does not want to move.', 'The cyclist on the path does not want the sheep to move.', 'The sheep next to the path wants to leave.'], a: 0, r: 'diedat',
-        w: 'dat points back to het schaap and staat sits at the end of its clause: the sheep is the one standing there. wil niet weg is the main clause.' },
+        w: 'dat points back to het schaap, and staat sits at the end of its clause.' },
       { read: true, nl: 'Ik probeer elke dag een uur te sporten.', o: ['I try to exercise for an hour every day.', 'I tried to exercise for an hour yesterday.', 'I am not allowed to exercise for an hour every day.'], a: 0, r: 'omte',
-        w: 'probeer is present, and te sporten is what is being tried. Past would be probeerde, not allowed would be mag niet.' },
+        w: 'probeer is present, and te sporten is what is being tried. Past would be probeerde.' },
       { read: true, nl: 'Ik heb er geen zin in.', o: ['I do not feel like it.', 'I have no time for it.', 'I have no sentence in it.'], a: 0, r: 'pronadv',
-        w: 'zin hebben in means to feel like it, and er stands for the thing. zin is also sentence, but not here.' },
+        w: 'zin hebben in means to feel like it, and er stands for the thing.' },
       { read: true, nl: 'Hoe laat vertrekt de laatste boot terug?', en: 'What time does the last ferry back leave?' },
       { read: true, nl: 'Een buitje deert ons niet.', en: 'A little shower does not bother us.' },
       { read: true, nl: 'Een Skuumkoppe, graag.', en: "A Skuumkoppe, please (the island brewery's best-known beer)." },

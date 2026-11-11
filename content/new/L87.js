@@ -66,9 +66,9 @@
       { en: 'I would rather work on the cutter than at home, because the wifi is faster there.', parts: ['Ik werk', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk',
         'With dan you compare, and the comparative of graag is liever.'), 'op de kotter dan thuis, omdat de wifi daar', FK(['sneller is', 'is sneller'], 0, 'bijzin',
         'omdat sends the verb to the very end: sneller is.'), '.'] },
-      { en: "I have no time today because I'm in meetings all day.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
-        'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd', FK(['omdat ik de hele dag in vergaderingen zit', 'omdat ik zit de hele dag in vergaderingen', 'omdat zit ik de hele dag in vergaderingen'], 0, 'bijzin',
-        'omdat sends the verb to the end: omdat ik de hele dag in vergaderingen zit.'), '.'] },
+      { en: "I have no time today because I have meetings all day.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
+        'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd omdat ik de hele dag', FK(['vergaderingen heb', 'heb vergaderingen'], 0, 'bijzin',
+        'omdat sends the verb to the end: vergaderingen heb.'), '.'] },
       { en: 'On Sunday all the colleagues went to church, so there was nobody at the office.', parts: ['Zondag', FK(['zijn', 'hebben'], 0, 'aux',
         'Going somewhere takes zijn: zijn gegaan.'), "alle collega's naar de kerk", FK(['gegaan', 'gaan', 'gingen'], 0, 'perf', 'gaan has its own participle: gegaan.'), ', dus er was niemand op kantoor.'] },
 
@@ -85,7 +85,7 @@
 
       // ---- reads: three traps with their own options, three plain lines from the office and the island
       { read: true, nl: 'Omdat de wifi uitviel, ben ik naar huis gegaan.', o: ['Because the wifi went down, I went home.', 'I went home and then the wifi went down.', 'The wifi went down because I went home.'], a: 0, r: 'bijzin',
-        w: 'Omdat opens the first part, so the cause comes first and the main clause starts with its verb: ben ik.' },
+        w: 'Omdat opens the first part, so the main clause starts with its verb: ben ik.' },
       { read: true, nl: 'Voordat de standup begon, was iedereen al online.', o: ['Before the standup began, everyone was already online.', 'After the standup began, everyone went online.', 'The standup began because everyone was online.'], a: 0, r: 'bijzin',
         w: 'voordat means before, and was iedereen al online is the main clause after it.' },
       { read: true, nl: 'Terwijl Mark praatte, viel de verbinding uit.', o: ['While Mark was talking, the connection dropped.', 'Mark was talking after the connection dropped.', 'Mark dropped the connection while he was talking to me.'], a: 0, r: 'bijzin',

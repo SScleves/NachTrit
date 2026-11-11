@@ -44,7 +44,7 @@
     { read: true, nl: 'Nog tien minuten.', en: 'Ten more minutes.',
       o: ['Ten more minutes.', 'Ten minutes ago.', 'Ten minutes late.'], a: 0, r: 'woord', w: 'Ten more minutes. nog is still or more. Ago is geleden, late is te laat.' },
     { read: true, nl: 'De pin doet het niet.', en: "The card machine isn't working.",
-      o: ["The card machine isn't working.", 'We only take cards.', 'Enter your PIN.'], a: 0, r: 'woord', w: "The card machine isn't working. doet het niet means does not work, and de pin is the card machine." },
+      o: ["The card machine isn't working.", 'We only take cards.', 'Enter your PIN.'], a: 0, r: 'woord', w: "doet het niet means does not work, and de pin is the card machine." },
     { read: true, nl: 'Ik trakteer.', en: "It's my treat.",
       o: ["It's my treat.", "Let's split it.", 'You pay this time.'], a: 0, r: 'woord', w: "It's my treat. trakteren means you pay for everyone, so nobody splits anything." },
 

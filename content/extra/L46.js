@@ -34,7 +34,7 @@
     { read: true, nl: 'Heb je even?', en: 'Got a minute?',
       o: ['Got a minute?', 'Have you got it?', 'Are you ready?'], a: 0, r: 'woord', w: 'Heb je even? asks for a moment of your time. Have you got it is Heb je het?' },
     { read: true, nl: 'Het apparaat doet het niet.', en: "The machine isn't working.",
-      o: ["The machine isn't working.", 'The machine is switched off.', 'The machine is new.'], a: 0, r: 'neg', w: 'Het doet het means it works. With niet the coffee machine is broken again. Switched off is staat uit.' },
+      o: ["The machine isn't working.", 'The machine is switched off.', 'The machine is new.'], a: 0, r: 'neg', w: 'Het doet het means it works; with niet the machine is broken again. Switched off is staat uit.' },
     { read: true, nl: 'Afspraak is afspraak.', en: 'A deal is a deal.',
       o: ['A deal is a deal.', 'Meeting after meeting.', 'The appointment is off.'], a: 0, r: 'cult', w: 'de afspraak is an appointment and an agreement, and a Dutch agreement holds.' },
     { read: true, nl: 'Druk vandaag?', en: 'Busy today?' },

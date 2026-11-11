@@ -88,7 +88,7 @@
       { read: true, nl: 'De wedstrijd was al begonnen toen wij aankwamen.', o: ['The match had already started when we arrived.', 'The match started because we arrived.', 'The match will start when we arrive.'], a: 0, r: 'plusq',
         w: 'was begonnen is the past perfect: it happened before we arrived. al means already.' },
       { read: true, nl: 'De trainer zei dat wij te laat waren.', o: ['The trainer said that we were late.', 'The trainer asked whether we were late.', 'The trainer said that we would be late.'], a: 0, r: 'indirect',
-        w: 'zei dat reports a statement, and waren is the plain past: we were late. Asking would be vroeg of.' },
+        w: 'zei dat reports a statement, and waren is the plain past. Asking would be vroeg of.' },
       { read: true, nl: 'Hij vroeg of ik mee wilde fietsen.', o: ['He asked if I wanted to cycle along.', 'He said that I had to cycle along.', 'He asked why I was cycling along.'], a: 0, r: 'indirect',
         w: 'vroeg of reports a yes-or-no question. mee wilde fietsen is the wish, not an order.' },
       { read: true, nl: 'Noondezju, het regent weer.', en: 'Damn it (Maastricht dialect), it is raining again.' },

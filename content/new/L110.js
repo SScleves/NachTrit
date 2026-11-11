@@ -100,9 +100,9 @@
 
       // ---- reads: four traps with their own options, two plain
       { read: true, nl: 'De conducteur had de deuren al gesloten toen we aankwamen.', o: ['The conductor had already closed the doors when we arrived.', 'The conductor closed the doors as soon as we arrived.', 'We had already arrived when the conductor closed the doors.'], a: 0, r: 'plusq',
-        w: 'had gesloten is the pluperfect: the conductor closed the doors before we aankwamen. The conductor is the one who closed them.' },
+        w: 'had gesloten is the pluperfect: the conductor closed the doors before we aankwamen.' },
       { read: true, nl: 'Door de mist worden alle treinen vertraagd.', o: ['All trains are being delayed by the mist.', 'The trains are delaying the mist.', 'All trains were delayed by the mist yesterday.'], a: 0, r: 'passief',
-        w: 'worden plus vertraagd is the passive: the trains are the ones delayed, door de mist says by what. Yesterday would be werden.' },
+        w: 'worden plus vertraagd is the passive, and door de mist says by what. Yesterday would be werden.' },
       { read: true, nl: 'De conducteur zei dat de trein vertraagd was.', o: ['The conductor said that the train was delayed.', 'The conductor asked whether the train was delayed.', 'The conductor said that the train would be delayed.'], a: 0, r: 'indirect',
         w: 'zei dat reports a statement, and was keeps it in the past. Asking would be vroeg of.' },
       { read: true, nl: 'Deze trein rijdt niet verder dan Maastricht.', o: ['This train does not go any further than Maastricht.', 'This train does not go to Maastricht.', 'This train goes further than Maastricht.'], a: 0, r: 'woord',

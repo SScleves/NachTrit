@@ -87,11 +87,11 @@
 
       // ---- reading
       { read: true, nl: 'Je hoeft niet te komen, hoor.', o: ["You don't have to come.", "You shouldn't come.", "You're not allowed to come."], a: 0, r: 'mag',
-        w: 'Je hoeft niet te means you do not have to. You should not is je moet niet, and not allowed is je mag niet.' },
+        w: 'Je hoeft niet te means you do not have to. Not allowed is je mag niet.' },
       { read: true, nl: 'Druk geweest op het werk?', o: ['Are you busy at work?', 'Have you been busy at work?', 'Will you be busy at work?'], a: 1, r: 'perf',
         w: 'geweest is the participle of zijn, so the question is about busy time that has already happened.' },
       { read: true, nl: 'Ik heb hem gisteren niet gezien.', o: ["He didn't see me yesterday.", "I won't see him tomorrow.", "I didn't see him yesterday."], a: 2, r: 'obj',
-        w: 'hem is the one being seen, ik is the one who did not see him. gezien and gisteren both put it in the past.' },
+        w: 'hem is the one seen, ik the one who did not see: gezien and gisteren mean past.' },
       { read: true, nl: 'Volgens mij heeft de minister gelijk.', o: ['The minister thinks I am right.', 'I told the minister he is right.', 'In my opinion the minister is right.'], a: 2, r: 'woord',
         w: 'volgens mij is according to me, so it is my opinion. gelijk hebben is to be right.' },
       { read: true, nl: 'Zullen we snel een keer koffie drinken?', en: 'Shall we grab a coffee sometime soon?' },

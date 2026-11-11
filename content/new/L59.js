@@ -74,7 +74,7 @@
         { read: true, nl: 'Het is half acht.', o: ['It is half past seven.', 'It is half past eight.', 'It is quarter to eight.'], a: 0, r: 'klok',
           w: 'half acht is half way to eight, so 7:30. Dutch counts towards the next hour.' },
         { read: true, nl: 'De honden moeten nog uit.', o: ['The dogs still need to go out.', 'The dogs are still out.', 'The dogs must not go out.'], a: 0, r: 'modal',
-          w: 'moeten nog uit: they still have to go out. After a modal Dutch can leave out the verb of motion. They are still inside.' },
+          w: 'moeten nog uit: they still have to go out. A modal can drop the verb of motion.' },
         { read: true, nl: 'Ik ben de keuken aan het opruimen.', o: ['I am tidying the kitchen.', 'I have tidied the kitchen.', 'I am going to tidy the kitchen.'], a: 0, r: 'aanhet',
           w: 'zijn + aan het is busy right now. Not done yet, not later.' },
         { read: true, nl: 'Ik laat de honden wel even uit.', en: "I'll walk the dogs." },

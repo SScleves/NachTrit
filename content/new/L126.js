@@ -111,7 +111,7 @@
       { read: true, nl: 'Deze tram rijdt niet verder.', o: ['This tram goes no further.', 'This tram is not running today.', 'This tram does not go far.'], a: 0, r: 'woord',
         w: 'niet verder means this is the end of the line. Not running today would be rijdt vandaag niet.' },
       { read: true, nl: 'Het pontje is gratis, maar je moet wel even wachten.', o: ['The ferry is free, but you do have to wait a bit.', 'The ferry is free, so you never have to wait.', 'The ferry costs a little, but you can get on at once.'], a: 0, r: 'soft',
-        w: 'gratis means it costs nothing, and maar je moet wel even wachten means you still have to wait a while.' },
+        w: 'gratis means it costs nothing, and je moet wel even wachten means you still have to wait.' },
       { read: true, nl: 'De trein van 17.34 uur vertrekt vandaag van spoor 15b.', o: ['The 17:34 train leaves from platform 15b today.', 'The 7:34 train leaves from platform 15b today.', 'The 17:34 train arrives at platform 15b today.'], a: 0, r: 'getal',
         w: '17.34 uur is in the evening, and vertrekt means leaves, not arrives.' },
       { read: true, nl: 'Amsterdam Centraal werd in 1889 geopend en staat op bijna negenduizend houten palen.', en: 'Amsterdam Centraal opened in 1889 and stands on almost nine thousand wooden piles.' },

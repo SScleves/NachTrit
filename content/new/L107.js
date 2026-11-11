@@ -89,11 +89,11 @@
 
       // ---- reads: four traps with their own options, one dialect line
       { read: true, nl: 'Het huis wordt volgend jaar verbouwd.', o: ['The house will be renovated next year.', 'The house was renovated last year.', 'Next year the house will be sold.'], a: 0, r: 'passief',
-        w: 'wordt + verbouwd is a passive in the present, and volgend jaar points to the future. Last year would be werd verbouwd or is verbouwd.' },
+        w: 'wordt + verbouwd is a passive, and volgend jaar points ahead. The past is werd verbouwd.' },
       { read: true, nl: 'Toen ik thuiskwam, had Paola de honden al uitgelaten.', o: ['When I got home, Paola had already walked the dogs.', 'When I got home, Paola walked the dogs.', 'When I get home, Paola will walk the dogs.'], a: 0, r: 'plusq',
         w: 'had + uitgelaten: it was already done before I arrived. Without had it would be a plain past.' },
       { read: true, nl: 'De buurman zei dat hij de honden had gehoord.', o: ['The neighbour said that he had heard the dogs.', 'The neighbour said that the dogs had heard him.', 'The neighbour said that he would hear the dogs.'], a: 0, r: 'indirect',
-        w: 'zei dat + had gehoord: he reports what he heard earlier. hij is the one who heard, and de honden is what he heard.' },
+        w: 'zei dat + had gehoord: he reports what he heard earlier, and hij is the hearer.' },
       { read: true, nl: 'Noondezju, het regent weer.', en: 'Damn it, it is raining again (mild Maastricht dialect).' },
       { read: true, nl: 'Doe mij maar een stuk kersenvlaai.', en: 'I will have a piece of cherry tart.' },
 

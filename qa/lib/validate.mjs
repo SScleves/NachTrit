@@ -36,6 +36,7 @@ export function checkLevel(lv, { towns, RULES, ids } = {}) {
         if (!Array.isArray(it.o) || it.o.length < 2 || it.o.length > 3) E.push(`${tag}: read o needs 2 or 3 options`);
         else { if (!(it.a >= 0 && it.a < it.o.length)) E.push(`${tag}: read answer index out of range`); if (new Set(it.o).size !== it.o.length) E.push(`${tag}: duplicate options`); it.o.forEach(o => bang(o, tag)); }
         if (it.r && !RULES[it.r]) E.push(`${tag}: unknown rule ${it.r}`);
+        if (it.w && it.w.trim().split(/\s+/).length > 18) W.push(`${tag}: why line over 18 words (PLAN 3d.3): ${it.w}`);
       } else if (!it.en) E.push(`${tag}: read needs en or o`);
     }
     if (kind === 'build') {

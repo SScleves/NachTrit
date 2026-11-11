@@ -86,9 +86,9 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Als u twee kazen koopt, krijgt u er een tasje bij.', o: ['If you buy two cheeses, you get a bag with them.', 'If you buy two bags, you get a cheese with them.', 'Because you bought two cheeses, you got a bag.'], a: 0, r: 'cond',
-        w: 'als = if, koopt at the end of the clause, and krijgt u comes first in the answer. er ... bij means with it.' },
+        w: 'als = if, koopt goes to the end, and krijgt u opens the answer.' },
       { read: true, nl: 'Het schaap dat in de rij staat, heeft geen pinpas.', o: ['The sheep that is standing in the queue has no debit card.', 'The sheep has no debit card, so it is not standing in the queue.', 'The queue that the sheep is in has no debit card.'], a: 0, r: 'diedat',
-        w: 'dat points back to het schaap, and staat waits at the end of the relative clause. The sheep is the one without a card.' },
+        w: 'dat points back to het schaap, and staat waits at the end of the clause.' },
       { read: true, nl: 'Dit pak melk is over de datum, ik ga ermee terug naar de winkel.', o: ['This carton of milk is past its date, I am taking it back to the shop.', 'This carton of milk is past its date, I am going back to the shop with her.', 'This milk is still good, so I am going to the shop for it.'], a: 0, r: 'pronadv',
         w: 'ermee is met plus the thing: with it. With a person it would be met haar.' },
       { read: true, nl: 'Wij splitsen de rekening altijd tot op de cent.', en: 'We always split the bill to the cent.' },

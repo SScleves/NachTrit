@@ -99,7 +99,7 @@
       { read: true, nl: 'Ondanks de werkdruk neemt Mark toch een pauze.', o: ['Despite the workload Mark still takes a break.', 'Because of the workload Mark takes a break.', 'Mark has no workload, so he takes a break.'], a: 0, r: 'hoewel',
         w: 'ondanks means despite: the workload does not stop the break. Because of would be door or vanwege.' },
       { read: true, nl: 'Volgens mij heeft Mark gelijk.', o: ['I think Mark is right.', 'Mark thinks I am right.', 'I know for sure that Mark is wrong.'], a: 0, r: 'mening',
-        w: 'volgens mij is a soft opinion: the speaker is the one who thinks it. Mark giving his opinion would be volgens hem.' },
+        w: 'volgens mij is a soft opinion, the speaker\'s own. Mark giving his opinion would be volgens hem.' },
       { read: true, nl: 'Heb je even? Ik heb een korte vraag.', en: 'Got a minute? Quick question.' },
       { read: true, nl: 'Het apparaat doet het weer niet.', en: 'The machine is not working again.' },
 

@@ -37,11 +37,11 @@
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'de bus.'] },
       { en: 'When we got to the harbour, the cutter was already gone.', parts: ['Toen we bij de haven', FK(['kwamen', 'komen', 'kwam'], 0, 'bijzin', 'toen tells a past moment, and we takes kwamen at the end.', 'past'), ',', FK(['was de kotter', 'de kotter was'], 0, 'bijzin',
         'After the toen-clause the main clause starts with its verb: was de kotter al weg.'), 'al weg.'] },
-      { en: 'While I wait for the bus, I read my mail.', parts: ['Terwijl', FK(['ik op de bus wacht', 'wacht ik op de bus'], 0, 'bijzin',
-        'terwijl sends the verb to the end: ik op de bus wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'v2',
+      { en: 'While I wait, I read my mail.', parts: ['Terwijl', FK(['ik wacht', 'wacht ik'], 0, 'bijzin',
+        'terwijl sends the verb to the end: ik wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'v2',
         'The sub-clause came first, so the next clause starts with its verb: lees ik.'), 'mijn mail.'] },
-      { en: 'Before I walk to the bus stop, I first walk the dogs.', parts: ['Voordat', FK(['ik naar de bushalte loop', 'loop ik naar de bushalte'], 0, 'bijzin',
-        'voordat sends the verb to the end: ik naar de bushalte loop.'), ',', FK(['laat ik', 'ik laat'], 0, 'bijzin',
+      { en: 'Before I leave, I first walk the dogs.', parts: ['Voordat', FK(['ik vertrek', 'vertrek ik'], 0, 'bijzin',
+        'voordat sends the verb to the end: ik vertrek.'), ',', FK(['laat ik', 'ik laat'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: laat ik ... uit.'), 'eerst de honden uit.'] },
       { en: 'Because it is storming, nobody sails out.', parts: ['Omdat', FK(['het stormt', 'stormt het'], 0, 'bijzin',
         'omdat sends the verb to the end: het stormt.'), ',', FK(['vaart niemand', 'niemand vaart'], 0, 'v2',
@@ -61,9 +61,9 @@
         'maar keeps normal word order: the verb is second, de laatste bus is al weg.'), '.'] },
 
       // ---- builds: directions and the time
-      { en: 'If you are at the lighthouse, you turn right.', parts: ['Als', FK(['u bij de vuurtoren bent', 'bent u bij de vuurtoren'], 0, 'bijzin',
-        'als sends the verb to the end: u bij de vuurtoren bent.'), ',', FK(['gaat u', 'u gaat'], 0, 'v2',
-        'The sub-clause came first, so the main clause starts with its verb: gaat u rechtsaf.'), 'rechtsaf.'] },
+      { en: 'If you are there, you turn right at the lighthouse.', parts: ['Als', FK(['u daar bent', 'bent u daar'], 0, 'bijzin',
+        'als sends the verb to the end: u daar bent.'), ',', FK(['gaat u', 'u gaat'], 0, 'v2',
+        'The sub-clause came first, so the main clause starts with its verb: gaat u rechtsaf.'), 'bij de vuurtoren rechtsaf.'] },
       { en: 'The bus to Emmeloord leaves at half past eight.', parts: ['De bus naar Emmeloord vertrekt om', FK(['half negen', 'half acht'], 0, 'klok',
         'half counts towards the next hour: half negen is 8:30. half acht is 7:30.'), '.'] },
 
@@ -86,11 +86,11 @@
 
       // ---- reads: three traps with their own options, three plain lines from the bus stop
       { read: true, nl: 'Als de bus te laat is, mis ik mijn aansluiting.', o: ['If the bus is late, I miss my connection.', 'Because the bus was late, I missed my connection.', 'The bus is late, so I took another connection.'], a: 0, r: 'bijzin',
-        w: 'als plus is: it is not past and not certain yet. After the als-clause the main clause starts with its verb: mis ik.' },
+        w: 'als plus is: not past and not certain yet. The main clause starts with mis ik.' },
       { read: true, nl: 'Omdat het zondag is, rijdt er geen bus.', o: ['Because it is Sunday, no bus runs.', 'It is Sunday, but a bus runs anyway.', 'No bus runs unless it is Sunday.'], a: 0, r: 'bijzin',
         w: 'omdat is because. The clause after the comma is the result: rijdt er geen bus.' },
       { read: true, nl: 'Ik wacht al lang, want mijn bus heeft vertraging.', o: ['I have been waiting a long time, because my bus is delayed.', 'I waited a long time, but my bus was delayed.', 'My bus is waiting a long time, so I am delayed.'], a: 0, r: 'bijzin',
-        w: 'want is because and keeps normal word order. al lang with a present verb means a wait that is still going on.' },
+        w: 'want is because and keeps normal word order. al lang with a present verb means still going on.' },
       { read: true, nl: 'Ik moet nog een kaartje kopen voordat de bus komt.', en: 'I still have to buy a ticket before the bus comes.' },
       { read: true, nl: 'Op zondag vaart hier niemand uit.', en: 'On Sunday nobody sails out here.' },
       { read: true, nl: 'Let op: door een storing rijden er geen treinen.', en: 'Attention: because of a disruption no trains are running.' },

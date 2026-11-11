@@ -57,8 +57,8 @@
         'The toen-clause came first, so the main clause starts with its verb: wist ik. weten is irregular: wist.'), 'dat', FK(['ik verdwaald was', 'was ik verdwaald'], 0, 'bijzin', 'dat sends the verb to the end of its clause: dat ik verdwaald was.'), '.'] },
 
       // ---- builds: terwijl and voordat
-      { en: 'While I walk on the treadmill, I look at my dashboard.', parts: [FK(['Terwijl ik op de loopband loop,', 'Terwijl loop ik op de loopband,'], 0, 'bijzin',
-        'terwijl sends the verb to the end: terwijl ik op de loopband loop.'), FK(['kijk ik', 'ik kijk'], 0, 'bijzin',
+      { en: 'While I walk, I look at my dashboard.', parts: ['Terwijl', FK(['ik loop', 'loop ik'], 0, 'bijzin',
+        'terwijl sends the verb to the end: ik loop.'), ',', FK(['kijk ik', 'ik kijk'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: kijk ik.'), 'naar mijn dashboard.'] },
       { en: 'Before we start, I quickly put on my sports shoes.', parts: ['Voordat we beginnen,', FK(['trek ik even', 'ik trek even'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: trek ik even.'), 'mijn sportschoenen', FK(['aan', 'aantrek', 'aangetrokken'], 0, 'sep',
@@ -99,7 +99,7 @@
 
       // ---- reads: three traps with their own options, three lines from the island and the course
       { read: true, nl: 'Ik ga niet golfen als het stormt.', o: ['I am not going to play golf if it storms.', 'I did not play golf because it stormed.', 'I am not going to play golf, but it is stormy.'], a: 0, r: 'bijzin',
-        w: 'als is if or when, and gaan ... golfen looks ahead. omdat would give a reason, and maar a contrast.' },
+        w: 'als is if or when, and gaan ... golfen looks ahead. omdat would give a reason.' },
       { read: true, nl: 'Toen ik uit de kleedkamer kwam, begon de wedstrijd al.', o: ['When I came out of the changing room, the match was already starting.', 'When I come out of the changing room, the match will start.', 'The match began because I came out of the changing room.'], a: 0, r: 'bijzin',
         w: 'toen points at one moment in the past, and begon is past too. A reason would use omdat.' },
       { read: true, nl: 'Voordat de kotters uitvaren, drinken de mannen koffie.', o: ['Before the cutters sail out, the men drink coffee.', 'After the cutters have sailed out, the men drink coffee.', 'The cutters sail out while the men drink coffee.'], a: 0, r: 'bijzin',

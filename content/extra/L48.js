@@ -32,9 +32,9 @@
     { read: true, nl: 'Ik vind het leuk.', en: 'I like it.',
       o: ['I like it.', 'I found it.', "I'm looking for it."], a: 0, r: 'woord', w: 'vinden with an adjective gives your opinion: ik vind het leuk, I like it. Nothing was lost.' },
     { read: true, nl: 'Dat klopt.', en: "That's right.",
-      o: ["That's right.", 'Someone is knocking.', "That's enough."], a: 0, r: 'woord', w: 'kloppen is to knock on a door, but dat klopt means that is right. A bill klopt when it adds up.' },
+      o: ["That's right.", 'Someone is knocking.', "That's enough."], a: 0, r: 'woord', w: 'kloppen is to knock, but dat klopt means that is right: the bill adds up.' },
     { read: true, nl: 'Gefeliciteerd met je vrouw.', en: "Congratulations on your wife's birthday.",
-      o: ["Congratulations on your wife's birthday.", 'Your wife congratulates you.', 'Say congratulations to your wife.'], a: 0, r: 'cult', w: 'At a Dutch birthday you congratulate the whole room, so the guests say gefeliciteerd met je vrouw to her husband.' },
+      o: ["Congratulations on your wife's birthday.", 'Your wife congratulates you.', 'Say congratulations to your wife.'], a: 0, r: 'cult', w: 'At a Dutch birthday everyone is congratulated, so guests tell the husband gefeliciteerd met je vrouw.' },
     { read: true, nl: 'Proost, op de buren.', en: 'Cheers, to the neighbours.' },
     { read: true, nl: 'Fijn weekend.', en: 'Have a nice weekend.' },
     { read: true, nl: 'Sorry, ik begrijp het niet.', en: "Sorry, I don't understand." },
@@ -70,7 +70,7 @@
 
     // reads: one meaning trap, seven plain lines; geen and niet only here
     { read: true, nl: 'Hoe heet je?', en: "What's your name?",
-      o: ["What's your name?", 'How hot is it?', 'How old are you?'], a: 0, r: 'woord', w: 'heten is to be called: hoe heet je asks your name. heet is also hot, but not in this line.' },
+      o: ["What's your name?", 'How hot is it?', 'How old are you?'], a: 0, r: 'woord', w: 'heten is to be called: hoe heet je asks your name. Hot is not meant here.' },
     { read: true, nl: 'Tot straks.', en: 'See you in a bit.' },
     { read: true, nl: 'Ik heb geen kinderen.', en: "I don't have children." },
     { read: true, nl: 'Het is niet erg.', en: "It doesn't matter." },

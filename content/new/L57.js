@@ -54,7 +54,7 @@
         w: 'waaien is what the wind does. Het waait hard: a lot of wind, no rain in it.' },
       { read: true, nl: 'Ik zie je vrijdag.', en: 'See you on Friday.',
         o: ['See you on Friday.', 'You see me on Friday.', "I'm free on Friday."], a: 0, r: 'obj',
-        w: 'ik does the seeing, je is the one seen. Ik zie je is literally I see you, and Dutch says it as a goodbye.' },
+        w: 'Ik zie je is literally I see you, and Dutch says it as a goodbye.' },
       { read: true, nl: 'Gefeliciteerd met je vrouw.', en: "Congratulations on your wife's birthday.",
         o: ["Congratulations on your wife's birthday.", 'Say hi to your wife.', 'Your wife is very nice.'], a: 0, r: 'cult',
         w: 'At a Dutch birthday you congratulate the whole room, so the husband hears Gefeliciteerd met je vrouw.' },

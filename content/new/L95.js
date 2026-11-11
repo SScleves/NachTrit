@@ -42,7 +42,7 @@
         'scherm is a het-word, so dat. die belongs to de-words.'), 'op mijn bureau staat, is kapot.'] },
       { en: 'I work with a tool called Dynatrace.', parts: ['Ik werk met een tool', FK(['die', 'dat'], 0, 'diedat',
         'tool is a de-word, so die: een tool die Dynatrace heet.'), 'Dynatrace heet.'] },
-      { en: 'The sheep that is already standing by the door wants to join the standup.', parts: ['Het schaap', FK(['dat al bij de deur staat', 'dat staat al bij de deur'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, staat.'), ', wil meedoen aan de standup.'] },
+      { en: 'The sheep that is already waiting wants to join the standup.', parts: ['Het schaap', FK(['dat al wacht', 'dat wacht al'], 0, 'bijzin', 'A dat-clause is a sub-clause: the verb goes to the very end, wacht.'), ', wil meedoen aan de standup.'] },
 
       // ---- builds: te plus infinitive and om ... te
       { en: 'I use the laptop to keep an eye on the dashboards.', parts: ['Ik gebruik de laptop', FK(['om', 'te', 'dat'], 0, 'omte', 'om ... te means in order to: om opens the clause, te comes before the last verb.', 'word'), 'de dashboards in de gaten', FK(['te houden', 'houden te'], 0, 'omte', 'te sits right in front of the infinitive: te houden.'), '.'] },
@@ -92,11 +92,11 @@
 
       // ---- reads: three traps with their own options, two plain lines from the office
       { read: true, nl: 'Het schaap dat mijn scherm leest, wil een baan.', o: ['The sheep that reads my screen wants a job.', 'The sheep reads my screen because it wants a job.', 'My screen reads the sheep that wants a job.'], a: 0, r: 'diedat',
-        w: 'dat belongs to het schaap, and the clause dat mijn scherm leest only says which sheep. The verb leest sits at the end of it.' },
+        w: 'dat belongs to het schaap, and the clause only says which sheep. leest sits at the end.' },
       { read: true, nl: 'Als dit schaap kon praten, zou het over de wifi klagen.', o: ['If this sheep could talk, it would complain about the wifi.', 'When this sheep talks, it complains about the wifi.', 'This sheep can talk because it complains about the wifi.'], a: 0, r: 'cond',
-        w: 'kon after als plus zou in the answer part is an imagined case. A real habit would be als dit schaap praat, klaagt het.' },
+        w: 'kon after als plus zou in the answer is an imagined case, not a real habit.' },
       { read: true, nl: 'Ik heb geen zin om te vergaderen.', o: ['I do not feel like having a meeting.', 'I am not allowed to have a meeting.', 'I have no time for the meeting.'], a: 0, r: 'omte',
-        w: 'geen zin om ... te means no desire to do it. Not allowed would be mag niet, and no time would be geen tijd.' },
+        w: 'geen zin om ... te means no desire to do it. No time would be geen tijd.' },
       { read: true, nl: 'Dynatrace laat zien waar het probleem zit.', en: 'Dynatrace shows where the problem is.' },
       { read: true, nl: 'Sterkte ermee.', en: 'Good luck with it.' },
 

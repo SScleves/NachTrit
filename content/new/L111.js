@@ -83,11 +83,11 @@
 
       // ---- reads: four traps with their own options, two lines from the office and the city
       { read: true, nl: 'De vergadering werd naar vrijdag verplaatst.', o: ['The meeting was moved to Friday.', 'The meeting is being moved to Friday.', 'The meeting will be moved to Friday.'], a: 0, r: 'passief',
-        w: 'werd is the past of worden, so it was done. Happening right now would be wordt verplaatst, and a later move would need a future form.' },
+        w: 'werd is the past of worden, so it was done. Right now would be wordt verplaatst.' },
       { read: true, nl: 'Toen ik belde, had Mark het probleem al opgelost.', o: ['When I called, Mark had already solved the problem.', 'When I called, Mark solved the problem.', 'Mark will solve the problem when I call.'], a: 0, r: 'plusq',
-        w: 'had plus opgelost is the plusquamperfectum: it was already done before I called. Plain solved would be loste op.' },
+        w: 'had plus opgelost is the plusquamperfectum: done before I called. Plain solved would be loste op.' },
       { read: true, nl: 'Ze zei dat ze later zou bellen.', o: ['She said she would call later.', 'She said she called later.', 'She asked me to call later.'], a: 0, r: 'indirect',
-        w: 'zei dat reports what was said, and zou bellen is would call, the future seen from the past. Asking someone to call would be vroeg of ik later wilde bellen.' },
+        w: 'zei dat reports what was said, and zou bellen is would call, the future seen from the past.' },
       { read: true, nl: 'Hij vroeg of ik de melding had gezien.', o: ['He asked whether I had seen the alert.', 'He said that I had seen the alert.', 'He asked me to look at the alert.'], a: 0, r: 'indirect',
         w: 'vroeg of reports a yes-or-no question. Reporting a statement would be zei dat.' },
       { read: true, nl: 'Noondezju, mijn laptop is alweer leeg.', en: 'Damn it, my laptop is empty again. (Noondezju is Maastricht dialect.)' },

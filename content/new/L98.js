@@ -61,8 +61,8 @@
       { en: 'On Texel there are more sheep than people.', parts: ['Op Texel', FK(['zijn er', 'er zijn'], 0, 'v2', 'Op Texel takes slot 1, so the verb comes second: zijn er.'), 'meer schapen dan mensen.'] },
       { en: 'How many lambs? I have seen three.', parts: ['Hoeveel lammetjes? Ik heb', FK(['er drie', 'drie er'], 0, 'er',
         'er stands for the lambs you counted: ik heb er drie gezien.'), 'gezien.'] },
-      { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat', FK(['er veel zand op de weg ligt', 'er ligt veel zand op de weg', 'ligt er veel zand op de weg'], 0, 'bijzin',
-        'omdat sends the verb to the end, and er stays in front: er ... ligt.'), '.'] },
+      { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat er op de weg', FK(['veel zand ligt', 'ligt veel zand'], 0, 'bijzin',
+        'omdat sends the verb to the end: veel zand ligt.'), '.'] },
 
       // ---- builds: pronominal adverbs
       { en: 'The ferry is waiting and the dog is looking at it.', parts: ['De veerboot ligt klaar en de hond kijkt', FK(['ernaar', 'naar het'], 0, 'pronadv', 'For a thing, er and the preposition become one word: ernaar.'), '.'] },
@@ -92,7 +92,7 @@
       { read: true, nl: 'Hij zou graag blijven, maar de laatste boot vertrekt.', o: ['He would like to stay, but the last ferry is leaving.', 'He stayed gladly, but the last ferry left.', 'He wants to stay, so the last ferry leaves.'], a: 0, r: 'zou',
         w: 'zou graag is a wish, not a fact. maar keeps normal word order.' },
       { read: true, nl: 'Ik heb er niets mee te maken.', o: ['I have nothing to do with it.', 'I have nothing to do it with.', 'I have nothing left to make.'], a: 0, r: 'pronadv',
-        w: 'iets te maken hebben met: with the thing becomes er ... mee. A fixed phrase, not a literal one.' },
+        w: 'iets te maken hebben met: with the thing becomes er ... mee, a fixed phrase.' },
       { read: true, nl: 'Mis je de laatste boot, dan woon je hier voortaan.', en: 'Miss the last ferry and you live here from now on.', o: ['Miss the last ferry and you live here from now on.', 'Take the last ferry and you live here from now on.', 'Miss the last ferry and you sleep here tonight.'], a: 0, r: 'woord',
         w: 'Mis je ..., dan ...: a verb first works like if. voortaan means from now on.' },
 

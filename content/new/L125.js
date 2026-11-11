@@ -102,7 +102,7 @@
 
       // ---- reads: four subtle pairs, two plain lines
       { read: true, nl: 'Ik heb geen trek meer.', o: ['I am not hungry any more.', 'I am not hungry yet.', 'I have no more money left.'], a: 0, r: 'woord',
-        w: 'geen ... meer means no longer. Not yet would be nog geen trek, and trek is appetite, not money.' },
+        w: 'geen ... meer means no longer. Not yet would be nog geen, and trek is appetite.' },
       { read: true, nl: 'Zullen we samsam doen?', o: ['Shall we split it fifty-fifty?', 'Shall we do it again?', 'Shall we pay together later?'], a: 0, r: 'cult',
         w: 'samsam doen means sharing the cost equally. It is the oldest Dutch habit there is.' },
       { read: true, nl: 'Laat maar, ik trakteer.', o: ['Leave it, it is on me.', 'Leave it, I will pay for myself.', 'Leave it, I am being treated.'], a: 0, r: 'woord',
