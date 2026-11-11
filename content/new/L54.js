@@ -13,7 +13,7 @@
   window.RULES.vgl = window.RULES.vgl || { name: 'Comparing: groter dan, het grootst', note: 'dan' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 54, act: 4, name: 'Het station', town: 'zeeland', place: 'station', theme: 'dyke', ...P,
     intro: 'Zierikzee has no train station. Since the mist, the dead wait on the platform anyway.',

@@ -27,7 +27,7 @@
   window.RULES.mening = window.RULES.mening || { name: 'Opinions: ik vind dat, volgens mij', note: 'ik-vind' };
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 121, act: 12, name: 'De mensen', town: 'nijmegen', place: 'mensen', theme: 'square', ...P,
     intro: 'Nijmegen is friendly to everyone, the dead included. Only about Maastricht you had better not start.',

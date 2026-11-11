@@ -11,7 +11,7 @@
   // even?), _site/sentences (Hoe laat begint de vergadering?, Sorry, ik begrijp het niet., Ik stuur mijn vrouw even
   // een berichtje., Tegen mijn baas zeg ik nog steeds u., Vind je je werk leuk?, het wachtwoord van de wifi).
   // Rules used: presens and vraag (district3.js), spel (district2.js), bezit (town-gouda.js), v2, modal, neg, woord.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(11, { deliveries: 20, items: [
     // the standup and the meeting
     { en: 'Morning everyone, shall we start?', parts: ['Goedemorgen allemaal,', FK(['zullen', 'zal', 'zult'], 0, 'modal', 'we takes the plural: zullen. zal and zult are for one person.'), 'we',

@@ -28,7 +28,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 126, act: 13, name: 'Het station', town: 'amsterdam', place: 'station', theme: 'square', ...P,
     intro: 'Amsterdam Centraal stands on thousands of wooden piles in the water. The station has never fallen over. The timetable has.',

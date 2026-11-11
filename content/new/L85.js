@@ -23,7 +23,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 85, act: 8, name: 'Eten en drinken', town: 'urk', place: 'eten', theme: 'dyke', ...P,
     intro: 'Urk has the freshest fish in the country and the longest Sundays. The dead order on time, and they still split the bill.',

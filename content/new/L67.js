@@ -20,7 +20,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 67, act: 6, name: 'Thuis', town: 'denhaag', place: 'thuis', theme: 'street', ...P,
     intro: 'In Den Haag everyone is important, or works for someone who is. At home that someone is Paola.',

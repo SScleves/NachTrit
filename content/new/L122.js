@@ -35,7 +35,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 122, act: 12, name: 'De Vierdaagse', town: 'nijmegen', place: 'eigen', theme: 'dyke', ...P,
     intro: 'Since 1909 people have walked four days in July around Nijmegen for one small cross and a bunch of gladioli. The dead understand that completely.',

@@ -17,7 +17,7 @@
 
 (() => {
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(5, { deliveries: 20, items: [
     // ---- words: the shops

@@ -17,7 +17,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vraag = window.RULES.vraag || { name: 'Question words', note: 'MOC Vraagwoorden' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(50, { deliveries: 20, items: [
     // words: the table, the drinks, the food, the market

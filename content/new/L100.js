@@ -20,7 +20,7 @@
   window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 100, act: 10, name: 'De winkels', town: 'groningen', place: 'winkels', theme: 'shops', ...P,
     intro: 'In Groningen the shops open at nine and the students get up at eleven. The mist changed the language. It left the student discount alone.',

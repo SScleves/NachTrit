@@ -19,7 +19,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 82, act: 7, name: 'De haven', town: 'rotterdam', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The harbour of Rotterdam never sleeps, and since the mist neither do the dead. They still split the bill, down to the last container.',

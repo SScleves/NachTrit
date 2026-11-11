@@ -24,7 +24,7 @@
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 97, act: 9, name: 'De mensen', town: 'texel', place: 'mensen', theme: 'square', ...P,
     intro: 'On Texel there are more sheep than people, and since the mist the sheep listen in. The dead still split the bill, and the sheep still say nothing.',

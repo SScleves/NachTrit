@@ -27,7 +27,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 98, act: 9, name: 'Het eiland', town: 'texel', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed. On Texel nobody could tell, because the sheep were already staring at you.',

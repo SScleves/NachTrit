@@ -16,7 +16,7 @@ window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', 
 
 (function () {
   const D3 = { lanes: 3, speed: 13, maxSpeed: 16, ramp: false, lampDecay: 0.55, forkSlow: 0.35, hint: null, obstacles: 'light', filler: [28, 40], deliveries: 10, cefr: 'A2', maxWords: 8 };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     // ---------------------------------------------------------------- 49 Gouda, Thuis

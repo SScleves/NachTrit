@@ -27,7 +27,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 106, act: 10, name: 'De Martinitoren', town: 'groningen', place: 'eigen', theme: 'square', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed. In Groningen nobody noticed, because up here they say could be worse about the end of the world too.',

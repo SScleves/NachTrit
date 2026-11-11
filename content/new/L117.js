@@ -28,7 +28,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 117, act: 12, name: 'Eten en drinken', town: 'nijmegen', place: 'eten', theme: 'square', ...P,
     intro: 'During the Vierdaagse the dead walk fifty kilometres a day. Then they ask where the party is, and they still split the bill.',

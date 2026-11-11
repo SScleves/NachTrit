@@ -11,7 +11,7 @@
 // New rules: none. aux, perf, kof, sep and mag come from data.js. New props: none (fiets, water, deur).
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 70, act: 6, name: 'Het station', town: 'denhaag', place: 'station', theme: 'street', ...P,
     intro: 'Since the mist, nobody at Den Haag Centraal asks when the train leaves. The dead only ask when it left, and why nobody said anything.',

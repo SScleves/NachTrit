@@ -26,7 +26,7 @@
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 113, act: 11, name: 'De mensen', town: 'maastricht', place: 'mensen', theme: 'square', ...P,
     intro: 'In Maastricht nobody asks who is alive and who is in costume. Everyone is polite to everyone, just in case, and they still split the bill.',

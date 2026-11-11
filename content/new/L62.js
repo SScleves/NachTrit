@@ -19,7 +19,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 62, act: 5, name: 'Het station', town: 'utrecht', place: 'station', theme: 'square', ...P,
     intro: 'The mist came and the trains kept running, with a delay. Under the station 12,500 bikes wait in the dark, and the dead still cannot find theirs.',

@@ -4,6 +4,8 @@ export const TASKS = {
   order: { label: 'Word order', color: '#7fc8ff' }, past: { label: 'Past tense', color: '#ffb86b' }, verb: { label: 'Verb form', color: '#c9a2ff' },
   word: { label: 'Which word', color: '#9fe0a0' }, dehet: { label: 'de or het', color: '#ffd27a' }, comp: { label: 'Comparison', color: '#ff9fbf' },
   listen: { label: 'Listen', color: '#7fe0d8' }, meaning: { label: 'Meaning', color: '#e8e4d8' },
+  // ninth label (PLAN 3c): the only fork where a wrong option may be a form that does not exist. Set explicitly with task: 'spell'.
+  spell: { label: 'Spelling', color: '#ff8a7a' },
 };
 export const TASK_OF_RULE = {};
 for (const [t, ids] of Object.entries({

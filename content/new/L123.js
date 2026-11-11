@@ -28,7 +28,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 123, act: 13, name: 'Thuis', town: 'amsterdam', place: 'thuis', theme: 'street', ...P,
     intro: 'In Amsterdam the stairs are so steep that the furniture comes in through the window. So do the tourists, if you leave it open.',

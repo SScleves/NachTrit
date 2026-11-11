@@ -22,7 +22,7 @@
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 90, act: 8, name: 'De haven van Urk', town: 'urk', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed, except on Urk, where nobody noticed because everyone was in church.',

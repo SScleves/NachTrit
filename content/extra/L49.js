@@ -11,7 +11,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers mean the same:
   //   no de wc next to het toilet, no het licht next to de lamp, no de ijskast next to de koelkast.
   // `wrong` on a word item is the same noun with the wrong article, so that fork also tests de/het.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(49, { deliveries: 20, items: [
     // words: furniture, the kitchen and bathroom, the bedroom, the pet, the wife

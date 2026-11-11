@@ -23,7 +23,7 @@
   window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 100, act: 10, name: 'De winkels', town: 'groningen', place: 'winkels', theme: 'shops', ...P,
     intro: 'In Groningen the shops open at nine and the students get up at eleven. The mist changed the language. It left the student discount alone.',
@@ -157,7 +157,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 101, act: 10, name: 'Eten en drinken', town: 'groningen', place: 'eten', theme: 'square', ...P,
     intro: 'In Groningen everyone eats mustard soup and nobody finds that strange. The dead have an opinion about it, then split the bill.',
@@ -299,7 +299,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 102, act: 10, name: 'Het station', town: 'groningen', place: 'station', theme: 'square', ...P,
     intro: 'The departure board in Groningen says everything is delayed. Since the mist, it is the first time the board has been honest.',
@@ -434,7 +434,7 @@
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 103, act: 10, name: 'Het werk', town: 'groningen', place: 'werk', theme: 'square', ...P,
     intro: 'In Groningen nobody says the standup went well. They say it could be worse, which here counts as a standing ovation.',
@@ -560,7 +560,7 @@
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 104, act: 10, name: 'De sport', town: 'groningen', place: 'sport', theme: 'dyke', ...P,
     intro: 'In Groningen the wind comes from every side, the forecast always says could be worse, and the dogs still need a walk.',
@@ -691,7 +691,7 @@
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 105, act: 10, name: 'De mensen', town: 'groningen', place: 'mensen', theme: 'square', ...P,
     intro: 'In Groningen the dead have opinions too, but they keep them short. Not bad counts as a speech of praise.',
@@ -823,7 +823,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 106, act: 10, name: 'De Martinitoren', town: 'groningen', place: 'eigen', theme: 'square', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed. In Groningen nobody noticed, because up here they say could be worse about the end of the world too.',
@@ -956,7 +956,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 107, act: 11, name: 'Thuis', town: 'maastricht', place: 'thuis', theme: 'street', ...P,
     intro: 'In Maastricht they signed the treaty that led to the euro. At your house nobody signs anything, and the bill is still split to the cent.',
@@ -1085,7 +1085,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 108, act: 11, name: 'De winkels', town: 'maastricht', place: 'winkels', theme: 'shops', ...P,
     intro: 'In Maastricht the shopkeepers wear costumes all year now, so you cannot tell who is selling and who is already dead. The vlaai is excellent either way.',
@@ -1216,7 +1216,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 109, act: 11, name: 'Eten en drinken', town: 'maastricht', place: 'eten', theme: 'square', ...P,
     intro: 'In Maastricht the dead are in costume all year, so nobody notices the waiter is one of them. The bill gets split anyway.',
@@ -1354,7 +1354,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 110, act: 11, name: 'Het station', town: 'maastricht', place: 'station', theme: 'square', ...P,
     intro: 'Maastricht is the end of the line. Everyone the mist put on a train ended up here, and they still split the bill.',
@@ -1489,7 +1489,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 111, act: 11, name: 'Het werk', town: 'maastricht', place: 'werk', theme: 'street', ...P,
     intro: 'In Maastricht twelve countries signed one treaty in 1992. Your standup still cannot decide who goes first.',
@@ -1613,7 +1613,7 @@
   window.RULES.plusq = window.RULES.plusq || { name: 'Past perfect: hadden / waren plus participle', note: 'zijn of hebben' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 112, act: 11, name: 'De sport', town: 'maastricht', place: 'sport', theme: 'street', ...P,
     intro: 'Maastricht has hills, which is nearly cheating in this country. The dogs still need a walk, and now it is uphill.',
@@ -1746,7 +1746,7 @@
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 113, act: 11, name: 'De mensen', town: 'maastricht', place: 'mensen', theme: 'square', ...P,
     intro: 'In Maastricht nobody asks who is alive and who is in costume. Everyone is polite to everyone, just in case, and they still split the bill.',
@@ -1882,7 +1882,7 @@
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had or was plus participle', note: 'perfectum' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'hij zei dat hij ziek was' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 114, act: 11, name: 'Het Vrijthof', town: 'maastricht', place: 'eigen', theme: 'square', ...P,
     intro: 'Carnaval in Maastricht never really stopped, it only got quieter, and nobody can tell the dead from the costumes anymore.',
@@ -2027,7 +2027,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 115, act: 12, name: 'Thuis', town: 'nijmegen', place: 'thuis', theme: 'street', ...P,
     intro: 'Nijmegen has a hill, two thousand years of history and a student house next door. Only the student house keeps you awake.',
@@ -2183,7 +2183,7 @@
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 116, act: 12, name: 'De winkels', town: 'nijmegen', place: 'winkels', theme: 'shops', ...P,
     intro: 'The Lange Hezelstraat is called the oldest shopping street in the country. Maastricht disagrees, and has not bought anything here since.',
@@ -2329,7 +2329,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 117, act: 12, name: 'Eten en drinken', town: 'nijmegen', place: 'eten', theme: 'square', ...P,
     intro: 'During the Vierdaagse the dead walk fifty kilometres a day. Then they ask where the party is, and they still split the bill.',
@@ -2475,7 +2475,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 118, act: 12, name: 'Het station', town: 'nijmegen', place: 'station', theme: 'square', ...P,
     intro: 'In the oldest city in the country the trains are late the old-fashioned way. The mist changed nothing about that.',
@@ -2615,7 +2615,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 119, act: 12, name: 'Het werk', town: 'nijmegen', place: 'werk', theme: 'street', ...P,
     intro: 'In the old soup factory on the Waal the dead now run start-ups. The standup still takes forty minutes, and nobody stands.',
@@ -2753,7 +2753,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 120, act: 12, name: 'De sport', town: 'nijmegen', place: 'sport', theme: 'dyke', ...P,
     intro: 'Nijmegen trains all year for four days in July. The dead train too. They have more time.',
@@ -2888,7 +2888,7 @@
   window.RULES.mening = window.RULES.mening || { name: 'Opinions: ik vind dat, volgens mij', note: 'ik-vind' };
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 121, act: 12, name: 'De mensen', town: 'nijmegen', place: 'mensen', theme: 'square', ...P,
     intro: 'Nijmegen is friendly to everyone, the dead included. Only about Maastricht you had better not start.',
@@ -3034,7 +3034,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 122, act: 12, name: 'De Vierdaagse', town: 'nijmegen', place: 'eigen', theme: 'dyke', ...P,
     intro: 'Since 1909 people have walked four days in July around Nijmegen for one small cross and a bunch of gladioli. The dead understand that completely.',
@@ -3176,7 +3176,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 123, act: 13, name: 'Thuis', town: 'amsterdam', place: 'thuis', theme: 'street', ...P,
     intro: 'In Amsterdam the stairs are so steep that the furniture comes in through the window. So do the tourists, if you leave it open.',
@@ -3323,7 +3323,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 124, act: 13, name: 'De winkels', town: 'amsterdam', place: 'winkels', theme: 'shops', ...P,
     intro: 'At the Albert Cuyp the traders have been calling out their prices since 1905. The mist has not managed to shut them up.',
@@ -3464,7 +3464,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 125, act: 13, name: 'Eten en drinken', town: 'amsterdam', place: 'eten', theme: 'square', ...P,
     intro: 'Amsterdam eats its herring in pieces with onions. The rest of the country holds it by the tail. Both think the other is mad. The herring has no opinion.',
@@ -3604,7 +3604,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 126, act: 13, name: 'Het station', town: 'amsterdam', place: 'station', theme: 'square', ...P,
     intro: 'Amsterdam Centraal stands on thousands of wooden piles in the water. The station has never fallen over. The timetable has.',
@@ -3753,7 +3753,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 127, act: 13, name: 'Het werk', town: 'amsterdam', place: 'werk', theme: 'street', ...P,
     intro: 'In Amsterdam the standup was in English for ten years. Since the mist it is in Dutch. Nobody understands it, so nothing has changed.',
@@ -3912,7 +3912,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 128, act: 13, name: 'De sport', town: 'amsterdam', place: 'sport', theme: 'dyke', ...P,
     intro: 'Amsterdam runs in the Vondelpark, rows on the Amstel and cycles everywhere, mostly through red lights. The dead have kept the habit.',
@@ -4068,7 +4068,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 129, act: 13, name: 'De Wallen', town: 'amsterdam', place: 'mensen', theme: 'street', ...P,
     intro: 'On the Wallen the neon still glows red at night. The tourists still stand on the cycle path. The Oude Kerk, the oldest building in town, has watched it all since 1306 and says nothing.',
@@ -4224,7 +4224,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 130, act: 13, name: 'De grachten', town: 'amsterdam', place: 'eigen', theme: 'street', ...P,
     intro: 'This is the last canal. Deliver the last words right and at dawn the language comes home. The first thing it hears will be somebody switching to English. Ride anyway.',
@@ -4374,7 +4374,7 @@
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 51, act: 4, name: 'Thuis', town: 'zeeland', place: 'thuis', theme: 'dyke', ...P,
     intro: 'A small house behind the sea dyke. Tonight there is a storm, so the barrier shuts all 62 of its doors. Someone still knocks on yours.',
@@ -4488,7 +4488,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 52, act: 4, name: 'De winkels', town: 'zeeland', place: 'winkels', theme: 'shops', ...P,
     intro: 'The shops in Zierikzee are still open after the mist. The dead still compare prices, and the women at the fitting room are still taller than you.',
@@ -4581,7 +4581,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 53, act: 4, name: 'Eten en drinken', town: 'zeeland', place: 'eten', theme: 'square', ...P,
     intro: 'The mussels come from Yerseke, the wind comes off the sea, and they still split the bill to the cent.',
@@ -4665,7 +4665,7 @@
   window.RULES.vgl = window.RULES.vgl || { name: 'Comparing: groter dan, het grootst', note: 'dan' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 54, act: 4, name: 'Het station', town: 'zeeland', place: 'station', theme: 'dyke', ...P,
     intro: 'Zierikzee has no train station. Since the mist, the dead wait on the platform anyway.',
@@ -4741,7 +4741,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 55, act: 4, name: 'Het werk', town: 'zeeland', place: 'werk', theme: 'dyke', ...P,
     intro: 'A home office on the sea dyke near Zierikzee. The wind is stronger than the wifi, and the standup still runs over.',
@@ -4860,7 +4860,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 56, act: 4, name: 'De sport', town: 'zeeland', place: 'sport', theme: 'dyke', ...P,
     intro: 'In Zeeland the wind is in your face both ways. The dogs still need a walk, and the women at the gym are still taller than you.',
@@ -4952,7 +4952,7 @@
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 57, act: 4, name: 'De mensen', town: 'zeeland', place: 'mensen', theme: 'dyke', ...P,
     intro: 'A borrel on the sea dyke. The wind is stronger than you, the women are taller than you, and everyone still splits the bill to the cent.',
@@ -5059,7 +5059,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 58, act: 4, name: 'De Deltawerken', town: 'zeeland', place: 'eigen', theme: 'dyke', ...P,
     intro: 'Zeeland built 62 doors in the sea to keep the water out. The mist came in through the letterbox.',
@@ -5156,7 +5156,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 59, act: 5, name: 'Thuis', town: 'utrecht', place: 'thuis', theme: 'street', ...P,
@@ -5268,7 +5268,7 @@
   window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 60, act: 5, name: 'De winkels', town: 'utrecht', place: 'winkels', theme: 'shops', ...P,
@@ -5362,7 +5362,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 61, act: 5, name: 'Eten en drinken', town: 'utrecht', place: 'eten', theme: 'square', ...P,
     intro: 'The kitchens in the wharf cellars close at a quarter to ten, mist or no mist. The dead order at five to ten and ask if it is still possible.',
@@ -5458,7 +5458,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 62, act: 5, name: 'Het station', town: 'utrecht', place: 'station', theme: 'square', ...P,
     intro: 'The mist came and the trains kept running, with a delay. Under the station 12,500 bikes wait in the dark, and the dead still cannot find theirs.',
@@ -5552,7 +5552,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 63, act: 5, name: 'Het werk', town: 'utrecht', place: 'werk', theme: 'square', ...P,
     intro: 'An office next to Utrecht Centraal. Since the mist the whole standup speaks Dutch. Most of them are dead, and their cameras are still off.',
@@ -5653,7 +5653,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 64, act: 5, name: 'De sport', town: 'utrecht', place: 'sport', theme: 'street', ...P,
     intro: 'In Utrecht everyone cycles to the gym to sit on a bike that goes nowhere. The dogs still need a walk. You still have no helmet.',
@@ -5758,7 +5758,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 65, act: 5, name: 'De mensen', town: 'utrecht', place: 'mensen', theme: 'square', ...P,
@@ -5880,7 +5880,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 66, act: 5, name: 'De Dom', town: 'utrecht', place: 'eigen', theme: 'square', ...P,
     intro: 'The Dom tower is 112 metres tall. That makes it taller than the women of Utrecht, but only just.',
@@ -6016,7 +6016,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 67, act: 6, name: 'Thuis', town: 'denhaag', place: 'thuis', theme: 'street', ...P,
     intro: 'In Den Haag everyone is important, or works for someone who is. At home that someone is Paola.',
@@ -6132,7 +6132,7 @@
 // New props: none. Only winkel, nummer and water are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 68, act: 6, name: 'De winkels', town: 'denhaag', place: 'winkels', theme: 'shops', ...P,
@@ -6239,7 +6239,7 @@
 // New props: none. Only water, winkel and nummer are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 69, act: 6, name: 'Eten en drinken', town: 'denhaag', place: 'eten', theme: 'square', ...P,
     intro: 'Since the mist, the dead of Den Haag eat the way they govern. Three hours of debate over the menu, no decision, and the bill still split to the cent.',
@@ -6327,7 +6327,7 @@
 // New rules: none. aux, perf, kof, sep and mag come from data.js. New props: none (fiets, water, deur).
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 70, act: 6, name: 'Het station', town: 'denhaag', place: 'station', theme: 'street', ...P,
     intro: 'Since the mist, nobody at Den Haag Centraal asks when the train leaves. The dead only ask when it left, and why nobody said anything.',
@@ -6421,7 +6421,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 71, act: 6, name: 'Het werk', town: 'denhaag', place: 'werk', theme: 'street', ...P,
     intro: 'Since the mist the dead chair every meeting in Den Haag. The minutes are shorter, but the meetings still run over.',
@@ -6532,7 +6532,7 @@
 // New props: none. Only hond, fiets and water are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 72, act: 6, name: 'De sport', town: 'denhaag', place: 'sport', theme: 'dyke', ...P,
     intro: 'In Den Haag the ministers jog past the Binnenhof, and everyone sees them. Since the mist the dead jog along. Nobody has noticed the difference.',
@@ -6642,7 +6642,7 @@
 (() => {
   window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 73, act: 6, name: 'De mensen', town: 'denhaag', place: 'mensen', theme: 'street', ...P,
     intro: 'Since the mist everyone at a Haagse borrel is somebody, or works for somebody. The dead fit right in, and they still split the bill.',
@@ -6765,7 +6765,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 74, act: 6, name: 'Het Binnenhof', town: 'denhaag', place: 'eigen', theme: 'square', ...P,
     intro: 'The politicians left the Binnenhof for a renovation and the dead moved in. In the debates nobody has noticed the difference, and they still split the bill.',
@@ -6886,7 +6886,7 @@
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 75, act: 7, name: 'Thuis', town: 'rotterdam', place: 'thuis', theme: 'street', ...P,
     intro: 'In Rotterdam the dead do not talk, they polish. The cube house stands on its corner, so the dogs slide and nobody gets worked up.',
@@ -7024,7 +7024,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 76, act: 7, name: 'De winkels', town: 'rotterdam', place: 'winkels', theme: 'shops', ...P,
     intro: 'In Rotterdam the shops open on time, the dead queue without a word, and at the checkout they still split the bill.',
@@ -7160,7 +7160,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 77, act: 7, name: 'Eten en drinken', town: 'rotterdam', place: 'eten', theme: 'square', ...P,
     intro: 'The Markthal has a hundred stalls and the dead still order a kapsalon. The mist changed everything except the order.',
@@ -7286,7 +7286,7 @@
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 78, act: 7, name: 'Het station', town: 'rotterdam', place: 'station', theme: 'square', ...P,
     intro: 'At Rotterdam Centraal the mist took the departure board and nobody noticed, because the trains were late anyway.',
@@ -7414,7 +7414,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 79, act: 7, name: 'Het werk', town: 'rotterdam', place: 'werk', theme: 'square', ...P,
     intro: 'Rotterdam never stopped working, not even after the end of the world. The standup is still at nine.',
@@ -7546,7 +7546,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 80, act: 7, name: 'De sport', town: 'rotterdam', place: 'sport', theme: 'square', ...P,
     intro: 'In Rotterdam you do not talk about sport, you do it. Since the mist the dead do it too, and nobody can tell who is winning.',
@@ -7688,7 +7688,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 81, act: 7, name: 'De mensen', town: 'rotterdam', place: 'mensen', theme: 'square', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed, but nobody in Rotterdam noticed because they were working. They still split the bill.',
@@ -7821,7 +7821,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 82, act: 7, name: 'De haven', town: 'rotterdam', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The harbour of Rotterdam never sleeps, and since the mist neither do the dead. They still split the bill, down to the last container.',
@@ -7936,7 +7936,7 @@
 // New props: none. Only hond, huis and kerk are used (not water or deur: they are not in the word pool).
 (() => {
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 83, act: 8, name: 'Thuis', town: 'urk', place: 'thuis', theme: 'street', ...P,
     intro: 'On Urk the families are bigger than the houses, so the dead queue in the hallway in their Sunday clothes, and nobody moves.',
@@ -8047,7 +8047,7 @@
 // New props: none. Only hond, kerk and winkel are used (not boom, deur or lamp; de kerk and de winkel are not in the word pool).
 (() => {
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 84, act: 8, name: 'De winkels', town: 'urk', place: 'winkels', theme: 'shops', ...P,
     intro: 'The shops on Urk are shut on Sunday. The mist did not change that. It only made the queue on Saturday longer.',
@@ -8165,7 +8165,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 85, act: 8, name: 'Eten en drinken', town: 'urk', place: 'eten', theme: 'dyke', ...P,
     intro: 'Urk has the freshest fish in the country and the longest Sundays. The dead order on time, and they still split the bill.',
@@ -8282,7 +8282,7 @@
 (() => {
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 86, act: 8, name: 'Het station', town: 'urk', place: 'station', theme: 'dyke', ...P,
     intro: 'Urk has no railway station, so the station is a bus stop with big plans, and on Sunday even that one is in church.',
@@ -8402,7 +8402,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 87, act: 8, name: 'Het werk', town: 'urk', place: 'werk', theme: 'dyke', ...P,
     intro: 'On Urk even the outages keep the Sunday rest. The standup starts on Monday at nine, and the dead are already in their seats.',
@@ -8532,7 +8532,7 @@
 (() => {
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 88, act: 8, name: 'De sport', town: 'urk', place: 'sport', theme: 'dyke', ...P,
     intro: 'Urk is fit from hauling nets all week, and on Sunday it rests so hard that even the dead stay in church.',
@@ -8672,7 +8672,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 89, act: 8, name: 'De mensen', town: 'urk', place: 'mensen', theme: 'street', ...P,
     intro: 'On Urk everybody knows your business, and since the mist the dead do too. They are still waiting for you to split the bill.',
@@ -8795,7 +8795,7 @@
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 90, act: 8, name: 'De haven van Urk', town: 'urk', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed, except on Urk, where nobody noticed because everyone was in church.',
@@ -8920,7 +8920,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 91, act: 9, name: 'Thuis', town: 'texel', place: 'thuis', theme: 'dyke', ...P,
     intro: 'You missed the last ferry, so you live on Texel now. The house came with a sheep, and the sheep has opinions.',
@@ -9044,7 +9044,7 @@
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 92, act: 9, name: 'De winkels', town: 'texel', place: 'winkels', theme: 'shops', ...P,
     intro: 'On Texel the shops close early, the ferry waits for nobody and the sheep have stood in the queue since the mist.',
@@ -9177,7 +9177,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 93, act: 9, name: 'Eten en drinken', town: 'texel', place: 'eten', theme: 'square', ...P,
     intro: 'Texel has more sheep than people and only a handful of restaurants. The dead booked early, and they still split the bill.',
@@ -9318,7 +9318,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 94, act: 9, name: 'Het station', town: 'texel', place: 'station', theme: 'dyke', ...P,
     intro: 'Texel has no railway, only a ferry, and if you miss the last boat you live here now. The sheep are already looking at houses for you.',
@@ -9456,7 +9456,7 @@
   window.RULES.conditie = window.RULES.conditie || { name: 'Conditionals: als ... dan, zou', note: 'modale werkwoorden' };
   window.RULES.erop = window.RULES.erop || { name: 'Pronominal adverbs: erop, ermee, eraan', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 95, act: 9, name: 'Het werk', town: 'texel', place: 'werk', theme: 'dyke', ...P,
     intro: 'On Texel every meeting is about the ferry, and the ferry is about the wind. The sheep chair the retrospective, and they have no action points.',
@@ -9581,7 +9581,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 96, act: 9, name: 'De sport', town: 'texel', place: 'sport', theme: 'dyke', ...P,
     intro: 'On Texel the wind hits the ball, the sheep keep score, and the dogs still need a walk.',
@@ -9710,7 +9710,7 @@
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 97, act: 9, name: 'De mensen', town: 'texel', place: 'mensen', theme: 'square', ...P,
     intro: 'On Texel there are more sheep than people, and since the mist the sheep listen in. The dead still split the bill, and the sheep still say nothing.',
@@ -9845,7 +9845,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 98, act: 9, name: 'Het eiland', town: 'texel', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed. On Texel nobody could tell, because the sheep were already staring at you.',
@@ -9972,7 +9972,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om ... te', note: 'Thuis met je vrouw' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 99, act: 10, name: 'Thuis', town: 'groningen', place: 'thuis', theme: 'street', ...P,
     intro: 'In Groningen everyone is a student or used to be one. At your house that is the dogs, who know exactly one word: walk.',

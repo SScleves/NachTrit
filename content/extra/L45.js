@@ -11,7 +11,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers here mean the same
   //   thing: no lopen next to wandelen, no de lijn next to de riem, no de sloot next to the water prop.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(45, { deliveries: 20, items: [
     // words: golf, the gym, the dog walk, the bike, the weather, then three replays from level 43

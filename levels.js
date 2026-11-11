@@ -11,7 +11,7 @@ window.RULES.groet = { name: 'Greetings', note: 'H01 — Welkom' };
 window.RULES.zijn = { name: 'zijn (to be)', note: 'zijn' };
 
 const A1 = { lanes: 2, speed: 11, maxSpeed: 13, ramp: false, lampDecay: 0.35, forkSlow: 0.25, hint: 'glow', obstacles: 'puddles', filler: [26, 36], deliveries: 10, cefr: 'A1', maxWords: 6 };
-const FK = (o, a, r, w) => ({ o, a, r, w });
+const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
 window.LEVELS = [
   { id: 1, act: 1, name: 'De honden', ...A1, theme: 'street', intro: 'The dogs need a walk. The dogs always need a walk. The apocalypse changed nothing about that.', introNl: 'De honden moeten uit. De honden moeten altijd uit. Daar heeft de apocalyps niets aan veranderd.',

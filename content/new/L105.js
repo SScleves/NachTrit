@@ -27,7 +27,7 @@
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 105, act: 10, name: 'De mensen', town: 'groningen', place: 'mensen', theme: 'square', ...P,
     intro: 'In Groningen the dead have opinions too, but they keep them short. Not bad counts as a speech of praise.',

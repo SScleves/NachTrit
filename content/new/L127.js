@@ -32,7 +32,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 127, act: 13, name: 'Het werk', town: 'amsterdam', place: 'werk', theme: 'street', ...P,
     intro: 'In Amsterdam the standup was in English for ten years. Since the mist it is in Dutch. Nobody understands it, so nothing has changed.',

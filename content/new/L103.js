@@ -24,7 +24,7 @@
   window.RULES.verklein = window.RULES.verklein || { name: 'Diminutives: -je, -tje, -etje, always het', note: 'de-of-het-articles' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 103, act: 10, name: 'Het werk', town: 'groningen', place: 'werk', theme: 'square', ...P,
     intro: 'In Groningen nobody says the standup went well. They say it could be worse, which here counts as a standing ovation.',

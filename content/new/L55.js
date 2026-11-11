@@ -16,7 +16,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 55, act: 4, name: 'Het werk', town: 'zeeland', place: 'werk', theme: 'dyke', ...P,
     intro: 'A home office on the sea dyke near Zierikzee. The wind is stronger than the wifi, and the standup still runs over.',

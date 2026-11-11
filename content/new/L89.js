@@ -22,7 +22,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 89, act: 8, name: 'De mensen', town: 'urk', place: 'mensen', theme: 'street', ...P,
     intro: 'On Urk everybody knows your business, and since the mist the dead do too. They are still waiting for you to split the bill.',

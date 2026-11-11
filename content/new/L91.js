@@ -30,7 +30,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 91, act: 9, name: 'Thuis', town: 'texel', place: 'thuis', theme: 'dyke', ...P,
     intro: 'You missed the last ferry, so you live on Texel now. The house came with a sheep, and the sheep has opinions.',

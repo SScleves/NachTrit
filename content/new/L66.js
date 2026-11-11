@@ -19,7 +19,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 66, act: 5, name: 'De Dom', town: 'utrecht', place: 'eigen', theme: 'square', ...P,
     intro: 'The Dom tower is 112 metres tall. That makes it taller than the women of Utrecht, but only just.',

@@ -32,7 +32,7 @@
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 116, act: 12, name: 'De winkels', town: 'nijmegen', place: 'winkels', theme: 'shops', ...P,
     intro: 'The Lange Hezelstraat is called the oldest shopping street in the country. Maastricht disagrees, and has not bought anything here since.',

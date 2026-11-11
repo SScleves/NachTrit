@@ -21,7 +21,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 77, act: 7, name: 'Eten en drinken', town: 'rotterdam', place: 'eten', theme: 'square', ...P,
     intro: 'The Markthal has a hundred stalls and the dead still order a kapsalon. The mist changed everything except the order.',

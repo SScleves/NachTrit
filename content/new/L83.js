@@ -17,7 +17,7 @@
 // New props: none. Only hond, huis and kerk are used (not water or deur: they are not in the word pool).
 (() => {
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 83, act: 8, name: 'Thuis', town: 'urk', place: 'thuis', theme: 'street', ...P,
     intro: 'On Urk the families are bigger than the houses, so the dead queue in the hallway in their Sunday clothes, and nobody moves.',

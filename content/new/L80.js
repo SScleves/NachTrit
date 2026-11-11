@@ -24,7 +24,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 80, act: 7, name: 'De sport', town: 'rotterdam', place: 'sport', theme: 'square', ...P,
     intro: 'In Rotterdam you do not talk about sport, you do it. Since the mist the dead do it too, and nobody can tell who is winning.',

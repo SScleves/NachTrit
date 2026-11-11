@@ -23,7 +23,7 @@
   window.RULES.plusq = window.RULES.plusq || { name: 'Past perfect: hadden / waren plus participle', note: 'zijn of hebben' };
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 112, act: 11, name: 'De sport', town: 'maastricht', place: 'sport', theme: 'street', ...P,
     intro: 'Maastricht has hills, which is nearly cheating in this country. The dogs still need a walk, and now it is uphill.',

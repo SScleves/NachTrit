@@ -31,7 +31,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 128, act: 13, name: 'De sport', town: 'amsterdam', place: 'sport', theme: 'dyke', ...P,
     intro: 'Amsterdam runs in the Vondelpark, rows on the Amstel and cycles everywhere, mostly through red lights. The dead have kept the habit.',

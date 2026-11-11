@@ -26,7 +26,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 107, act: 11, name: 'Thuis', town: 'maastricht', place: 'thuis', theme: 'street', ...P,
     intro: 'In Maastricht they signed the treaty that led to the euro. At your house nobody signs anything, and the bill is still split to the cent.',

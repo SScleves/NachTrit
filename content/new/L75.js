@@ -24,7 +24,7 @@
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 75, act: 7, name: 'Thuis', town: 'rotterdam', place: 'thuis', theme: 'street', ...P,
     intro: 'In Rotterdam the dead do not talk, they polish. The cube house stands on its corner, so the dogs slide and nobody gets worked up.',

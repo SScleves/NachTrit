@@ -20,7 +20,7 @@
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 92, act: 9, name: 'De winkels', town: 'texel', place: 'winkels', theme: 'shops', ...P,
     intro: 'On Texel the shops close early, the ferry waits for nobody and the sheep have stood in the queue since the mist.',

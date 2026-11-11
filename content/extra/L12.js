@@ -19,7 +19,7 @@
   // de plattegrond, vannacht next to vanavond, welke perron as a fork (heard often enough in speech).
   // Rules used: v2, modal, neg, dehet, mag, woord, zijn (data.js, levels.js), presens and vraag (district3.js),
   // bezit (town-gouda.js). New rules: none. New props: none, only fiets and brug.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(12, { deliveries: 20, items: [
     // ---- builds: asking the way to the station
     { en: "Can you help me? I'm looking for the station.", parts: ['Kunt u mij', FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'After kunt the second verb goes to the end as a bare infinitive: helpen.'), '? Ik',

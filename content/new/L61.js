@@ -18,7 +18,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 61, act: 5, name: 'Eten en drinken', town: 'utrecht', place: 'eten', theme: 'square', ...P,
     intro: 'The kitchens in the wharf cellars close at a quarter to ten, mist or no mist. The dead order at five to ten and ask if it is still possible.',

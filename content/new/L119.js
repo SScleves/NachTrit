@@ -26,7 +26,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 119, act: 12, name: 'Het werk', town: 'nijmegen', place: 'werk', theme: 'street', ...P,
     intro: 'In the old soup factory on the Waal the dead now run start-ups. The standup still takes forty minutes, and nobody stands.',

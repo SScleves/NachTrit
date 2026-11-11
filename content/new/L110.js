@@ -28,7 +28,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 110, act: 11, name: 'Het station', town: 'maastricht', place: 'station', theme: 'square', ...P,
     intro: 'Maastricht is the end of the line. Everyone the mist put on a train ended up here, and they still split the bill.',

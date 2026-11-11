@@ -29,7 +29,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 125, act: 13, name: 'Eten en drinken', town: 'amsterdam', place: 'eten', theme: 'square', ...P,
     intro: 'Amsterdam eats its herring in pieces with onions. The rest of the country holds it by the tail. Both think the other is mad. The herring has no opinion.',

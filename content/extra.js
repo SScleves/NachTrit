@@ -14,7 +14,7 @@
   // this level), het dak (the look marker floats right above the roof of the huis prop), de avond (next to de nacht),
   // a boom look (the tuin prop is five trees behind a fence, so de boom would be a right-looking wrong sign on it).
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(1, { deliveries: 20, items: [
     // the house, room by room
     { w: 'the kitchen', nl: 'de keuken', wrong: 'het keuken' }, { w: 'the living room', nl: 'de woonkamer' },
@@ -68,7 +68,7 @@
   // which draw from the read pool. The four read items with their own options keep their traps in their own lanes.
   // Builds also carry nl: the game shows and speaks entry.nl when the last fork is passed.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(2, { deliveries: 20, items: [
     // the people three doors down
@@ -125,7 +125,7 @@
   // they would name the nummer and hond props. het huisnummer lives in a build, where it never becomes a distractor.
   // Builds carry nl so the finished sentence can be shown and spoken.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(3, { deliveries: 20, items: [
     // de post
     { w: 'the letterbox', nl: 'de brievenbus' }, { w: 'the letter', nl: 'de brief' }, { w: 'the mail', nl: 'de post' },
@@ -166,7 +166,7 @@
 
 // ---- content/extra/L04.js
 (() => {
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(4, { deliveries: 20, items: [
     // zijn with people, feelings and age. Sources: 03 - Verbs/zijn, situations/daily-life (Mijn buren zijn vriendelijk),
     // De nieuwe buren ontmoeten (Dit is mijn vrouw, en dit zijn onze twee honden), meeting-people (Ja, ik ben getrouwd).
@@ -233,7 +233,7 @@
 
 (() => {
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(5, { deliveries: 20, items: [
     // ---- words: the shops
@@ -298,7 +298,7 @@
 
 (() => {
   window.RULES.meervoud = window.RULES.meervoud || { name: 'Plurals: -en, -s', note: 'meervoud-plurals' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(6, { deliveries: 20, items: [
     // ---- words: in the supermarket
@@ -336,10 +336,10 @@
 
     // ---- builds: one fork each
     { en: 'You pay at the checkout.', parts: ['U', FK(['betaalt', 'betaal', 'betalen'], 0, 'pres', 'u takes stem plus t, just like jij: u betaalt.'), 'bij de kassa.'] },
-    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kosten', 'kostt'], 0, 'pres', 'De pindakaas is one thing, so it takes the hij form: stem plus t. The stem kost already ends in t, so it stays kost.'), 'drie euro.'] },
+    { en: 'The peanut butter costs € 3.', parts: ['De pindakaas', FK(['kost', 'kostt'], 0, 'pres', 'The stem kost already ends in t, and Dutch never writes tt at the end.', 'spell'), 'drie euro.'] },
     { en: 'This jumper is too small.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'trui is a de-word, so deze trui. dit only goes with het-words: dit brood.'), 'trui is te klein.'] },
-    { en: 'Can I have four rolls?', parts: ['Mag ik vier', FK(['broodjes', 'broodjen', "broodje's"], 0, 'meervoud', 'Every -je word takes -s in the plural: het broodje, de broodjes.'), '?'] },
-    { en: 'It costs € 1,99.', parts: ['Het kost een euro', FK(['negenennegentig', 'negennegentig', 'negentignegen'], 0, 'getal', 'Units first, then en, then the tens: negen-en-negentig.'), '.'] },
+    { en: 'Can I have four rolls?', parts: ['Mag ik vier', FK(['broodjes', 'broodjen', 'broodje\'s'], 0, 'meervoud', 'Every -je word takes -s in the plural: het broodje, de broodjes.', 'spell'), '?'] },
+    { en: 'It costs € 1,99.', parts: ['Het kost een euro', FK(['negenennegentig', 'negentien', 'negenentachtig'], 0, 'getal', 'Dutch says the units first, then en, then the tens: negen-en-negentig is 99.'), '.'] },
   ] });
 })();
 
@@ -363,7 +363,7 @@
 // pass for it), heerlijk (too close to lekker). The two trap reads carry their own options, and w starts with the meaning.
 
 (() => {
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(7, { deliveries: 20, items: [
     // ---- words: behind the counter
@@ -400,10 +400,10 @@
 
     // ---- builds: one fork each
     { en: "I'll have the steak.", parts: ['Ik', FK(['neem', 'neemt', 'nemen'], 0, 'pres', 'ik takes the bare stem: neem, with ee to keep the sound long.'), 'de biefstuk.'] },
-    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijt'], 0, 'pres', 'hij takes stem plus t, and the stem is snijd: snijdt. You hear one t, you write dt.'), 'het vlees.'] },
+    { en: 'The butcher cuts the meat.', parts: ['De slager', FK(['snijdt', 'snijd', 'snijden'], 0, 'pres', 'hij takes stem plus t, and the stem is snijd: snijdt.'), 'het vlees.'] },
     { en: 'The waiter brings the food.', parts: ['De ober brengt', FK(['het', 'de'], 0, 'dehet', 'A verb used as a noun is a het-word: eten, het eten.'), 'eten.'] },
     { en: 'Everyone pays €12,50.', parts: ['Iedereen', FK(['betaalt', 'betalen', 'betaal'], 0, 'pres', 'iedereen counts as one person, like hij: stem plus t, betaalt.'), 'twaalf euro vijftig.'] },
-    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geev'], 0, 'pres', 'ik takes the bare stem, and a v at the end turns into f: geven, ik geef.'), 'een fooi.'] },
+    { en: "I'll give a tip.", parts: ['Ik', FK(['geef', 'geeft', 'geven'], 0, 'pres', 'ik takes the bare stem, and the v of geven becomes f at the end: geef.'), 'een fooi.'] },
   ] });
 })();
 
@@ -423,7 +423,7 @@
   // Left out on purpose: het toilet and het aanrecht (de toilet and de aanrecht are heard too, so the wrong sign would
   // not be wrong to everyone), het dak and het raam (as distractors under the huis look they would point at the roof
   // and windows of the house), de familie (next to het gezin), het licht as a noun (next to de lamp; it stays in a read).
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(8, { deliveries: 20, items: [
     // the house, room by room
     { w: 'the living room', nl: 'de woonkamer', wrong: 'het woonkamer' }, { w: 'the attic', nl: 'de zolder', wrong: 'het zolder' },
@@ -491,7 +491,7 @@
   //   het telefoonnummer (het nummer), het huis and het café (the deur prop is drawn as a narrow house), and a read about the
   //   order being ready (Bestelling voor Santi. is here). No verb-first questions and no uw or mijn: those are tier 3.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(9, { deliveries: 20, items: [
     // words: the snack bar counter
@@ -527,9 +527,9 @@
     { look: true, prop: 'nummer', value: 45, nl: 'vijfenveertig', en: '45' },
 
     // builds: one fork each
-    { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben', 'heeft'], 0, 'hebben', 'Hunger is something you have in Dutch, like tengo hambre: ik heb honger.'), 'honger.'] },
+    { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben'], 0, 'hebben', 'Hunger is something you have in Dutch, like tengo hambre: ik heb honger.'), 'honger.'] },
     { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'De friet is one portion, so it takes is. Only de frieten would take zijn.'), 'koud.'] },
-    { en: 'Two pizzas, please.', parts: ['Twee', FK(["pizza's", 'pizzas'], 0, 'spel', "pizza ends in a long a, and the 's keeps it long in the plural: pizza's."), ', alstublieft.'] },
+    { en: 'Two pizzas, please.', parts: ['Twee', FK(['pizza\'s', 'pizzas'], 0, 'spel', 'pizza ends in a long a, and the \'s keeps it long in the plural: pizza\'s.', 'spell'), ', alstublieft.'] },
     { en: 'The food is tasty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'eten here is a verb used as a noun, and those are always het: het eten.'), 'eten is lekker.'] },
     { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'pres', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
   ] });
@@ -561,7 +561,7 @@
   // the other extra files; both are set again below only if they are missing.
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(10, { deliveries: 20, items: [
     // ---- words: the station and getting around
@@ -629,7 +629,7 @@
   // even?), _site/sentences (Hoe laat begint de vergadering?, Sorry, ik begrijp het niet., Ik stuur mijn vrouw even
   // een berichtje., Tegen mijn baas zeg ik nog steeds u., Vind je je werk leuk?, het wachtwoord van de wifi).
   // Rules used: presens and vraag (district3.js), spel (district2.js), bezit (town-gouda.js), v2, modal, neg, woord.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(11, { deliveries: 20, items: [
     // the standup and the meeting
     { en: 'Morning everyone, shall we start?', parts: ['Goedemorgen allemaal,', FK(['zullen', 'zal', 'zult'], 0, 'modal', 'we takes the plural: zullen. zal and zult are for one person.'), 'we',
@@ -748,7 +748,7 @@
   // de plattegrond, vannacht next to vanavond, welke perron as a fork (heard often enough in speech).
   // Rules used: v2, modal, neg, dehet, mag, woord, zijn (data.js, levels.js), presens and vraag (district3.js),
   // bezit (town-gouda.js). New rules: none. New props: none, only fiets and brug.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(12, { deliveries: 20, items: [
     // ---- builds: asking the way to the station
     { en: "Can you help me? I'm looking for the station.", parts: ['Kunt u mij', FK(['helpen', 'helpt', 'te helpen'], 0, 'modal', 'After kunt the second verb goes to the end as a bare infinitive: helpen.'), '? Ik',
@@ -822,7 +822,7 @@
   // presens from district3.js, bezit from town-gouda.js; the last two are set again only if missing).
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(13, { deliveries: 20, items: [
     // ---- words: the people you meet
@@ -882,7 +882,7 @@
   // tasje erbij?, Kan ik pinnen?), _site/situations/butcher (gehakt, Anders nog iets?); _site/words (de apotheek,
   // de broek, ruilen, kopen, afrekenen); content/towns.js for Gouda (de kaasmarkt, belegen, de siroopwafel).
   // Rules used: neg, v2, modal, presens, bezit. No new rules. Props: nummer, lamp.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(14, { deliveries: 20, items: [
     // at the supermarket and the bakery
     { en: 'We have no bread left.', parts: ['We hebben', FK(['geen', 'niet'], 0, 'neg', 'brood has no article here, so geen. geen brood meer means no bread anymore.'), 'brood meer.'] },
@@ -944,7 +944,7 @@
   // sportschool (de sportschool, het park, wandelen, uitlaten), _site/words (de sport, sporten, de spierpijn, golf,
   // Ik speel zaterdag golf., Waar kan ik mijn spullen kwijt), MOC Het weer, MOC Vrije tijd.
   // Rules used: modal, v2, neg, mag (data.js), presens (district3.js), bezit (town-gouda.js). No new rules or props.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(15, { deliveries: 20, items: [
     // golf: booking, the first tee, the round
     { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. A modal never takes a t after ik.'), 'graag een starttijd voor zaterdag',
@@ -1072,7 +1072,7 @@
 
 (() => {
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(42, { deliveries: 20, items: [
     // the restaurant
@@ -1119,7 +1119,7 @@
   // Nog tien minuten, Goede reis), _site/situations/directions, _site/words, 03 - Verbs/hebben and zijn.
   // New rule: hebben, for the hebben forks, linked to the vault note 03 - Verbs/hebben. New props: none.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(43, { deliveries: 20, items: [
     // words: the train, the ticket, the way out, the time
@@ -1168,7 +1168,7 @@
   // Werk ze nog is the fixed office goodbye from the vault's office situation (tot-morgen-werk-ze-nog), read as a chunk.
   // de suiker and het biertje are replays from level 42 (the office coffee and the vrijmibo beer).
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(44, { deliveries: 20, items: [
     { w: 'the work', nl: 'het werk', wrong: 'de werk' }, { w: 'the problem', nl: 'het probleem', wrong: 'de probleem' },
     { w: 'the team', nl: 'het team', wrong: 'de team' }, { w: 'the quick email', nl: 'het mailtje', wrong: 'de mailtje' },
@@ -1209,7 +1209,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers here mean the same
   //   thing: no lopen next to wandelen, no de lijn next to de riem, no de sloot next to the water prop.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(45, { deliveries: 20, items: [
     // words: golf, the gym, the dog walk, the bike, the weather, then three replays from level 43
@@ -1267,7 +1267,7 @@
   //   next to het mailtje. `wrong` sits only on het-nouns whose de form is wrong in every variety of Dutch.
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(46, { deliveries: 20, items: [
     // words: the desk and the laptop, the people, the incident, the calendar, Friday
@@ -1328,7 +1328,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers here mean the same
   //   thing: no de regen next to de bui, no de baan next to de golfbaan, no de bal next to het balletje, no de sloot
   //   next to the water prop. `wrong` sits only on nouns whose other article is wrong in every variety of Dutch.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
 
   window.extendLevel(47, { deliveries: 20, items: [
@@ -1363,10 +1363,10 @@
     { look: true, prop: 'nummer', value: 14, nl: 'veertien', en: '14' },
 
     // builds: one fork each, on the number, the article or the present tense
-    { en: 'My handicap is 20.', parts: ['Ik speel handicap', FK(['twintig', 'tweetig', 'twaalf'], 0, 'getal', '20 is twintig. There is no tweetig, and twaalf is 12.'), '.'] },
+    { en: 'My handicap is 20.', parts: ['Ik speel handicap', FK(['twintig', 'twaalf', 'tweeëntwintig'], 0, 'getal', '20 is twintig; twaalf is 12 and tweeëntwintig is 22.'), '.'] },
     { en: 'The subscription costs € 30.', parts: [FK(['Het', 'De'], 0, 'dehet', 'Words ending in -ment are het: het abonnement, het moment.'), 'abonnement kost dertig euro.'] },
     { en: 'The dogs always pull.', parts: ['De honden', FK(['trekken', 'trekt', 'trek'], 0, 'pres', 'Two dogs, plural: the whole infinitive, trekken.'), 'altijd.'] },
-    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt', 'sporten'], 0, 'pres', 'Paola is a zij, so stem plus t. The stem sport already ends in t, so it stays sport.'), 'op zondag.'] },
+    { en: 'Paola works out on Sundays.', parts: ['Paola', FK(['sport', 'sportt'], 0, 'pres', 'The stem sport already ends in t, and Dutch never writes tt at the end.', 'spell'), 'op zondag.'] },
     { en: 'I cycle to the gym.', parts: ['Ik', FK(['fiets', 'fietst', 'fietsen'], 0, 'pres', 'ik takes the bare stem: fiets, the same word as de fiets.'), 'naar de sportschool.'] },
 
     // ---- second pass: the bike on the dyke path, the polder animals, the weather on the course, the sore legs after
@@ -1432,7 +1432,7 @@
   // Read meanings are all different, so a plain read never gets a second right English sign.
   // `wrong` on a word item is the same noun with the wrong article, so that fork also tests de/het.
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(48, { deliveries: 20, items: [
     // words: people, a birthday, the borrel, the neighbours, feelings, the day and the bill
@@ -1506,7 +1506,7 @@
     { en: 'We are neighbours.', parts: ['Wij', FK(['zijn', 'is', 'bent'], 0, 'zijn', 'wij takes zijn: wij zijn, jullie zijn, zij zijn.'), 'buren.'] },
     { en: 'You are warmly welcome.', parts: ['U', FK(['bent', 'zijn', 'ben'], 0, 'zijn', 'u is the polite you and takes bent, like jij: u bent welkom.'), 'van harte welkom.'] },
     { en: 'Paola has two dogs.', parts: ['Paola', FK(['heeft', 'hebt', 'hebben'], 0, 'pres', 'hebben is irregular: ik heb, jij hebt, zij heeft.'), 'twee honden.'] },
-    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten', 'heeft'], 0, 'pres', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
+    { en: 'My name is Santi.', parts: ['Ik', FK(['heet', 'heten'], 0, 'pres', 'ik takes the bare stem of heten: ik heet Santi.'), 'Santi.'] },
     { en: 'The party is on Saturday.', parts: [FK(['Het', 'De'], 0, 'dehet', 'feest is a het-word, like het huis. Learn the word with its article.'), 'feest is zaterdag.'] },
     { en: 'The bill is €48.', parts: ['De rekening is', FK(['achtenveertig', 'vierentachtig'], 0, 'getal', 'Dutch says the units first: achtenveertig is eight and forty.'), 'euro.'] },
   ] });
@@ -1526,7 +1526,7 @@
   // Word, listen and look forks take their wrong signs from each other, so no two Dutch answers mean the same:
   //   no de wc next to het toilet, no het licht next to de lamp, no de ijskast next to de koelkast.
   // `wrong` on a word item is the same noun with the wrong article, so that fork also tests de/het.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(49, { deliveries: 20, items: [
     // words: furniture, the kitchen and bathroom, the bedroom, the pet, the wife
@@ -1593,7 +1593,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.vraag = window.RULES.vraag || { name: 'Question words', note: 'MOC Vraagwoorden' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(50, { deliveries: 20, items: [
     // words: the table, the drinks, the food, the market

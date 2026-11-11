@@ -34,7 +34,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 130, act: 13, name: 'De grachten', town: 'amsterdam', place: 'eigen', theme: 'street', ...P,
     intro: 'This is the last canal. Deliver the last words right and at dawn the language comes home. The first thing it hears will be somebody switching to English. Ride anyway.',

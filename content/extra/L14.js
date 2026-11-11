@@ -8,7 +8,7 @@
   // tasje erbij?, Kan ik pinnen?), _site/situations/butcher (gehakt, Anders nog iets?); _site/words (de apotheek,
   // de broek, ruilen, kopen, afrekenen); content/towns.js for Gouda (de kaasmarkt, belegen, de siroopwafel).
   // Rules used: neg, v2, modal, presens, bezit. No new rules. Props: nummer, lamp.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(14, { deliveries: 20, items: [
     // at the supermarket and the bakery
     { en: 'We have no bread left.', parts: ['We hebben', FK(['geen', 'niet'], 0, 'neg', 'brood has no article here, so geen. geen brood meer means no bread anymore.'), 'brood meer.'] },

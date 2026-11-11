@@ -13,7 +13,7 @@
 // New props: none. Only water, winkel and nummer are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 69, act: 6, name: 'Eten en drinken', town: 'denhaag', place: 'eten', theme: 'square', ...P,
     intro: 'Since the mist, the dead of Den Haag eat the way they govern. Three hours of debate over the menu, no decision, and the bill still split to the cent.',

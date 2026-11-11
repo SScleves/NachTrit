@@ -16,7 +16,7 @@
 // New props: none. Only hond, kerk and winkel are used (not boom, deur or lamp; de kerk and de winkel are not in the word pool).
 (() => {
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 84, act: 8, name: 'De winkels', town: 'urk', place: 'winkels', theme: 'shops', ...P,
     intro: 'The shops on Urk are shut on Sunday. The mist did not change that. It only made the queue on Saturday longer.',

@@ -9,7 +9,7 @@
   // sportschool (de sportschool, het park, wandelen, uitlaten), _site/words (de sport, sporten, de spierpijn, golf,
   // Ik speel zaterdag golf., Waar kan ik mijn spullen kwijt), MOC Het weer, MOC Vrije tijd.
   // Rules used: modal, v2, neg, mag (data.js), presens (district3.js), bezit (town-gouda.js). No new rules or props.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(15, { deliveries: 20, items: [
     // golf: booking, the first tee, the round
     { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. A modal never takes a t after ik.'), 'graag een starttijd voor zaterdag',

@@ -25,7 +25,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   window.RULES.hoewel = window.RULES.hoewel || { name: 'hoewel and ondanks: although, despite', note: 'conjuncties-voegwoorden' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 109, act: 11, name: 'Eten en drinken', town: 'maastricht', place: 'eten', theme: 'square', ...P,
     intro: 'In Maastricht the dead are in costume all year, so nobody notices the waiter is one of them. The bill gets split anyway.',

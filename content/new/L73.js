@@ -15,7 +15,7 @@
 (() => {
   window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 73, act: 6, name: 'De mensen', town: 'denhaag', place: 'mensen', theme: 'street', ...P,
     intro: 'Since the mist everyone at a Haagse borrel is somebody, or works for somebody. The dead fit right in, and they still split the bill.',

@@ -28,7 +28,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om ... te', note: 'Thuis met je vrouw' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 99, act: 10, name: 'Thuis', town: 'groningen', place: 'thuis', theme: 'street', ...P,
     intro: 'In Groningen everyone is a student or used to be one. At your house that is the dogs, who know exactly one word: walk.',

@@ -14,7 +14,7 @@
 // New props: none. Only winkel, nummer and water are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 68, act: 6, name: 'De winkels', town: 'denhaag', place: 'winkels', theme: 'shops', ...P,

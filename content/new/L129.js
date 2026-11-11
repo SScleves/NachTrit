@@ -35,7 +35,7 @@
   window.RULES.indirect = window.RULES.indirect || { name: 'Indirect speech: zei dat, vroeg of', note: 'bijzin - werkwoord naar het einde' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 129, act: 13, name: 'De Wallen', town: 'amsterdam', place: 'mensen', theme: 'street', ...P,
     intro: 'On the Wallen the neon still glows red at night. The tourists still stand on the cycle path. The Oude Kerk, the oldest building in town, has watched it all since 1306 and says nothing.',

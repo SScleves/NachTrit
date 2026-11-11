@@ -18,7 +18,7 @@
 (() => {
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 86, act: 8, name: 'Het station', town: 'urk', place: 'station', theme: 'dyke', ...P,
     intro: 'Urk has no railway station, so the station is a bus stop with big plans, and on Sunday even that one is in church.',

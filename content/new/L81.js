@@ -29,7 +29,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 81, act: 7, name: 'De mensen', town: 'rotterdam', place: 'mensen', theme: 'square', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed, but nobody in Rotterdam noticed because they were working. They still split the bill.',

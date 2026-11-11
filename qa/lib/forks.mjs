@@ -40,6 +40,7 @@ export function compare(answer, wrong, allow) {
 // the dimension a rule is meant to test; null where the rule allows more than one honest reading
 export const SPELLING_RULES = new Set(['kof', 'spel', 'meervoud', 'verklein', 'adj', 'samen']);
 export function intendedDim(task, rule) {
+  if (task === 'spell') return 'spelling';
   if (task === 'order') return 'order';
   if (['kof', 'spel', 'meervoud'].includes(rule)) return 'spelling';
   if (task === 'past' || task === 'verb' || task === 'comp') return 'form';
@@ -48,6 +49,7 @@ export function intendedDim(task, rule) {
 }
 // dimensions a label honestly covers; spelling is reported by the non-word check, never as a label problem
 export function acceptedDims(task, rule) {
+  if (task === 'spell') return ['spelling'];
   const aux = ['aux', 'plusq', 'passief', 'zijn', 'hebben', 'aanhet'].includes(rule);
   if (task === 'order') return ['order'];
   if (task === 'past' || task === 'verb') return aux ? ['form', 'word'] : rule === 'sep' || rule === 'omte' ? ['form', 'order'] : ['form'];

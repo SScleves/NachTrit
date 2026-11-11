@@ -30,7 +30,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 101, act: 10, name: 'Eten en drinken', town: 'groningen', place: 'eten', theme: 'square', ...P,
     intro: 'In Groningen everyone eats mustard soup and nobody finds that strange. The dead have an opinion about it, then split the bill.',

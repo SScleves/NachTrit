@@ -16,7 +16,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 71, act: 6, name: 'Het werk', town: 'denhaag', place: 'werk', theme: 'street', ...P,
     intro: 'Since the mist the dead chair every meeting in Den Haag. The minutes are shorter, but the meetings still run over.',

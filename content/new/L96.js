@@ -25,7 +25,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 96, act: 9, name: 'De sport', town: 'texel', place: 'sport', theme: 'dyke', ...P,
     intro: 'On Texel the wind hits the ball, the sheep keep score, and the dogs still need a walk.',

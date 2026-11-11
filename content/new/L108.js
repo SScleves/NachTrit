@@ -22,7 +22,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 108, act: 11, name: 'De winkels', town: 'maastricht', place: 'winkels', theme: 'shops', ...P,
     intro: 'In Maastricht the shopkeepers wear costumes all year now, so you cannot tell who is selling and who is already dead. The vlaai is excellent either way.',

@@ -19,7 +19,7 @@
   window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
   window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 57, act: 4, name: 'De mensen', town: 'zeeland', place: 'mensen', theme: 'dyke', ...P,
     intro: 'A borrel on the sea dyke. The wind is stronger than you, the women are taller than you, and everyone still splits the bill to the cent.',

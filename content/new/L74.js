@@ -18,7 +18,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 74, act: 6, name: 'Het Binnenhof', town: 'denhaag', place: 'eigen', theme: 'square', ...P,
     intro: 'The politicians left the Binnenhof for a renovation and the dead moved in. In the debates nobody has noticed the difference, and they still split the bill.',

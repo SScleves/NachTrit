@@ -17,7 +17,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 63, act: 5, name: 'Het werk', town: 'utrecht', place: 'werk', theme: 'square', ...P,
     intro: 'An office next to Utrecht Centraal. Since the mist the whole standup speaks Dutch. Most of them are dead, and their cameras are still off.',

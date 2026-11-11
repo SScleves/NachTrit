@@ -17,7 +17,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 64, act: 5, name: 'De sport', town: 'utrecht', place: 'sport', theme: 'street', ...P,
     intro: 'In Utrecht everyone cycles to the gym to sit on a bike that goes nowhere. The dogs still need a walk. You still have no helmet.',

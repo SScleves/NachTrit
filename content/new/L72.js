@@ -14,7 +14,7 @@
 // New props: none. Only hond, fiets and water are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 72, act: 6, name: 'De sport', town: 'denhaag', place: 'sport', theme: 'dyke', ...P,
     intro: 'In Den Haag the ministers jog past the Binnenhof, and everyone sees them. Since the mist the dead jog along. Nobody has noticed the difference.',

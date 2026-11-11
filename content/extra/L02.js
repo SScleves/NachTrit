@@ -16,7 +16,7 @@
   // which draw from the read pool. The four read items with their own options keep their traps in their own lanes.
   // Builds also carry nl: the game shows and speaks entry.nl when the last fork is passed.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(2, { deliveries: 20, items: [
     // the people three doors down

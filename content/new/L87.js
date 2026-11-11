@@ -19,7 +19,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 87, act: 8, name: 'Het werk', town: 'urk', place: 'werk', theme: 'dyke', ...P,
     intro: 'On Urk even the outages keep the Sunday rest. The standup starts on Monday at nine, and the dead are already in their seats.',

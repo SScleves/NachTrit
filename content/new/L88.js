@@ -23,7 +23,7 @@
 (() => {
   window.RULES.zou = window.RULES.zou || { name: 'zou for polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 88, act: 8, name: 'De sport', town: 'urk', place: 'sport', theme: 'dyke', ...P,
     intro: 'Urk is fit from hauling nets all week, and on Sunday it rests so hard that even the dead stay in church.',

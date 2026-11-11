@@ -20,7 +20,7 @@
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 78, act: 7, name: 'Het station', town: 'rotterdam', place: 'station', theme: 'square', ...P,
     intro: 'At Rotterdam Centraal the mist took the departure board and nobody noticed, because the trains were late anyway.',

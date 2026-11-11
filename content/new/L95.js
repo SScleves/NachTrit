@@ -25,7 +25,7 @@
   window.RULES.conditie = window.RULES.conditie || { name: 'Conditionals: als ... dan, zou', note: 'modale werkwoorden' };
   window.RULES.erop = window.RULES.erop || { name: 'Pronominal adverbs: erop, ermee, eraan', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 95, act: 9, name: 'Het werk', town: 'texel', place: 'werk', theme: 'dyke', ...P,
     intro: 'On Texel every meeting is about the ferry, and the ferry is about the wind. The sheep chair the retrospective, and they have no action points.',

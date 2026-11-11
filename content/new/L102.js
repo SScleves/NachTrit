@@ -32,7 +32,7 @@
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om ... te', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   const P = window.TIER_PRESET[10];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 102, act: 10, name: 'Het station', town: 'groningen', place: 'station', theme: 'square', ...P,
     intro: 'The departure board in Groningen says everything is delayed. Since the mist, it is the first time the board has been honest.',

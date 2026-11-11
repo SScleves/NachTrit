@@ -17,7 +17,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 52, act: 4, name: 'De winkels', town: 'zeeland', place: 'winkels', theme: 'shops', ...P,
     intro: 'The shops in Zierikzee are still open after the mist. The dead still compare prices, and the women at the fitting room are still taller than you.',

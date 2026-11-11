@@ -27,7 +27,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 124, act: 13, name: 'De winkels', town: 'amsterdam', place: 'winkels', theme: 'shops', ...P,
     intro: 'At the Albert Cuyp the traders have been calling out their prices since 1905. The mist has not managed to shut them up.',

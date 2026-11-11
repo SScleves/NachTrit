@@ -15,7 +15,7 @@
   //   next to het mailtje. `wrong` sits only on het-nouns whose de form is wrong in every variety of Dutch.
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(46, { deliveries: 20, items: [
     // words: the desk and the laptop, the people, the incident, the calendar, Friday

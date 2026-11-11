@@ -19,7 +19,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 53, act: 4, name: 'Eten en drinken', town: 'zeeland', place: 'eten', theme: 'square', ...P,
     intro: 'The mussels come from Yerseke, the wind comes off the sea, and they still split the bill to the cent.',

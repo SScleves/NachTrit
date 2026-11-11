@@ -13,7 +13,7 @@
   // Left out on purpose: het toilet and het aanrecht (de toilet and de aanrecht are heard too, so the wrong sign would
   // not be wrong to everyone), het dak and het raam (as distractors under the huis look they would point at the roof
   // and windows of the house), de familie (next to het gezin), het licht as a noun (next to de lamp; it stays in a read).
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(8, { deliveries: 20, items: [
     // the house, room by room
     { w: 'the living room', nl: 'de woonkamer', wrong: 'het woonkamer' }, { w: 'the attic', nl: 'de zolder', wrong: 'het zolder' },

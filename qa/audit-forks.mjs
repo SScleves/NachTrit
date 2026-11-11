@@ -73,8 +73,9 @@ const totals = { levels: levels.length, forksAll: rows.length + itemForks + perL
   mixedWithinOneOption: mixedInOne, split: mixed.filter(r => r.repair === 'split').length, narrow: mixed.filter(r => r.repair === 'narrow').length,
   labelMismatch: rows.filter(r => r.labelMismatch).length, signsOver3Words: rows.filter(r => r.maxWords > 3).length, byDims, byTask, byRule };
 
-fs.mkdirSync(OUT, { recursive: true });
-fs.writeFileSync(path.join(OUT, 'dt-audit-forks.json'), JSON.stringify({ generated: new Date().toISOString(), totals, perTown: Object.values(perTown), perLevel, forks: rows }));
+const WRITE = !process.argv.includes('--check');
+if (WRITE) fs.mkdirSync(OUT, { recursive: true });
+if (WRITE) fs.writeFileSync(path.join(OUT, 'dt-audit-forks.json'), JSON.stringify({ generated: new Date().toISOString(), totals, perTown: Object.values(perTown), perLevel, forks: rows }));
 
 // markdown
 const md = [];
@@ -100,11 +101,12 @@ for (const r of mixed) {
 }
 md.push('', '## Single-dimension forks whose label does not match', '', 'These need no rewrite, only a `task:` override or a different rule id.', '');
 for (const r of rows.filter(r => r.labelMismatch)) md.push(`- L${r.level} ${r.sentence} [${r.options.join(' | ')}] rule \`${r.rule}\`: ${r.labelMismatch}`);
-fs.writeFileSync(path.join(OUT, 'dt-audit-forks.md'), md.join('\n') + '\n');
+if (WRITE) fs.writeFileSync(path.join(OUT, 'dt-audit-forks.md'), md.join('\n') + '\n');
 
 console.log(`levels ${levels.length}, build forks ${build}, multi-word not reorder ${multiNonReorder}`);
 console.log(`mixed forks ${mixed.length} (multi-word ${totals.mixedMultiWord}, single-word ${totals.mixedSingleWord}); split ${totals.split}, narrow ${totals.narrow}; one option two ways ${mixedInOne}`);
 console.log(`label mismatches ${totals.labelMismatch}; options over three words ${totals.signsOver3Words}`);
 console.log('by dimensions:', Object.entries(byDims).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(', '));
 console.log('per town:', towns.map(t => perTown[t.id] ? `${t.id} ${perTown[t.id].mixed}` : '').filter(Boolean).join(', '));
-console.log('wrote Opus 5.5 DT/reports/dt-audit-forks.md and .json');
+if (WRITE) console.log('wrote Opus 5.5 DT/reports/dt-audit-forks.md and .json');
+if (process.argv.includes('--fail') && mixed.length) { console.log(`FAIL: ${mixed.length} mixed forks (hard rule: 0)`); process.exit(1); }

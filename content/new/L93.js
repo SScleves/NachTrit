@@ -30,7 +30,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 93, act: 9, name: 'Eten en drinken', town: 'texel', place: 'eten', theme: 'square', ...P,
     intro: 'Texel has more sheep than people and only a handful of restaurants. The dead booked early, and they still split the bill.',

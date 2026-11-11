@@ -24,7 +24,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 111, act: 11, name: 'Het werk', town: 'maastricht', place: 'werk', theme: 'street', ...P,
     intro: 'In Maastricht twelve countries signed one treaty in 1992. Your standup still cannot decide who goes first.',

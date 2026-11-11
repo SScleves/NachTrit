@@ -12,7 +12,7 @@
   // they would name the nummer and hond props. het huisnummer lives in a build, where it never becomes a distractor.
   // Builds carry nl so the finished sentence can be shown and spoken.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(3, { deliveries: 20, items: [
     // de post
     { w: 'the letterbox', nl: 'de brievenbus' }, { w: 'the letter', nl: 'de brief' }, { w: 'the mail', nl: 'de post' },

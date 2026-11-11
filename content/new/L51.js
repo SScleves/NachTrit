@@ -20,7 +20,7 @@
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 51, act: 4, name: 'Thuis', town: 'zeeland', place: 'thuis', theme: 'dyke', ...P,
     intro: 'A small house behind the sea dyke. Tonight there is a storm, so the barrier shuts all 62 of its doors. Someone still knocks on yours.',

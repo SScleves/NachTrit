@@ -27,7 +27,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 94, act: 9, name: 'Het station', town: 'texel', place: 'station', theme: 'dyke', ...P,
     intro: 'Texel has no railway, only a ferry, and if you miss the last boat you live here now. The sheep are already looking at houses for you.',
