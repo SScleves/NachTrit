@@ -337,6 +337,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { TexturePass } from 'three/addons/postprocessing/TexturePass.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const POST = !/post=0/.test(location.search);   // ?post=0 turns the whole look pipeline off
 
 // ---------- constants ----------
@@ -801,6 +802,7 @@ function setTownLight(o = {}) {
 // ---------- kit: small parts merged into one mesh per material, so a street full of detail costs a handful of draw calls ----------
 // build-time only: kits run when the scenery is built, never inside update()
 const _kq = new THREE.Quaternion(), _ke = new THREE.Euler(), _kp = new THREE.Vector3(), _ks = new THREE.Vector3(), _km = new THREE.Matrix4(), _kd = new THREE.Vector3(), _kup = new THREE.Vector3(0, 1, 0);
+const MODELS = {};   // the .glb models from tools/models (npm run models), filled by loadModels(); every user falls back to its primitive while a name is missing
 function kit() { const k = new Map(); k.base = new THREE.Matrix4(); return k; }
 function kat(k, x, y, z, ry, rz) { _ke.set(0, ry || 0, rz || 0, 'YXZ'); _kq.setFromEuler(_ke); _kp.set(x, y, z); _ks.set(1, 1, 1); k.base.compose(_kp, _kq, _ks); return k; }   // where the next parts go: turned about y, then leaned about the part's own z
 function kpush(k, geo, mat) { _km.premultiply(k.base); const q = geo.index ? geo.toNonIndexed() : geo.clone(); q.applyMatrix4(_km); if (mat && mat.userData.wuv) worldUV(q, mat.userData.wuv); let l = k.get(mat); if (!l) k.set(mat, l = []); l.push(q); }
@@ -901,6 +903,7 @@ const PK = {   // shared materials for the street furniture
 function signMat(own) { if (!own) return PK.sign; const t = signAtlas.clone(); t.needsUpdate = true; return new THREE.MeshBasicMaterial({ map: t, color: 0xd8ccb0 }); }
 // an omafiets along local z, front at -z, standing on y = 0: two wheels, a step-through frame, upright bars, a saddle and a rack; cargo makes it a bakfiets
 function kBike(k, mat, cargo, basket) {
+  if (!cargo && MODELS.bike) { kModel(k, MODELS.bike, 0, 0, 0, 0, 1, 1, 1, { frame: mat }); if (basket) kb(k, PK.rope, 0, 0.88, -0.53, 0.3, 0.2, 0.26); return; }
   const R = 0.33, rz = 0.55, fz = cargo ? -1.2 : -0.55, hz = cargo ? -0.3 : -0.4;
   kadd(k, KG.wheel, PM.pole, 0, R, rz);
   if (cargo) kadd(k, KG.wheelS, PM.pole, 0, 0.22, fz); else kadd(k, KG.wheel, PM.pole, 0, R, fz);
@@ -969,6 +972,7 @@ function ducks() {   // white ducks on the black water, eyes glowing
 }
 function bikeLaneSign() { const k = kit(); kb(k, PM.pole, 0, 1.1, 0, 0.07, 2.2, 0.07); kadd(k, KG.disc, PK.bikeSign, 0, 2.3, 0.045); kadd(k, KG.disc, PK.bikeSign, 0, 2.3, -0.045, 0, Math.PI, 0); return kbuild(k); }
 function windmill() {
+  if (MODELS.windmill) return windmillModel();
   const g = new THREE.Group();
   const body = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 2.0, 7, 8), M.mill); body.position.y = 3.5; g.add(body);
   const cap = new THREE.Mesh(new THREE.ConeGeometry(1.5, 1.6, 8), M.dark); cap.position.y = 7.6; g.add(cap);
@@ -1008,7 +1012,7 @@ function lamppost() {
     kb(k, PM.pole, 0, 3.1, 0, 0.42, 0.05, 0.42); kb(k, PM.pole, 0, 3.65, 0, 0.48, 0.06, 0.48); kadd(k, PG.lantCap, PM.pole, 0, 3.84, 0, 0, Math.PI / 4, 0); kadd(k, KG.ball, PM.pole, 0, 4.04, 0, 0, 0, 0, 0.1, 0.12, 0.1);
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) kb(k, PM.pole, sx * 0.18, 3.37, sz * 0.18, 0.03, 0.56, 0.03);
     kb(k, PM.pole, 0, 2.7, 0, 0.5, 0.04, 0.04);   // the ladder bar
-  } else { kadd(k, PG.pole, PM.pole, 0, 2.1, 0); kb(k, PM.pole, -0.4, 4.1, 0, 0.9, 0.06, 0.06); }
+  } else if (MODELS.lamp) kModel(k, MODELS.lamp, 0, 0, 0); else { kadd(k, PG.pole, PM.pole, 0, 2.1, 0); kb(k, PM.pole, -0.4, 4.1, 0, 0.9, 0.06, 0.06); }
   if (Math.random() < 0.3) { kat(k, 0.26, 0, rnd(-0.2, 0.2), rnd(-0.15, 0.15), 0.12); kBike(k, pick(PK.bikes), false, Math.random() < 0.4); }   // a bike locked to the lamppost
   kbuild(k, g);
   if (classic) { const b = new THREE.Mesh(PG.lantGlass, PM.lampHead); b.position.set(0, hy, 0); g.add(b); }
@@ -1229,7 +1233,7 @@ function house(opts = {}) {
     if (!plain && Math.random() < 0.6) { const lit = Math.random() < 0.35; kadd(k, PG['win' + (lit ? pick(WIN_LIT) : 4)], PM.winAtlas, fx - 0.02, h + ridge * 0.36, 0, 0, -Math.PI / 2, 0, 0.62, 0.9); if (lit) kadd(k, PG.winGlow, WIN_GLOW_MAT, fx - 0.07, h + ridge * 0.36, 0, 0, -Math.PI / 2, 0, 1.9, 2.1); }
   }
   // the gable: a flat shaped facade on the street side that rises above the roof and hides it
-  if (gable !== 'roof') {
+  if (gable !== 'roof' && !kGable(k, gable, mat, fx, h, plain, opts)) {
     const hw = dpt / 2 + 0.05, top = ridge + rnd(0.6, 1.4);
     const sh = new THREE.Shape(); sh.moveTo(-hw, -0.3); sh.lineTo(hw, -0.3);
     if (gable === 'step') { const steps = 3 + Math.floor(Math.random() * 3); const sw = hw * 0.3; for (let i = 1; i <= steps; i++) { const u = hw - (hw - sw) * i / steps, v = top * i / steps; sh.lineTo(u, v - top / steps); sh.lineTo(u, v); } sh.lineTo(-sw, top); for (let i = steps - 1; i >= 0; i--) { const u = hw - (hw - sw) * i / steps, v = top * i / steps; sh.lineTo(-u, v + top / steps); sh.lineTo(-u, v); } }
@@ -1379,7 +1383,7 @@ function graffitiWall(word) {
 }
 function tulipBox() { const k = kit(); kTulipBox(k, 0, 0); return kbuild(k); }
 function bollard() { const k = kit(); kadd(k, KG.bollard, PM.bollard, 0, 0.42, 0); kadd(k, KG.ball, PM.bollard, 0, 0.85, 0, 0, 0, 0, 0.22, 0.22, 0.22); kadd(k, KG.cyl, PM.bulb, 0, 0.6, 0, 0, 0, 0, 0.22, 0.06, 0.22); return kbuild(k); }
-function bench() { const k = kit(); for (let i = 0; i < 3; i++) kb(k, M.wood, -0.15 + i * 0.15, 0.45, 0, 0.12, 0.04, 1.6); for (const z of [-0.65, 0.65]) kb(k, PM.pole, 0, 0.22, z, 0.4, 0.45, 0.06); for (let i = 0; i < 2; i++) kb(k, M.wood, 0.22, 0.65 + i * 0.16, 0, 0.04, 0.12, 1.6); const g = kbuild(k); g.userData.faceRoad = true; return g; }
+function bench() { const k = kit(); if (MODELS.bench) { kModel(k, MODELS.bench, 0, 0, 0); const g = kbuild(k); g.userData.faceRoad = true; return g; } for (let i = 0; i < 3; i++) kb(k, M.wood, -0.15 + i * 0.15, 0.45, 0, 0.12, 0.04, 1.6); for (const z of [-0.65, 0.65]) kb(k, PM.pole, 0, 0.22, z, 0.4, 0.45, 0.06); for (let i = 0; i < 2; i++) kb(k, M.wood, 0.22, 0.65 + i * 0.16, 0, 0.04, 0.12, 1.6); const g = kbuild(k); g.userData.faceRoad = true; return g; }
 function fingerpost(words) {
   const g = new THREE.Group(); const p = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 2.6, 6), PM.pole); p.position.y = 1.3; g.add(p);
   words.forEach((w, i) => { const tex = labelTexture(w, { bg: '#1e2228', fg: '#e8e4d8' }); const b = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 0.32), new THREE.MeshBasicMaterial({ map: tex })); b.position.set((i % 2 ? -1 : 1) * 0.7, 2.3 - i * 0.4, 0); b.rotation.y = (i % 2 ? 1 : -1) * 0.25; b.userData.ownTex = true; g.add(b); });
@@ -1391,11 +1395,13 @@ function cheeseCart() {
   return g;
 }
 function drawbridge() {
-  const g = new THREE.Group();
+  const g = MODELS.drawbridge ? kbuild(kModel(kit(), MODELS.drawbridge, 0, 0, 0)) : new THREE.Group();
+  if (!MODELS.drawbridge) {
   const deck = new THREE.Mesh(new THREE.BoxGeometry(10, 0.25, 2.4), M.wood); deck.position.set(-5, 0.3, 0); g.add(deck);
   for (const sz of [-1, 1]) { const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4.5, 0.2), PM.pole); post.position.set(-6.5, 2.4, sz * 1.1); g.add(post); const beam = new THREE.Mesh(new THREE.BoxGeometry(5, 0.14, 0.14), PM.pole); beam.position.set(-5.5, 4.6, sz * 1.1); beam.rotation.z = 0.35; g.add(beam); }
   const cw = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 2.6), PM.pole); cw.position.set(-8.2, 5.4, 0); g.add(cw);
   for (let i = 0; i < 5; i++) for (const sz of [-1, 1]) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08), M.wood); r.position.set(-1 - i * 2, 0.85, sz * 1.1); g.add(r); }
+  }
   const z = zombie('plain'); z.position.set(-4.5, 0.42, 0.2); z.rotation.y = -Math.PI / 2; g.add(z);
   return g;
 }
@@ -1429,6 +1435,7 @@ function church() {
   return g;
 }
 function dogProp() {
+  if (MODELS.dog) { const g = new THREE.Group(), d = modelClone(MODELS.dog.scene); d.scale.setScalar(1.5); g.add(d); g.userData.tail = d.getObjectByName('tail'); return g; }   // the same dog as runs beside him, sized as the old prop
   const g = new THREE.Group();
   const body = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.4, 0.95), PM.dog); body.position.y = 0.55; g.add(body);
   const head = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.4), PM.dog); head.position.set(0, 0.85, -0.6); g.add(head);
@@ -1842,7 +1849,7 @@ function townKit() {
     get style() { return townStyle; }, get town() { return townId; },
   });
 }
-function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); } scenery = []; }
+function clearScenery() { for (const o of scenery) { scene.remove(o.mesh); o.mesh.traverse(m => { if (m.userData.ownTex && m.material) { m.material.map.dispose(); m.material.dispose(); } if (m.geometry && !m.geometry.userData.model && !Object.values(G).includes(m.geometry) && !Object.values(PG).includes(m.geometry)) m.geometry.dispose(); }); } scenery = []; }
 function footprint(sp) { return sp.r != null ? sp.r : (sp.make === house || sp.make === 'shop') ? 4.5 : sp.make === church ? 10 : sp.make === windmill ? 4 : sp.make === tree || sp.make === deadTree ? 2.4 : sp.make === 'graffiti' ? 3.5 : sp.make === bridge ? 2 : sp.make === boat ? 2.5 : 0.6; }
 function overlaps(z, side, r, except) {
   for (const q of scenery) {
@@ -1995,10 +2002,136 @@ const bike = new THREE.Group();
   const lamp = new THREE.Mesh(new THREE.CircleGeometry(0.068, 16), new THREE.MeshBasicMaterial({ color: 0xffd28a })); lamp.position.set(0, 0.88, -0.877); lamp.rotation.y = Math.PI; bike.add(lamp);
   const lampGlow = new THREE.Sprite(HEAD_HALO); lampGlow.scale.set(0.42, 0.42, 1); lampGlow.position.set(0, 0.88, -0.9); bike.add(lampGlow);
   bike.userData.lampMesh = lamp; bike.userData.lampGlow = lampGlow;
+  // what the model replaces when it arrives (riderModel), and the materials it is drawn with
+  bike.userData.prim = bike.children.filter(c => ![headG, lamp, lampGlow, tail, tailGlow].includes(c)).concat([headM, hair]);
+  bike.userData.mats = { frame: frameMat, steel, leather, neon: NEON, tyre: M.dark, skin: headM.material, hair: M.rider, jacket: M.shirt };
 }
 const beam = new THREE.Mesh(new THREE.ConeGeometry(2.4, 26, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xffe2b4, transparent: true, opacity: 0.05, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide }));
 beam.rotation.x = Math.PI / 2; beam.position.set(0, 0.9, -13.8); bike.add(beam);
 scene.add(bike);
+
+// ---------- models ----------
+// The .glb files in assets/models are written by tools/models (npm run models) and committed. One loader fetches them all at start;
+// each user above (house gables, windmill, lamp, bench, parked bikes, drawbridge, the dog prop) checks MODELS when it builds and
+// falls back to its primitive version while the model is missing, so a failed load only costs the look. Static models go
+// through the kit like every other prop (one mesh per material for a whole terrace); the rider, his dogs and the mill's sails
+// are cloned scene graphs sharing the loaded geometry. Materials come from the game, by the slot name each glTF material carries.
+const MODEL_FILES = ['rider', 'dog', 'windmill', 'gables', 'bench', 'lamp', 'bike', 'drawbridge'];
+let _slotMats = null;
+function slotMat(slot, src) {
+  if (!_slotMats) _slotMats = {
+    wood: M.wood, iron: PM.pole, frame: PM.pole, steel: PM.pole, tyre: PM.pole, roof: PM.roof, mill: M.mill, window: PM.window, nose: M.dark, shoe: M.dark,
+    stone: Mat({ color: 0x6f6b63 }, TINT.warm), brick: brickMat(0x4e3228), thatch: Mat({ color: 0x2f2a22 }), leather: Mat({ color: 0x3a2418 }, TINT.warm),
+    dog: PM.dog, dogDark: Mat({ color: 0x2a2420 }), dogPale: Mat({ color: 0xb8a488 }), jacket: M.shirt, jacketDark: Mat({ color: 0x8a4416 }),
+    trousers: Mat({ color: 0x232836 }), skin: Mat({ color: 0xd9b48c }), hair: M.rider, neon: new THREE.MeshBasicMaterial({ color: 0xffe2a8 }),
+  };
+  return _slotMats[slot] || (_slotMats[slot] = src && src.emissive && src.emissive.getHex() ? new THREE.MeshBasicMaterial({ color: src.emissive }) : Mat({ color: src ? src.color : 0x808080 }));
+}
+function deq(g) {   // a float copy of a (quantized) glTF geometry: the kit's merge wants plain floats
+  const o = new THREE.BufferGeometry();
+  for (const n of ['position', 'normal', 'uv']) {
+    const a = g.attributes[n]; if (!a) continue; const s = a.itemSize, f = new Float32Array(a.count * s);
+    for (let i = 0; i < a.count; i++) { f[i * s] = a.getX(i); f[i * s + 1] = a.getY(i); if (s > 2) f[i * s + 2] = a.getZ(i); }
+    o.setAttribute(n, new THREE.BufferAttribute(f, s));
+  }
+  if (g.index) o.setIndex(g.index.clone()); return o;
+}
+const _mpInv = new THREE.Matrix4(), _mpRel = new THREE.Matrix4();
+// every mesh under root (but not under a node skip() names), in root's frame, merged per slot; and the window slots
+function modelPart(root, skip) {
+  root.updateMatrixWorld(true); _mpInv.copy(root.matrixWorld).invert();
+  const by = new Map(), slots = [];
+  const walk = o => {
+    if (o !== root && skip && skip(o)) return;
+    _mpRel.multiplyMatrices(_mpInv, o.matrixWorld);
+    if (o.isMesh) { const g = deq(o.geometry).applyMatrix4(_mpRel), nm = o.material.name; if (!by.has(nm)) by.set(nm, { list: [], src: o.material }); by.get(nm).list.push(g.index ? g.toNonIndexed() : g); }
+    if (o.userData && o.userData.slot) { const e = _mpRel.elements; slots.push({ kind: o.userData.slot, p: [e[12], e[13], e[14]], ry: Math.atan2(e[8], e[10]), w: o.userData.w, h: o.userData.h }); }
+    for (const c of o.children) walk(c);
+  };
+  walk(root);
+  return { geos: [...by].map(([slot, { list, src }]) => [slot, kmerge(list), src]), slots };
+}
+function kModel(k, part, x, y, z, ry, sx, sy, sz, mats) { for (const [slot, geo, src] of part.geos) kadd(k, geo, (mats && mats[slot]) || slotMat(slot, src), x, y, z, 0, ry || 0, 0, sx, sy, sz); return k; }
+function modelClone(node, mats) { const c = node.clone(); c.traverse(o => { if (o.isMesh) o.material = (mats && mats[o.material.name]) || slotMat(o.material.name, o.material); }); return c; }
+// a gable from gables.glb on the street facade, with window quads (and glow when lit) in its slots; false while it is not loaded
+function kGable(k, type, mat, fx, h, plain, opts) {
+  const G = MODELS.gables && MODELS.gables[type]; if (!G) return false;
+  const sy = rnd(0.8, 1.05), yaw = -Math.PI / 2, litP = (opts.lit == null ? 0.35 : opts.lit) * 0.8;
+  kModel(k, G, fx - 0.02, h, 0, yaw, 1, sy, 1, { brick: mat });
+  for (const s of G.slots) {   // the facade's x runs along the house's z, its front (+z) to the street (-x)
+    if (plain && Math.random() < 0.5) continue;
+    const x = fx - 0.03 - s.p[2], y = h + s.p[1] * sy, z = s.p[0], lit = Math.random() < litP;
+    kadd(k, PG['win' + (lit ? pick(WIN_LIT) : Math.random() < 0.5 ? 4 : 3)], PM.winAtlas, x, y, z, 0, yaw, 0, s.w, s.h);
+    if (lit) kadd(k, PG.winGlow, WIN_GLOW_MAT, x - 0.05, y, z, 0, yaw, 0, s.w * 2.4, s.h * 2.1);
+  }
+  return true;
+}
+function windmillModel() {   // the stellingmolen: body, stage and cap as one kit, lit windows in its slots, the sails cloned to turn
+  const W = MODELS.windmill, k = kit(); kModel(k, W, 0, 0, 0);
+  for (const s of W.slots) if (Math.random() < 0.6) kadd(k, KG.plane, PM.window, s.p[0], s.p[1], s.p[2], 0, s.ry, 0, s.w, s.h);
+  const g = kbuild(k), blades = modelClone(W.sails); g.add(blades);
+  g.userData.blades = blades; g.userData.spin = rnd(0.15, 0.4) * (Math.random() < 0.5 ? 1 : -1);
+  return g;
+}
+// the rider on his omafiets: the model takes the place of the primitive body and bike; the lamp lens, tail light, halos, beam and
+// face canvas stay the game's own. The legs follow the pedals (two-bone IK in the y-z plane), and two dogs run beside him
+const dogs = new THREE.Group(); dogs.visible = false; scene.add(dogs);
+function riderModel() {
+  const u = bike.userData, R = MODELS.rider.scene, md = modelClone(R, u.mats), head = md.getObjectByName('head');
+  for (const c of u.prim) c.visible = false;
+  for (const c of head.children.slice()) u.head.add(c);   // the head node sits where the face canvas's head is
+  head.parent.remove(head); bike.add(md);
+  const n = s => md.getObjectByName(s);
+  u.model = { wf: n('wheel_f'), wr: n('wheel_r'), crank: n('crank'), pL: n('pedal_L'), pR: n('pedal_R'), legs: ['R', 'L'].map(s => [n('thigh_' + s), n('shin_' + s), n('foot_' + s)]), dogs: [] };
+  if (!MODELS.dog) return;
+  const dark = { dog: Mat({ color: 0x24201d }), dogDark: Mat({ color: 0x141210 }), dogPale: Mat({ color: 0x9a7a52 }) };
+  for (const [x, z, mats, ph] of [[-0.85, -0.1, null, 0], [0.85, 0.45, dark, 2.1]]) {
+    const d = modelClone(MODELS.dog.scene, mats), m = s => d.getObjectByName(s); d.position.set(x, 0, z); dogs.add(d);
+    u.model.dogs.push({ d, body: m('body'), head: m('head'), tail: m('tail'), legs: [m('leg_fl'), m('leg_fr'), m('leg_bl'), m('leg_br')], ph, z });
+  }
+  dogs.visible = true;
+}
+const RL1 = 0.46, RL2 = 0.44;
+function legIK(L, a, s) {   // ankle onto the pedal at crank angle a; s: 1 right pedal, -1 left
+  const ty = 0.36 - 0.17 * s * Math.cos(a) + 0.07, tz = 0.08 - 0.17 * s * Math.sin(a) + 0.01, dy = ty - 1.07, dz = tz - 0.26;
+  const d = clamp(Math.hypot(dy, dz), 0.3, (RL1 + RL2) * 0.985), base = Math.atan2(-dz, -dy);
+  const hip = Math.acos(clamp((RL1 * RL1 + d * d - RL2 * RL2) / (2 * RL1 * d), -1, 1)), knee = Math.acos(clamp((RL1 * RL1 + RL2 * RL2 - d * d) / (2 * RL1 * RL2), -1, 1));
+  L[0].rotation.x = base + hip; L[1].rotation.x = -(Math.PI - knee); L[2].rotation.x = -(L[0].rotation.x + L[1].rotation.x) + 0.12;
+}
+let _dogT = 0;
+function riderTick(dw, dt) {   // dw: how far the wheels turn this frame
+  const md = bike.userData.model;
+  if (!md) { for (const w of bike.userData.wheels) w.rotation.x += dw; return; }
+  md.wf.rotation.x -= dw; md.wr.rotation.x -= dw;                        // forward is -z: the top of the wheel moves that way
+  const c = md.crank; c.rotation.x -= Math.min(dw / 2.4, 11 * dt); md.pL.rotation.x = md.pR.rotation.x = -c.rotation.x;
+  legIK(md.legs[0], c.rotation.x, 1); legIK(md.legs[1], c.rotation.x, -1);
+  // the dogs: they keep to his side with a little lag, gallop as fast as he rides, drift forward and back
+  dogs.visible = bike.visible; dogs.position.x += (bike.position.x - dogs.position.x) * Math.min(1, dt * 5); dogs.position.z = bike.position.z; dogs.rotation.x = bike.rotation.x;
+  _dogT += dt;
+  for (const D of md.dogs) {
+    D.ph += dw * 0.42 + dt * 0.4; const p = D.ph, run = Math.min(1, dw / Math.max(dt, 1e-4) / 12);
+    D.d.position.z = D.z + Math.sin(_dogT * 0.37 + D.z * 5) * 0.35;
+    D.legs[0].rotation.x = Math.sin(p) * 0.75 * run; D.legs[1].rotation.x = Math.sin(p + 0.35) * 0.75 * run;
+    D.legs[2].rotation.x = Math.sin(p + Math.PI) * 0.65 * run; D.legs[3].rotation.x = Math.sin(p + Math.PI + 0.35) * 0.65 * run;
+    D.body.position.y = 0.46 + Math.abs(Math.sin(p)) * 0.045 * run; D.body.rotation.x = Math.sin(p) * 0.07 * run;
+    D.head.rotation.x = Math.sin(p + 1) * 0.1 * run; D.tail.rotation.z = Math.sin(_dogT * 9 + D.z * 3) * 0.45;
+  }
+}
+const modelsReady = (async () => {
+  const loader = new GLTFLoader(), v = window.NR_VERSION || 0;
+  await Promise.all(MODEL_FILES.map(async name => {
+    try {
+      const root = (await loader.loadAsync(`assets/models/${name}.glb?v=${v}`)).scene.children[0];
+      root.traverse(o => { if (o.geometry) o.geometry.userData.model = true; });   // shared by every clone: clearScenery leaves them alone
+      if (name === 'gables') { const G = {}; for (const c of root.children) G[c.name] = modelPart(c); MODELS.gables = G; return; }
+      const part = name === 'windmill' ? modelPart(root, o => o.name === 'sails') : name === 'rider' || name === 'dog' ? {} : modelPart(root);
+      part.scene = root; if (name === 'windmill') part.sails = root.getObjectByName('sails');
+      MODELS[name] = part;
+    } catch (e) { console.warn('model ' + name + ' not loaded, the primitive stays:', e && e.message); }
+  }));
+  if (MODELS.rider) riderModel();
+  return MODELS;
+})();
 
 // expressions: deadpan by default, he looks back at you when something happens
 let faceState = { name: '', until: 0, look: 0 };
@@ -3668,7 +3801,7 @@ function update(dt) {
   bike.position.x = S.x; bike.rotation.z = -S.lean * 0.4; bike.rotation.y = -S.lean * 0.15; bike.rotation.x = Math.atan(S.grade) * 0.85;
   bike.position.y = (S.stumble > 0 ? Math.sin(S.t * 40) * 0.05 * S.stumble : 0) + Math.sin(S.t * 6) * 0.01;
   if (rackGhost) rackGhost.position.y = 0.5 + Math.sin(S.t * 3) * 0.04;
-  bike.userData.wheels.forEach(w => w.rotation.x += S.speed * S.slow * hillK * dt * 1.4);
+  riderTick(S.speed * S.slow * hillK * dt * 1.4, dt);
   if (faceState.name && S.t > faceState.until) { faceState = { name: '', until: 0, look: 0 }; drawFace('deadpan'); }
   if (!faceState.name && riding && S.t > (S.nextGlance || 0)) { S.nextGlance = S.t + rnd(6, 11); setFace('deadpan', 1.4); }
   const headTarget = faceState.look ? Math.PI * 0.9 : (S.activeFork ? S.lean * 0.3 : Math.sin(S.t * 0.7) * 0.15);
@@ -3844,6 +3977,7 @@ function loop() {
   if (!startArt.live) render();   // under the live start painting the 3D scene cannot be seen
 }
 const q = new URLSearchParams(location.search);
+if (q.has('shot') || q.has('cine') || q.has('level')) await Promise.race([modelsReady, new Promise(r => setTimeout(r, 8000))]);   // a held frame shows the models, not the stand-ins
 if (q.has('map')) { introSeen = true; openMap(); if (q.get('map') !== '1') { const t = towns().find(x => x.id === q.get('map')); if (t) openTown(t); } }
 // ?cine=N plays the full intro from panel N (shots where they exist); ?cine=N&t=S stages shot N, steps it to S seconds and holds that frame
 if (q.has('cine')) {
