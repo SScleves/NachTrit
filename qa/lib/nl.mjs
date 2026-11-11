@@ -198,6 +198,9 @@ export function sameLemma(a, b) {
   const deg = x => { const y = x.replace(/(d?er|ste?)$/, ''); return y.length >= 4 ? y.replace(/([a-z])\1/g, '$1') : null; };
   const da = deg(a) || (a.length >= 4 ? a.replace(/([a-z])\1/g, '$1') : null), db = deg(b) || (b.length >= 4 ? b.replace(/([a-z])\1/g, '$1') : null);
   if (da && db && da.length >= 3 && da === db) return true;
+  // separable verbs with an irregular core: aankwam / aangekomen / aankomt, opaten / opgegeten
+  const p = PARTICLES.find(x => a.startsWith(x) && b.startsWith(x) && a.length > x.length + 2 && b.length > x.length + 2);
+  if (p) { const ra = a.slice(p.length), rb = b.slice(p.length); if (IRREG_OF.has(ra) || IRREG_OF.has(rb)) return sameLemma(ra, rb); }
   return false;
 }
 export const lemmaKey = w => stem(w);
