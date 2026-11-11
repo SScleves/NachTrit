@@ -1,6 +1,7 @@
+// @ts-check
 // What a fork asks, as a short English label in a fixed colour (LEVELS.md, "Task labels"). fork.task or entry.task overrides.
-// Shared by the game (index.html imports it) and the qa tools (qa/lib/tasks.mjs re-exports it), so there is one copy.
-// Pure: no window, no THREE. Phase 2 (the code split) keeps this module as src/tasks.js.
+// Shared by the game (src/plan.js and src/hud.js import it) and the qa tools (qa/lib/tasks.mjs re-exports it), so there is one copy.
+// Pure: no window, no THREE.
 export const TASKS = {
   order: { label: 'Word order', color: '#7fc8ff' }, past: { label: 'Past tense', color: '#ffb86b' }, verb: { label: 'Verb form', color: '#c9a2ff' },
   word: { label: 'Which word', color: '#9fe0a0' }, dehet: { label: 'de or het', color: '#ffd27a' }, comp: { label: 'Comparison', color: '#ff9fbf' },

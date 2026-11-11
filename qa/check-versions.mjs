@@ -17,17 +17,21 @@ const IMP = /(\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)(['"])(\.{1,2}\/[^'"]+|\/[^
 const MAP = /<script type="importmap">([\s\S]*?)<\/script>/;
 const SRC = path.join(process.cwd(), 'src');
 const srcFiles = () => fs.existsSync(SRC) ? fs.readdirSync(SRC).filter(f => f.endsWith('.js')).sort() : [];
+// a module's code without its block comments: JSDoc types import './types.js' for tsc only, and those stay without ?v=
+const BLOCK = /\/\*[\s\S]*?\*\//g;
+const codeOf = text => text.replace(BLOCK, '');
+const bumpCode = (text, N) => text.split(/(\/\*[\s\S]*?\*\/)/).map((part, i) => i % 2 ? part : part.replace(IMP, (m, a, q, src) => a + q + src.split('?')[0] + '?v=' + N + q)).join('');
 if (process.argv.includes('--bump')) {
   const N = V + 1;
   html = html.replace(/window\.NR_VERSION\s*=\s*\d+\s*;/, `window.NR_VERSION = ${N};`)
     .replace(TAG, (m, src) => local(src) ? m.replace(src, src.split('?')[0] + '?v=' + N) : m)
     .replace(IMP, (m, a, q, src) => a + q + src.split('?')[0] + '?v=' + N + q);
   fs.writeFileSync(file, html); console.log(`NR_VERSION ${V} -> ${N}`); V = N;
-  for (const f of srcFiles()) { const p = path.join(SRC, f), code = fs.readFileSync(p, 'utf8'), out = code.replace(IMP, (m, a, q, src) => a + q + src.split('?')[0] + '?v=' + N + q); if (out !== code) fs.writeFileSync(p, out); }
+  for (const f of srcFiles()) { const p = path.join(SRC, f), code = fs.readFileSync(p, 'utf8'), out = bumpCode(code, N); if (out !== code) fs.writeFileSync(p, out); }
 }
 const bad = [], seen = [];
 // imports inside src/*.js resolve against src/
-for (const f of srcFiles()) for (const [, , , src] of fs.readFileSync(path.join(SRC, f), 'utf8').matchAll(IMP)) {
+for (const f of srcFiles()) for (const [, , , src] of codeOf(fs.readFileSync(path.join(SRC, f), 'utf8')).matchAll(IMP)) {
   const rel = path.relative(process.cwd(), path.join(SRC, src.split('?')[0])); seen.push(rel + (src.includes('?') ? '?' + src.split('?')[1] : ''));
   if (!src.endsWith('?v=' + V)) bad.push(`module import ${src} in src/${f}`);
 }

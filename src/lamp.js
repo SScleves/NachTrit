@@ -1,4 +1,5 @@
-// The lamp and the night, as numbers (HANDOVER.md section 6). The game imports this from index.html and keeps the same TUNE
+// @ts-check
+// The lamp and the night, as numbers (HANDOVER.md section 6). The game imports this (src/state.js, src/flow.js, src/loop.js) and keeps the same TUNE
 // object on window.NRTUNE, so the qa bots can still change it at run time. Pure: no window, no THREE.
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 // fast: extra refuel for a right answer after the go key before the reading budget ran out

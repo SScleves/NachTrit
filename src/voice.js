@@ -1,5 +1,6 @@
+// @ts-check
 // Which rendered voice file plays a line. The id is voiceId(voice, text) from voice/hash.js (the same sha1 qa/voice-batch.mjs
-// writes); voice/ids.json lists the ids that were rendered. The game imports this from index.html; the unit tests in Node.
+// writes); voice/ids.json lists the ids that were rendered. The game imports this (src/speech.js); the unit tests in Node.
 export const VOICES = { rider: 'nl-NL-MaartenNeural', narrator: 'nl-NL-MaartenNeural', passenger: 'nl-NL-FennaNeural', town: 'nl-NL-ColetteNeural' };
 export const VOICE_ALL = ['nl-NL-MaartenNeural', 'nl-NL-FennaNeural', 'nl-NL-ColetteNeural'];
 // the file for this text: the asked voice first, then any voice that has it (a listen line exists only as a passenger).

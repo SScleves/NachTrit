@@ -1,7 +1,9 @@
+// @ts-check
 // From level items to the entries the planner rides: itemToEntry and levelQueue. lanes is the number of lanes of the ride
 // (LANE_X.length in the game). Random choices come from Math.random, in the same order as before the move.
-// The game imports this from index.html; the unit tests import it in Node. Phase 2 adds the planner to this module.
+// The game imports this (src/flow.js); the unit tests import it in Node. The planner that rides the entries is src/plan.js.
 // turn a level item into an entry the planner understands
+/** @param {import('./types.js').AnyItem} item @param {import('./types.js').AnyItem[]} pool @param {number} lanes @returns {import('./types.js').Entry} */
 export function itemToEntry(item, pool, lanes) {
   // wrong options come from items of the same kind: nouns for noun forks, readings for reading forks
   const sameKind = p => p !== item && (item.read ? p.read : (p.w || p.listen || p.look) && !p.read && !p.parts);
@@ -27,6 +29,7 @@ export function itemToEntry(item, pool, lanes) {
   return item.nl ? item : Object.assign({}, item, { nl: item.parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').replace(/\s+([,.?])/g, '$1') }); // build entry
 }
 // the level's deliveries in ride order: the items shuffled, repeated when the level has more deliveries than items
+/** @param {import('./types.js').Level} lv @param {number} lanes @returns {import('./types.js').Entry[]} */
 export function levelQueue(lv, lanes) {
   const items = lv.items.slice().sort(() => Math.random() - 0.5);
   const q = []; while (q.length < lv.deliveries) q.push(...items.slice(0, lv.deliveries - q.length));

@@ -1,6 +1,7 @@
+// @ts-check
 // Reading time: every fork's signs stay legible for its budget, at any tier's speed (PLAN.md section 2, "Language difficulty
 // stays doable at every tier"). The pure half of it: the budget per fork and how far off letters of a given size read.
-// The game imports it from index.html; the unit tests import it in Node. Phase 2 grows this into src/reading.js.
+// The game imports it (src/plan.js, src/loop.js); the unit tests import it in Node. Placing the signs by it is src/plan.js.
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 // legible: the letters (the em of the drawn font) are at least READ_THR of the viewport height (1.25 percent, 10 px on an
 // 800 px window) and the sign is still READ_AHEAD (3) m in front of the bike. qa/readbot.js measures the same thing.
