@@ -122,16 +122,17 @@ What this means when you write content:
 
   | Words on one sign | Tier 1 (Alblasserdam, letters 1.3x) | Tiers 2 to 13 |
   |---|---|---|
-  | 1 to 3 | 19 to 20 m | 12.5 to 13 m |
-  | 4 | 19 m | 12.5 m |
-  | 5 | 18 m | 10 m |
-  | 6 | 16 m | 7 m |
-  | 7 to 9 | (none in tier 1) | 5.5 m, so the bike nearly stops |
+  | 1 to 3 | 19.5 to 20.5 m | 13.5 to 14 m |
+  | 4 | 19.5 m | 13.5 m |
+  | 5 | 18.5 m | 11.5 m |
+  | 6 | 17 m | 8.5 m |
+  | 7 to 9 | (none in tier 1) | 7.5 m, so the bike nearly stops |
 
-  13 m is the most the fork camera allows at tiers 2 and up, and 20 m at tier 1. A long single word
-  (a compound) can drop to 4 to 8 m on its own. Reading boards (read items, a whole sentence over
-  the road) become legible at about 6 m. Prefer gaps of one to three words; at four words the sign
-  still reads from 12 m, from five words on it costs the player distance and time.
+  14 m is the most the fork camera allows at tiers 2 and up, and 20.5 m at tier 1. A long single
+  word (a compound) can drop to 4.5 to 9 m on its own. Reading boards (read items, a whole sentence
+  over the road) become legible at about 7.5 m. These are the engine's prediction (`legDist`); the ridden check
+  (`qa/dt/reading-time.mjs`) measures within a metre of it. Prefer gaps of one to three words; at four words
+  the sign still reads from 13.5 m, from five words on it costs the player distance and time.
 - The budget counts every option on screen, so long distractors cost as much time as a long answer.
 - The `maxWords` limit stays a hard cap on the sentence.
 

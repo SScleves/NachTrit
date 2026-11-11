@@ -2905,7 +2905,7 @@ let audioCtx = null;
 const NIGHT_Q = new URLSearchParams(location.search).has('night') ? clamp(parseFloat(new URLSearchParams(location.search).get('night')) || 0, 0, 1) : null;   // ?night=0..1 holds the night depth (for measuring luma)
 function nightDepth() { if (NIGHT_Q !== null) return NIGHT_Q; return clamp(S.dist / (L && S.deliveriesTotal ? S.deliveriesTotal * 95 : 2600), 0, 1); }
 // what a right answer refuels: generous in the first town, thinner as the tiers rise
-const TUNE = window.NRTUNE = { drain: 2.5, wisp: 2.0, right: 3, cap: 0.6, fast: 1 };  // fast: extra refuel for a right answer after ↑ before the reading budget ran out  // cap: tier presets above 0.6 only get harder through speed and obstacles
+const TUNE = window.NRTUNE = { drain: 2.8, wisp: 2.0, right: 3, cap: 0.6, fast: 1 };  // fast: extra refuel for a right answer after ↑ before the reading budget ran out  // cap: tier presets above 0.6 only get harder through speed and obstacles
 function refuelRight() { return TUNE.right + Math.min(S.streak, 4) * 0.3; }
 window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
@@ -3063,9 +3063,9 @@ function taskOf(fork) {
   if (fork.o.length > 1 && fork.o.every(t => /\s/.test(String(t).trim())) && fork.o.every(t => wordBag(t) === wordBag(fork.o[0]))) return 'order';
   return TASK_OF_RULE[fork.r] || 'word';
 }
-// how far ahead letters of em metres become legible, through the fork camera (it widens as the gate nears)
+// how far ahead letters of em metres become legible, through the fork camera at full speed (it widens and closes in as the gate nears)
 function legDist(em) {
-  for (let a = 40; a > READ_AHEAD; a -= 0.5) { const fz = clamp(1 - a / 46, 0, 1), half = (65 + fz * 22) * Math.PI / 360; if (em / (2 * Math.tan(half) * (a + 7.7 - fz * 2.4)) >= READ_THR) return a; }
+  for (let a = 40; a > READ_AHEAD; a -= 0.5) { const fz = clamp(1 - a / 46, 0, 1), sf = 1 - fz, half = (60 + sf * 10 + fz * 22) * Math.PI / 360; if (em / (2 * Math.tan(half) * (a + 6.4 + sf * 2.6 - fz * 2.4)) >= READ_THR) return a; }
   return READ_AHEAD + 0.5;
 }
 // the fork's reading plan, before it is placed: the options it shows, its budget, where it reads, where it slows, where the card comes up
@@ -3149,7 +3149,7 @@ function placeFork(fork, d) {
     if (teach) for (const k of [5, 15]) add(roadArrow(), d - k, lane, 'decal');   // arrows on the road into each option's lane
   });
   for (const lane of allLanes) if (!lanes.includes(lane)) add(fence(), d, lane, 'obstacle', { forkFence: true, fork });
-  const gate = { fork, d, posts, armed: false, resolved: false, teach, hold, budget: P.budget, legD: P.legD, slowD: P.slowD, armD: P.armD, legT: 0, legOn: false, laneN0: 0 };
+  const gate = { fork, d, posts, armed: false, resolved: false, teach, hold, budget: P.budget, legD: P.legD, slowD: P.slowD, armD: P.armD, legT: 0, legOn: false, laneN0: 0, inT: 0 };
   S.objs.push({ mesh: null, d, lane: null, type: 'gate', gate });
 }
 function plan() {
@@ -4120,8 +4120,8 @@ function update(dt) {
     if (!L || L.ramp) S.speed = clamp(S.speed + dt * 0.08, BASE, MAXS);      // slow ramp with time
     const v = S.speed * S.slow * (S.stumble > 0 ? 0.6 : 1) * hillK;
     S.dist += v * dt;
-    // reading costs no lamp: below the tier's forkSlow (the extra slow-down for the reading budget) and while the first gate holds, the drain eases with the speed
-    const readK = S.held ? 0 : S.activeFork && L ? clamp(S.slow / L.forkSlow, 0, 1) : 1;
+    // reading costs little lamp: while a fork is armed the drain scales with the speed against cruise (0.85), so slowing to read is cheap; nothing while the first gate holds
+    const readK = S.held ? 0 : S.activeFork && L ? clamp(S.slow / 0.85, 0, 1) : 1;
     S.lamp -= dt * readK * (L ? Math.min(L.lampDecay, TUNE.cap) * TUNE.drain : (1.1 + (S.speed < 17 ? 0.6 : 0))) * (0.6 + 1.1 * nightDepth());
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
@@ -4270,10 +4270,12 @@ function update(dt) {
       }
       // the approach: cruise, then slow from slowD so the signs stay legible for the budget at this speed (forkSlow is the ceiling)
       let k = z > -g.slowD ? (L ? L.forkSlow : 0.55) : (L ? 0.85 : 0.9);
-      const need = g.budget * (g.legD < 6 ? 1.35 : 1.08) + (g.legD < 6 ? 0.5 : 0.25) - g.legT;   // a little over, so the eased speed never comes up short; more where the letters only read close, at the edge of the threshold
+      if (-z <= g.legD + 1) g.inT += dt;   // seconds inside reading range: the wait ends after budget x 1.6 + 2 s even if the letters flicker at the edge of legible
+      const need = g.inT > g.budget * 1.6 + 2 ? 0 : g.budget * (g.legD < 6 ? 1.35 : 1.08) + (g.legD < 6 ? 0.5 : 0.25) - g.legT;   // a little over, so the eased speed never comes up short; more where the letters only read close, at the edge of the threshold
       if (z > -g.slowD && need > 0) {
         const room = (g.legT > 0 ? -z : Math.min(-z, g.legD)) - READ_AHEAD - 1;   // stop 1 m short of the last legible point if it must
-        k = Math.min(k, room > 0 ? room / need / Math.max(1, S.speed * hillK) : g.legNow ? 0 : g.legT === 0 && -z > READ_AHEAD + 4 ? k : 0.6 / Math.max(1, S.speed * hillK));   // small letters: creep until they read, then wait   // never waits on a sign that does not read
+        const far = g.legT > 0 ? 0 : Math.max(0, -z - g.legD);   // not yet in reading range: close the gap at half of it a second, then read at the planned pace
+        k = Math.min(k, room > 0 ? (room / need + far * 0.5) / Math.max(1, S.speed * hillK) : g.legNow ? 0 : g.legT === 0 && -z > READ_AHEAD + 4 ? k : 0.6 / Math.max(1, S.speed * hillK));   // small letters: creep until they read, then wait   // never waits on a sign that does not read
       }
       // the very first gate of a first ride waits, just off the signs, until he steers (a key, a swipe, or NR.lane set by the harness)
       if (g.hold && S.laneN !== g.laneN0) { g.hold = false; if (S.held) { S.held = false; toastT = Math.min(toastT, 1.2); } }
@@ -4296,12 +4298,13 @@ function update(dt) {
   if (riding) {
     const sn = S.speedNorm, fz = S.forkZoom;
     const lk = faceState.look ? 1 : 0;   // reaction shot: dolly in while he looks back
-    const ty = 2.85 + sn * 0.8 - fz * 0.9 - lk * 0.8, tz = 6.4 + sn * 2.6 - fz * 2.4 - lk * 2.4;   // low and close, nearer pavement height as in the reference
+    const sf = sn * (1 - fz);   // at a fork the bike crawls: the pull-back for speed fades with the fork zoom, so the signs read (legDist assumes this camera)
+    const ty = 2.85 + sn * 0.8 - fz * 0.9 - lk * 0.8, tz = 6.4 + sf * 2.6 - fz * 2.4 - lk * 2.4;   // low and close, nearer pavement height as in the reference
     const follow = camera.aspect < 1 ? 0.85 : 0.45;   // phones: keep the bike in frame
     camera.position.x = lerp(camera.position.x, S.x * follow, dt * 4);
     camera.position.y = lerp(camera.position.y, ty, dt * (lk ? 5 : 2.5));
     camera.position.z = lerp(camera.position.z, tz, dt * (lk ? 5 : 2.5));
-    camera.fov = lerp(camera.fov, 60 + sn * 10 + fz * 22, dt * 3); camera.updateProjectionMatrix();
+    camera.fov = lerp(camera.fov, 60 + sf * 10 + fz * 22, dt * 3); camera.updateProjectionMatrix();
     camera.lookAt(S.x * (camera.aspect < 1 ? 0.7 : 0.3) + bend(-14) * 0.6, 1.25 + fz * 0.4 + (hills ? rise(-14) * 0.75 : 0), -8 - fz * 6);
   }
 
