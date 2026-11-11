@@ -3028,6 +3028,7 @@ function signFrac(p) {
 // legible: the letters (the em of the drawn font) are at least READ_THR of the viewport height (1.25 percent, 10 px on an
 // 800 px window) and the sign is still READ_AHEAD (3) m in front of the bike. qa/readbot.js measures the same thing.
 const READ_THR = 0.0125, READ_AHEAD = 3, HOLD_AT = 7;
+window.NRread = { signFit, legDist, READ_THR, READ_AHEAD };   // qa: how far off a sign text reads (em = signFit(t).px / 250 * 1.02, x1.3 on tier 1)
 const wordsIn = list => { let n = 0; for (const t of list) n += String(t).trim().split(/\s+/).length; return n; };
 // seconds to read a fork: 0.35 s a word over all options plus 1.2 s to decide, 3 to 7 s; listen and read 1.5x; de/het and word items the minimum
 function readBudget(fork) {

@@ -114,10 +114,24 @@ up before the signs are readable, and the stretch after a long sentence is longe
 harder with the tier between the forks (speed, obstacles, wisps, the lamp), never at the fork itself.
 
 What this means when you write content:
-- Short options read from further away. A sign shows one option on a board 2.1 m wide; the letters
-  shrink as the text wraps, and a long option (over about four words) gets a taller board with up to
-  four lines. Options of one to three words are legible from 10 to 15 m; six to nine words only
-  from 4 to 8 m, so the bike nearly stops for them. Prefer gaps of one to three words.
+- Short options read from further away. A sign shows one option on a board 2.1 m wide. Long words
+  are first set narrower (down to 0.72 of their width), then smaller, and the text wraps; an option
+  of seven words or more often gets a taller board with up to four lines. Measured over every fork
+  option in the content (`node qa/dt/sign-reach.mjs`, 11 Nov 2026, median distance at which the
+  letters become legible, 1280 x 800):
+
+  | Words on one sign | Tier 1 (Alblasserdam, letters 1.3x) | Tiers 2 to 13 |
+  |---|---|---|
+  | 1 to 3 | 19 to 20 m | 12.5 to 13 m |
+  | 4 | 19 m | 12.5 m |
+  | 5 | 18 m | 10 m |
+  | 6 | 16 m | 7 m |
+  | 7 to 9 | (none in tier 1) | 5.5 m, so the bike nearly stops |
+
+  13 m is the most the fork camera allows at tiers 2 and up, and 20 m at tier 1. A long single word
+  (a compound) can drop to 4 to 8 m on its own. Reading boards (read items, a whole sentence over
+  the road) become legible at about 6 m. Prefer gaps of one to three words; at four words the sign
+  still reads from 12 m, from five words on it costs the player distance and time.
 - The budget counts every option on screen, so long distractors cost as much time as a long answer.
 - The `maxWords` limit stays a hard cap on the sentence.
 
