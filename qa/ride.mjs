@@ -6,8 +6,11 @@
 // It steers with the existing autopilot (__bot in qa/lampbot.js, every 12 frames as qa/dt/lamp-balance.mjs does: always
 // right, dodges obstacles, collects wisps unless --ignore). Each page.evaluate runs a fixed chunk of frames (--chunk, default
 // 300 = 5 game seconds), well under 30 s even on SwiftShader with another heavy job running.
+// Nothing is drawn during the ride: the game's rules never read a drawn frame, and on SwiftShader one new shader program
+// takes 10 to 30 s to compile in a draw. The renderer's draw call is a no-op inside the chunks (--draw draws the last frame
+// of each chunk, as NRstep does by itself). Rides with and without drawing give the same numbers (checked 11 Nov on 1, 12, 75).
 //
-// usage: node qa/ride.mjs [levels=1] [--base URL] [--gpu] [--seed N|off] [--ignore] [--miss K] [--teach] [--chunk 300]
+// usage: node qa/ride.mjs [levels=1] [--base URL] [--gpu] [--seed N|off] [--ignore] [--miss K] [--teach] [--chunk 300] [--draw]
 //                         [--w 1280 --h 800] [--out dir] [--json file]
 //   levels      comma list of level ids (1,75)
 //   --base      a served index.html; without it the script serves its own working tree on a free local port
@@ -34,7 +37,7 @@ const VALUED = ['base', 'seed', 'miss', 'chunk', 'w', 'h', 'out', 'json'];
 const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(argv[i - 1].replace(/^--/, ''))));
 const levels = (pos[0] || '1').split(',').map(s => +s.trim()).filter(Boolean);
 const opt = {
-  base: val('base', ''), gpu: flag('gpu'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'),
+  base: val('base', ''), gpu: flag('gpu'), draw: flag('draw'), seed: val('seed', '1'), collect: !flag('ignore'), miss: +val('miss', 0) || 0, teach: flag('teach'),
   chunk: Math.max(12, Math.round((+val('chunk', 300) || 300) / 12) * 12), w: +val('w', 1280), h: +val('h', 800),
   out: val('out', path.join(ROOT, 'qa', 'out', 'ride', new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19))), json: val('json', ''),
 };
@@ -85,8 +88,9 @@ function pageInit({ seed, teach }) {
 }
 
 // ---- the ride, in the page (after qa/lampbot.js has defined __bot)
-function rideSetup({ collect, miss }) {
-  const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap() };
+function rideSetup({ collect, miss, draw }) {
+  const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap(), draw };
+  const rr = NRpost().renderer; R.drawCall = rr.render; R.noDraw = () => {};   // the renderer's own draw, and a stand-in that draws nothing
   window.__nl = NR.objs.some(o => o.lane === 2) ? 3 : 2;   // as lamp-balance.mjs: two-lane levels have no lane 2
   R.steer = () => {
     if (NR.mode !== 'ride') return;
@@ -105,8 +109,9 @@ function rideSetup({ collect, miss }) {
   R.steer();
 }
 function rideChunk(n) {
-  const R = window.__ride, t0 = performance.now();
-  if (!R.ended) { try { NRstep(n, R.each); } catch (e) { if (e !== R) throw e; } }
+  const R = window.__ride, t0 = performance.now(), rr = NRpost().renderer;
+  if (!R.draw) rr.render = R.noDraw;
+  try { if (!R.ended) NRstep(n, R.each); } catch (e) { if (e !== R) throw e; } finally { rr.render = R.drawCall; }
   return { frame: R.frame, ended: R.ended, mode: NR.mode, ms: Math.round(performance.now() - t0) };
 }
 function rideResult() {
@@ -141,12 +146,12 @@ async function rideLevel(browser, base, id) {
   const r0 = await page.evaluate(() => { document.querySelectorAll('img').forEach(i => { if (i.style.zIndex === '1') i.remove(); }); return { mode: NR.mode, level: NR.deliveriesTotal }; });
   if (r0.mode !== 'intro') errors.push(`harness: level ${id} did not start (mode ${r0.mode})`);
   await page.evaluate(async () => { eval(await (await fetch('qa/lampbot.js')).text()); });
-  await page.evaluate(rideSetup, { collect: opt.collect, miss: opt.miss });
-  let st, chunks = 0, maxMs = 0, evalMax = 0;
+  await page.evaluate(rideSetup, { collect: opt.collect, miss: opt.miss, draw: opt.draw });
+  let st, chunks = 0, maxMs = 0, evalMax = 0; const evalMs = [];
   do {
     const e0 = Date.now();
     st = await page.evaluate(rideChunk, opt.chunk); chunks++;
-    maxMs = Math.max(maxMs, st.ms); evalMax = Math.max(evalMax, Date.now() - e0);
+    maxMs = Math.max(maxMs, st.ms); evalMs.push(Date.now() - e0); evalMax = Math.max(evalMax, evalMs[evalMs.length - 1]);
     if (chunks % 10 === 0) process.stdout.write(`  L${id}: ${Math.round(st.frame / 60)} game s, ${Math.round((Date.now() - wall0) / 1000)} s wall\r`);
   } while (!st.ended && st.frame < MAX_FRAMES);
   const res = await page.evaluate(rideResult);
@@ -155,7 +160,7 @@ async function rideLevel(browser, base, id) {
   const png = path.join(opt.out, `L${id}-summary.png`);
   await page.screenshot({ path: png }).catch(() => {});
   await page.close();
-  return { level: id, ...res, chunks, chunkMsMax: maxMs, evaluateMsMax: evalMax, wallSec: Math.round((Date.now() - wall0) / 1000), errors, png };
+  return { level: id, ...res, chunks, chunkMsMax: maxMs, evaluateMsMax: evalMax, evaluateMs: evalMs.join(' '), wallSec: Math.round((Date.now() - wall0) / 1000), errors, png };
 }
 
 fs.mkdirSync(opt.out, { recursive: true });
@@ -164,7 +169,7 @@ if (!base) { srv = await serve(ROOT); base = `http://127.0.0.1:${srv.address().p
 const browser = opt.gpu
   ? await chromium.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--headless=new', '--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl'] })
   : await chromium.launch({ headless: true, args: ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-console.log(`ride: ${base} | ${opt.gpu ? 'GPU (Chrome)' : 'SwiftShader'} | seed ${opt.seed} | ${opt.collect ? 'collects wisps' : 'ignores wisps'}${opt.miss ? ` | misses every ${opt.miss}th fork` : ''}${opt.teach ? ' | first ride' : ''} | chunk ${opt.chunk} frames`);
+console.log(`ride: ${base} | ${opt.gpu ? 'GPU (Chrome)' : 'SwiftShader'} | seed ${opt.seed} | ${opt.collect ? 'collects wisps' : 'ignores wisps'}${opt.miss ? ` | misses every ${opt.miss}th fork` : ''}${opt.teach ? ' | first ride' : ''} | chunk ${opt.chunk} frames${opt.draw ? ', drawn' : ''}`);
 const results = [];
 let fail = 0;
 try {
