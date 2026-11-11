@@ -30,8 +30,8 @@
       // ---- words
       { w: 'the sea', nl: 'de zee', wrong: 'het zee' },
       { w: 'the storm surge barrier', nl: 'de stormvloedkering' },
-      { w: 'the pillar', nl: 'de pijler' },
-      { w: 'the gate (of a barrier)', nl: 'de schuif' },
+      { w: 'the tourist', nl: 'de toerist' },
+      { w: 'the feeling', nl: 'het gevoel', wrong: 'de gevoel' },
       { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
       { w: 'the sea dyke', nl: 'de zeedijk' },
       { w: 'the flood disaster of 1953', nl: 'de watersnoodramp' },
@@ -45,9 +45,9 @@
       { w: 'the tower', nl: 'de toren' },
       { w: 'the rising tide', nl: 'de vloed' },
       { w: 'low tide', nl: 'de eb' },
-      { w: 'the seagull', nl: 'de meeuw' },
+      { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' },
       { w: 'the museum', nl: 'het museum', wrong: 'de museum' },
-      { w: 'the concrete', nl: 'het beton', wrong: 'de beton' },
+      { w: 'the coach', nl: 'de trainer' },
       { w: 'the helmet', nl: 'de helm' },
 
       // ---- builds: er is / er zijn
@@ -84,7 +84,7 @@
       { read: true, nl: 'Mosselen zijn hier het lekkerst.', en: 'Mussels taste best here.' },
 
       // ---- listening
-      { listen: true, nl: 'negentien drieënvijftig', en: '1953' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' },
       { listen: true, nl: 'tweeënzestig deuren', en: '62 doors' },
       { listen: true, nl: 'de Zeeuwse bolus', en: 'the Zeeland bolus' },
 

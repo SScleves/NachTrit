@@ -107,9 +107,9 @@
 
       // ---- words: the office, the figures, five replayed from Nijmegen
       { w: 'the business district of Amsterdam', nl: 'de Zuidas' }, { w: 'the report', nl: 'het rapport', wrong: 'de rapport' },
-      { w: 'the turnover', nl: 'de omzet' }, { w: 'the quarter (three months)', nl: 'het kwartaal', wrong: 'de kwartaal' },
-      { w: 'the annual report', nl: 'het jaarverslag', wrong: 'de jaarverslag' }, { w: 'the attachment', nl: 'de bijlage' },
-      { w: 'the open-plan office', nl: 'de kantoortuin' }, { w: 'the head office', nl: 'het hoofdkantoor', wrong: 'de hoofdkantoor' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the ferry', nl: 'de veerpont' },
+      { w: 'the check-in pole', nl: 'de incheckpaal' }, { w: 'the attachment', nl: 'de bijlage' },
+      { w: 'the wooden pile', nl: 'de paal' }, { w: 'the jenever tasting room', nl: 'het proeflokaal', wrong: 'de proeflokaal' },
       { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the colleague', nl: 'de collega' },
       { w: 'the figure, the number', nl: 'het cijfer', wrong: 'de cijfer' }, { w: 'the meeting', nl: 'de vergadering' },
       { w: 'the signature', nl: 'de handtekening' }, { w: 'the quote (for a client)', nl: 'de offerte' },
@@ -129,7 +129,7 @@
       { read: true, nl: 'In Amsterdam was de voertaal op kantoor jarenlang Engels.', en: 'In Amsterdam the working language in the office was English for years.' },
 
       // ---- listens: a figure, the canal of the merchants, a sum, a letter ending
-      { listen: true, nl: 'drie komma vijf procent', en: '3,5 %' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
+      { listen: true, nl: 'samsam', en: 'fifty-fifty, each pays half' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
       { listen: true, nl: 'een miljoen euro', en: '€ 1.000.000' }, { listen: true, nl: 'met vriendelijke groet', en: 'kind regards' },
 
       // ---- looks: the dog, the desk lamp, the bike outside
@@ -138,6 +138,6 @@
 
       // ---- de of het
       { dehet: true, nl: 'budget', art: 'het', en: 'the budget', w: 'het budget. Learn it with its article: there is no rule.' },
-      { dehet: true, nl: 'functie', art: 'de', en: 'the job title', w: 'Nouns ending in -tie are de: de functie, de informatie.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
     ] }]);
 })();

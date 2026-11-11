@@ -367,15 +367,15 @@
 
   window.extendLevel(7, { deliveries: 20, items: [
     // ---- words: behind the counter
-    { w: 'the steak', nl: 'de biefstuk' }, { w: 'the meatball', nl: 'de gehaktbal', wrong: 'het gehaktbal' },
-    { w: 'the bacon', nl: 'het spek', wrong: 'de spek' }, { w: 'the ham', nl: 'de ham' },
+    { w: 'have a good trip', nl: 'goede reis' }, { w: 'the meatball', nl: 'de gehaktbal', wrong: 'het gehaktbal' },
+    { w: 'see you tomorrow', nl: 'tot morgen' }, { w: 'have a nice weekend', nl: 'fijn weekend' },
     { w: '300 grams', nl: 'drie ons' }, { w: '250 grams', nl: 'een half pond' },
     { w: 'the special offer', nl: 'de aanbieding' },
     // ---- words: cooking it at home
-    { w: 'the oven', nl: 'de oven' }, { w: 'the air fryer', nl: 'de airfryer' }, { w: 'the cook', nl: 'de kok' },
+    { w: 'you\'re welcome', nl: 'graag gedaan' }, { w: 'the basket', nl: 'het mandje' }, { w: 'the cook', nl: 'de kok' },
     // ---- words: the market
-    { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the tomatoes', nl: 'de tomaten' },
-    { w: 'the herring', nl: 'de haring' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'fresh', nl: 'vers' },
+    { w: 'the fruit', nl: 'het fruit', wrong: 'de fruit' }, { w: 'the butter', nl: 'de boter' },
+    { w: 'the banana', nl: 'de banaan' }, { w: 'the cheese', nl: 'de kaas' }, { w: 'fresh', nl: 'vers' },
     // ---- words: the bill
     { w: 'the bill', nl: 'de rekening', wrong: 'het rekening' }, { w: 'the change (money back)', nl: 'het wisselgeld', wrong: 'de wisselgeld' },
     { w: 'the half', nl: 'de helft' }, { w: 'in cash', nl: 'contant' },
@@ -391,11 +391,11 @@
       w: 'Keep the change. You say it when you pay, and the rest becomes the tip.' },
 
     // ---- listens: a price by ear, and the oe, ei and uu sounds
-    { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'de aardbeien', en: 'the strawberries' },
+    { listen: true, nl: 'vierentachtig', en: '84' }, { listen: true, nl: 'contactloos', en: 'contactless' },
     { listen: true, nl: 'de groenten', en: 'the vegetables' }, { listen: true, nl: 'duur', en: 'expensive' },
 
     // ---- looks: two prices in the window, the harbour behind the market
-    { look: true, prop: 'nummer', value: 45, nl: 'vijfenveertig', en: '45' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
+    { look: true, prop: 'nummer', value: 64, nl: 'vierenzestig', en: '64' }, { look: true, prop: 'nummer', value: 75, nl: 'vijfenzeventig', en: '75' },
     { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
     // ---- builds: one fork each
@@ -776,10 +776,10 @@
 
     // ---- words: the station, the counter and the road; four with the wrong article as the second sign
     { w: 'the train', nl: 'de trein' }, { w: 'the platform', nl: 'het perron', wrong: 'de perron' },
-    { w: 'the train ticket', nl: 'het treinkaartje', wrong: 'de treinkaartje' }, { w: 'the ticket counter', nl: 'het loket', wrong: 'de loket' },
-    { w: 'the traveller', nl: 'de reiziger' }, { w: 'the delay', nl: 'de vertraging' }, { w: 'the bike shed', nl: 'de fietsenstalling' },
+    { w: '€ 0,85', nl: 'vijfentachtig cent' }, { w: 'to know (a fact)', nl: 'weten' },
+    { w: 'to wait', nl: 'wachten' }, { w: 'the delay', nl: 'de vertraging' }, { w: 'the bike shed', nl: 'de fietsenstalling' },
     { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the corner', nl: 'de hoek' },
-    { w: 'to change (trains)', nl: 'overstappen' }, { w: 'to leave (a train, a bus)', nl: 'vertrekken' }, { w: 'direct (no changing)', nl: 'rechtstreeks' },
+    { w: 'the workday', nl: 'de werkdag' }, { w: 'to leave (a train, a bus)', nl: 'vertrekken' }, { w: 'to read', nl: 'lezen' },
 
     // ---- reads: three traps with their own options, two plain lines from the platform and the passer-by
     { read: true, nl: 'U hoeft niet te wachten.', en: "You don't have to wait.",
@@ -911,10 +911,10 @@
       FK(['niet', 'geen'], 0, 'neg', 'There is no een or bare noun to cancel, so niet, before the place.'), 'naar de kaasmarkt.'] },
 
     // shop words, three with the wrong article as the second sign
-    { w: 'the cheese farmer', nl: 'de kaasboer' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },
-    { w: 'the wallet', nl: 'de portemonnee' }, { w: 'the banknote', nl: 'het biljet', wrong: 'de biljet' }, { w: 'the coin', nl: 'de munt' },
-    { w: 'the drugstore (Kruidvat, Etos)', nl: 'de drogist' }, { w: 'the plaster', nl: 'de pleister' }, { w: 'the shoes', nl: 'de schoenen' },
-    { w: 'the brand', nl: 'het merk', wrong: 'de merk' }, { w: 'to sell', nl: 'verkopen' },
+    { w: 'the age', nl: 'de leeftijd' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },
+    { w: 'the wallet', nl: 'de portemonnee' }, { w: 'the survivor', nl: 'de overlevende' }, { w: 'the map', nl: 'de plattegrond' },
+    { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the shoes', nl: 'de schoenen' },
+    { w: 'the corner', nl: 'de hoek' }, { w: 'to sell', nl: 'verkopen' },
 
     // reading: two meaning traps (hoeven, geen), then shop signs and answers
     { read: true, nl: 'Ik hoef geen tasje.', en: "I don't need a bag.",
@@ -925,7 +925,7 @@
     { read: true, nl: 'Op is op.', en: "When it's gone, it's gone." },
     { read: true, nl: 'Niet goed, geld terug.', en: 'Not happy? Money back.' },
 
-    { listen: true, nl: 'de stroopwafel', en: 'the syrup waffle' }, { listen: true, nl: 'de uitverkoop', en: 'the sale' },
+    { listen: true, nl: 'de stroopwafel', en: 'the syrup waffle' }, { listen: true, nl: 'wanneer', en: 'when' },
 
     { look: true, prop: 'nummer', value: 42, nl: 'tweeënveertig', en: '42' }, { look: true, prop: 'nummer', value: 38, nl: 'achtendertig', en: '38' },
     { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
@@ -1599,7 +1599,7 @@
     // words: the table, the drinks, the food, the market
     { w: 'the restaurant', nl: 'het restaurant', wrong: 'de restaurant' }, { w: 'the glass', nl: 'het glas', wrong: 'de glas' },
     { w: 'the plate', nl: 'het bord' }, { w: 'the wine', nl: 'de wijn' }, { w: 'the fish', nl: 'de vis' },
-    { w: 'the cake', nl: 'de taart' }, { w: 'the terrace', nl: 'het terras' }, { w: 'the market stall', nl: 'de kraam' },
+    { w: 'the cake', nl: 'de taart' }, { w: 'the terrace', nl: 'het terras' }, { w: 'nothing', nl: 'niets' },
     { w: 'the bitterballen (fried snacks)', nl: 'de bitterballen' }, { w: 'the dessert', nl: 'het toetje', wrong: 'de toetje' },
 
     // reads: two meaning traps, four plain lines
@@ -1614,11 +1614,11 @@
 
     // listen: ee and ij in heerlijk, ui in de ui, the price on the bill
     { listen: true, nl: 'heerlijk', en: 'delicious' }, { listen: true, nl: 'de ui', en: 'the onion' },
-    { listen: true, nl: 'achtentwintig euro', en: '€ 28' },
+    { listen: true, nl: 'het regent', en: 'it\'s raining' },
 
     // look: the lamp over the café door, the door itself, the table number
     { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
-    { look: true, prop: 'nummer', value: 24, nl: 'vierentwintig', en: '24' },
+    { look: true, prop: 'nummer', value: 43, nl: 'drieënveertig', en: '43' },
 
     // builds: present tense, verb-first questions, V2, modals, niet/geen, onze, de/het and a number
     { en: 'We have a reservation for two.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural, so the plural form: hebben.'), 'een reservering voor twee.'] },

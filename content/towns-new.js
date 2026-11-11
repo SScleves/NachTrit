@@ -2848,9 +2848,9 @@
 
       // ---- words: the walk, the route, the city, six replayed from earlier places
       { w: 'the walker', nl: 'de wandelaar' }, { w: 'the gladiolus, handed to the finishers', nl: 'de gladiool' },
-      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the pontoon bridge', nl: 'de pontonbrug' },
+      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the person from Nijmegen', nl: 'de Nijmegenaar' },
       { w: 'the field where the walk starts and ends', nl: 'de Wedren' }, { w: 'the crowd', nl: 'het publiek', wrong: 'de publiek' },
-      { w: 'the soldier', nl: 'de militair' }, { w: 'the rest stop', nl: 'de rustpost' },
+      { w: 'the soldier', nl: 'de militair' }, { w: 'the local resident', nl: 'de buurtbewoner' },
       { w: 'the Roman', nl: 'de Romein' }, { w: 'the oldest city', nl: 'de oudste stad' },
       { w: 'the Valkhof (the park on the hill by the river)', nl: 'het Valkhof', wrong: 'de Valkhof' }, { w: 'the rucksack', nl: 'de rugzak' },
       { w: 'the walking shoe', nl: 'de wandelschoen' }, { w: 'the blister', nl: 'de blaar' },
@@ -2870,7 +2870,7 @@
       { read: true, nl: 'Op de laatste dag lopen de wandelaars bij Cuijk over een pontonbrug die het leger over de Maas legt.', en: 'On the last day the walkers cross the Maas at Cuijk on a pontoon bridge laid by the army.' },
 
       // ---- listens: the last stretch, the crowd of walkers, the flowers, the river land
-      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'tienduizenden wandelaars', en: 'tens of thousands of walkers' },
+      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'de bovenburen', en: 'the upstairs neighbours' },
       { listen: true, nl: 'de gladiolen', en: 'the gladioli' }, { listen: true, nl: 'de Betuwe', en: 'the river land north of the Waal' },
 
       // ---- looks: the dog, a lamp on the dyke, a tree on the route
@@ -2878,8 +2878,8 @@
       { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
 
       // ---- de of het
-      { dehet: true, nl: 'kruisje', art: 'het', en: 'the small cross', w: 'Every -je word is het: het kruisje.' },
-      { dehet: true, nl: 'wandeltocht', art: 'de', en: 'the long walk', w: 'The last part decides: de tocht, so de wandeltocht.' },
+      { dehet: true, nl: 'eindsprint', art: 'de', en: 'the final sprint', w: 'The last part decides: de sprint, so de eindsprint.' },
+      { dehet: true, nl: 'inlogscherm', art: 'het', en: 'the login screen', w: 'The last part decides: het scherm, so het inlogscherm.' },
     ] }]);
 })();
 
@@ -3517,9 +3517,9 @@
 
       // ---- words: the office, the figures, five replayed from Nijmegen
       { w: 'the business district of Amsterdam', nl: 'de Zuidas' }, { w: 'the report', nl: 'het rapport', wrong: 'de rapport' },
-      { w: 'the turnover', nl: 'de omzet' }, { w: 'the quarter (three months)', nl: 'het kwartaal', wrong: 'de kwartaal' },
-      { w: 'the annual report', nl: 'het jaarverslag', wrong: 'de jaarverslag' }, { w: 'the attachment', nl: 'de bijlage' },
-      { w: 'the open-plan office', nl: 'de kantoortuin' }, { w: 'the head office', nl: 'het hoofdkantoor', wrong: 'de hoofdkantoor' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the ferry', nl: 'de veerpont' },
+      { w: 'the check-in pole', nl: 'de incheckpaal' }, { w: 'the attachment', nl: 'de bijlage' },
+      { w: 'the wooden pile', nl: 'de paal' }, { w: 'the jenever tasting room', nl: 'het proeflokaal', wrong: 'de proeflokaal' },
       { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the colleague', nl: 'de collega' },
       { w: 'the figure, the number', nl: 'het cijfer', wrong: 'de cijfer' }, { w: 'the meeting', nl: 'de vergadering' },
       { w: 'the signature', nl: 'de handtekening' }, { w: 'the quote (for a client)', nl: 'de offerte' },
@@ -3539,7 +3539,7 @@
       { read: true, nl: 'In Amsterdam was de voertaal op kantoor jarenlang Engels.', en: 'In Amsterdam the working language in the office was English for years.' },
 
       // ---- listens: a figure, the canal of the merchants, a sum, a letter ending
-      { listen: true, nl: 'drie komma vijf procent', en: '3,5 %' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
+      { listen: true, nl: 'samsam', en: 'fifty-fifty, each pays half' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
       { listen: true, nl: 'een miljoen euro', en: '€ 1.000.000' }, { listen: true, nl: 'met vriendelijke groet', en: 'kind regards' },
 
       // ---- looks: the dog, the desk lamp, the bike outside
@@ -3548,7 +3548,7 @@
 
       // ---- de of het
       { dehet: true, nl: 'budget', art: 'het', en: 'the budget', w: 'het budget. Learn it with its article: there is no rule.' },
-      { dehet: true, nl: 'functie', art: 'de', en: 'the job title', w: 'Nouns ending in -tie are de: de functie, de informatie.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
     ] }]);
 })();
 
@@ -3649,10 +3649,10 @@
       { en: 'I am stiff because I warmed up too little.', parts: ['Ik ben stijf omdat ik te weinig heb', FK(['opgewarmd', 'opgewarmt'], 0, 'sep', 'warm ends in m, not a ketchup letter, so -d: opgewarmd.', 'spell'), '.'] },
 
       // ---- words: the river, the rink, the course, six replayed from Nijmegen
-      { w: 'the rower', nl: 'de roeier' }, { w: 'the rowing club', nl: 'de roeivereniging' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the attachment', nl: 'de bijlage' },
       { w: 'the skate', nl: 'de schaats' }, { w: 'the ice rink', nl: 'de ijsbaan' },
       { w: 'the treadmill', nl: 'de loopband' }, { w: 'the runner', nl: 'de loper' },
-      { w: 'the warm-up', nl: 'de warming-up' }, { w: 'the tracksuit', nl: 'het trainingspak', wrong: 'de trainingspak' },
+      { w: 'the ferry', nl: 'de veerpont' }, { w: 'the check-in pole', nl: 'de incheckpaal' },
       { w: 'the golf course', nl: 'de golfbaan' }, { w: 'the penalty stroke', nl: 'de strafslag' },
       { w: 'the stadium', nl: 'het stadion', wrong: 'de stadion' }, { w: 'the river through the city', nl: 'de Amstel' },
       { w: 'the supporter', nl: 'de supporter' }, { w: 'the referee', nl: 'de scheidsrechter' },
@@ -3680,8 +3680,8 @@
       { look: true, prop: 'molen', nl: 'de molen', en: 'the windmill' },
 
       // ---- de of het
-      { dehet: true, nl: 'trainingsschema', art: 'het', en: 'the training plan', w: 'The last part decides: het schema, so het trainingsschema.' },
-      { dehet: true, nl: 'roeien', art: 'het', en: 'rowing (the sport)', w: 'A verb used as a noun is het: het roeien, het schaatsen.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
+      { dehet: true, nl: 'stationsklok', art: 'de', en: 'the station clock', w: 'The last part decides: de klok, so de stationsklok.' },
     ] }]);
 })();
 
@@ -4514,11 +4514,11 @@
 
       // ---- words: the sea, the wind, the gym, the course
       { w: 'the sea', nl: 'de zee' }, { w: 'the beach', nl: 'het strand', wrong: 'de strand' }, { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
-      { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the storm', nl: 'de storm' }, { w: 'the gust of wind', nl: 'de windstoot' },
-      { w: 'the headwind', nl: 'de tegenwind' }, { w: 'the golf club', nl: 'de golfclub' }, { w: 'the gym', nl: 'de sportschool' },
+      { w: 'the sea dyke', nl: 'de zeedijk' }, { w: 'the storm', nl: 'de storm' }, { w: 'the Zeeland sticky bun', nl: 'de Zeeuwse bolus' },
+      { w: 'the mouse', nl: 'de muis' }, { w: 'the headphones', nl: 'de koptelefoon' }, { w: 'the gym', nl: 'de sportschool' },
       { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' }, { w: 'the team', nl: 'het team', wrong: 'de team' },
       { w: 'the match', nl: 'de wedstrijd' }, { w: 'the coach', nl: 'de trainer' }, { w: 'the weight', nl: 'het gewicht', wrong: 'de gewicht' },
-      { w: 'the running shoes', nl: 'de hardloopschoenen' }, { w: 'the raincoat', nl: 'de regenjas' }, { w: 'the bike ride', nl: 'de fietstocht' },
+      { w: 'the department', nl: 'de afdeling' }, { w: 'the lunch', nl: 'de lunch' }, { w: 'the intern', nl: 'de stagiair' },
       { w: 'the helmet', nl: 'de helm' }, { w: 'the muscle ache', nl: 'de spierpijn' }, { w: 'faster', nl: 'sneller' },
 
       // ---- reads
@@ -4535,7 +4535,7 @@
       { read: true, nl: 'Er zijn geen golfballen meer.', en: 'There are no golf balls left.' },
 
       // ---- listen
-      { listen: true, nl: 'windkracht acht', en: 'wind force 8' }, { listen: true, nl: 'het snelst', en: 'the fastest' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' }, { listen: true, nl: 'het snelst', en: 'the fastest' },
       { listen: true, nl: 'de stormvloedkering', en: 'the storm surge barrier' },
 
       // ---- look
@@ -4543,8 +4543,8 @@
       { look: true, prop: 'hond', nl: 'de hond', en: 'the dog' }, { look: true, prop: 'nummer', value: 62, nl: 'tweeënzestig', en: '62' },
 
       // ---- de of het
-      { dehet: true, nl: 'zand', art: 'het', en: 'the sand' },
-      { dehet: true, nl: 'golftas', art: 'de', en: 'the golf bag', w: 'A compound takes the article of its last part: de tas, so de golftas.' },
+      { dehet: true, nl: 'stokbrood', art: 'het', en: 'the baguette', w: 'brood is het, and so is every bread built on it: het stokbrood.' },
+      { dehet: true, nl: 'wachtwoord', art: 'het', en: 'the password', w: 'A compound takes the article of its last part: het woord, so het wachtwoord.' },
     ] }]);
 })();
 
@@ -4690,8 +4690,8 @@
       // ---- words
       { w: 'the sea', nl: 'de zee', wrong: 'het zee' },
       { w: 'the storm surge barrier', nl: 'de stormvloedkering' },
-      { w: 'the pillar', nl: 'de pijler' },
-      { w: 'the gate (of a barrier)', nl: 'de schuif' },
+      { w: 'the tourist', nl: 'de toerist' },
+      { w: 'the feeling', nl: 'het gevoel', wrong: 'de gevoel' },
       { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
       { w: 'the sea dyke', nl: 'de zeedijk' },
       { w: 'the flood disaster of 1953', nl: 'de watersnoodramp' },
@@ -4705,9 +4705,9 @@
       { w: 'the tower', nl: 'de toren' },
       { w: 'the rising tide', nl: 'de vloed' },
       { w: 'low tide', nl: 'de eb' },
-      { w: 'the seagull', nl: 'de meeuw' },
+      { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' },
       { w: 'the museum', nl: 'het museum', wrong: 'de museum' },
-      { w: 'the concrete', nl: 'het beton', wrong: 'de beton' },
+      { w: 'the coach', nl: 'de trainer' },
       { w: 'the helmet', nl: 'de helm' },
 
       // ---- builds: er is / er zijn
@@ -4744,7 +4744,7 @@
       { read: true, nl: 'Mosselen zijn hier het lekkerst.', en: 'Mussels taste best here.' },
 
       // ---- listening
-      { listen: true, nl: 'negentien drieënvijftig', en: '1953' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' },
       { listen: true, nl: 'tweeënzestig deuren', en: '62 doors' },
       { listen: true, nl: 'de Zeeuwse bolus', en: 'the Zeeland bolus' },
 
@@ -5213,10 +5213,10 @@
       { w: 'the screen', nl: 'het scherm', wrong: 'de scherm' }, { w: 'the keyboard', nl: 'het toetsenbord', wrong: 'de toetsenbord' },
       { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' },
       { w: 'the calendar', nl: 'de agenda' }, { w: 'the deadline', nl: 'de deadline' }, { w: 'the cause', nl: 'de oorzaak' },
-      { w: 'the flex desk', nl: 'de flexplek' }, { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the server', nl: 'de server' },
-      { w: 'the update', nl: 'de update' }, { w: 'the canteen', nl: 'de kantine' }, { w: 'the floor (of a building)', nl: 'de verdieping' },
-      { w: 'the email', nl: 'de e-mail' }, { w: 'the report', nl: 'het verslag', wrong: 'de verslag' },
-      { w: 'the salary', nl: 'het salaris', wrong: 'de salaris' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
+      { w: 'public transport', nl: 'het openbaar vervoer' }, { w: 'the ticket gate', nl: 'het poortje' }, { w: 'the server', nl: 'de server' },
+      { w: 'to get off', nl: 'uitstappen' }, { w: 'the wheat beer', nl: 'het witbiertje', wrong: 'de witbiertje' }, { w: 'the floor (of a building)', nl: 'de verdieping' },
+      { w: 'the starter', nl: 'het voorgerecht', wrong: 'de voorgerecht' }, { w: 'the report', nl: 'het verslag', wrong: 'de verslag' },
+      { w: 'the salary', nl: 'het salaris', wrong: 'de salaris' }, { w: 'the dessert', nl: 'het nagerecht' },
       { w: 'the bike garage', nl: 'de fietsenstalling' },
 
       // ---- read

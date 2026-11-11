@@ -67,10 +67,10 @@
       { w: 'the screen', nl: 'het scherm', wrong: 'de scherm' }, { w: 'the keyboard', nl: 'het toetsenbord', wrong: 'de toetsenbord' },
       { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' },
       { w: 'the calendar', nl: 'de agenda' }, { w: 'the deadline', nl: 'de deadline' }, { w: 'the cause', nl: 'de oorzaak' },
-      { w: 'the flex desk', nl: 'de flexplek' }, { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the server', nl: 'de server' },
-      { w: 'the update', nl: 'de update' }, { w: 'the canteen', nl: 'de kantine' }, { w: 'the floor (of a building)', nl: 'de verdieping' },
-      { w: 'the email', nl: 'de e-mail' }, { w: 'the report', nl: 'het verslag', wrong: 'de verslag' },
-      { w: 'the salary', nl: 'het salaris', wrong: 'de salaris' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
+      { w: 'public transport', nl: 'het openbaar vervoer' }, { w: 'the ticket gate', nl: 'het poortje' }, { w: 'the server', nl: 'de server' },
+      { w: 'to get off', nl: 'uitstappen' }, { w: 'the wheat beer', nl: 'het witbiertje', wrong: 'de witbiertje' }, { w: 'the floor (of a building)', nl: 'de verdieping' },
+      { w: 'the starter', nl: 'het voorgerecht', wrong: 'de voorgerecht' }, { w: 'the report', nl: 'het verslag', wrong: 'de verslag' },
+      { w: 'the salary', nl: 'het salaris', wrong: 'de salaris' }, { w: 'the dessert', nl: 'het nagerecht' },
       { w: 'the bike garage', nl: 'de fietsenstalling' },
 
       // ---- read

@@ -37,10 +37,10 @@
       FK(['niet', 'geen'], 0, 'neg', 'There is no een or bare noun to cancel, so niet, before the place.'), 'naar de kaasmarkt.'] },
 
     // shop words, three with the wrong article as the second sign
-    { w: 'the cheese farmer', nl: 'de kaasboer' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },
-    { w: 'the wallet', nl: 'de portemonnee' }, { w: 'the banknote', nl: 'het biljet', wrong: 'de biljet' }, { w: 'the coin', nl: 'de munt' },
-    { w: 'the drugstore (Kruidvat, Etos)', nl: 'de drogist' }, { w: 'the plaster', nl: 'de pleister' }, { w: 'the shoes', nl: 'de schoenen' },
-    { w: 'the brand', nl: 'het merk', wrong: 'de merk' }, { w: 'to sell', nl: 'verkopen' },
+    { w: 'the age', nl: 'de leeftijd' }, { w: 'the piece of cheese', nl: 'het stuk kaas', wrong: 'de stuk kaas' },
+    { w: 'the wallet', nl: 'de portemonnee' }, { w: 'the survivor', nl: 'de overlevende' }, { w: 'the map', nl: 'de plattegrond' },
+    { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the shoes', nl: 'de schoenen' },
+    { w: 'the corner', nl: 'de hoek' }, { w: 'to sell', nl: 'verkopen' },
 
     // reading: two meaning traps (hoeven, geen), then shop signs and answers
     { read: true, nl: 'Ik hoef geen tasje.', en: "I don't need a bag.",
@@ -51,7 +51,7 @@
     { read: true, nl: 'Op is op.', en: "When it's gone, it's gone." },
     { read: true, nl: 'Niet goed, geld terug.', en: 'Not happy? Money back.' },
 
-    { listen: true, nl: 'de stroopwafel', en: 'the syrup waffle' }, { listen: true, nl: 'de uitverkoop', en: 'the sale' },
+    { listen: true, nl: 'de stroopwafel', en: 'the syrup waffle' }, { listen: true, nl: 'wanneer', en: 'when' },
 
     { look: true, prop: 'nummer', value: 42, nl: 'tweeënveertig', en: '42' }, { look: true, prop: 'nummer', value: 38, nl: 'achtendertig', en: '38' },
     { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
