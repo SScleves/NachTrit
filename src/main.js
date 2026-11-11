@@ -5,7 +5,7 @@
 import { HOLD_AT, legDist, READ_AHEAD, READ_THR } from './reading.js?v=38';
 import { lampLoss, lampReadK, TUNE } from './lamp.js?v=38';
 import { VOICES } from './voice.js?v=38';
-import { $, clamp, FARES, lerp, NODES, pick, rnd, ROAD_W, smooth, THREE } from './engine.js?v=38';
+import { $, clamp, FARES, lerp, NODES, rnd, ROAD_W, smooth, THREE } from './engine.js?v=38';
 export * from './engine.js?v=38';
 import { MSAA, setMSAA } from './render-nodes.js?v=38';
 export * from './render-nodes.js?v=38';
@@ -40,7 +40,7 @@ import { BASE, L, LANE_X, MAXS, nightDepth, S } from './state.js?v=38';
 export * from './state.js?v=38';
 import { plan, signFrac } from './plan.js?v=38';
 export * from './plan.js?v=38';
-import { card, cardSeq, fareRow, flash, forkCard, hideCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=38';
+import { card, fareRow, flash, forkCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=38';
 export * from './hud.js?v=38';
 import { bark, chime, thump, tick } from './audio.js?v=38';
 export * from './audio.js?v=38';
@@ -56,6 +56,8 @@ import { openMap, openMission, openTown, towns } from './map.js?v=38';
 export * from './map.js?v=38';
 import { die, lampHinted, levelDone, resolveFork, setLampHinted, showSummary, start } from './flow.js?v=38';
 export * from './flow.js?v=38';
+import { paidLine, payTikkie } from './wallet.js?v=38';
+export * from './wallet.js?v=38';
 // ---------- the rest of the game: not yet in its own module ----------
 let frameAcc = 0, frameN = 0, rideFrames = 0;
 
@@ -96,59 +98,6 @@ window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv
 
 window.NRread = { signFit, legDist, READ_THR, READ_AHEAD };   // qa: how far off a sign text reads (em = signFit(t).px / 250 * 1.02, x1.3 on tier 1)
 window.NRgo = goNow;   // qa
-
-// ---------- fares ----------
-const whyLine = (...parts) => parts.filter(Boolean).join(' · ');
-// what the passenger names: the fare, or fare + the tip euro when the tip line is 'Klopt zo.' (said over the amount handed over)
-const handed = (cents, tip) => cents + (tip && FARES.TIPS.some(t => t.handOver && t.nl === tip) ? 100 : 0);
-function paidLine(cents, tip) {   // 'Alsjeblieft. Twee euro dertig.' plus the tip line
-  const w = FARES.euroToWords(handed(cents, tip) / 100).replace(/^één/, 'eén');
-  return w ? 'Alsjeblieft. ' + w.charAt(0).toUpperCase() + w.slice(1) + '.' + (tip ? ' ' + tip : '') : '';
-}
-// the last fork of a ride settles the money: full or part pay, or a refusal; returns the toast line and what is said
-function settleRide(fork) {
-  const st = fork.st, nl = fork.entry.nl; S.riding = null;
-  const quiet = fork.entry.dehet || (L && L.id > 1000);   // de/het and bonus fares are not spoken: the next card comes too fast
-  const pay = FARES.payCents(st.fare, st.wrong, st.forks.length);
-  if (S.wrongRow >= 3) { S.missed += st.fare; return { line: '', voice: [nl] }; }   // the death on the next frame owns this moment
-  if (pay > 0) {
-    S.missed += st.fare - pay;
-    const tip = payFare(pay, st.wrong === 0);
-    return { line: paidLine(pay, tip), voice: quiet ? [nl] : [nl, FARES.euroToWords(handed(pay, tip) / 100), tip] };
-  }
-  const r = refuse(st);
-  return { line: '', voice: quiet ? [nl] : [nl, r] };
-}
-// money in; every third clean ride in a row adds a tip; returns the tip line or ''
-function payFare(cents, clean = true) {
-  if (!(cents > 0)) return '';
-  S.cents += cents; S.paid += cents;
-  if (!clean || ++S.cleanRow % 3) return '';
-  S.cents += 100; S.tips += 100;
-  const later = FARES.TIPS.filter(t => !t.first && t.minTier <= S.fareTier);
-  const t = S.tipN === 0 || !later.length ? (FARES.TIPS.find(x => x.first) || FARES.TIPS[0]) : later[(S.tipN - 1) % later.length];
-  S.tipN++; walletFx('+ € 1,00', 'tip');
-  return t ? t.nl : '';
-}
-// no pay: a dry line on the card, never the same one twice in a row
-function refuse(st) {
-  const pool = FARES.REFUSE.filter(r => r.minTier <= S.fareTier && S.fareTier <= (r.maxTier || 99) && r.nl !== S.lastRefuse);
-  const r = pool.length ? pick(pool) : null;
-  S.missed += st.fare;
-  if (!r) return '';
-  S.lastRefuse = r.nl;
-  card.querySelector('.nl').textContent = st.entry.nl; card.querySelector('.fare').innerHTML = `<span class="no">${r.nl} <i>${r.en}</i></span>`; card.style.opacity = 1;
-  const seq = cardSeq; setTimeout(() => { if (cardSeq === seq) hideCard(); }, 2400);
-  return r.nl;
-}
-function walletFx(text, cls) { const fx = $('walletfx'); fx.textContent = text; fx.className = cls; S.fxT = 1.8; }
-// a zombie's Tikkie: up to € 4,50 out of the wallet, never below zero
-function payTikkie() {
-  const taken = Math.min(S.cents, 450); S.cents -= taken; S.tikkie += taken; S.cleanRow = 0;
-  if (!taken) return;   // an empty wallet loses nothing: the toast still asks for € 4,50, the pill stays put
-  walletFx('− ' + FARES.fmtEuro(taken), 'lost');
-  const p = $('walletpill'); p.classList.add('shake'); setTimeout(() => p.classList.remove('shake'), 400);
-}
 
 // ---------- update ----------
 const clock = { last: performance.now(), getDelta() { const n = performance.now(), d = (n - this.last) / 1000; this.last = n; return d; } };   // THREE.Clock is deprecated since r183
@@ -465,4 +414,5 @@ loop();
 
 
 
-export { handed, paidLine, payFare, settleRide, update, warmUp, whyLine };
+
+export { update, warmUp };
