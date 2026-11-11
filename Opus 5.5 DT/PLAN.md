@@ -21,7 +21,7 @@ missing is the learning loop and the payoff of the story:
 3. The player cannot see which words and rules they own.
 4. It is often unclear what a fork is asking. One fork tests two things at once.
 5. Some wrong options are forms that do not exist in Dutch.
-6. No native speaker has read the content. 13 flagged points are open.
+6. Nobody has reviewed the Dutch as a whole. 13 flagged points are open. (11 Nov: Santi's call, Claude reviews it, with research when in doubt, no human reviewer.)
 7. Hard structures (verb-second word order, de and het) are taught in one place, not spread.
 8. Right answers do not visibly give the world its words back. Towns do not reach dawn.
    Amsterdam has no ending.
@@ -110,7 +110,7 @@ Every phase ends with the same checklist:
 | 5. Story payoff and stakes | `dt/payoff` | 8, 9 | 4 |
 | 6. Writing mode | `dt/typing` | 1 | 4 |
 | 7. Moves and hazards | `dt/moves` | 9 | 2 |
-| 8. Phone, native review, release | `dt/release` | 6, 10 | all |
+| 8. Phone, release | `dt/release` | 6, 10 | all |
 
 Tests come before the split, because the split is only safe if something can prove the game
 still plays the same. The learning core comes before save, because the save format has to
@@ -297,9 +297,13 @@ Nobody has measured this. Measure before changing anything.
    tense and V2 in main clauses, questions, modals, separable verbs, perfect, imperfect, sub-clause
    order last. Report any rule that appears before what it depends on.
 
-### 3g. The packet for a native speaker (`dt/content-clear-forks`)
+### 3g. The Dutch review (`dt/dutch-review`)
 
-No model replaces this. Make the human's job short.
+Santi's call (11 Nov 2026): no human reviewer. Claude reviews every Dutch line as a native editor
+would, and where a form or usage is in doubt it checks a source (woordenlijst.org, taaladvies.net,
+e-ans.ivdnt.org, onzetaal.nl) and cites it in the report. The review reports first; fixes go through
+the content pipeline after the content branch has landed. The sheets below stay as the record of
+what was reviewed.
 
 1. Generate `review/native-review.html` (and a printable PDF): every Dutch sentence in play
    order, with its English line, grouped by town, with three tick boxes per line: natural,
@@ -307,8 +311,7 @@ No model replaces this. Make the human's job short.
    first, each with its question (kraam de or het, the historic present, the Groningen earthquake
    words, the Zeeland flood joke, bomma).
 2. Add a second, short sheet: 60 sentences sampled across tiers, for a reviewer with one hour.
-3. Santi finds the reviewer (a Dutch teacher or colleague). Corrections come back as the marked
-   file. Apply them in phase 8, through the normal content pipeline.
+3. ~~Santi finds the reviewer.~~ Replaced by the Claude review above (`reports/dt-dutch-review.md`).
 
 Acceptance for phase 3: zero mixed forks and zero non-words outside Spelling forks in the
 validator; a missed item returns in the same ride; the why line holds on the card; the summary
@@ -425,7 +428,7 @@ Acceptance: as in A3, plus `qa/dt/reading-time.mjs` unchanged on levels 1, 75, 9
    pixel ratio before dropping effects. A home-screen manifest and an icon drawn in code.
 2. **Loading.** A real loading state on first open: the models wait up to 8 seconds today with
    nothing on screen to say so. Voice files stay fetched per line, as now.
-3. **Apply the native review** from 3g. Every correction goes through the validator and a voice
+3. **Apply the Dutch review** from 3g, if anything is still open. Every correction goes through the validator and a voice
    re-render for changed lines.
 4. **Ambience** from A5: wind, water, a church bell per town, bike ticks, all synthesised, with
    a mute setting stored in the save object.
@@ -447,7 +450,7 @@ Work proceeds on the defaults. Each is cheap to change if he says so before its 
 | Shop items and prices | The four listed in phase 5 | Phase 5 |
 | The ending: does he open the grammar book | Show him two drafts | Phase 5 |
 | Checkpoint caps the ride at two stars | Yes | Phase 5 |
-| Who does the native review | Santi finds a teacher or colleague | Phase 8 |
+| Who does the native review | Decided 11 Nov: Claude, with sources when in doubt | Done |
 | Concept image B, lost | Ask Santi if he still has it | Any time |
 
 ## 5. What this plan leaves out on purpose
