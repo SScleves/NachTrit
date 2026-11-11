@@ -34,43 +34,30 @@
       want: 'Since the mist the dead run every shop in the city: they price, they sell, they complain, and they want their money back. Niet lullen maar poetsen, so you answer fast. The women behind the counters are still taller than you, and the dogs outside the door still need a walk.' },
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip
-      { en: 'The baker baked bread all night.', parts: ['De bakker', FK(['bakte', 'bakde', 'bakkede'], 0, 'imp',
-        'bak ends in k, a ketchup letter, so the past takes -te: bakte.'), 'de hele nacht brood.'] },
-      { en: 'The customer paid by card.', parts: ['De klant', FK(['betaalde', 'betaalte', 'betaald'], 0, 'imp',
-        'betaal ends in l, no ketchup letter, so the past takes -de: betaalde.'), 'met de pinpas.'] },
-      { en: 'I saw the price and put the cheese back.', parts: ['Ik', FK(['zag', 'zagt', 'gezien'], 0, 'imp',
-        'zien is irregular: zag. Learn it whole.'), 'de prijs en', FK(['legde', 'legte', 'gelegd'], 0, 'kof',
-        'leg ends in g, which is not a ketchup letter, so -de: legde. The terug goes to the end.'), 'de kaas terug.'] },
-      { en: 'The dogs were bored in front of the shop.', parts: ['De honden', FK(['verveelden zich', 'verveelde zich', 'zich verveelden'], 0, 'refl',
-        'Two dogs, plural: verveelden, then zich right after the verb. verveelde is for one dog.'), 'voor de winkel.'] },
+      { en: 'The baker baked bread all night.', parts: ['De bakker', FK(['bakte', 'bakde'], 0, 'imp', 'bak ends in k, a ketchup letter, so the past ends in -te: bakte.', 'spell'), 'de hele nacht brood.'] },
+      { en: 'The customer paid by card.', parts: ['De klant', FK(['betaalde', 'betaalte'], 0, 'imp', 'betaal ends in l, not a ketchup letter, so the past ends in -de.', 'spell'), 'met de pinpas.'] },
+      { en: 'I saw the price and put the cheese back.', parts: ['Ik', FK(['zag', 'zagen', 'gezien'], 0, 'imp', 'zien is irregular: the past is zag, and ik takes no ending.'), 'de prijs en', FK(['legde', 'legte'], 0, 'kof', 'leg ends in g, not a ketchup letter, so the past ends in -de: legde.', 'spell'), 'de kaas terug.'] },
+      { en: 'The dogs were bored in front of the shop.', parts: ['De honden', FK(['verveelden zich', 'zich verveelden'], 0, 'refl', 'The self-word comes right after the verb: verveelden zich.'), 'voor de winkel.'] },
 
       // ---- builds: the irregular imperfectum
-      { en: 'Yesterday I bought two loaves at the baker.', parts: ['Gisteren', FK(['kocht ik', 'kopte ik', 'ik kocht'], 0, 'imp',
-        'kopen is irregular: kocht, not kopte. After Gisteren the verb stays in slot 2.'), 'twee broden bij de bakker.'] },
+      { en: 'Yesterday I bought two loaves at the baker.', parts: ['Gisteren', FK(['kocht ik', 'ik kocht'], 0, 'v2', 'Gisteren takes slot 1, so the verb comes second, then ik.'), 'twee broden bij de bakker.'] },
       { en: 'The pharmacy was closed because it was Sunday.', parts: ['De apotheek', FK(['was', 'waren'], 0, 'imp',
-        'One pharmacy, singular: was. waren is for more than one.'), 'dicht,', FK(['want het was zondag', 'want was het zondag', 'want het zondag was'], 0, 'v2',
-        'want only joins the two halves. The verb stays second: het was zondag.'), '.'] },
+        'One pharmacy, singular: was. waren is for more than one.'), 'dicht,', 'want', FK(['het was', 'was het'], 0, 'v2', 'want does not count as slot 1, so the subject comes first: het was.'), 'zondag.'] },
       { en: 'The baker had no change yesterday.', parts: ['De bakker', FK(['had', 'hadden'], 0, 'imp',
         'One baker, singular: had. hadden is for more than one.'), 'gisteren', FK(['geen', 'niet'], 0, 'neg',
         'wisselgeld is a thing, so geen: geen wisselgeld.'), 'wisselgeld.'] },
       { en: 'I went to the Markthal and came home with full bags.', parts: ['Ik', FK(['ging', 'gaan', 'gegaan'], 0, 'imp',
-        'gaan is irregular: ging. gegaan only works with ben, as in ik ben gegaan.'), 'naar de Markthal en', FK(['kwam', 'kwamen', 'komde'], 0, 'imp',
-        'komen is irregular: kwam for ik. kwamen is for we.'), 'met volle tassen thuis.'] },
-      { en: 'I took the coat back yesterday.', parts: ['Ik', FK(['bracht', 'brengde', 'brachtte'], 0, 'imp',
-        'brengen is irregular: bracht, with no -te after it.'), 'de jas gisteren', FK(['terug', 'teruggebracht', 'terugbrengen'], 0, 'sep',
+        'gaan is irregular: ging. gegaan only works with ben, as in ik ben gegaan.'), 'naar de Markthal en', FK(['kwam', 'kwamen', 'gekomen'], 0, 'imp', 'komen is irregular: the past is kwam, and ik takes no ending.'), 'met volle tassen thuis.'] },
+      { en: 'I took the coat back yesterday.', parts: ['Ik', FK(['bracht', 'brachten', 'gebracht'], 0, 'imp', 'brengen is irregular: the past is bracht, and ik takes no ending.'), 'de jas gisteren', FK(['terug', 'teruggebracht', 'terugbrengen'], 0, 'sep',
         'In the imperfectum the particle jumps to the end: bracht de jas terug.'), '.'] },
-      { en: 'At the pharmacy I had to wait a long time for my medicine.', parts: ['In de apotheek', FK(['moest ik', 'ik moest', 'moeste ik'], 0, 'v2',
-        'In de apotheek takes slot 1, so moest comes before ik. moest is the past of moeten.'), 'lang', FK(['wachten', 'te wachten', 'gewacht'], 0, 'modal',
+      { en: 'At the pharmacy I had to wait a long time for my medicine.', parts: ['In de apotheek', FK(['moest ik', 'ik moest'], 0, 'v2', 'In de apotheek takes slot 1, so moest comes before ik.'), 'lang', FK(['wachten', 'te wachten', 'gewacht'], 0, 'modal',
         'A modal sends the other verb to the end as a plain infinitive, with no te.'), 'op mijn medicijnen.'] },
 
       // ---- builds: comparatives and superlatives
-      { en: 'The bread is cheaper at the supermarket than at the baker.', parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk',
-        'Add -er for the comparative: goedkoop becomes goedkoper.'), 'in de supermarkt', FK(['dan', 'dat', 'van'], 0, 'vergelijk',
+      { en: 'The bread is cheaper at the supermarket than at the baker.', parts: ['Het brood is', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'Add -er for the comparative before dan: goedkoop becomes goedkoper.'), 'in de supermarkt', FK(['dan', 'dat', 'van'], 0, 'vergelijk',
         'After a comparative the other thing follows dan: goedkoper dan.'), 'bij de bakker.'] },
-      { en: 'This cheese is much better than the one from the supermarket.', parts: ['Deze kaas is veel', FK(['beter', 'gooder', 'goeder'], 0, 'vergelijk',
-        'goed is irregular: goed, beter, best.'), 'dan die uit de supermarkt.'] },
-      { en: 'This is the most expensive coat in the whole shop.', parts: ['Dit is de', FK(['duurste', 'duurst', 'duurder'], 0, 'vergelijk',
-        'Before a noun the superlative is -st plus -e: de duurste jas.'), 'jas van de hele winkel.'] },
+      { en: 'This cheese is much better than the one from the supermarket.', parts: ['Deze kaas is veel', FK(['beter', 'best', 'goed'], 0, 'vergelijk', 'goed is irregular: goed, beter, best, and dan wants beter.'), 'dan die uit de supermarkt.'] },
+      { en: 'This is the most expensive coat in the whole shop.', parts: ['Dit is de', FK(['duurste', 'duurst'], 0, 'vergelijk', 'Before a noun the superlative takes -ste: de duurste jas.'), 'jas van de hele winkel.'] },
 
       // ---- builds: zou plus infinitive, polite requests
       { en: 'At the market I would like a kilo of apples.', parts: ['Op de markt', FK(['zou ik', 'ik zou'], 0, 'v2',
@@ -86,14 +73,12 @@
       // ---- builds: reflexive verbs
       { en: 'Sorry, I made a mistake with the price.', parts: ['Sorry, ik heb', FK(['me', 'zich', 'je'], 0, 'refl',
         'ik goes with me, right after the verb: ik heb me vergist.'), 'in de prijs vergist.'] },
-      { en: 'I did not feel well, so I went to the pharmacy.', parts: ['Ik', FK(['voelde me', 'me voelde', 'voelde zich'], 0, 'refl',
-        'The self-word comes right after the verb, and ik takes me: voelde me.'), 'niet lekker, dus ik', FK(['ging', 'gingen', 'gegaan'], 0, 'imp',
+      { en: 'I did not feel well, so I went to the pharmacy.', parts: ['Ik', FK(['voelde me', 'me voelde'], 0, 'refl', 'The self-word comes right after the verb: voelde me.'), 'niet lekker, dus ik', FK(['ging', 'gingen', 'gegaan'], 0, 'imp',
         'gaan is irregular: ging for ik. gingen is for we.'), 'naar de apotheek.'] },
 
       // ---- builds: review of the perfectum and the softeners
       { en: 'Paola tried on three dresses in the fitting room.', parts: ['Paola', FK(['heeft', 'is'], 0, 'aux',
-        'Trying on is an action, not a trip: hebben.'), 'in de paskamer drie jurken', FK(['gepast', 'gepasd', 'gepassen'], 0, 'kof',
-        'pas ends in s, a ketchup letter, so gepast with a t.'), '.'] },
+        'Trying on is an action, not a trip: hebben.'), 'in de paskamer drie jurken', FK(['gepast', 'gepasd'], 0, 'kof', 'pas ends in s, a ketchup letter, so the participle ends in t: gepast.', 'spell'), '.'] },
       { en: "I'll grab a basket for you.", parts: ['Ik pak', FK(['wel even', 'even wel'], 0, 'soft',
         'wel even is the soft pair, like Ik pak wel even een biertje voor je.'), 'een mandje voor je.'] },
 

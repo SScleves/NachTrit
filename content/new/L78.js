@@ -31,13 +31,10 @@
       want: 'Since the mist the dead on every platform speak in the past tense: where were you, what did you see, why did nobody say anything. They want was, had, ging and kwam right, and a polite zou when you ask them to move. In Rotterdam the dead do not talk much, they work. The ticket woman is still taller than you, and the two tourists beside you still split a fare to the cent.' },
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip
-      { en: 'Yesterday I waited an hour on the platform.', parts: ['Gisteren', FK(['wachtte', 'wachtde'], 0, 'kof',
-        'The stem wacht already ends in t, a soft ketchup letter, so the past takes -te: wachtte.'), 'ik een uur op het perron.'] },
+      { en: 'Yesterday I waited an hour on the platform.', parts: ['Gisteren', FK(['wachtte', 'wachtde'], 0, 'kof', 'wacht ends in t, a ketchup letter, so the past ends in -te: wachtte.', 'spell'), 'ik een uur op het perron.'] },
       { en: 'We used to live closer to the station.', parts: ['Vroeger', FK(['woonden we', 'we woonden'], 0, 'v2',
-        'Vroeger takes slot 1, so the verb comes second, then we.'), FK(['dichter', 'meer dicht'], 0, 'vergelijk',
-        'Short adjectives take -er: dichter. Dutch does not say meer dicht.'), 'bij het station.'] },
-      { en: 'I felt unwell in the full metro.', parts: ['Ik', FK(['voelde', 'voelte'], 0, 'kof',
-        'The stem voel ends in l, which is not soft ketchup, so the past takes -de: voelde.'), FK(['me', 'zich'], 0, 'refl',
+        'Vroeger takes slot 1, so the verb comes second, then we.'), FK(['dichter', 'dichtere'], 0, 'vergelijk', 'Short adjectives take -er for closer: dichter, without the -e.'), 'bij het station.'] },
+      { en: 'I felt unwell in the full metro.', parts: ['Ik', FK(['voelde', 'voelte'], 0, 'kof', 'voel ends in l, not a ketchup letter, so the past ends in -de: voelde.', 'spell'), FK(['me', 'zich'], 0, 'refl',
         'The self-word matches the subject: ik voel me. zich is for hij, zij and ze.'), 'niet lekker in de volle metro.'] },
 
       // ---- builds: the irregular imperfectum
@@ -50,21 +47,16 @@
       { en: 'What were you doing so long at the station?', parts: ['Wat', FK(['deed', 'doet'], 0, 'imp',
         'doen is irregular: deed. doet is the present and goes with hij, not with je.'), 'je zo', FK(['lang', 'langer'], 0, 'vergelijk',
         'After zo the plain form stays plain: zo lang. -er is only for comparing with dan.'), 'op het station?'] },
-      { en: 'The conductor spoke fast and I understood nothing.', parts: ['De conducteur', FK(['sprak', 'spreekte'], 0, 'imp',
-        'spreken is irregular: the past is sprak, with an a.'), 'heel snel en ik verstond', FK(['niets', 'geen'], 0, 'neg',
+      { en: 'The conductor spoke fast and I understood nothing.', parts: ['De conducteur', FK(['sprak', 'spraken', 'gesproken'], 0, 'imp', 'spreken is irregular: the past is sprak, and one person takes no ending.'), 'heel snel en ik verstond', FK(['niets', 'geen'], 0, 'neg',
         'geen needs a noun after it. Nothing on its own is niets.'), '.'] },
-      { en: 'Paola bought a ticket and we walked to the platform.', parts: ['Paola', FK(['kocht', 'kopte'], 0, 'imp',
-        'kopen is irregular: kocht, the same pattern as gekocht.'), 'een kaartje en we', FK(['liepen', 'lopten'], 0, 'imp',
-        'lopen is irregular: liep for one, liepen for more than one.'), 'naar het perron.'] },
-      { en: 'The stand-up began at nine, but I was still on the metro.', parts: ['De standup', FK(['begon', 'begonde'], 0, 'imp',
-        'beginnen is irregular: the past is begon.'), 'om negen, maar', FK(['ik zat', 'zat ik'], 0, 'v2',
+      { en: 'Paola bought a ticket and we walked to the platform.', parts: ['Paola', FK(['kocht', 'kochten', 'gekocht'], 0, 'imp', 'kopen is irregular: the past is kocht, and Paola takes no ending.'), 'een kaartje en we', FK(['liepen', 'liep', 'gelopen'], 0, 'imp', 'lopen is irregular: liep, and we takes the plural: liepen.'), 'naar het perron.'] },
+      { en: 'The stand-up began at nine, but I was still on the metro.', parts: ['De standup', FK(['begon', 'begonnen'], 0, 'imp', 'beginnen is irregular: the past is begon, and one standup takes no ending.'), 'om negen, maar', FK(['ik zat', 'zat ik'], 0, 'v2',
         'maar does not count as a slot, so the subject stays first: maar ik zat.'), 'nog in de metro.'] },
 
       // ---- builds: comparatives, superlatives, liever
       { en: 'The metro is the fastest route to the Markthal.', parts: ['De metro is de', FK(['snelste', 'snelst', 'sneller'], 0, 'vergelijk',
         'Before a noun the superlative takes -e: de snelste route. Alone you would say het snelst.'), 'route naar de Markthal.'] },
-      { en: 'I prefer to take the train rather than the bus.', parts: ['Ik ga', FK(['liever', 'graag', 'meer graag'], 0, 'vergelijk',
-        'graag, liever, liefst is one ladder. Comparing two things with dan takes liever, and Dutch has no meer graag.'), 'met de trein dan met de bus.'] },
+      { en: 'I prefer to take the train rather than the bus.', parts: ['Ik ga', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk', 'Comparing two things with dan takes the comparative of graag: liever.'), 'met de trein dan met de bus.'] },
 
       // ---- builds: zou plus infinitive
       { en: 'Could you watch my suitcase for a moment?', parts: ['Zou je even op mijn koffer', FK(['kunnen letten', 'kan letten'], 0, 'modal',
@@ -74,18 +66,14 @@
 
       // ---- builds: review, perfectum, reflexive, time, hoeven, imperative
       { en: 'I lost my OV chip card at the station.', parts: ['Ik', FK(['heb', 'heeft'], 0, 'aux',
-        'verliezen runs on hebben, and with ik that is heb. heeft is for hij and zij.'), 'mijn ov-chipkaart op het station', FK(['verloren', 'geverloren'], 0, 'perf',
-        'Verbs that start with ver- never take ge: verloren.'), '.'] },
+        'verliezen runs on hebben, and with ik that is heb. heeft is for hij and zij.'), 'mijn ov-chipkaart op het station', FK(['verloren', 'verloor', 'verlies'], 0, 'perf', 'ver- verbs take no ge, and verliezen is irregular: verloren.'), '.'] },
       { en: 'Sorry, I got the time wrong.', parts: ['Sorry, ik heb', FK(['me', 'zich'], 0, 'refl',
-        'The self-word matches the subject: ik heb me vergist.'), 'in de tijd', FK(['vergist', 'gevergist'], 0, 'perf',
-        'zich vergissen starts with ver-, so no ge: vergist.'), '.'] },
-      { en: 'My metro leaves at 11:40.', parts: ['Mijn metro vertrekt om', FK(['tien over half twaalf', 'tien voor half twaalf'], 0, 'klok',
-        'Past the half hour you count from half: ten past half twelve is 11:40. Ten before half twelve is 11:20.'), '.'] },
+        'The self-word matches the subject: ik heb me vergist.'), 'in de tijd', FK(['vergist', 'vergiste', 'vergissen'], 0, 'perf', 'ver- verbs take no ge, and vergis already ends in s: vergist.'), '.'] },
+      { en: 'My metro leaves at 11:40.', parts: ['Mijn metro vertrekt om tien', FK(['over', 'voor'], 0, 'klok', 'Past the half hour you count from half: tien over half twaalf is 11:40.'), 'half twaalf.'] },
       { en: 'This is a direct train, you do not have to change.', parts: ['Dit is een directe trein, u', FK(['hoeft', 'moet'], 0, 'mag',
         'hoeft niet te means there is no need. moet takes a bare infinitive, with no te.'), 'niet', FK(['over te stappen', 'te overstappen', 'overstappen te'], 0, 'sep',
         'With te the little word goes between the parts: over te stappen.'), '.'] },
-      { en: 'Turn right at the traffic light.', parts: ['Sla bij het stoplicht rechts', FK(['af', 'afslaan', 'af te'], 0, 'gebod',
-        'A command is the bare stem in slot 1 and the prefix goes to the end: sla ... af.'), '.'] },
+      { en: 'Turn right at the traffic light.', parts: ['Sla bij het stoplicht rechts', FK(['af', 'afslaan'], 0, 'gebod', 'In a command the stem comes first and the particle goes to the end: sla ... af.', 'order'), '.'] },
 
       // ---- words: the station, the transport, the roads
       { w: 'the platform', nl: 'het perron', wrong: 'de perron' }, { w: 'the delay', nl: 'de vertraging' },
