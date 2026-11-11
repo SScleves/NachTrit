@@ -1,7 +1,10 @@
-// The game's entry and hub (PLAN.md phase 2). index.html loads this module. It imports the game's modules in the order their
-// code ran when it was one script, and re-exports them. A module imports what comes before it directly and what comes after it
-// from here, so every module is evaluated once, in that order, and the random draws and scene objects are made as before.
-// The pure rules (tasks, reading, lamp, forks, voice) are shared with the unit tests in qa/test.
+// The game's entry and hub (PLAN.md phase 2). index.html loads this module; it holds no code. It imports and re-exports the
+// game's modules in the order their code ran when the game was one script in index.html. That order is the run order: the
+// random draws, the scene objects and their ids are made in it, which keeps a seeded ride the same. A module imports what an
+// earlier module defines from that module, and what a later module defines from here, and it also imports the module before
+// it, so the modules with top-level await (engine, render, loop) still run in turn. A new module goes in at the point where
+// its code should run. The pure rules (tasks, reading, lamp, forks, voice) are shared with the unit tests in qa/test.
+// HANDOVER.md section 10 has the map and the rules.
 export * from './engine.js?v=38';
 export * from './render-nodes.js?v=38';
 export * from './render.js?v=38';
@@ -32,5 +35,3 @@ export * from './flow.js?v=38';
 export * from './wallet.js?v=38';
 export * from './debug.js?v=38';
 export * from './loop.js?v=38';
-// ---------- the rest of the game: not yet in its own module ----------
-
