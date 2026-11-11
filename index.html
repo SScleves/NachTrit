@@ -903,7 +903,8 @@ const PK = {   // shared materials for the street furniture
 function signMat(own) { if (!own) return PK.sign; const t = signAtlas.clone(); t.needsUpdate = true; return new THREE.MeshBasicMaterial({ map: t, color: 0xd8ccb0 }); }
 // an omafiets along local z, front at -z, standing on y = 0: two wheels, a step-through frame, upright bars, a saddle and a rack; cargo makes it a bakfiets
 function kBike(k, mat, cargo, basket) {
-  if (!cargo && MODELS.bike) { kModel(k, MODELS.bike, 0, 0, 0, 0, 1, 1, 1, { frame: mat }); if (basket) kb(k, PK.rope, 0, 0.88, -0.53, 0.3, 0.2, 0.26); return; }
+  // the model when it is loaded; its saddle takes the pole material, so a kit gains no material and no draw call
+  if (!cargo && MODELS.bike) { kModel(k, MODELS.bike, 0, 0, 0, 0, 1, 1, 1, { frame: mat, leather: PM.pole }); if (basket) kb(k, PK.rope, 0, 0.88, -0.53, 0.3, 0.2, 0.26); return; }
   const R = 0.33, rz = 0.55, fz = cargo ? -1.2 : -0.55, hz = cargo ? -0.3 : -0.4;
   kadd(k, KG.wheel, PM.pole, 0, R, rz);
   if (cargo) kadd(k, KG.wheelS, PM.pole, 0, 0.22, fz); else kadd(k, KG.wheel, PM.pole, 0, R, fz);
@@ -2087,7 +2088,7 @@ function riderModel() {
   const dark = { dog: Mat({ color: 0x24201d }), dogDark: Mat({ color: 0x141210 }), dogPale: Mat({ color: 0x9a7a52 }) };
   for (const [x, z, mats, ph] of [[-0.85, -0.1, null, 0], [0.85, 0.45, dark, 2.1]]) {
     const d = modelClone(MODELS.dog.scene, mats), m = s => d.getObjectByName(s); d.position.set(x, 0, z); dogs.add(d);
-    u.model.dogs.push({ d, body: m('body'), head: m('head'), tail: m('tail'), legs: [m('leg_fl'), m('leg_fr'), m('leg_bl'), m('leg_br')], ph, z });
+    u.model.dogs.push({ d, body: m('body'), tail: m('tail'), legs: [m('leg_fl'), m('leg_fr'), m('leg_bl'), m('leg_br')], ph, z });
   }
   dogs.visible = true;
 }
@@ -2114,7 +2115,7 @@ function riderTick(dw, dt) {   // dw: how far the wheels turn this frame
     D.legs[0].rotation.x = Math.sin(p) * 0.75 * run; D.legs[1].rotation.x = Math.sin(p + 0.35) * 0.75 * run;
     D.legs[2].rotation.x = Math.sin(p + Math.PI) * 0.65 * run; D.legs[3].rotation.x = Math.sin(p + Math.PI + 0.35) * 0.65 * run;
     D.body.position.y = 0.46 + Math.abs(Math.sin(p)) * 0.045 * run; D.body.rotation.x = Math.sin(p) * 0.07 * run;
-    D.head.rotation.x = Math.sin(p + 1) * 0.1 * run; D.tail.rotation.z = Math.sin(_dogT * 9 + D.z * 3) * 0.45;
+    D.tail.rotation.z = Math.sin(_dogT * 9 + D.z * 3) * 0.45;
   }
 }
 const modelsReady = (async () => {

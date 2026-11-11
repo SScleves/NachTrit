@@ -11,12 +11,13 @@ export async function build() {
   m.add(body, 'dogPale', ball(0.1, 0, -0.08, -0.28, 0.85, 1.0, 0.7, 8, 5));
   m.add(body, 'dog', rod([0, 0.05, -0.27], [0, 0.17, -0.4], 0.085, 8, 0.07));   // the neck
   // head: skull, muzzle, a black nose, ears that flop, dark eyes
-  const hd = m.node('head', body, [0, 0.2, -0.44]);
-  m.add(hd, 'dog', ball(0.1, 0, 0.02, 0, 0.92, 0.9, 1.05, 10, 7));
-  m.add(hd, 'dog', rod([0, -0.015, -0.05], [0, -0.03, -0.16], 0.06, 7, 0.045), ball(0.046, 0, -0.03, -0.16, 1, 0.9, 1, 7, 5));
-  m.add(hd, 'dogPale', ball(0.04, 0, -0.06, -0.12, 0.9, 0.6, 1.3, 6, 4));   // the pale chin
-  m.add(hd, 'nose', ball(0.024, 0, -0.012, -0.2, 1.2, 0.9, 1, 6, 4), ball(0.012, 0.045, 0.045, -0.085, 1, 1, 1, 5, 3), ball(0.012, -0.045, 0.045, -0.085, 1, 1, 1, 5, 3));
-  for (const s of [-1, 1]) m.add(hd, 'dogDark', ball(0.06, s * 0.095, 0.0, 0.02, 0.35, 1.25, 0.8, 6, 5));   // soft ears, folded down
+  // the head's parts are drawn in its own frame at (0, 0.2, -0.44) and merged into the body: fewer draw calls, the head does not move alone
+  const addH = (slot, ...g) => m.add(body, slot, ...g.map(x => x.translate(0, 0.2, -0.44)));
+  addH('dog', ball(0.1, 0, 0.02, 0, 0.92, 0.9, 1.05, 10, 7));
+  addH('dog', rod([0, -0.015, -0.05], [0, -0.03, -0.16], 0.06, 7, 0.045), ball(0.046, 0, -0.03, -0.16, 1, 0.9, 1, 7, 5));
+  addH('dogPale', ball(0.04, 0, -0.06, -0.12, 0.9, 0.6, 1.3, 6, 4));   // the pale chin
+  addH('dogDark', ball(0.024, 0, -0.012, -0.2, 1.2, 0.9, 1, 6, 4), ball(0.012, 0.045, 0.045, -0.085, 1, 1, 1, 5, 3), ball(0.012, -0.045, 0.045, -0.085, 1, 1, 1, 5, 3));
+  for (const s of [-1, 1]) addH('dogDark', ball(0.06, s * 0.095, 0.0, 0.02, 0.35, 1.25, 0.8, 6, 5));   // soft ears, folded down
   // legs: upper and lower, a paw; the hind legs have the hock
   for (const [nm, x, y, z, hind] of [['leg_fl', 0.075, -0.04, -0.24, 0], ['leg_fr', -0.075, -0.04, -0.24, 0], ['leg_bl', 0.075, -0.02, 0.2, 1], ['leg_br', -0.075, -0.02, 0.2, 1]]) {
     const L = m.node(nm, body, [x, y, z]);
