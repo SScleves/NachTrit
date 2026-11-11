@@ -35,8 +35,11 @@
       want: 'Since the mist everyone who spoke Dutch has changed, and the dead of Rotterdam still do not chat. They stand in your rooms and ask how the day went, and you answer in the past: werkte, kookte, ging, kwam. They want the words me and zich in the right place, and they only accept a favour that starts with zou. The women are still taller than you. They still split the bill for the polish to the cent.' },
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip and irregular by heart
-      { en: 'Yesterday I worked at home all day.', parts: ['Gisteren', FK(['werkte ik', 'ik werkte', 'werkde ik'], 0, 'kof',
-        'Gisteren takes slot 1, so the verb comes second. werk ends in k, a ketchup letter: werkte with a t.'), 'de hele dag thuis.'] },
+      // one thing per fork (the clear-task prototype): the past form and the word order are asked in separate forks
+      { en: 'I worked at home all day yesterday.', parts: ['Ik', FK(['werkte', 'werkde', 'werkt'], 0, 'kof',
+        'werk ends in k, a ketchup letter: werkte with a t. werkt is now, and gisteren is not now.'), 'gisteren de hele dag thuis.'] },
+      { en: 'Yesterday I worked at home all day.', parts: ['Gisteren', FK(['werkte ik', 'ik werkte'], 0, 'v2',
+        'Gisteren takes slot 1, so the verb comes second and ik moves behind it.'), 'de hele dag thuis.'] },
       { en: 'Paola cooked and I did the dishes.', parts: ['Paola', FK(['kookte', 'kookde', 'kookten'], 0, 'kof',
         'kook ends in k, a ketchup letter: kookte with a t. One person, so no -n.'), 'en ik', FK(['deed', 'doede', 'deden'], 0, 'imp',
         'doen is irregular: deed. With ik there is no ending.'), 'de afwas.'] },
@@ -53,18 +56,22 @@
         'After tegen comes the object form: tegen mij, not tegen ik.'), '.'] },
       { en: 'We had no time, so we ordered pizza.', parts: ['We', FK(['hadden', 'had', 'haden'], 0, 'imp',
         'hebben is irregular: had, and wij takes -den: hadden.'), 'geen tijd, daarom', FK(['bestelden we', 'we bestelden'], 0, 'v2',
-        'daarom takes slot 1, so the verb comes second, then we. bestel ends in l, so -den.'), 'pizza.'] },
+        'daarom takes slot 1, so the verb comes second, then we.'), 'pizza.'] },
 
       // ---- builds: reflexive verbs, the self-word right after the verb
       { en: 'Paola does not feel so well tonight.', parts: ['Paola voelt', FK(['zich', 'me', 'haar'], 0, 'refl',
         'Paola is zij, so the self-word is zich, right after the verb: voelt zich.'), 'vanavond niet zo lekker.'] },
       { en: 'Sorry, I was wrong. You are right.', parts: ['Sorry, ik heb', FK(['me', 'zich', 'ons'], 0, 'refl',
         'ik takes me, right after the verb: heb me vergist.'), 'vergist. Je hebt gelijk.'] },
-      { en: 'I did not remember the neighbour’s name.', parts: ['Ik', FK(['herinnerde me', 'herinnerte me', 'me herinnerde'], 0, 'kof',
-        'herinner ends in r, no ketchup letter: herinnerde with a d. The me comes right after the verb.'), 'de naam van de buurman', FK(['niet', 'geen'], 0, 'neg',
+      { en: 'I did not remember the neighbour’s name.', parts: ['Ik', FK(['herinnerde', 'herinnerte'], 0, 'kof',
+        'herinner ends in r, no ketchup letter: herinnerde with a d.'), 'me de naam van de buurman', FK(['niet', 'geen'], 0, 'neg',
         'geen goes in front of a noun with een. Here de naam is already named, so niet at the end.'), '.'] },
-      { en: 'The dogs were bored in the living room.', parts: ['De honden', FK(['verveelden zich', 'verveelde zich', 'zich verveelden'], 0, 'refl',
-        'Two dogs, so verveelden, and zich comes right after the verb.'), 'in de woonkamer.'] },
+      { en: 'The dogs were bored in the living room.', parts: ['De honden', FK(['verveelden', 'verveelde', 'verveelten'], 0, 'kof',
+        'verveel ends in l, no ketchup letter, so -de. Two dogs, so -den.'), 'zich in de woonkamer.'] },
+      { en: 'I remember the dogs.', parts: ['Ik', FK(['herinner me', 'me herinner'], 0, 'refl',
+        'The self-word comes right after the verb: herinner me.'), 'de honden.'] },
+      { en: 'Today the dogs are bored again.', parts: ['Vandaag', FK(['vervelen de honden zich', 'de honden vervelen zich'], 0, 'v2',
+        'Vandaag takes slot 1, so the verb comes second, then de honden, then zich.'), 'weer.'] },
 
       // ---- builds: zou plus the infinitive at the end, polite requests
       { en: 'Would you walk the dogs for a moment?', parts: ['Zou je de honden even', FK(['uitlaten', 'uitgelaten', 'uit te laten'], 0, 'zou',
