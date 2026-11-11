@@ -2,13 +2,14 @@
 // usage: node qa/audit-forks.mjs            writes Opus 5.5 DT/reports/dt-audit-forks.{json,md}
 // No browser. Loads content like qa/validate-content.mjs; task labels from qa/lib/tasks.mjs (a copy of taskOf in index.html).
 import fs from 'node:fs'; import path from 'node:path';
-import { loadContent, forksOf, kindOf, sentenceOf } from './lib/load.mjs';
+import { loadContent, forksOf, kindOf, sentenceOf, contentWords } from './lib/load.mjs';
 import { taskOf, taskLabel, isPureReorder } from './lib/tasks.mjs';
 import { compare, intendedDim, acceptedDims, DIM_LABEL } from './lib/forks.mjs';
 import { allowList } from './lib/nl.mjs';
 
 const ROOT = process.cwd(), OUT = path.join(ROOT, 'Opus 5.5 DT', 'reports');
 const { levels, towns } = loadContent(ROOT); const allow = allowList(ROOT);
+for (const t of contentWords(levels)) if (!allow.has(t)) allow.set(t, 'used as right text in the content');
 const nw = s => String(s).trim().split(/\s+/).filter(Boolean).length;
 const gapped = (it, fi) => { let k = -1; return it.parts.map(p => typeof p === 'string' ? p : (++k === fi ? '___' : p.o[p.a])).join(' ').replace(/\s+([,.?!])/g, '$1'); };
 
@@ -73,7 +74,7 @@ const totals = { levels: levels.length, forksAll: rows.length + itemForks + perL
   labelMismatch: rows.filter(r => r.labelMismatch).length, signsOver3Words: rows.filter(r => r.maxWords > 3).length, byDims, byTask, byRule };
 
 fs.mkdirSync(OUT, { recursive: true });
-fs.writeFileSync(path.join(OUT, 'dt-audit-forks.json'), JSON.stringify({ generated: new Date().toISOString(), totals, perTown: Object.values(perTown), perLevel, forks: rows }, null, 1));
+fs.writeFileSync(path.join(OUT, 'dt-audit-forks.json'), JSON.stringify({ generated: new Date().toISOString(), totals, perTown: Object.values(perTown), perLevel, forks: rows }));
 
 // markdown
 const md = [];

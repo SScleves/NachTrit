@@ -9,8 +9,8 @@ function take(list, x) { const i = list.indexOf(x); if (i >= 0) { list.splice(i,
 
 export function compare(answer, wrong, allow) {
   const A = tokens(answer).map(t => t.toLowerCase()), Dt = tokens(wrong), D = Dt.map(t => t.toLowerCase());
-  const orig = new Map(Dt.map(t => [t.toLowerCase(), t])), real = t => isWord(orig.get(t) || t, allow);
-  const dims = new Set(), notes = [], nonWords = Dt.filter(t => !isWord(t, allow));
+  const orig = new Map(Dt.map(t => [t.toLowerCase(), t])), real = t => isWord(orig.get(t) || t, allow, false);
+  const dims = new Set(), notes = [], nonWords = Dt.filter(t => !isWord(t, allow, false));
   if (A.join(' ') === D.join(' ')) { dims.add('spelling'); notes.push('punctuation or case only'); return { dims, notes, nonWords }; }
   const remA = A.slice(), remD = [];
   for (const t of D) if (!take(remA, t)) remD.push(t);

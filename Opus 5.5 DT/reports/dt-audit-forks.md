@@ -15,12 +15,12 @@ Every build fork is compared option by option with its right answer. A wrong opt
 | Build forks with a multi-word option | 1093 |
 | ... of which pure reorderings | 479 |
 | ... not a pure reordering (the PLAN's 625) | 614 |
-| **Mixed forks (two or more dimensions)** | **477** |
+| **Mixed forks (two or more dimensions)** | **481** |
 | ... with multi-word options | 283 |
-| ... single-word options | 194 |
+| ... single-word options | 198 |
 | ... where one wrong option alone differs in two ways | 106 |
 | Suggested repair: split | 87 |
-| Suggested repair: narrow | 390 |
+| Suggested repair: narrow | 394 |
 | Single-dimension forks whose label does not match (spelling excluded, see dt-audit-distractors) | 154 |
 | Forks with an option longer than three words (PLAN 3b.3) | 225 |
 
@@ -32,7 +32,7 @@ Every build fork is compared option by option with its right answer. A wrong opt
 | form + spelling | 118 |
 | form + word | 88 |
 | order + word | 50 |
-| spelling + word | 25 |
+| spelling + word | 29 |
 | form + spelling + word | 13 |
 | order + spelling | 9 |
 | form + order + word | 5 |
@@ -44,30 +44,30 @@ Every build fork is compared option by option with its right answer. A wrong opt
 | Verb form | 134 |
 | Past tense | 117 |
 | Word order | 93 |
-| Which word | 71 |
+| Which word | 75 |
 | Comparison | 62 |
 
 ### Mixed forks by rule id
 
-v2 64, vergelijk 62, imp 38, sep 34, kof 32, perf 30, modal 18, omte 16, bijzin 14, aanhet 12, gebod 11, zou 11, presens 9, plusq 9, passief 9, aux 8, pronadv 8, neg 7, idioom 7, pres 6, refl 6, cond 5, woord 4, spel 4, er 4, fut 4, diedat 4, formeel 4, samen 4, getal 3, vgl 3, imper 3, alsdan 3, indirect 3, eris 2, klok 2, hoewel 2, zullen 2, hebben 1, al 1, adj 1, conditie 1, sepbz 1, soft 1, datum 1, weg 1, meervoud 1, obj 1
+v2 64, vergelijk 62, imp 38, sep 34, kof 32, perf 30, modal 18, omte 16, bijzin 14, aanhet 12, gebod 11, zou 11, presens 9, plusq 9, passief 9, aux 8, pronadv 8, getal 7, neg 7, idioom 7, pres 6, refl 6, cond 5, woord 4, spel 4, er 4, fut 4, diedat 4, formeel 4, samen 4, vgl 3, imper 3, alsdan 3, indirect 3, eris 2, klok 2, hoewel 2, zullen 2, hebben 1, al 1, adj 1, conditie 1, sepbz 1, soft 1, datum 1, weg 1, meervoud 1, obj 1
 
 ## Per town (play order)
 
 | Town | Levels | Build forks | Multi-word | Mixed | Split | Narrow | Non-word forks | Label mismatch | Option > 3 words |
 |---|---|---|---|---|---|---|---|---|---|
 | Alblasserdam | 10 | 76 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| Kinderdijk en Dordrecht | 8 | 85 | 1 | 10 | 0 | 10 | 14 | 1 | 0 |
-| Gouda | 7 | 244 | 93 | 69 | 16 | 53 | 7 | 2 | 1 |
+| Kinderdijk en Dordrecht | 8 | 85 | 1 | 10 | 0 | 10 | 12 | 1 | 0 |
+| Gouda | 7 | 244 | 93 | 69 | 16 | 53 | 6 | 2 | 1 |
 | Zeeland: de Deltawerken | 8 | 179 | 53 | 26 | 1 | 25 | 4 | 22 | 0 |
 | Utrecht | 8 | 197 | 99 | 57 | 12 | 45 | 1 | 15 | 8 |
 | Den Haag | 8 | 194 | 23 | 30 | 0 | 30 | 116 | 0 | 0 |
 | Rotterdam | 8 | 241 | 69 | 79 | 2 | 77 | 82 | 1 | 3 |
-| Urk | 8 | 219 | 149 | 26 | 5 | 21 | 31 | 12 | 64 |
-| Texel | 8 | 217 | 125 | 48 | 25 | 23 | 20 | 14 | 37 |
-| Groningen | 8 | 218 | 100 | 19 | 1 | 18 | 30 | 12 | 16 |
+| Urk | 8 | 219 | 149 | 26 | 5 | 21 | 27 | 12 | 64 |
+| Texel | 8 | 217 | 125 | 48 | 25 | 23 | 13 | 14 | 37 |
+| Groningen | 8 | 218 | 100 | 19 | 1 | 18 | 29 | 12 | 16 |
 | Maastricht | 8 | 260 | 67 | 48 | 2 | 46 | 86 | 19 | 15 |
-| Nijmegen | 8 | 250 | 135 | 27 | 11 | 16 | 36 | 25 | 32 |
-| Amsterdam | 8 | 329 | 179 | 38 | 12 | 26 | 50 | 30 | 49 |
+| Nijmegen | 8 | 250 | 135 | 28 | 11 | 17 | 36 | 25 | 32 |
+| Amsterdam | 8 | 329 | 179 | 41 | 12 | 29 | 47 | 30 | 49 |
 
 ## Per level (play order)
 
@@ -90,11 +90,11 @@ v2 64, vergelijk 62, imp 38, sep 34, kof 32, perf 30, modal 18, omte 16, bijzin 
 | 10 | kinderdijk | De kalender | 9 | 1 | 0 | 1 | 1 | 0 | 0 |
 | 46 | kinderdijk | Het werk | 10 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 47 | kinderdijk | De sport | 15 | 2 | 0 | 2 | 2 | 0 | 0 |
-| 48 | kinderdijk | De mensen | 16 | 2 | 0 | 2 | 2 | 0 | 0 |
+| 48 | kinderdijk | De mensen | 16 | 2 | 0 | 2 | 0 | 0 | 0 |
 | 11 | gouda | Werkwoorden | 54 | 16 | 2 | 14 | 4 | 1 | 0 |
 | 12 | gouda | De weg kwijt | 31 | 10 | 4 | 6 | 0 | 0 | 0 |
 | 13 | gouda | Nieuwe mensen | 26 | 11 | 1 | 10 | 0 | 1 | 0 |
-| 14 | gouda | Niet of geen | 33 | 7 | 5 | 2 | 1 | 0 | 1 |
+| 14 | gouda | Niet of geen | 33 | 7 | 5 | 2 | 0 | 0 | 1 |
 | 15 | gouda | Mag ik? | 34 | 10 | 3 | 7 | 0 | 0 | 0 |
 | 49 | gouda | Thuis | 36 | 10 | 1 | 9 | 2 | 0 | 0 |
 | 50 | gouda | Eten en drinken | 30 | 5 | 0 | 5 | 0 | 0 | 0 |
@@ -130,26 +130,26 @@ v2 64, vergelijk 62, imp 38, sep 34, kof 32, perf 30, modal 18, omte 16, bijzin 
 | 80 | rotterdam | De sport | 24 | 12 | 0 | 12 | 8 | 0 | 0 |
 | 81 | rotterdam | De mensen | 37 | 19 | 0 | 19 | 16 | 0 | 0 |
 | 82 | rotterdam | De haven | 26 | 7 | 0 | 7 | 9 | 0 | 0 |
-| 83 | urk | Thuis | 27 | 4 | 1 | 3 | 3 | 0 | 16 |
+| 83 | urk | Thuis | 27 | 4 | 1 | 3 | 2 | 0 | 16 |
 | 84 | urk | De winkels | 25 | 9 | 0 | 9 | 5 | 2 | 2 |
 | 85 | urk | Eten en drinken | 31 | 1 | 1 | 0 | 4 | 3 | 13 |
 | 86 | urk | Het station | 26 | 0 | 0 | 0 | 1 | 2 | 7 |
-| 87 | urk | Het werk | 31 | 6 | 3 | 3 | 6 | 2 | 9 |
-| 88 | urk | De sport | 30 | 3 | 0 | 3 | 6 | 2 | 8 |
+| 87 | urk | Het werk | 31 | 6 | 3 | 3 | 5 | 2 | 9 |
+| 88 | urk | De sport | 30 | 3 | 0 | 3 | 4 | 2 | 8 |
 | 89 | urk | De mensen | 28 | 2 | 0 | 2 | 2 | 1 | 6 |
 | 90 | urk | De haven van Urk | 21 | 1 | 0 | 1 | 4 | 0 | 3 |
-| 91 | texel | Thuis | 25 | 3 | 1 | 2 | 4 | 1 | 9 |
+| 91 | texel | Thuis | 25 | 3 | 1 | 2 | 1 | 1 | 9 |
 | 92 | texel | De winkels | 22 | 8 | 7 | 1 | 1 | 1 | 5 |
 | 93 | texel | Eten en drinken | 36 | 6 | 2 | 4 | 2 | 1 | 6 |
-| 94 | texel | Het station | 36 | 4 | 0 | 4 | 2 | 4 | 4 |
-| 95 | texel | Het werk | 24 | 4 | 1 | 3 | 1 | 4 | 1 |
+| 94 | texel | Het station | 36 | 4 | 0 | 4 | 1 | 4 | 4 |
+| 95 | texel | Het werk | 24 | 4 | 1 | 3 | 0 | 4 | 1 |
 | 96 | texel | De sport | 24 | 1 | 1 | 0 | 2 | 1 | 1 |
 | 97 | texel | De mensen | 30 | 11 | 4 | 7 | 5 | 2 | 2 |
-| 98 | texel | Het eiland | 20 | 11 | 9 | 2 | 3 | 0 | 9 |
+| 98 | texel | Het eiland | 20 | 11 | 9 | 2 | 1 | 0 | 9 |
 | 100 | groningen | De winkels | 25 | 3 | 1 | 2 | 3 | 0 | 0 |
 | 101 | groningen | Eten en drinken | 28 | 2 | 0 | 2 | 3 | 2 | 1 |
 | 102 | groningen | Het station | 30 | 4 | 0 | 4 | 3 | 1 | 2 |
-| 103 | groningen | Het werk | 26 | 3 | 0 | 3 | 5 | 1 | 1 |
+| 103 | groningen | Het werk | 26 | 3 | 0 | 3 | 4 | 1 | 1 |
 | 104 | groningen | De sport | 24 | 2 | 0 | 2 | 5 | 2 | 0 |
 | 105 | groningen | De mensen | 25 | 1 | 0 | 1 | 5 | 2 | 0 |
 | 106 | groningen | De Martinitoren | 27 | 3 | 0 | 3 | 3 | 3 | 4 |
@@ -169,15 +169,15 @@ v2 64, vergelijk 62, imp 38, sep 34, kof 32, perf 30, modal 18, omte 16, bijzin 
 | 119 | nijmegen | Het werk | 29 | 3 | 2 | 1 | 4 | 3 | 8 |
 | 120 | nijmegen | De sport | 26 | 2 | 1 | 1 | 4 | 2 | 3 |
 | 121 | nijmegen | De mensen | 28 | 2 | 0 | 2 | 5 | 3 | 3 |
-| 122 | nijmegen | De Vierdaagse | 32 | 2 | 0 | 2 | 5 | 3 | 2 |
-| 123 | amsterdam | Thuis | 39 | 3 | 1 | 2 | 4 | 3 | 8 |
-| 124 | amsterdam | De winkels | 33 | 4 | 3 | 1 | 7 | 3 | 6 |
-| 125 | amsterdam | Eten en drinken | 35 | 2 | 0 | 2 | 6 | 4 | 9 |
-| 126 | amsterdam | Het station | 39 | 5 | 1 | 4 | 2 | 3 | 8 |
+| 122 | nijmegen | De Vierdaagse | 32 | 3 | 0 | 3 | 5 | 3 | 2 |
+| 123 | amsterdam | Thuis | 39 | 4 | 1 | 3 | 4 | 3 | 8 |
+| 124 | amsterdam | De winkels | 33 | 4 | 3 | 1 | 6 | 3 | 6 |
+| 125 | amsterdam | Eten en drinken | 35 | 3 | 0 | 3 | 6 | 4 | 9 |
+| 126 | amsterdam | Het station | 39 | 5 | 1 | 4 | 1 | 3 | 8 |
 | 127 | amsterdam | Het werk | 48 | 3 | 1 | 2 | 6 | 4 | 3 |
 | 128 | amsterdam | De sport | 41 | 11 | 3 | 8 | 13 | 1 | 3 |
 | 129 | amsterdam | De Wallen | 44 | 7 | 2 | 5 | 3 | 4 | 7 |
-| 130 | amsterdam | De grachten | 50 | 3 | 1 | 2 | 9 | 8 | 5 |
+| 130 | amsterdam | De grachten | 50 | 4 | 1 | 3 | 8 | 8 | 5 |
 
 ## Every mixed fork, with a suggested repair
 
@@ -266,7 +266,7 @@ Answer first in the options. Each wrong option is followed by how it differs.
 - **Nee, ik hoef ___.** · Which word · rule `neg` · [het bonnetje niet | geen het bonnetje *(word+order)* | het bonnetje geen *(word)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **U kunt hier ___.** · Which word · rule `neg` · [niet pinnen | pinnen niet *(order)* | geen pinnen *(word)*] → **narrow**. Narrow to word choice: drop "pinnen niet".
 - **Mijn pinpas ___.** · Which word · rule `neg` · [doet het niet | doet niet het *(order)* | doet het geen *(word)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
-- **Donderdag ga ik ___.** · Which word · rule `neg` · [niet naar de kaasmarkt | naar de kaasmarkt niet *(order)* | geen naar de kaasmarkt *(word)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed. The non-word must go (PLAN 3c).
+- **Donderdag ga ik ___.** · Which word · rule `neg` · [niet naar de kaasmarkt | naar de kaasmarkt niet *(order)* | geen naar de kaasmarkt *(word)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 
 ### Level 15 (gouda) `content/district3.js`
 
@@ -700,7 +700,7 @@ Answer first in the options. Each wrong option is followed by how it differs.
 - **Het schaap ___, kijkt naar mij.** · Which word · rule `diedat` · [dat op de dijk staat | die op de dijk staat *(word)* | dat op staat de dijk *(order)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **De veerboot ___, is al vol.** · Which word · rule `diedat` · [die om negen uur vertrekt | dat om negen uur vertrekt *(word)* | die om vertrekt negen uur *(order)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **De zeehond ___, was heel groot.** · Which word · rule `diedat` · [die ik gisteren zag | dat ik gisteren zag *(word)* | die gisteren zag ik *(order)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
-- **We fietsen naar het strand ___.** · Verb form · rule `omte` · [om zeehonden te zien | om te zeehonden zien *(order)* | om zeehonden zien *(form)*] → **split**. Split, as level 75 does: one fork for the form of the same word with the word order fixed in the sentence, and a second fork for word order with the forms fixed. The non-word must go (PLAN 3c).
+- **We fietsen naar het strand ___.** · Verb form · rule `omte` · [om zeehonden te zien | om te zeehonden zien *(order)* | om zeehonden zien *(form)*] → **split**. Split, as level 75 does: one fork for the form of the same word with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **Als de veerboot niet vol ___ nu thuis zijn.** · Word order · rule `alsdan` · [was, zouden we | waren, zouden we *(form)* | was, we zouden *(order)*] → **split**. Split, as level 75 does: one fork for the form of the same word with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **Als ik hier ___ een schaap kopen.** · Word order · rule `alsdan` · [woonde, zou ik | woonden, zou ik *(form)* | woonde, ik zou *(order)*] → **split**. Split, as level 75 does: one fork for the form of the same word with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **Zou je ___?** · Verb form · rule `zou` · [mijn fiets even willen vasthouden | mijn fiets even te willen vasthouden *(form)* | even willen mijn fiets vasthouden *(order)*] → **split**. Split, as level 75 does: one fork for the form of the same word with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
@@ -874,9 +874,11 @@ Answer first in the options. Each wrong option is followed by how it differs.
 
 - **Uw inschrijving is ___ ontvangen.** · Which word · rule `formeel` · [in goede orde | in goed orde *(form)* | op goede orde *(word)*] → **narrow**. Narrow to word choice: drop "in goed orde".
 - **De Romeinen ___ hier tweeduizend jaar geleden.** · Past tense · rule `kof` · [woonden | woondden *(spelling)* | woonde *(form)*] → **narrow**. Narrow to spelling (not a word): drop "woonde".
+- **De Romeinen woonden hier ___ jaar geleden.** · Which word · rule `getal` · [tweeduizend | tweehonderd *(word)* | tweeduizenden *(spelling)*] → **narrow**. Narrow to word choice: drop "tweeduizenden". The non-word must go (PLAN 3c).
 
 ### Level 123 (amsterdam) `content/new/L123.js`
 
+- **De huur is ___ euro per maand, dus we delen hem tot op de cent.** · Which word · rule `getal` · [tweeduizendhonderd | tweeduizendeenhonderd *(spelling)* | twaalfhonderd *(word)*] → **narrow**. Narrow to word choice: drop "tweeduizendeenhonderd". The non-word must go (PLAN 3c).
 - **De huur is tweeduizendhonderd euro per maand, dus we delen hem ___.** · Which word · rule `idioom` · [tot op de cent | tot de cent *(word)* | op de cent na *(word+order)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **Ik kan mijn fiets niet vinden. Hij is alweer ___.** · Past tense · rule `kof` · [gejat | gejaat *(spelling)* | gejatte *(form)*] → **narrow**. Narrow to spelling (not a word): drop "gejatte".
 - **De vorige huurders hebben de muren roze ___, zegt de huisbaas.** · Past tense · rule `kof` · [geverfd | geverft *(spelling)* | verfde *(form)*] → **narrow**. Narrow to spelling (not a word): drop "verfde".
@@ -891,6 +893,7 @@ Answer first in the options. Each wrong option is followed by how it differs.
 ### Level 125 (amsterdam) `content/new/L125.js`
 
 - **In een proeflokaal ___ het eerste slokje zonder handen, voorovergebogen over de bar.** · Word order · rule `v2` · [neem je | je neemt *(form+order)*] → **narrow**. Narrow to word order: replace "je neemt" with a wrong option that differs from "neem je" only in word order.
+- **Twee biertjes en een jenever: dat wordt elf euro ___.** · Which word · rule `getal` · [vijfenzeventig | zevenenvijftig *(word)* | vijfzeventig *(spelling)*] → **narrow**. Narrow to word choice: drop "vijfzeventig". The non-word must go (PLAN 3c).
 - **Of het café morgen opengaat, is ___.** · Which word · rule `idioom` · [koffiedik kijken | theebladeren kijken *(spelling)* | koffie kijken *(form)*] → **narrow**. Narrow to spelling (not a word): drop "koffie kijken". The non-word must go (PLAN 3c).
 
 ### Level 126 (amsterdam) `content/new/L126.js`
@@ -933,6 +936,7 @@ Answer first in the options. Each wrong option is followed by how it differs.
 
 ### Level 130 (amsterdam) `content/new/L130.js`
 
+- **De Westertoren is ___ meter hoog en draagt de blauwe keizerskroon van Maximiliaan.** · Which word · rule `getal` · [vijfentachtig | achtenvijftig *(word)* | vijfachttig *(spelling)*] → **narrow**. Narrow to word choice: drop "vijfachttig". The non-word must go (PLAN 3c).
 - **De Magere Brug werd in 1934 ___, en 's nachts wordt hij verlicht door honderden lampjes.** · Past tense · rule `perf` · [herbouwd | geherbouwd *(spelling)* | herbouwt *(form)*] → **narrow**. Narrow to form of the same word: drop "geherbouwd". The non-word must go (PLAN 3c).
 - **Toen de klokken luidden, ___ al weer mensen geworden.** · Past tense · rule `plusq` · [waren de doden | hadden de doden *(word)* | de doden waren *(order)*] → **split**. Split, as level 75 does: one fork for the word choice with the word order fixed in the sentence, and a second fork for word order with the forms fixed.
 - **Natuurlijk: de hond. De honden ___ uit.** · Past tense · rule `imp` · [moesten | moeste *(form)* | moetten *(spelling)*] → **narrow**. Narrow to form of the same word: drop "moetten". The non-word must go (PLAN 3c).

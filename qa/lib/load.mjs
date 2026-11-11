@@ -40,3 +40,10 @@ export function sentenceOf(it) {
   if (it.dehet) return `${it.art} ${it.nl}`;
   return it.nl || '';
 }
+// every word that appears in right text (sentence parts, right answers, item nl): if the content uses it as right Dutch,
+// it is a word, whatever the list says (a missing compound, a name). Lower case.
+export function contentWords(levels) {
+  const set = new Set(), add = s => String(s || '').replace(/[“”"«»(),.?!:;…–—]/g, ' ').split(/\s+/).map(t => t.replace(/^'+(?=[a-zà-ÿ]{2,})|'+$/gi, '').toLowerCase()).filter(Boolean).forEach(t => set.add(t));
+  for (const lv of levels) for (const it of lv.items) { if (it.parts) it.parts.forEach(p => add(typeof p === 'string' ? p : p.o[p.a])); else if (!(it.read && it.o)) add(it.nl); else add(it.nl); }
+  return set;
+}

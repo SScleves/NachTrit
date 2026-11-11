@@ -1,0 +1,50 @@
+# Words the OpenTaal list (dictionary-nl) does not know but Nachtrit uses on purpose.
+# Read by qa/lib/nl.mjs for qa/audit-forks.mjs, qa/audit-distractors.mjs and qa/audit-vocab.mjs.
+# One word per line, lower case is fine. A "## heading" names the group of the words below it.
+# Add a word here only when it is right in its sentence. A wrong option never belongs here.
+
+## names: people and products
+santi
+paola
+dynatrace
+tikkie
+skuumkoppe
+
+## places: streets, parks, buildings
+paterswoldsemeer
+noorderplantsoen
+sint-servaasbrug
+hezelstraat
+goffert
+goffertpark
+goffertstadion
+cuyp
+cuypmarkt
+riekermolen
+oudezijds
+gladiola
+
+## dialect and regional speech
+# Urk: "Oe got ut?" (hoe gaat het)
+oe
+got
+ut
+# Groningen greeting
+moi
+# Maastricht: curse and goodbye
+noondezju
+salu
+# Flemish and Limburg grandma; native review point 5
+bomma
+# Brabant and Rotterdam: a cup of coffee, to throw
+bakkie
+pleur
+# spoken Dutch for even
+effe
+
+## loanwords used in Dutch offices
+standup
+deploy
+gefixt
+pipeline
+blockers

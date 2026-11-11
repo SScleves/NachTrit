@@ -31,15 +31,50 @@ export function allowList(root = process.cwd()) {
   return map;
 }
 // is this token a Dutch word (dictionary or allow list)? Capitalised forms count when the dictionary knows them (names).
-export function isWord(tok, allow) {
+// compounds: accepted for right answers and sentence text; a wrong option must be in the list itself (gesp+eelt is not gespeelt)
+export function isWord(tok, allow, compounds = true) {
+  if (allow && !ALLOW_CACHE) ALLOW_CACHE = allow;
   const sp = speller();
   if (/^\d/.test(tok) || /^[€%]/.test(tok)) return true;
   if (allow && allow.has(tok.toLowerCase())) return true;
   // a capitalised dictionary entry (a name) only counts when the text itself is capitalised
   if (sp.correct(tok.toLowerCase())) return true;
   if (/^\p{Lu}/u.test(tok) && sp.correct(tok)) return true;
-  if (tok.includes('-')) return tok.split('-').every(p => !p || isWord(p, allow));
+  if (tok.includes('-')) return tok.split('-').every(p => !p || isWord(p, allow, compounds));
+  const low = tok.toLowerCase();
+  if (NUM_MORPH.test(low)) return numerals().has(low);   // numbers are checked against every real numeral, so zesentien fails
+  return compounds && isCompound(low, 2);
+}
+// a compound of dictionary words, with an optional linking s, e or en: kaas+boer, schapen+kaas, verjaardag+s+feest
+const LINK = ['', 's', 'e', 'en', 'n'];
+function known(w) { const sp = speller(); return w.length >= 3 && (sp.correct(w) || (ALLOW_CACHE && ALLOW_CACHE.has(w))); }
+function isCompound(w, depth) {
+  for (let i = 3; i <= w.length - 3; i++) {
+    const head = w.slice(0, i);
+    for (const l of LINK) {
+      if (!head.endsWith(l) && l) continue;
+      const h = l ? head.slice(0, head.length - l.length) : head; if (!known(h)) continue;
+      const tail = w.slice(i); if (known(tail) || (depth > 1 && isCompound(tail, depth - 1))) return true;
+    }
+  }
   return false;
+}
+let ALLOW_CACHE = null;
+// every Dutch numeral from 0 to 9999, spelled as one word (vijfentwintig, tweeënveertig, tweeduizendvijfhonderd)
+const NUM_MORPH = /^(nul|een|één|twee|drie|vier|vijf|zes|zeven|acht|negen|tien|elf|twaalf|der|veer|tien|tig|twin|ders|zestig|zeventig|tachtig|negentig|honderd|duizend|en|ën)+$/;
+let NUMS = null;
+function numerals() {
+  if (NUMS) return NUMS;
+  const u = ['nul', 'een', 'twee', 'drie', 'vier', 'vijf', 'zes', 'zeven', 'acht', 'negen', 'tien', 'elf', 'twaalf', 'dertien', 'veertien', 'vijftien', 'zestien', 'zeventien', 'achttien', 'negentien'];
+  const t = ['', '', 'twintig', 'dertig', 'veertig', 'vijftig', 'zestig', 'zeventig', 'tachtig', 'negentig'];
+  const lt100 = n => n < 20 ? u[n] : n % 10 === 0 ? t[n / 10] : u[n % 10] + (/e$/.test(u[n % 10]) ? 'ën' : 'en') + t[Math.floor(n / 10)];
+  const lt1000 = n => n < 100 ? lt100(n) : (n >= 200 ? u[Math.floor(n / 100)] : '') + 'honderd' + (n % 100 ? lt100(n % 100) : '');
+  NUMS = new Set();
+  for (let n = 0; n < 10000; n++) NUMS.add(n < 1000 ? lt1000(n) : (n >= 2000 ? u[Math.floor(n / 1000)] : '') + 'duizend' + (n % 1000 ? lt1000(n % 1000) : ''));
+  for (let h = 11; h < 100; h++) if (h % 10) for (let r = 0; r < 100; r++) NUMS.add(lt100(h) + 'honderd' + (r ? lt100(r) : ''));   // twaalfhonderd, negentienhonderdvijftig
+  for (const k of ['honderd', 'tien', 'twintig', 'vijftig']) for (const m of ['', 'twee', 'drie', 'vier', 'vijf']) NUMS.add(m + k + 'duizend');
+  NUMS.add('één'); NUMS.add('honderd'); NUMS.add('duizend'); NUMS.add('miljoen');
+  return NUMS;
 }
 
 // ---- lemma: irregular table first, then a light stemmer ----
