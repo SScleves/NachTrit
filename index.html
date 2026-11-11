@@ -343,6 +343,12 @@
 // chain. Without it, the game falls back to WebGL2 through the old WebGLRenderer path (GLSL patches, EffectComposer), not through
 // WebGPURenderer's own WebGL2 backend: on an Intel iGPU that backend measured slower than the tuned old path.
 // A software (fallback) WebGPU adapter does not count. ?renderer=webgl forces the old path, ?renderer=webgpu the node path, ?renderer=webgl2 the node path on WebGPURenderer's WebGL2 backend.
+// The pure parts of the game live in src/ as plain modules, shared with the unit tests in qa/test (PLAN.md phase 1; phase 2 adds the rest)
+import { TASKS, taskOf } from './src/tasks.js?v=36';
+import { READ_THR, READ_AHEAD, HOLD_AT, wordsIn, readBudget, legDist } from './src/reading.js?v=36';
+import { TUNE, nightAt, lampReadK, lampLoss, refuelRight } from './src/lamp.js?v=36';
+import { levelQueue } from './src/forks.js?v=36';
+import { VOICES, voiceFileOf } from './src/voice.js?v=36';
 const RENDERER_Q = new URLSearchParams(location.search).get('renderer');
 const GPU_PREF = new URLSearchParams(location.search).get('gpu') === 'low' ? 'low-power' : 'high-performance';   // ?gpu=low: the integrated GPU on a two-GPU machine
 // Default is the old WebGL path: on the Intel laptop GPU the node path measured ~31 fps with 0.5 s hitches against 58-60 (11 Nov). WebGPU is opt-in.
@@ -2934,10 +2940,9 @@ const S = {
 let audioCtx = null;
 // how deep into the night we are: 0 at the start of a level, 1 at the end (endless: by distance)
 const NIGHT_Q = new URLSearchParams(location.search).has('night') ? clamp(parseFloat(new URLSearchParams(location.search).get('night')) || 0, 0, 1) : null;   // ?night=0..1 holds the night depth (for measuring luma)
-function nightDepth() { if (NIGHT_Q !== null) return NIGHT_Q; return clamp(S.dist / (L && S.deliveriesTotal ? S.deliveriesTotal * 95 : 2600), 0, 1); }
-// what a right answer refuels: generous in the first town, thinner as the tiers rise
-const TUNE = window.NRTUNE = { drain: 2.8, wisp: 2.0, right: 3, cap: 0.6, fast: 1 };  // fast: extra refuel for a right answer after ↑ before the reading budget ran out  // cap: tier presets above 0.6 only get harder through speed and obstacles
-function refuelRight() { return TUNE.right + Math.min(S.streak, 4) * 0.3; }
+function nightDepth() { if (NIGHT_Q !== null) return NIGHT_Q; return nightAt(S.dist, L && S.deliveriesTotal); }
+// the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
+window.NRTUNE = TUNE;
 window.NR = S; // debug handle
 window.NRsetDPR = v => { DPR = v; renderer.setPixelRatio(DPR); postSize(); };
 window.NRpost = () => ({ composer, inkPass, bloomPass, gradePass, renderer, THREE });
@@ -2973,38 +2978,7 @@ const DISTRICT_NEED = 5; // stars in the previous district to open the next
 const UNLOCK_ALL = (() => { const v = new URLSearchParams(location.search).get('unlock'); try { if (v === '1') localStorage.setItem('nachtrit.unlock', '1'); else if (v === '0') localStorage.removeItem('nachtrit.unlock'); return localStorage.getItem('nachtrit.unlock') === '1'; } catch (e) { return v === '1'; } })();
 function unlocked(lv) { const t = towns().find(x => x.id === (lv.town || TOWN_OF(lv.id))); return t ? townOpen(t) : lv.act === 1; }
 
-// turn a level item into an entry the planner understands
-function itemToEntry(item, pool) {
-  // wrong options come from items of the same kind: nouns for noun forks, readings for reading forks
-  const sameKind = p => p !== item && (item.read ? p.read : (p.w || p.listen || p.look) && !p.read && !p.parts);
-  const others = kind => pool.filter(p => sameKind(p) && p[kind]).map(p => p[kind]).filter((v, i, a) => a.indexOf(v) === i).sort(() => Math.random() - 0.5);
-  const wrongFirst = list => item.wrong ? [item.wrong, ...list.filter(v => v !== item.wrong)] : list;
-  if (item.read && item.o) return { read: true, nl: item.nl, o: item.o.slice(), a: item.a || 0, r: item.r || 'woord', w: item.w || '', task: item.task };
-  if (item.read) {
-    const o = [item.en, ...others('en').filter(e => e !== item.en).slice(0, 2)];
-    return { read: true, nl: item.nl, o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` };
-  }
-  if (item.dehet) {
-    return { en: item.en, nl: `${item.art} ${item.nl}`, dehet: true, parts: [{ o: ['de', 'het'], a: item.art === 'de' ? 0 : 1, r: 'dehet', w: item.w || `${item.art} ${item.nl}`, fixed: true }, item.nl] };
-  }
-  if (item.look) {
-    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, LANE_X.length - 1)];
-    return { look: true, side: item.side || (Math.random() < 0.5 ? 'links' : 'rechts'), prop: item.prop, value: item.value, en: item.en, nl: item.nl,
-      parts: [{ o, a: 0, r: 'woord', w: `${item.nl} = ${item.en}` }] };
-  }
-  if (item.w || item.listen) {
-    const o = [item.nl, ...wrongFirst(others('nl').filter(e => e !== item.nl)).slice(0, LANE_X.length - 1)];
-    return { en: item.w || item.en, nl: item.nl, listen: !!item.listen, word: !item.listen, parts: [{ o, a: 0, r: item.listen ? 'woord' : (/^\d+$/.test(item.w || '') ? 'getal' : 'woord'), w: `${item.nl} = ${item.w || item.en}` }] };
-  }
-  return item.nl ? item : Object.assign({}, item, { nl: item.parts.map(p => typeof p === 'string' ? p : p.o[p.a]).join(' ').replace(/\s+([,.?])/g, '$1') }); // build entry
-}
-function levelQueue(lv) {
-  const items = lv.items.slice().sort(() => Math.random() - 0.5);
-  const q = []; while (q.length < lv.deliveries) q.push(...items.slice(0, lv.deliveries - q.length));
-  // the pool for distractors is every item that shares a kind
-  const pool = lv.items.map(i => i.read ? { en: i.en, nl: i.nl, read: true } : i.w || i.listen ? { nl: i.nl, en: i.w || i.en } : null).filter(Boolean);
-  return q.map(i => itemToEntry(i, lv.items));
-}
+// itemToEntry and levelQueue (level items to the entries the planner rides) are in src/forks.js
 
 // ---------- planning ----------
 function nextEntry() {
@@ -3056,49 +3030,9 @@ function signFrac(p) {
   const y0 = _rv.y; _rv.set(m.position.x, y + em, m.position.z).project(camera); return (_rv.y - y0) / 2;
 }
 // ---------- reading time: every fork's signs stay legible for its budget, at any tier's speed ----------
-// legible: the letters (the em of the drawn font) are at least READ_THR of the viewport height (1.25 percent, 10 px on an
-// 800 px window) and the sign is still READ_AHEAD (3) m in front of the bike. qa/readbot.js measures the same thing.
-const READ_THR = 0.0125, READ_AHEAD = 3, HOLD_AT = 7;
+// READ_THR, READ_AHEAD, HOLD_AT, wordsIn, readBudget and legDist are in src/reading.js
 window.NRread = { signFit, legDist, READ_THR, READ_AHEAD };   // qa: how far off a sign text reads (em = signFit(t).px / 250 * 1.02, x1.3 on tier 1)
-const wordsIn = list => { let n = 0; for (const t of list) n += String(t).trim().split(/\s+/).length; return n; };
-// seconds to read a fork: 0.35 s a word over all options plus 1.2 s to decide, 3 to 7 s; listen and read 1.5x; de/het and word items the minimum
-function readBudget(fork) {
-  const e = fork.entry || {};
-  const first = fork.firstTask ? 1.5 : 0;   // the first fork of a task type in a level: 1.5 s more, once
-  if (e.dehet || e.word) return 3 + first;
-  const b = clamp(0.35 * wordsIn(fork.o) + 1.2, 3, 7);
-  return (fork.read || e.listen ? b * 1.5 : b) + first;
-}
-// what a fork asks, as a short English label in a fixed colour (LEVELS.md, "Task labels"); fork.task or entry.task overrides
-const TASKS = {
-  order: { label: 'Word order', color: '#7fc8ff' }, past: { label: 'Past tense', color: '#ffb86b' }, verb: { label: 'Verb form', color: '#c9a2ff' },
-  word: { label: 'Which word', color: '#9fe0a0' }, dehet: { label: 'de or het', color: '#ffd27a' }, comp: { label: 'Comparison', color: '#ff9fbf' },
-  listen: { label: 'Listen', color: '#7fe0d8' }, meaning: { label: 'Meaning', color: '#e8e4d8' }, spell: { label: 'Spelling', color: '#ff8a7a' },
-};
-const TASK_OF_RULE = {};
-for (const [t, ids] of Object.entries({
-  order: 'v2 bijzin tmp sepbz hoewel indirect alsdan cond conditie voorwaarde',
-  past: 'imp kof perf plusq aux',
-  verb: 'sep modal zou fut zullen aanhet presens pres passief gebod omte al zijn hebben om',
-  comp: 'vergelijk', dehet: 'dehet',
-})) for (const r of ids.split(' ')) TASK_OF_RULE[r] = t;
-// options that are the same words in another order ask for word order, whatever the rule id says
-const wordBag = t => String(t).toLowerCase().replace(/[.,?!]/g, '').trim().split(/\s+/).sort().join(' ');
-function taskOf(fork) {
-  const e = fork.entry || {};
-  if (fork.task || e.task) return TASKS[fork.task || e.task] ? fork.task || e.task : 'word';
-  if (fork.read) return 'meaning';
-  if (e.listen) return 'listen';
-  if (e.dehet) return 'dehet';
-  if (e.look || e.word) return 'word';
-  if (fork.o.length > 1 && fork.o.every(t => /\s/.test(String(t).trim())) && fork.o.every(t => wordBag(t) === wordBag(fork.o[0]))) return 'order';
-  return TASK_OF_RULE[fork.r] || 'word';
-}
-// how far ahead letters of em metres become legible, through the fork camera at full speed (it widens and closes in as the gate nears)
-function legDist(em) {
-  for (let a = 40; a > READ_AHEAD; a -= 0.5) { const fz = clamp(1 - a / 46, 0, 1), sf = 1 - fz, half = (60 + sf * 10 + fz * 22) * Math.PI / 360; if (em / (2 * Math.tan(half) * (a + 6.4 + sf * 2.6 - fz * 2.4)) >= READ_THR) return a; }
-  return READ_AHEAD + 0.5;
-}
+// TASKS and taskOf (the fork's task label) are in src/tasks.js
 // the fork's reading plan, before it is placed: the options it shows, its budget, where it reads, where it slows, where the card comes up
 function planFork(fork) {
   if (fork.plan) return fork.plan;
@@ -3298,21 +3232,13 @@ function pickVoice() {
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 // ---------- voice: pre-rendered neural Dutch (voice/<id>.mp3), speechSynthesis when a file is missing or fails ----------
 // id = voiceId(voice, text) from voice/hash.js, the same sha1 qa/voice-batch.mjs used. voice/ids.json lists the rendered ids.
-const VOICES = { rider: 'nl-NL-MaartenNeural', narrator: 'nl-NL-MaartenNeural', passenger: 'nl-NL-FennaNeural', town: 'nl-NL-ColetteNeural' };
-const VOICE_ALL = ['nl-NL-MaartenNeural', 'nl-NL-FennaNeural', 'nl-NL-ColetteNeural'];
+// VOICES, VOICE_ALL and the file choice (voiceFileOf) are in src/voice.js
 let voiceIds = null;   // Set of rendered ids; null until ids.json arrives (then only the asked voice is tried)
 fetch('voice/ids.json').then(r => r.ok ? r.json() : null).then(a => { if (Array.isArray(a)) voiceIds = new Set(a); }).catch(() => {});
 const voiceBuf = new Map();   // id -> Promise<AudioBuffer|null>, the last 80 lines
 let voiceGen = 0, voiceSrc = null, voiceEl = null;
 // the file for this text: the asked voice first, then any voice that has it (a listen line exists only as a passenger)
-function voiceFile(text, voice) {
-  if (!window.voiceId || !text) return null;
-  for (const v of [voice, ...VOICE_ALL.filter(x => x !== voice)]) {
-    const id = window.voiceId(v, text);
-    if (voiceIds ? voiceIds.has(id) : v === voice) return id;
-  }
-  return null;
-}
+function voiceFile(text, voice) { return voiceFileOf(text, voice, voiceIds, window.voiceId); }
 function voiceLoad(id) {
   if (voiceBuf.has(id)) { const p = voiceBuf.get(id); voiceBuf.delete(id); voiceBuf.set(id, p); return p; }
   const p = fetch(`voice/${id}.mp3`).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
@@ -3953,7 +3879,7 @@ function fareTier() {
 function reset() {
   for (const o of S.objs) if (o.mesh) scene.remove(o.mesh);
   Object.assign(S, { t: 0, dist: 0, speed: BASE, slow: 1, slowTarget: 1, lane: LANE_X.length === 2 ? 0 : 1, x: 0, lean: 0, lamp: L ? 85 : 70, souls: 0, streak: 0, wrongRow: 0, good: 0, bad: 0,
-    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, grade: 0, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100,
+    objs: [], planCursor: 40, activeFork: null, forkZoom: 0, speedNorm: 0, mistakes: [], dieT: 0, stumble: 0, sentencePool: [], queue: L ? levelQueue(L, LANE_X.length) : [], finishPlanned: false, curv: 0, curvTarget: 0, curvNextAt: 60, grade: 0, delivered: 0, deliveriesTotal: L ? L.deliveries : 0, lampMin: 100,
     met: new Map(), tasksSeen: new Set(), goHints: 0, teachPlan: L && !taughtBefore() ? 3 : 0, taught: 0, lastWords: 0, held: false, wispEasy: !!L && fareTier() === 1,
     cents: 0, walletShown: 0, missed: 0, tips: 0, tikkie: 0, cleanRow: 0, tipN: 0, lastRefuse: '', riding: null, fareTier: fareTier(), score: 0, fxT: 0, paid: 0, walletLast: 0, tickT: -1 });
   $('wallet').textContent = '€ 0,00'; $('walletfx').textContent = ''; $('walletfx').className = ''; $('walletpill').classList.remove('shake');
@@ -4031,7 +3957,7 @@ function resolveFork(gate) {
   const rule = RULES[fork.r] || { name: fork.r, note: fork.r };
   if (ok) {
     S.good++; S.streak++; S.wrongRow = 0; setFace('smug', 1.6);
-    S.lamp = clamp(S.lamp + refuelRight() + (gate.goEarly ? TUNE.fast : 0), 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
+    S.lamp = clamp(S.lamp + refuelRight(S.streak) + (gate.goEarly ? TUNE.fast : 0), 0, 100); S.speed = clamp(S.speed + 1.6, BASE, MAXS);
     flash('#f6e7b0', 0.35); chime(true);
     if (fork.read) { S.souls++; S.delivered++; const tip = payFare(fork.fare, true); say(`<b>${fork.o[fork.a]}</b>`, 'good', whyLine(fork.w, paidLine(fork.fare, tip)), 3); speakSeq([fork.entry.nl, FARES.euroToWords(handed(fork.fare, tip) / 100), tip]); }
     else {
@@ -4152,8 +4078,8 @@ function update(dt) {
     const v = S.speed * S.slow * (S.stumble > 0 ? 0.6 : 1) * hillK;
     S.dist += v * dt;
     // reading costs little lamp: while a fork is armed the drain scales with the speed against cruise (0.85), so slowing to read is cheap; nothing while the first gate holds
-    const readK = S.held ? 0 : S.activeFork && L ? clamp(S.slow / 0.85, 0, 1) : 1;
-    S.lamp -= dt * readK * (L ? Math.min(L.lampDecay, TUNE.cap) * TUNE.drain : (1.1 + (S.speed < 17 ? 0.6 : 0))) * (0.6 + 1.1 * nightDepth());
+    const readK = lampReadK(S.held, S.activeFork && L, S.slow);
+    S.lamp -= lampLoss(dt, readK, L, S.speed, nightDepth());
     S.lampMin = Math.min(S.lampMin, S.lamp);
     S.stumble = Math.max(0, S.stumble - dt * 1.5);
     if (S.lamp <= 0) { S.lamp = 0; die(); return; }

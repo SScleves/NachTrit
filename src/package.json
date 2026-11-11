@@ -1,0 +1,4 @@
+{
+  "type": "module",
+  "description": "Plain ES modules the game imports from index.html; this file only tells Node (the unit tests) to read them as modules."
+}
