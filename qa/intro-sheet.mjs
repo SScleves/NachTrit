@@ -126,7 +126,9 @@ try {
 if (opt.record) {   // a band round what was measured: 6 luma either side plus a quarter, so a lighting tweak passes and a black or blown frame does not
   const next = { note: 'Luma bands (NRbright, 0 to 255) per intro shot and time, written by node qa/intro-sheet.mjs --record after a look at the sheet. Edit by hand if a shot is relit on purpose.', recorded: new Date().toISOString().slice(0, 10), bands: { ...bands.bands } };
   for (const r of rows) if (Number.isFinite(r.luma)) { const pad = 6 + Math.round(r.luma * 0.25); next.bands[`${r.shot}@${r.t}`] = [Math.max(0, r.luma - pad), Math.min(255, r.luma + pad)]; }
-  fs.writeFileSync(BANDS_FILE, JSON.stringify(next, null, 1) + '\n'); console.log('bands written:', BANDS_FILE);
+  const keys = Object.keys(next.bands).sort((a, b) => parseFloat(a) - parseFloat(b) || parseFloat(a.split('@')[1]) - parseFloat(b.split('@')[1]));
+  fs.writeFileSync(BANDS_FILE, `{\n "note": ${JSON.stringify(next.note)},\n "recorded": "${next.recorded}",\n "bands": {\n${keys.map(k => `  "${k}": [${next.bands[k].join(', ')}]`).join(',\n')}\n }\n}\n`);
+  console.log('bands written:', BANDS_FILE);
 }
 fs.writeFileSync(path.join(opt.out, 'report.json'), JSON.stringify({ opt: { ...opt, base }, rows }, null, 1));
 console.log(`\n${rows.length} frames, ${fails} failed\nsheet: ${path.join(opt.out, 'sheet.png')}`);
