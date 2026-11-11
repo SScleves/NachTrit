@@ -21,7 +21,7 @@
     // the furniture
     { w: 'the couch', nl: 'de bank', wrong: 'het bank' }, { w: 'the chair', nl: 'de stoel', wrong: 'het stoel' },
     { w: 'the cupboard', nl: 'de kast', wrong: 'het kast' }, { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' },
-    { w: 'the painting', nl: 'het schilderij', wrong: 'de schilderij' }, { w: 'the desk', nl: 'het bureau', wrong: 'de bureau' },
+    { w: 'the painting', nl: 'het schilderij' }, { w: 'the desk', nl: 'het bureau', wrong: 'de bureau' },
     // the kitchen
     { w: 'the dishwasher', nl: 'de vaatwasser', wrong: 'het vaatwasser' }, { w: 'the cup', nl: 'het kopje', wrong: 'de kopje' },
     { w: 'the plate', nl: 'het bord', wrong: 'de bord' },

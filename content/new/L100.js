@@ -81,8 +81,8 @@
       // ---- words: students, the market, paying, returns and the bag, plus a few replayed
       { w: 'the student discount', nl: 'de studentenkorting' }, { w: 'the second-hand shop', nl: 'de kringloopwinkel' },
       { w: 'the bookshop', nl: 'de boekhandel' }, { w: 'the bike mender', nl: 'de fietsenmaker' },
-      { w: 'the shelf in a shop', nl: 'het schap', wrong: 'de schap' }, { w: 'the spiced breakfast cake', nl: 'de ontbijtkoek' },
-      { w: 'the Groningen minced-pork sausage', nl: 'de metworst' }, { w: 'the medicine', nl: 'het medicijn', wrong: 'de medicijn' },
+      { w: 'the shelf in a shop', nl: 'het schap' }, { w: 'the spiced breakfast cake', nl: 'de ontbijtkoek' },
+      { w: 'the Groningen minced-pork sausage', nl: 'de metworst' }, { w: 'the medicine', nl: 'het medicijn' },
       { w: 'the painkiller', nl: 'de pijnstiller' }, { w: 'the deposit on a bottle', nl: 'het statiegeld', wrong: 'de statiegeld' },
       { w: 'the proof of purchase', nl: 'het aankoopbewijs', wrong: 'de aankoopbewijs' }, { w: 'the little shopping list', nl: 'het boodschappenlijstje', wrong: 'de boodschappenlijstje' },
       { w: 'the clearance sale', nl: 'de uitverkoop' }, { w: 'the zip', nl: 'de rits' }, { w: 'the customer service', nl: 'de klantenservice' },

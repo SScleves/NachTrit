@@ -97,7 +97,7 @@
       { w: 'the coffee vending machine', nl: 'de koffieautomaat' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
       { w: 'the working-from-home day', nl: 'de thuiswerkdag' }, { w: 'the leave, the time off', nl: 'het verlof', wrong: 'de verlof' },
       { w: 'the start-up', nl: 'de start-up' }, { w: 'the soup factory', nl: 'de soepfabriek' },
-      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket', wrong: 'de ticket' },
+      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket' },
       { w: 'the backup', nl: 'de back-up' }, { w: 'the alert', nl: 'de melding' },
       { w: 'the Friday drinks', nl: 'de vrijmibo' }, { w: 'the payslip', nl: 'de loonstrook' },
 

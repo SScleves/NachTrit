@@ -57,7 +57,7 @@
       { w: 'the receipt', nl: 'de kassabon', wrong: 'het kassabon' }, { w: 'the price', nl: 'de prijs' },
       { w: 'the size', nl: 'de maat', wrong: 'het maat' }, { w: 'the sweater', nl: 'de trui' },
       { w: 'the money', nl: 'het geld', wrong: 'de geld' }, { w: 'the minced meat', nl: 'het gehakt', wrong: 'de gehakt' },
-      { w: 'the bread roll', nl: 'het broodje' }, { w: 'the medicine', nl: 'het medicijn', wrong: 'de medicijn' },
+      { w: 'the bread roll', nl: 'het broodje' }, { w: 'the medicine', nl: 'het medicijn' },
       { w: 'the headache', nl: 'de hoofdpijn' }, { w: 'the Zeeland sticky bun', nl: 'de Zeeuwse bolus' },
       { w: 'the offer', nl: 'de aanbieding' }, { w: 'the debit card', nl: 'de pinpas' },
       { w: 'to exchange', nl: 'ruilen' }, { w: 'cheaper', nl: 'goedkoper' }, { w: 'more expensive', nl: 'duurder' },

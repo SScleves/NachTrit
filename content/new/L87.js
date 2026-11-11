@@ -103,7 +103,7 @@
       { look: true, prop: 'fiets', nl: 'de fiets', en: 'the bike' },
 
       // ---- de of het
-      { dehet: true, nl: 'rooster', art: 'het', en: 'the schedule', w: 'het rooster. The plural is de roosters, because every plural is de.' },
+      { dehet: true, nl: 'incident', art: 'het', en: 'the incident', w: 'het incident. Learn it with its article: het incident.' },
       { dehet: true, nl: 'reorganisatie', art: 'de', en: 'the reorganisation', w: 'Words ending in -atie are de.' },
     ] }]);
 })();

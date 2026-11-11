@@ -70,7 +70,7 @@
       introNl: 'De standup begint om negen uur. De honden moeten om negen uur uit. De honden winnen.',
       mission: { where: 'The back bedroom. The home office, camera off.', carry: 'A laptop on four percent and a cold coffee.', want: 'The team still dials in. They want the morning greeting and the words for what broke.' },
       items: [
-        { w: 'the laptop', nl: 'de laptop' }, { w: 'the meeting', nl: 'de vergadering', wrong: 'het vergadering' }, { w: 'the dashboard', nl: 'het dashboard', wrong: 'de dashboard' },
+        { w: 'the laptop', nl: 'de laptop' }, { w: 'the meeting', nl: 'de vergadering', wrong: 'het vergadering' }, { w: 'the dashboard', nl: 'het dashboard' },
         { w: 'the outage', nl: 'de storing' }, { w: 'the colleague', nl: 'de collega' }, { w: 'the standup', nl: 'de standup' },
         { w: 'the screen', nl: 'het scherm' }, { w: 'the alert', nl: 'de melding' }, { w: 'the office', nl: 'het kantoor', wrong: 'de kantoor' },
         { w: 'the calendar', nl: 'de agenda' }, { w: 'good morning, everyone', nl: 'goedemorgen allemaal' },
@@ -85,7 +85,7 @@
         { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' },
         { en: 'Good morning, everyone.', parts: ['Goedemorgen', FK(['allemaal', 'alle'], 0, 'groet', 'allemaal is everyone. alle needs a noun after it: alle collega\'s.')] },
         { en: 'The laptop is broken.', parts: ['De laptop', FK(['is', 'zijn'], 0, 'zijn', 'One laptop, so is.'), 'kapot.'] },
-        { en: 'The dashboard is green.', parts: [FK(['Het', 'De'], 0, 'dehet', 'dashboard is a het-word: het dashboard.'), 'dashboard is groen.'] },
+        { en: 'The screen is green.', parts: [FK(['Het', 'De'], 0, 'dehet', 'scherm is a het-word: het scherm.'), 'scherm is groen.'] },
         { en: 'The meeting is now.', parts: [FK(['De', 'Het'], 0, 'dehet', 'Words ending in -ing are always de: de vergadering.'), 'vergadering is nu.'] },
       ] },
 

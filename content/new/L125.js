@@ -96,7 +96,7 @@
       { w: 'the croquette', nl: 'de kroket' }, { w: 'the chips with mayonnaise, peanut sauce and onions', nl: 'het patatje oorlog', wrong: 'de patatje oorlog' },
       { w: 'the rice table', nl: 'de rijsttafel' }, { w: 'the prawn crackers', nl: 'de kroepoek' },
       { w: 'the barman', nl: 'de barman' }, { w: 'the round of drinks', nl: 'het rondje', wrong: 'de rondje' },
-      { w: 'the payment request in the app', nl: 'het Tikkie', wrong: 'de Tikkie' }, { w: 'the snack bar', nl: 'de snackbar' },
+      { w: 'the payment request in the app', nl: 'het Tikkie' }, { w: 'the snack bar', nl: 'de snackbar' },
       { w: 'the bitterbal', nl: 'de bitterbal' }, { w: 'the beer mat', nl: 'het bierviltje', wrong: 'de bierviltje' },
       { w: 'the regular customer', nl: 'de stamgast' }, { w: 'the brown café', nl: 'het bruine café', wrong: 'de bruine café' },
 

@@ -88,7 +88,7 @@
       // ---- words: rooms, furniture, the routine, the dogs, Rotterdam
       { w: 'the kitchen', nl: 'de keuken' }, { w: 'the bedroom', nl: 'de slaapkamer' }, { w: 'the bathroom', nl: 'de badkamer' },
       { w: 'the couch', nl: 'de bank' }, { w: 'the fridge', nl: 'de koelkast' }, { w: 'the window', nl: 'het raam', wrong: 'de raam' },
-      { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' },
+      { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the curtain', nl: 'het gordijn' },
       { w: 'the lift', nl: 'de lift' }, { w: 'the stairs', nl: 'de trap' }, { w: 'the alarm clock', nl: 'de wekker' },
       { w: 'the breakfast', nl: 'het ontbijt', wrong: 'de ontbijt' }, { w: 'the dinner', nl: 'het avondeten' },
       { w: 'the key', nl: 'de sleutel' }, { w: 'the balcony', nl: 'het balkon', wrong: 'de balkon' },

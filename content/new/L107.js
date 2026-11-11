@@ -78,7 +78,7 @@
 
       // ---- words: rooms, furniture, the house, the family, with Maastricht colour
       { w: 'the kitchen', nl: 'de keuken' }, { w: 'the bedroom', nl: 'de slaapkamer' },
-      { w: 'the window', nl: 'het raam', wrong: 'de raam' }, { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' },
+      { w: 'the window', nl: 'het raam', wrong: 'de raam' }, { w: 'the curtain', nl: 'het gordijn' },
       { w: 'the cupboard', nl: 'de kast' }, { w: 'the mirror', nl: 'de spiegel' },
       { w: 'the cushion', nl: 'het kussen', wrong: 'de kussen' }, { w: 'the drawer', nl: 'de la' },
       { w: 'the ceiling', nl: 'het plafond', wrong: 'de plafond' }, { w: 'the cellar', nl: 'de kelder' },

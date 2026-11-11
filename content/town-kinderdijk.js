@@ -33,7 +33,7 @@
       mission: { where: 'An office on the square in Dordrecht, under the Grote Kerk. The tower leans more than two metres and all four clocks say nine.', carry: 'A laptop on four percent and a coffee from the machine, which works again.', want: 'The dead still do the standup. Say what works, say you have no blockers, say tot morgen. Keep it under a minute.' },
       items: [
         { w: 'the meeting', nl: 'de vergadering', wrong: 'het vergadering' }, { w: 'the outage', nl: 'de storing' }, { w: 'the alert', nl: 'de melding' },
-        { w: 'the dashboard', nl: 'het dashboard', wrong: 'de dashboard' }, { w: 'the office', nl: 'het kantoor' }, { w: 'the colleague', nl: 'de collega' },
+        { w: 'the dashboard', nl: 'het dashboard' }, { w: 'the office', nl: 'het kantoor' }, { w: 'the colleague', nl: 'de collega' },
         { w: 'the screen', nl: 'het scherm' }, { w: 'the problem', nl: 'het probleem' }, { w: 'the coffee machine', nl: 'het koffieapparaat' },
         { w: 'the team', nl: 'het team' }, { w: 'the deadline', nl: 'de deadline' },
         { w: 'today', nl: 'vandaag' }, { w: 'tomorrow', nl: 'morgen' }, { w: 'Monday', nl: 'maandag' },
