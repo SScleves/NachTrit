@@ -2,26 +2,26 @@
 // teaching and the lamp hint, die() and the summary card with stars and scores, and resolveFork, the verdict on each fork.
 // The learning core (PLAN.md 3a, 3d) is here too: a missed item goes back in the queue (sendBack), a wrong answer gets the why
 // card, every fork is noted for the end card's list of misses by rule (noteFork, missedHtml). Its pure rules: src/review.js.
-import { refuelRight, TUNE } from './lamp.js?v=39';
-import { levelQueue } from './forks.js?v=39';
-import { whyBudget } from './reading.js?v=39';
-import { TASKS } from './tasks.js?v=39';
-import { VOICES } from './voice.js?v=39';
-import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=39';
-import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=39';
-import { camera, scene } from './render.js?v=39';
-import { setRoadLook } from './road.js?v=39';
-import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=39';
-import { buildScenery, theme, THEMES } from './scenery.js?v=39';
-import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=39';
-import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=39';
-import { plan, unplanFinish } from './plan.js?v=39';
-import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=39';
-import { chime, initAudio } from './audio.js?v=39';
-import { speak, speakSeq } from './speech.js?v=39';
-import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=39';
-import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=39';
-import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=39';   // later modules, through the hub
+import { refuelRight, TUNE } from './lamp.js?v=40';
+import { levelQueue } from './forks.js?v=40';
+import { whyBudget } from './reading.js?v=40';
+import { TASKS } from './tasks.js?v=40';
+import { VOICES } from './voice.js?v=40';
+import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=40';
+import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=40';
+import { camera, scene } from './render.js?v=40';
+import { setRoadLook } from './road.js?v=40';
+import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=40';
+import { buildScenery, theme, THEMES } from './scenery.js?v=40';
+import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=40';
+import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=40';
+import { plan, unplanFinish } from './plan.js?v=40';
+import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=40';
+import { chime, initAudio } from './audio.js?v=40';
+import { speak, speakSeq } from './speech.js?v=40';
+import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=40';
+import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=40';
+import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=40';   // later modules, through the hub
 
 // ---------- game flow ----------
 function start(lv) {
@@ -132,7 +132,7 @@ function resolveFork(gate) {
   const chosenIdx = post ? post.oi : -1;
   const ok = chosenIdx === fork.a;
   const back = fork.entry.again || 0;   // 0 on the item's first ride; 1 or 2 when a miss brought it back (it never counts for stars)
-  S.forkN++; noteFork(fork, ok, back, chosenIdx);
+  S.forkN++; const fresh = noteFork(fork, ok, back, chosenIdx);   // fresh: a miss the end card did not list yet
   if (L && !back && (fork.read || (fork.st && fork.st.forks.length === 1))) {   // the words of the ride, for the end card: words met, words right
     const k = fork.entry.nl, was = S.met.get(k); S.met.set(k, { en: fork.read ? fork.o[fork.a] : fork.entry.en, ok: ok && (!was || was.ok) });
   }
@@ -161,10 +161,10 @@ function resolveFork(gate) {
     if (fork.read) {
       S.missed += fork.fare;
       whyCard(fork, said, '<span class="no">Geen cent.</span>', secs);
-      if (!back) S.mistakes.push({ said: `"${fork.entry.nl}" read as "${saidTxt}"`, should: `"${fork.o[fork.a]}"`, note: rule.note });
+      if (fresh) S.mistakes.push({ said: `"${fork.entry.nl}" read as "${saidTxt}"`, should: `"${fork.o[fork.a]}"`, note: rule.note });
     } else {
       const wrongSentence = assembled(fork.st, fork.idx, chosenIdx >= 0 ? saidTxt : '___').replace(' …', '');
-      if (!back) S.mistakes.push({ said: wrongSentence, should: fork.entry.nl, note: rule.note });
+      if (fresh) S.mistakes.push({ said: wrongSentence, should: fork.entry.nl, note: rule.note });
       fork.st.chosen.push(fork.o[fork.a]); // the sentence continues with the right word
       fork.st.wrong++; if (fork.st.lostAt < 0) fork.st.lostAt = fork.idx;
       if (done) { if (!back) S.souls++; hideCard(); const m = settleRide(fork); whyCard(fork, said, settledHtml(fork.st, m), secs); speakSeq(m.voice); dropPassenger(); }
@@ -182,15 +182,17 @@ function settledHtml(st, m) {
   const r = m.refused && FARES.REFUSE.find(x => x.nl === m.refused);
   return r ? `<span class="no">${esc(r.nl)} <i>${esc(r.en)}</i></span>` : '';
 }
-// every fork, for the end card: first rides per task (the weakest rule), each missed fork once, and how its return went
+// every fork, for the end card: first rides per task (the weakest rule), each missed fork once, and how its return went.
+// Returns true for a miss not listed yet (the vault log takes the same ones)
 function noteFork(fork, ok, back, chosenIdx) {
   const origin = fork.entry.origin || fork.entry, task = fork.taskId || 'word';
   if (!back) { const t = S.tally[task] || (S.tally[task] = { tried: 0, missed: 0 }); t.tried++; if (!ok) t.missed++; }
   if (back && fork.idx === 0) { const r = S.learn.log.find(x => x.entry === fork.entry); if (r) r.gap = S.forkN - r.at - 1; }   // other forks between the miss and its return
   const m = S.missList.find(x => x.origin === origin && x.idx === fork.idx);
-  if (ok) { if (m && back) m.again = 'right'; return; }
-  if (m) { if (back) m.again = 'wrong'; return; }
+  if (ok) { if (m && back) m.again = 'right'; return false; }
+  if (m) { if (back) m.again = 'wrong'; return false; }
   S.missList.push({ origin, idx: fork.idx, task, nl: fork.entry.nl, right: fork.o[fork.a], said: chosenIdx >= 0 ? fork.o[chosenIdx] : '', why: fork.w || '', again: '', first: !back });
+  return true;
 }
 // a missed item goes back in the queue (PLAN.md 3a): after 3 to 5 other forks, a second miss in the last quarter, at most twice,
 // at most six a ride. It rides as a copy with again = 1 or 2: the "again" tag, half fare, review road
