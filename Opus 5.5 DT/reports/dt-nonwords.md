@@ -10,664 +10,64 @@ Policy (PLAN 3c): a form that does not exist may only appear in a **Spelling** f
 
 | Measure | Count |
 |---|---|
-| Build forks checked | 2709 |
-| Word items with a `wrong` option | 577 |
-| Option tokens checked | 12233 |
-| Non-word occurrences in wrong options | 650 |
-| Unique non-words | 418 |
-| **Must be replaced (not a spelling rule)** | **400** in 314 forks |
-| Legitimate Spelling contrasts | 245 |
-| ... already under a spelling rule id (kof, spel, adj, meervoud, verklein) | 177 |
-| ... under another rule id: keep only if the fork becomes a Spelling fork | 68 |
-| Compounds the list lacks, check by hand | 5 |
+| Build forks checked | 2710 |
+| Word items with a `wrong` option | 591 |
+| Option tokens checked | 10120 |
+| Non-word occurrences in wrong options | 192 |
+| Unique non-words | 159 |
+| **Must be replaced (not a spelling rule)** | **4** in 4 forks |
+| Legitimate Spelling contrasts | 188 |
+| ... already under a spelling rule id (kof, spel, adj, meervoud, verklein) | 160 |
+| ... under another rule id: keep only if the fork becomes a Spelling fork | 28 |
+| Compounds the list lacks, check by hand | 0 |
 | Words in right answers and sentences the list does not know (allow list candidates) | 0 |
+| Non-words inside forks labelled Spelling | 192 |
+| **Non-words outside a Spelling fork (hard rule: 0)** | **0** |
 
 ## By kind of mistake
 
 | Kind | Verdict | Occurrences | Rule ids | Examples |
 |---|---|---|---|---|
-| d or t ('t kofschip, wordt, snijdt) | Spelling fork | 170 | kof 121, sep 21, imp 13, perf 7, pres 3, presens 2, passief 2, gebod 1 | kostt, snijt, sportt, wachtt, ontbijtt, Lett, gewerkd, gewoont, gekookd, gefietsd |
-| irregular verb made regular (koopte, gegaand) | **replace** | 126 | perf 83, imp 37, kof 3, plusq 3 | gegaat, gezient, gedrinkt, gedronkt, geslaapt, gekoopt, gezijnd, gekostet, gegaand, gehebt |
-| participle: ge- where it does not go | **replace** | 112 | sep 56, perf 40, kof 9, passief 4, plusq 2, refl 1 | geverhuisd, geaankomen, gebent, geuitlaten, geopbeld, geuitruimd, gegeet, gebetaald, geterugbracht, geafrekend |
-| participle formed wrongly | **replace** | 54 | kof 28, perf 25, passief 1 | gewerken, gekoken, geëten, gekopen, gezeen, gewinkelen, gedelen, geëet, gelunchen, gedoen |
-| open and closed syllables (vowel or consonant doubling) | Spelling fork | 35 | kof 6, vergelijk 5, spel 4, sep 4, imp 4, meervoud 4, perf 3, verklein 2, samen 2, woord 1 | brooden, zegg, stur, bell, gepinnd, terugebracht, haden, voorstelen, hooger, scheepen |
-| comparative formed wrongly (graager, gooder, duurer) | **replace** | 32 | vergelijk 32 | duurer, graagder, goedste, graager, liefer, gooder, drukter, versder, snelder, zwaarer |
-| separable participle formed wrongly | **replace** | 31 | sep 27, perf 2, passief 1, aux 1 | aangekomt, uitgelaat, uitgegeefd, opgeëten, opgeëet, uitgeloopt, opgeeten, afgesprekt, langsgekomt, uitgevaard |
-| other non-word | **replace** | 27 | perf 7, imp 4, zou 3, bijzin 2, omte 2, pres 1, woord 1, v2 1, cond 1, passief 1, indirect 1, soft 1, formeel 1, datum 1 | geev, mai, douchet, gezijn, gewees, bakkede, Zoud, komde, zeilte, zoud |
-| invented numeral | **replace** | 18 | getal 18 | negennegentig, negentignegen, vierentig, veertigtwee, tweeveertig, tweetig, tweeduizenden, tweeduizendeenhonderd, achttig, tachttig |
+| d or t ('t kofschip, wordt, snijdt) | Spelling fork | 127 | kof 107, imp 8, sep 7, pres 2, presens 2, perf 1 | kostt, sportt, wachtt, ontbijtt, gewerkd, gewoont, gekookd, gefietsd, gepraatt, gepraatd |
+| open and closed syllables (vowel or consonant doubling) | Spelling fork | 25 | kof 5, vergelijk 5, spel 4, meervoud 4, imp 2, verklein 2, samen 2, woord 1 | brooden, zegg, stur, bell, gepinnd, hooger, scheepen, druker, wildde, gewandeeld |
 | diminutive spelling | Spelling fork | 15 | verklein 13, meervoud 2 | broodjen, bonnentje, ringje, ringtje, komje, komtje, mailje, koffieje, baltje, rondtje |
-| compound linking letters (tussen-s, tussen-n) | Spelling fork | 14 | samen 14 | hondmand, hondsmand, stadcentrum, erwtesoep, erwtsoep, stationplein, wachtswoord, thuiswerksdag, werkthuisdag, verjaardagenfeest |
-| plural spelling | Spelling fork | 11 | meervoud 5, spel 2, woord 2, samen 2 | broods, broodje's, pizzas, schipen, gladiolens, hardlopenschoenen, welkomen, huizengenoten, kraams, biers |
-| compound the list lacks (probably real, check by hand) | check | 5 | idioom 2, bijzin 1, perf 1, imp 1 | slaapten, gekoch, theebladeren, valtrap, moetten |
+| compound linking letters (tussen-s, tussen-n) | Spelling fork | 12 | samen 12 | hondmand, hondsmand, stadcentrum, erwtesoep, erwtsoep, stationplein, thuiswerksdag, verjaardagenfeest, stadmuur, stedenmuur |
+| plural spelling | Spelling fork | 9 | meervoud 5, spel 2, samen 2 | broods, broodje's, pizzas, gladiolens, hardlopenschoenen, huizengenoten, kraams, biers, woonboots |
+| comparative formed wrongly (graager, gooder, duurer) | **replace** | 3 | vergelijk 3 | liefer, beroemste, harter |
+| other non-word | **replace** | 1 | woord 1 | mai |
 
 ## Per town (play order)
 
 | Town | Replace | Spelling (legit) | ... of which need the Spelling label | Check |
 |---|---|---|---|---|
-| Kinderdijk en Dordrecht | 8 | 8 | 3 | 0 |
-| Gouda | 1 | 5 | 2 | 0 |
-| Zeeland: de Deltawerken | 4 | 0 | 0 | 0 |
-| Utrecht | 0 | 1 | 1 | 0 |
-| Den Haag | 128 | 59 | 15 | 0 |
-| Rotterdam | 60 | 40 | 17 | 0 |
-| Urk | 24 | 10 | 4 | 1 |
-| Texel | 13 | 5 | 2 | 0 |
-| Groningen | 11 | 28 | 8 | 1 |
-| Maastricht | 89 | 38 | 10 | 0 |
-| Nijmegen | 26 | 32 | 2 | 0 |
-| Amsterdam | 36 | 19 | 4 | 3 |
+| Kinderdijk en Dordrecht | 1 | 7 | 2 | 0 |
+| Gouda | 0 | 5 | 2 | 0 |
+| Den Haag | 0 | 43 | 1 | 0 |
+| Rotterdam | 1 | 21 | 9 | 0 |
+| Urk | 0 | 8 | 4 | 0 |
+| Texel | 0 | 4 | 1 | 0 |
+| Groningen | 0 | 25 | 4 | 0 |
+| Maastricht | 0 | 27 | 2 | 0 |
+| Nijmegen | 0 | 30 | 1 | 0 |
+| Amsterdam | 2 | 18 | 2 | 0 |
 
 ## Must be replaced, per level
 
 Token, the right form it stands for, rule id and label, then the fork.
 
 
-### Level 6 (kinderdijk) `content/extra/L06.js`
-
-- **negennegentig** for negenennegentig · invented numeral · `getal` Which word · Het kost een euro [negenennegentig | negennegentig | negentignegen].
-- **negentignegen** for negenennegentig · invented numeral · `getal` Which word · Het kost een euro [negenennegentig | negennegentig | negentignegen].
-
-### Level 7 (kinderdijk) `content/district2.js`
-
-- **vierentig** for veertig · invented numeral · `getal` Which word · Dat is [veertig | veertien | vierentig] euro.
-- **veertigtwee** for tweeënveertig · invented numeral · `getal` Which word · Dat is [tweeënveertig | veertigtwee | tweeveertig] euro.
-- **tweeveertig** for tweeënveertig · invented numeral · `getal` Which word · Dat is [tweeënveertig | veertigtwee | tweeveertig] euro.
-- **geev** for geef · other non-word · `pres` Verb form · Ik [geef | geeft | geev] een fooi.
-
 ### Level 10 (kinderdijk) `content/district2.js`
 
-- **mai** for mei · other non-word · `woord` Which word · Mijn verjaardag is in [mei | mai | maai]
-
-### Level 47 (kinderdijk) `content/extra/L47.js`
-
-- **tweetig** for twintig · invented numeral · `getal` Which word · Ik speel handicap [twintig | tweetig | twaalf].
-
-### Level 49 (gouda) `content/extra/L49.js`
-
-- **douchet** for douche · other non-word · `v2` Word order · 's Ochtends [douche ik | ik douche | douchet ik] altijd lang.
-
-### Level 53 (zeeland) `content/new/L53.js`
-
-- **duurer** for duurder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Een biertje is [duurder | duurer | duurst] dan een koffie.
-- **graagder** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik drink [liever | graagder | meer graag] thee dan koffie.
-
-### Level 55 (zeeland) `content/new/L55.js`
-
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Paola heeft de [beste | best | goedste] plek bij de router.
-
-### Level 57 (zeeland) `content/new/L57.js`
-
-- **graager** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik drink [liever | graager | meer graag] bier dan wijn.
-
-### Level 67 (denhaag) `content/new/L67.js`
-
-- **gewerken** for gewerkt · participle formed wrongly · `kof` Past tense · Schat, ik ben thuis. Ik heb vandaag lang [gewerkt | gewerkd | gewerken].
-- **geverhuisd** for verhuisd · participle: ge- where it does not go · `perf` Past tense · In mei zijn we naar Den Haag [verhuisd | geverhuisd | verhuist].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola is naar de Haagse Markt [gegaan | gegaat].
-- **geaankomen** for aangekomen · participle: ge- where it does not go · `sep` Verb form · De zus van Paola is vanmiddag [aangekomen | geaankomen | aangekomt].
-- **aangekomt** for aangekomen · separable participle formed wrongly · `sep` Verb form · De zus van Paola is vanmiddag [aangekomen | geaankomen | aangekomt].
-- **gezijn** for geweest · other non-word · `perf` Past tense · Ik ben de hele dag thuis [geweest | gezijn | gebent].
-- **gebent** for geweest · participle: ge- where it does not go · `perf` Past tense · Ik ben de hele dag thuis [geweest | gezijn | gebent].
-- **gekoken** for gekookt · participle formed wrongly · `kof` Past tense · Paola heeft [gekookt | gekookd | gekoken]. Het ruikt heerlijk.
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · De honden hebben al [gegeten | geëten].
-- **gezient** for gezien · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren hebben we samen een film [gezien | geziet | gezient].
-- **gedrinkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Wie heeft mijn koffie [gedronken | gedrinkt | gedronkt]?
-- **gedronkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Wie heeft mijn koffie [gedronken | gedrinkt | gedronkt]?
-- **geslaapt** for geslapen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De honden hebben weer op ons bed [geslapen | geslaapt].
-- **geuitlaten** for uitgelaten · participle: ge- where it does not go · `sep` Verb form · Ik heb de honden op het strand [uitgelaten | geuitlaten | uitgelaat].
-- **uitgelaat** for uitgelaten · separable participle formed wrongly · `sep` Verb form · Ik heb de honden op het strand [uitgelaten | geuitlaten | uitgelaat].
-- **geopbeld** for opgebeld · participle: ge- where it does not go · `sep` Verb form · Heb je je moeder al [opgebeld | geopbeld | opgebelt]?
-- **geuitruimd** for uitgeruimd · participle: ge- where it does not go · `sep` Verb form · Heb jij de vaatwasser al [uitgeruimd | geuitruimd | uitgeruimt]?
-
-### Level 68 (denhaag) `content/new/L68.js`
-
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb aardbeien op de markt [gekocht | gekoopt | gekopen].
-- **gekopen** for gekocht · participle formed wrongly · `perf` Past tense · Ik heb aardbeien op de markt [gekocht | gekoopt | gekopen].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Vanmorgen zijn we naar de Haagse Markt [gegaan | gegaat | gaan].
-- **gezijnd** for geweest · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik ben vanmorgen naar de apotheek [geweest | gezijnd | geweesd].
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · In Scheveningen hebben we haring [gegeten | gegeet | geëten].
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · In Scheveningen hebben we haring [gegeten | gegeet | geëten].
-- **gezient** for gezien · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Heb je de aanbieding al [gezien | gezient | gezeen]?
-- **gezeen** for gezien · participle formed wrongly · `perf` Past tense · Heb je de aanbieding al [gezien | gezient | gezeen]?
-- **gekostet** for gekost · irregular verb made regular (koopte, gegaand) · `kof` Past tense · Wat heeft die jas [gekost | gekosd | gekostet]?
-- **gewinkelen** for gewinkeld · participle formed wrongly · `kof` Past tense · We hebben de hele middag in Den Haag [gewinkeld | gewinkelt | gewinkelen].
-- **gedelen** for gedeeld · participle formed wrongly · `kof` Past tense · De minister heeft de rekening ook [gedeeld | gedeelt | gedelen].
-- **gebetaald** for betaald · participle: ge- where it does not go · `perf` Past tense · Heeft u al [betaald | gebetaald | betaalt]?
-- **geterugbracht** for teruggebracht · participle: ge- where it does not go · `sep` Verb form · Ik heb het overhemd [teruggebracht | geterugbracht | terugebracht].
-- **geafrekend** for afgerekend · participle: ge- where it does not go · `sep` Verb form · We hebben bij de kassa [afgerekend | geafrekend | afgerekent].
-- **geuitgeven** for uitgegeven · participle: ge- where it does not go · `sep` Verb form · We hebben te veel geld [uitgegeven | geuitgeven | uitgegeefd].
-- **uitgegeefd** for uitgegeven · separable participle formed wrongly · `sep` Verb form · We hebben te veel geld [uitgegeven | geuitgeven | uitgegeefd].
-
-### Level 69 (denhaag) `content/new/L69.js`
-
-- **geëet** for gegeten · participle formed wrongly · `perf` Past tense · We hebben in Scheveningen haring [gegeten | geëet | gegeet].
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · We hebben in Scheveningen haring [gegeten | geëet | gegeet].
-- **gebesteld** for besteld · participle: ge- where it does not go · `kof` Past tense · Wie heeft de bitterballen [besteld | gebesteld | bestelt]?
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · We zijn naar de Haagse Markt [gegaan | gegaat | gegaand].
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · We zijn naar de Haagse Markt [gegaan | gegaat | gegaand].
-- **geafrekend** for afgerekend · participle: ge- where it does not go · `perf` Past tense · We hebben al [afgerekend | geafrekend | afgerekent].
-- **geophaald** for opgehaald · participle: ge- where it does not go · `perf` Past tense · Ik heb de bestelling bij de toko [opgehaald | geophaald | opgehaalt].
-- **geopgeten** for opgegeten · participle: ge- where it does not go · `perf` Past tense · De honden hebben alle bitterballen [opgegeten | geopgeten | opgeëten].
-- **opgeëten** for opgegeten · separable participle formed wrongly · `perf` Past tense · De honden hebben alle bitterballen [opgegeten | geopgeten | opgeëten].
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · Heb jij al eens Indonesisch [gegeten | geëten | gegeet]?
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · Heb jij al eens Indonesisch [gegeten | geëten | gegeet]?
-- **gekoken** for gekookt · participle formed wrongly · `kof` Past tense · De kok heeft de hele avond [gekookt | gekookd | gekoken].
-- **gezijn** for geweest · other non-word · `perf` Past tense · Vanmorgen ben ik naar de markt [geweest | gezijn | gebent].
-- **gebent** for geweest · participle: ge- where it does not go · `perf` Past tense · Vanmorgen ben ik naar de markt [geweest | gezijn | gebent].
-- **gedelen** for gedeeld · participle formed wrongly · `kof` Past tense · Natuurlijk hebben we de rekening [gedeeld | gedeelt | gedelen].
-- **gedrinkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Hebben jullie veel [gedronken | gedrinkt | gedronkt]?
-- **gedronkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Hebben jullie veel [gedronken | gedrinkt | gedronkt]?
-
-### Level 70 (denhaag) `content/new/L70.js`
-
-- **gevertrokken** for vertrokken · participle: ge- where it does not go · `perf` Past tense · Is de trein naar Rotterdam al [vertrokken | gevertrokken]?
-- **geaankomen** for aangekomen · participle: ge- where it does not go · `sep` Verb form · Om half tien zijn we op Den Haag Centraal [aangekomen | geaankomen].
-- **gezijn** for geweest · other non-word · `perf` Past tense · De honden zijn nog nooit in de tram [geweest | gezijn].
-- **gezient** for gezien · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Heb je de conducteur [gezien | gezient]?
-- **gehebt** for gehad · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De trein heeft twintig minuten vertraging [gehad | gehebt].
-- **geopbeld** for opgebeld · participle: ge- where it does not go · `sep` Verb form · Paola heeft me net [opgebeld | geopbeld | opgebelt].
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb een retourtje Rotterdam [gekocht | gekoopt].
-- **gedoet** for gedaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Wat heb je in Den Haag [gedaan | gedoet]?
-- **geëet** for gegeten · participle formed wrongly · `perf` Past tense · We hebben op de Pier vis [gegeten | geëet].
-- **geuitstapt** for uitgestapt · participle: ge- where it does not go · `sep` Verb form · De politici zijn bij het Binnenhof [uitgestapt | geuitstapt].
-- **geoverstapt** for overgestapt · participle: ge- where it does not go · `sep` Verb form · Ik ben in Rotterdam [overgestapt | geoverstapt | overgestapd].
-
-### Level 71 (denhaag) `content/new/L71.js`
-
-- **gewerken** for gewerkt · participle formed wrongly · `kof` Past tense · Gisteren heb ik aan de dashboards [gewerkt | gewerkd | gewerken].
-- **gelunchen** for geluncht · participle formed wrongly · `kof` Past tense · We hebben op het Plein [geluncht | gelunchd | gelunchen].
-- **gezient** for gezien · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Heb je mijn mail [gezien | gezient | gezeen]?
-- **gezeen** for gezien · participle formed wrongly · `perf` Past tense · Heb je mijn mail [gezien | gezient | gezeen]?
-- **gedoet** for gedaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Wat heb je dit weekend [gedaan | gedoet | gedoen]?
-- **gedoen** for gedaan · participle formed wrongly · `perf` Past tense · Wat heb je dit weekend [gedaan | gedoet | gedoen]?
-- **gedrinkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb vandaag al vier koppen koffie [gedronken | gedrinkt | gedronkt].
-- **gedronkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb vandaag al vier koppen koffie [gedronken | gedrinkt | gedronkt].
-- **gezijnd** for geweest · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Er is vannacht een storing [geweest | gezijnd | gewest].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik ben met de tram naar kantoor [gegaan | gegaat | gegaand].
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik ben met de tram naar kantoor [gegaan | gegaat | gegaand].
-- **geterugbeld** for teruggebeld · participle: ge- where it does not go · `sep` Verb form · Na de standup heb ik hem [teruggebeld | geterugbeld | terugbelt].
-- **geaankomen** for aangekomen · participle: ge- where it does not go · `sep` Verb form · De nieuwe collega is net [aangekomen | geaankomen | aangekomt].
-- **aangekomt** for aangekomen · separable participle formed wrongly · `sep` Verb form · De nieuwe collega is net [aangekomen | geaankomen | aangekomt].
-- **geuitzet** for uitgezet · participle: ge- where it does not go · `sep` Verb form · Ik heb de laptop al [uitgezet | geuitzet | uitgezett].
-- **geopeten** for opgegeten · participle: ge- where it does not go · `sep` Verb form · De honden hebben mijn boterham [opgegeten | geopeten | opgeëet].
-- **opgeëet** for opgegeten · separable participle formed wrongly · `sep` Verb form · De honden hebben mijn boterham [opgegeten | geopeten | opgeëet].
-- **geuitlopen** for uitgelopen · participle: ge- where it does not go · `sep` Verb form · De standup is weer [uitgelopen | geuitlopen | uitgeloopt].
-- **uitgeloopt** for uitgelopen · separable participle formed wrongly · `sep` Verb form · De standup is weer [uitgelopen | geuitlopen | uitgeloopt].
-
-### Level 72 (denhaag) `content/new/L72.js`
-
-- **geuitlaten** for uitgelaten · participle: ge- where it does not go · `sep` Verb form · We hebben de honden op het strand [uitgelaten | geuitlaten | uitgelaat].
-- **uitgelaat** for uitgelaten · separable participle formed wrongly · `sep` Verb form · We hebben de honden op het strand [uitgelaten | geuitlaten | uitgelaat].
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De minister is naar het strand [gegaan | gegaand | gegaat].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De minister is naar het strand [gegaan | gegaand | gegaat].
-- **gezijnd** for geweest · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ben je al in Scheveningen [geweest | gezijnd]?
-- **gedoen** for gedaan · participle formed wrongly · `perf` Past tense · Wat heb je dit weekend [gedaan | gedoen | gedoet]?
-- **gedoet** for gedaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Wat heb je dit weekend [gedaan | gedoen | gedoet]?
-- **geopeten** for opgegeten · participle: ge- where it does not go · `sep` Verb form · De honden hebben mijn broodje [opgegeten | geopeten | opgeeten].
-- **opgeeten** for opgegeten · separable participle formed wrongly · `sep` Verb form · De honden hebben mijn broodje [opgegeten | geopeten | opgeeten].
-- **gedrinkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · We hebben een biertje in het clubhuis [gedronken | gedrinkt | gedronkt].
-- **gedronkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · We hebben een biertje in het clubhuis [gedronken | gedrinkt | gedronkt].
-- **geopbeld** for opgebeld · participle: ge- where it does not go · `sep` Verb form · Ik heb de buurman over de starttijd [opgebeld | geopbeld | opgebelt].
-- **geaankomen** for aangekomen · participle: ge- where it does not go · `sep` Verb form · De tram is te laat in Scheveningen [aangekomen | geaankomen | aangekomt].
-- **aangekomt** for aangekomen · separable participle formed wrongly · `sep` Verb form · De tram is te laat in Scheveningen [aangekomen | geaankomen | aangekomt].
-- **geslaat** for geslagen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb mijn balletje in het water [geslagen | geslaagd | geslaat].
-
-### Level 73 (denhaag) `content/new/L73.js`
-
-- **geontmoet** for ontmoet · participle: ge- where it does not go · `perf` Past tense · Gisteren heb ik de nieuwe buurvrouw [ontmoet | geontmoet | ontmoeten].
-- **gezijn** for geweest · other non-word · `perf` Past tense · Zaterdag zijn we bij de buren [geweest | gezijn | gewees].
-- **gewees** for geweest · other non-word · `perf` Past tense · Zaterdag zijn we bij de buren [geweest | gezijn | gewees].
-- **geuitnodigd** for uitgenodigd · participle: ge- where it does not go · `sep` Verb form · Paola heeft de buren voor een borrel [uitgenodigd | geuitnodigd | uitgenodigt].
-- **geafspreken** for afgesproken · participle: ge- where it does not go · `sep` Verb form · We hebben vrijdag een borrel [afgesproken | geafspreken | afgesprekt].
-- **afgesprekt** for afgesproken · separable participle formed wrongly · `sep` Verb form · We hebben vrijdag een borrel [afgesproken | geafspreken | afgesprekt].
-- **gepraten** for gepraat · irregular verb made regular (koopte, gegaand) · `kof` Past tense · Wij hebben lang met de buren [gepraat | gepraatd | gepraten].
-- **gekletsen** for gekletst · participle formed wrongly · `kof` Past tense · Paola heeft een uur met de buurvrouw [gekletst | gekletsd | gekletsen].
-- **gebedankt** for bedankt · participle: ge- where it does not go · `kof` Past tense · Ik heb haar voor de bloemen [bedankt | gebedankt | bedankd].
-- **gelangskomen** for langsgekomen · participle: ge- where it does not go · `sep` Verb form · De buren zijn gisteren bij ons [langsgekomen | gelangskomen | langsgekomt].
-- **langsgekomt** for langsgekomen · separable participle formed wrongly · `sep` Verb form · De buren zijn gisteren bij ons [langsgekomen | gelangskomen | langsgekomt].
-- **gehuilen** for gehuild · participle formed wrongly · `kof` Past tense · De politicus heeft in het debat [gehuild | gehuilt | gehuilen].
-- **geglimlachen** for geglimlacht · participle formed wrongly · `kof` Past tense · De buurvrouw heeft naar me [geglimlacht | geglimlachd | geglimlachen].
-- **gevinden** for gevonden · participle formed wrongly · `perf` Past tense · Hoe heb je het debat [gevonden | gevind | gevinden]?
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Na het werk zijn we naar de borrel [gegaan | gegaand | gegaat].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Na het werk zijn we naar de borrel [gegaan | gegaand | gegaat].
-- **geeten** for gegeten · participle formed wrongly · `perf` Past tense · Wat hebben jullie op de borrel [gegeten | geeten | gegeet]?
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · Wat hebben jullie op de borrel [gegeten | geeten | gegeet]?
-
-### Level 74 (denhaag) `content/new/L74.js`
-
-- **gevald** for gevallen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De premier is gisteren van zijn fiets [gevallen | gevalt | gevald].
-- **gezijn** for geweest · other non-word · `perf` Past tense · Ik ben bij het Vredespaleis [geweest | gezijn | gebent].
-- **gebent** for geweest · participle: ge- where it does not go · `perf` Past tense · Ik ben bij het Vredespaleis [geweest | gezijn | gebent].
-- **gedebatteren** for gedebatteerd · participle formed wrongly · `kof` Past tense · De Tweede Kamer heeft drie uur [gedebatteerd | gedebatteert | gedebatteren].
-- **gebeantwoord** for beantwoord · participle: ge- where it does not go · `perf` Past tense · De minister heeft mijn vraag niet [beantwoord | gebeantwoord | beantwoordt].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we naar Scheveningen [gegaan | gegaat].
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · Op het strand hebben we kibbeling [gegeten | gegeet | geëten].
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · Op het strand hebben we kibbeling [gegeten | gegeet | geëten].
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola heeft op de Haagse Markt aardbeien [gekocht | gekoopt | gekoopd].
-- **gekoopd** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola heeft op de Haagse Markt aardbeien [gekocht | gekoopt | gekoopd].
-- **gedoet** for gedaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De politici hebben weer niks [gedaan | gedoet | gedoen].
-- **gedoen** for gedaan · participle formed wrongly · `perf` Past tense · De politici hebben weer niks [gedaan | gedoet | gedoen].
-- **geopbeld** for opgebeld · participle: ge- where it does not go · `sep` Verb form · Ik heb Paola vanaf de pier [opgebeld | geopbeld | opgebelt].
-- **geaankomen** for aangekomen · participle: ge- where it does not go · `sep` Verb form · Om negen uur is de koning [aangekomen | geaankomen | aangekomt].
-- **aangekomt** for aangekomen · separable participle formed wrongly · `sep` Verb form · Om negen uur is de koning [aangekomen | geaankomen | aangekomt].
-
-### Level 75 (rotterdam) `content/new/L75.js`
-
-- **doede** for deed · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Paola kookte en ik [deed | doede | deden] de afwas.
-- **komde** for kwam · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Paola [kwam | komde | kwamen] thuis en zag de rommel.
-- **ziede** for zag · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Paola kwam thuis en [zag | ziede | zagen] de rommel.
-- **loopten** for liepen · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De honden [liepen | liep | loopten] de hele dag achter Paola aan.
-- **koopte** for kocht · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Paola [kocht | koopte | kochten] een nieuwe lamp voor de woonkamer.
-- **sprekte** for sprak · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Paola [sprak | sprekte | spraken] zacht tegen de honden en streng tegen mij.
-- **liefer** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik zou [liever | liefer | graag] thuisblijven dan naar de borrel gaan.
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ons bed is het [beste | best | goedste] bed van Rotterdam.
-- **geopruimd** for opgeruimd · participle: ge- where it does not go · `sep` Verb form · Paola heeft de rommel al [opgeruimd | geopruimd | opruimd].
-
-### Level 76 (rotterdam) `content/new/L76.js`
-
-- **bakkede** for bakte · other non-word · `imp` Past tense · De bakker [bakte | bakde | bakkede] de hele nacht brood.
-- **zagt** for zag · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [zag | zagt | gezien] de prijs en legde de kaas terug.
-- **komde** for kwam · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik ging naar de Markthal en [kwam | kwamen | komde] met volle tassen thuis.
-- **brengde** for bracht · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [bracht | brengde | brachtte] de jas gisteren terug.
-- **brachtte** for bracht · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [bracht | brengde | brachtte] de jas gisteren terug.
-- **gooder** for beter · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Deze kaas is veel [beter | gooder | goeder] dan die uit de supermarkt.
-- **gepassen** for gepast · participle formed wrongly · `kof` Past tense · Paola heeft in de paskamer drie jurken [gepast | gepasd | gepassen].
-
-### Level 77 (rotterdam) `content/new/L77.js`
-
-- **komde** for kwam · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De serveerster [kwam | komde | kwamen] met de kaart en sprak alleen Nederlands.
-- **spreekte** for sprak · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De serveerster kwam met de kaart en [sprak | spreekte | sprekte] alleen Nederlands.
-- **sprekte** for sprak · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De serveerster kwam met de kaart en [sprak | spreekte | sprekte] alleen Nederlands.
-- **loopte** for liep · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [liep | loopte | liepte] naar de markt en kocht een haring.
-- **liepte** for liep · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [liep | loopte | liepte] naar de markt en kocht een haring.
-- **kochte** for kocht · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik liep naar de markt en [kocht | kochte | koopte] een haring.
-- **koopte** for kocht · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik liep naar de markt en [kocht | kochte | koopte] een haring.
-- **Zoud** for zou · other non-word · `zou` Verb form · [Zou | Zouden | Zoud] ik de menukaart mogen zien, alstublieft?
-- **graager** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Paola drinkt [liever | graager | beter] een bakkie pleur dan thee.
-- **gooder** for beter · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · De soep was gisteren [beter | goeder | gooder] dan vandaag.
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Na het eten zijn we met de watertaxi naar huis [gegaan | gegaat | gegaand].
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Na het eten zijn we met de watertaxi naar huis [gegaan | gegaat | gegaand].
-
-### Level 78 (rotterdam) `content/new/L78.js`
-
-- **spreekte** for sprak · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De conducteur [sprak | spreekte] heel snel en ik verstond niets.
-- **lopten** for liepen · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Paola kocht een kaartje en we [liepen | lopten] naar het perron.
-- **begonde** for begon · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De standup [begon | begonde] om negen, maar ik zat nog in de metro.
-- **geverloren** for verloren · participle: ge- where it does not go · `perf` Past tense · Ik heb mijn ov-chipkaart op het station [verloren | geverloren].
-- **gevergist** for vergist · participle: ge- where it does not go · `perf` Past tense · Sorry, ik heb me in de tijd [vergist | gevergist].
+- **mai** for mei · other non-word · `woord` Spelling · Mijn verjaardag is in [mei | mai]
 
 ### Level 79 (rotterdam) `content/new/L79.js`
 
-- **valde** for viel · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik was een dashboard aan het bouwen en de wifi [viel | valde | vielt] uit.
-- **vielt** for viel · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik was een dashboard aan het bouwen en de wifi [viel | valde | vielt] uit.
-- **gooder** for beter · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik voel me vandaag [beter | gooder] dan gisteren.
-- **gevergist** for vergist · participle: ge- where it does not go · `perf` Past tense · Sorry, ik heb me [vergist | gevergist] in het wachtwoord.
-- **graager** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik zou vandaag [liever | graager | meer graag] thuis werken.
-- **geuitrold** for uitgerold · participle: ge- where it does not go · `sep` Verb form · Gisteren heb ik de bug opgelost en de fix [uitgerold | geuitrold | uitgerolt].
-
-### Level 80 (rotterdam) `content/new/L80.js`
-
-- **kochte** for kocht · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [kocht | kochte | kochten] gisteren een nieuwe golftas.
-- **doede** for deed · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Wat [deed je | je deed | doede je] na de training?
-- **laatte** for liet · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [liet | laatte | liette] om zeven uur de honden langs de Maas uit.
-- **liette** for liet · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [liet | laatte | liette] om zeven uur de honden langs de Maas uit.
-- **Zoud** for zou · other non-word · `zou` Verb form · [Zou | Zouden | Zoud] je mijn tas even kunnen vasthouden?
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Zaterdag zijn we naar De Kuip [gegaan | gegaat | gegaand].
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Zaterdag zijn we naar De Kuip [gegaan | gegaat | gegaand].
-
-### Level 81 (rotterdam) `content/new/L81.js`
-
-- **komde** for kwam · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Toen [kwam | kwamen | komde] de mist en iedereen veranderde.
-- **komden** for kwamen · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De buren [kwamen | kwam | komden] op onze borrel en bleven tot middernacht.
-- **blijfden** for bleven · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De buren kwamen op onze borrel en [bleven | bleef | blijfden] tot middernacht.
-- **zagde** for zag · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Ik [zag | zagde | zien] haar in de Markthal en ik zwaaide.
-- **hadt** for had · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Gisteren [had | hadden | hadt] ik geen zin in ruzie, maar de buurman wel.
-- **gooder** for beter · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Voel je je al [beter | gooder | meer goed]?
-- **geopeten** for opgegeten · participle: ge- where it does not go · `sep` Verb form · Wie heeft alle bitterballen [opgegeten | geopeten | opgeeten]?
-- **opgeeten** for opgegeten · separable participle formed wrongly · `sep` Verb form · Wie heeft alle bitterballen [opgegeten | geopeten | opgeeten]?
-
-### Level 82 (rotterdam) `content/new/L82.js`
-
-- **komde** for kwam · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Het schip [kwam | komde | kwamen] om acht uur binnen.
-- **drukter** for drukker · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Het is hier [drukker | druker | drukter] dan in Alblasserdam.
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Hier krijg je het [beste | best | goedste] bakkie pleur van de stad.
-- **gevaard** for gevaren · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we met de watertaxi naar de Markthal [gevaren | gevaard | gevarend].
-- **gevarend** for gevaren · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we met de watertaxi naar de Markthal [gevaren | gevaard | gevarend].
-- **gelossen** for gelost · participle formed wrongly · `kof` Past tense · De havenarbeiders hebben het schip [gelost | gelosd | gelossen].
-
-### Level 84 (urk) `content/new/L84.js`
-
-- **komde** for kwam · other non-word · `bijzin` Word order · Toen ik bij de apotheek [kwam | komde | kwamen], was ze al dicht.
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De haring is op, omdat de toeristen alles [hebben gekocht | hebben gekoopt | hebben gekopen].
-- **gekopen** for gekocht · participle formed wrongly · `perf` Past tense · De haring is op, omdat de toeristen alles [hebben gekocht | hebben gekoopt | hebben gekopen].
-- **versder** for verser · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik zie dat de vis op Urk [verser | versder | versere] is dan in de supermarkt.
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Dit is de [beste | best | goedste] haring van Urk, omdat de kotters vlakbij liggen.
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola is met de honden naar de winkel [gegaan | gegaand | gegaat].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola is met de honden naar de winkel [gegaan | gegaand | gegaat].
-
-### Level 85 (urk) `content/new/L85.js`
-
-- **komde** for kwam · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Toen de rekening [kwam | komde], sliepen de honden al.
-- **blijfden** for bleven · irregular verb made regular (koopte, gegaand) · `imp` Past tense · We [bleven | blijfden] lang zitten omdat de paling zo lekker was.
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · Ik heb sinds vanochtend niks [gegeten | geëten | gegeet], dus ik heb honger.
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · Ik heb sinds vanochtend niks [gegeten | geëten | gegeet], dus ik heb honger.
-
-### Level 87 (urk) `content/new/L87.js`
-
-- **komde** for kwam · other non-word · `bijzin` Word order · Toen ik bij de visafslag [kwam | kwamen | komde], zaten de collega's al aan tafel.
-- **graager** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ik werk [liever | graager | meer graag] op de kotter omdat de wifi daar sneller is.
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Zondag zijn alle collega's naar de kerk [gegaan | gegaat], dus er was niemand op kantoor.
-
-### Level 88 (urk) `content/new/L88.js`
-
-- **slagde** for sloeg · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Toen ik mijn balletje in het water [sloeg | slagde | geslagen], moest Paola lachen.
-- **zeilte** for zeilde · other non-word · `imp` Past tense · Vroeger [zeilde ik | ik zeilde | zeilte ik] elke zomer op het IJsselmeer.
-- **zoud** for zou · other non-word · `zou` Verb form · Ik [zou | zouden | zoud] zaterdag graag met jullie willen golfen.
-
-### Level 89 (urk) `content/new/L89.js`
-
-- **geontmoet** for ontmoet · participle: ge- where it does not go · `perf` Past tense · Heb je de nieuwe buurman al [geontmoet | ontmoet | ontmoeten]?
-- **gekomd** for gekomen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De dominee is gisteren op bezoek [gekomd | gekomen | gekomt].
-- **gekomt** for gekomen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De dominee is gisteren op bezoek [gekomd | gekomen | gekomt].
-
-### Level 90 (urk) `content/new/L90.js`
-
-- **geeten** for gegeten · participle formed wrongly · `perf` Past tense · Gisteren hebben we bij de haven kibbeling [gegeten | geeten | gegeet].
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · Gisteren hebben we bij de haven kibbeling [gegeten | geeten | gegeet].
-- **geuitvaren** for uitgevaren · participle: ge- where it does not go · `sep` Verb form · De kotter is gisteravond [uitgevaren | geuitvaren | uitgevaard].
-- **uitgevaard** for uitgevaren · separable participle formed wrongly · `sep` Verb form · De kotter is gisteravond [uitgevaren | geuitvaren | uitgevaard].
-
-### Level 91 (texel) `content/new/L91.js`
-
-- **gevaard** for gevaren · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we met de veerboot naar Texel [gevaren | gevaard].
-
-### Level 92 (texel) `content/new/L92.js`
-
-- **gekomt** for gekomen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · We zijn vanochtend met de veerboot [gekomen | gekomt | gekommen].
-
-### Level 93 (texel) `content/new/L93.js`
-
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · Nog een bitterbal? Nee, dank je, ik heb er al vijf [gegeten | geëten | gegeet].
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · Nog een bitterbal? Nee, dank je, ik heb er al vijf [gegeten | geëten | gegeet].
-- **gedrinkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Op de boot hebben we koffie [gedronken | gedrinkt | gedronkt] en een broodje gegeten.
-- **gedronkt** for gedronken · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Op de boot hebben we koffie [gedronken | gedrinkt | gedronkt] en een broodje gegeten.
-
-### Level 94 (texel) `content/new/L94.js`
-
-- **snelder** for sneller · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Op Texel is de fiets [sneller | snelder] dan de bus.
-
-### Level 96 (texel) `content/new/L96.js`
-
-- **geuitlaten** for uitgelaten · participle: ge- where it does not go · `sep` Verb form · Gisteren heb ik de honden langs het strand [uitgelaten | geuitlaten].
-
-### Level 97 (texel) `content/new/L97.js`
-
-- **afte** for af · other non-word · `omte` Verb form · Ik bel de buren om een borrel [af te spreken | te afspreken | afte spreken].
-- **hadt** for had · other non-word · `cond` Word order · Als ik meer tijd [had | hadt | hadden], zou ik de buren vaker bezoeken.
-- **gevertrokken** for vertrokken · participle: ge- where it does not go · `perf` Past tense · De laatste boot is al [vertrokken | gevertrokken | vertrekt].
-
-### Level 98 (texel) `content/new/L98.js`
-
-- **gevaard** for gevaren · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we met de veerboot naar Texel [gevaren | gevaard | gevaarn].
-- **gevaarn** for gevaren · other non-word · `perf` Past tense · Gisteren zijn we met de veerboot naar Texel [gevaren | gevaard | gevaarn].
-
-### Level 100 (groningen) `content/new/L100.js`
-
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb een ringetje voor Paola [gekocht | gekoopt].
-
-### Level 101 (groningen) `content/new/L101.js`
-
-- **gemaken** for gemaakt · participle formed wrongly · `kof` Past tense · Volgens mij hebben ze de metworst zelf [gemaakt | gemaakd | gemaken].
-
-### Level 102 (groningen) `content/new/L102.js`
-
-- **gemissen** for gemist · participle formed wrongly · `kof` Past tense · Ik heb de laatste trein net [gemist | gemisd | gemissen].
-
-### Level 103 (groningen) `content/new/L103.js`
-
-- **geoppakt** for opgepakt · participle: ge- where it does not go · `sep` Verb form · Vanochtend heb ik de melding [opgepakt | geoppakt | oppgepakt].
-- **snelder** for sneller · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · De nieuwe laptop is [sneller | snelder | meer snel] dan de oude.
-
-### Level 104 (groningen) `content/new/L104.js`
-
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb gisteren nieuwe hardloopschoenen [gekocht | gekoopt | gekoch].
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Volgens mij is dit het [beste | goedste] team van het noorden.
-
-### Level 105 (groningen) `content/new/L105.js`
-
-- **geopbeld** for opgebeld · participle: ge- where it does not go · `perf` Past tense · Mijn buurman heeft me gisteren [opgebeld | geopbeld | opgebelt] over de heg.
-
-### Level 106 (groningen) `content/new/L106.js`
-
-- **opte** for op · other non-word · `omte` Verb form · Ik ben vergeten een helm [op te zetten | opte zetten | te opzetten].
-
-### Level 99 (groningen) `content/new/L99.js`
-
-- **gelopt** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we met de honden naar de Grote Markt [gelopen | gelopt | gelopte].
-- **gelopte** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Gisteren zijn we met de honden naar de Grote Markt [gelopen | gelopt | gelopte].
-
-### Level 107 (maastricht) `content/new/L107.js`
-
-- **geverbouwd** for verbouwd · participle: ge- where it does not go · `perf` Past tense · De keuken wordt op dit moment [verbouwd | geverbouwd | verbouwen].
-- **geuitgelaten** for uitgelaten · participle: ge- where it does not go · `sep` Verb form · De honden worden drie keer per dag [uitgelaten | geuitgelaten | uitlaten].
-- **geverwend** for verwend · participle: ge- where it does not go · `perf` Past tense · De honden worden door de bomma van de buren [verwend | geverwend | verwent].
-- **gekoken** for gekookt · participle formed wrongly · `kof` Past tense · Toen ik thuiskwam, had Paola al [gekookt | gekookd | gekoken].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola was al naar bed [gegaan | gegaat], dus ik liet de honden alleen uit.
-- **geweggaan** for weggegaan · participle: ge- where it does not go · `sep` Verb form · Paola was al [weggegaan | geweggaan] toen ik wakker werd.
-- **gelopt** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Afgelopen zondag zijn we met de honden naar de Helpoort [gelopen | gelopt | gelopte].
-- **gelopte** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Afgelopen zondag zijn we met de honden naar de Helpoort [gelopen | gelopt | gelopte].
-
-### Level 108 (maastricht) `content/new/L108.js`
-
-- **gewoogd** for gewogen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Op de markt worden de appels per kilo [gewogen | gewoogd | gewogt].
-- **gewogt** for gewogen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Op de markt worden de appels per kilo [gewogen | gewoogd | gewogt].
-- **geverbouwd** for verbouwd · participle: ge- where it does not go · `perf` Past tense · De winkel wordt op dit moment [verbouwd | geverbouwd | verbouwt], dus hij is dicht.
-- **gebezorgd** for bezorgd · participle: ge- where it does not go · `kof` Past tense · Mijn pakket werd gisteren niet [bezorgd | gebezorgd | bezorgt].
-- **gebetaald** for betaald · participle: ge- where it does not go · `perf` Past tense · De vlaai is al [betaald | gebetaald | betalen], dus u kunt hem meenemen.
-- **geverkocht** for verkocht · participle: ge- where it does not go · `perf` Past tense · Toen ik bij de bakker kwam, had hij alle vlaai al [verkocht | geverkocht | verkoopt].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Toen ik wakker werd, was Paola al naar de markt [gegaan | gegaat].
-- **geklaargezet** for klaargezet · participle: ge- where it does not go · `sep` Verb form · De apotheker had de medicijnen al [klaargezet | geklaargezet | klaargezeet].
-- **geaankomen** for aangekomen · participle: ge- where it does not go · `sep` Verb form · We waren net bij de Albert Heijn [aangekomen | geaankomen | aangekomt], toen het begon te regenen.
-- **aangekomt** for aangekomen · separable participle formed wrongly · `sep` Verb form · We waren net bij de Albert Heijn [aangekomen | geaankomen | aangekomt], toen het begon te regenen.
-- **geweggegooid** for weggegooid · participle: ge- where it does not go · `sep` Verb form · Paola zei dat ze de bon al had [weggegooid | geweggegooid | weggegooit].
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Dit is de [beste | goedste | meeste] vlaai van heel Maastricht.
-- **geafgeprijsd** for afgeprijsd · participle: ge- where it does not go · `kof` Past tense · De jas die ik gisteren zag is nu [afgeprijsd | afgeprijst | geafgeprijsd].
-
-### Level 109 (maastricht) `content/new/L109.js`
-
-- **gedekken** for gedekt · participle formed wrongly · `kof` Past tense · De tafel wordt op het Vrijthof [gedekt | gedekd | gedekken].
-- **gebetaald** for betaald · participle: ge- where it does not go · `perf` Past tense · De rekening wordt door de buren [betaald | gebetaald | betaalt].
-- **ingeschonkt** for ingeschonken · separable participle formed wrongly · `sep` Verb form · De wijn wordt door de ober [ingeschonken | ingeschonkt | geïnschonken].
-- **geïnschonken** for ingeschonken · participle: ge- where it does not go · `sep` Verb form · De wijn wordt door de ober [ingeschonken | ingeschonkt | geïnschonken].
-- **gebacken** for gebakken · participle formed wrongly · `passief` Verb form · Gisteren werd de vlaai vers [gebakken | gebakt | gebacken].
-- **geverbouwd** for verbouwd · participle: ge- where it does not go · `perf` Past tense · Het café is vorig jaar helemaal [verbouwd | geverbouwd | verbouwt].
-- **geëten** for gegeten · participle formed wrongly · `perf` Past tense · We hadden al [gegeten | geëten | gegeet] toen de pizza kwam.
-- **gegeet** for gegeten · participle: ge- where it does not go · `perf` Past tense · We hadden al [gegeten | geëten | gegeet] toen de pizza kwam.
-- **gedichtgaan** for dichtgegaan · participle: ge- where it does not go · `sep` Verb form · Toen we aankwamen, was het café al [dichtgegaan | gedichtgaan | dichtgegaat].
-- **dichtgegaat** for dichtgegaan · separable participle formed wrongly · `sep` Verb form · Toen we aankwamen, was het café al [dichtgegaan | gedichtgaan | dichtgegaat].
-- **gebesteld** for besteld · participle: ge- where it does not go · `perf` Past tense · Paola had de vlaai al [besteld | gebesteld] voordat ik aankwam.
-- **gebetaald** for betaald · participle: ge- where it does not go · `perf` Past tense · Paola zei dat ze de rekening al had [betaald | gebetaald].
-
-### Level 110 (maastricht) `content/new/L110.js`
-
-- **gevertraagd** for vertraagd · participle: ge- where it does not go · `passief` Verb form · De trein naar Heerlen wordt door een storing [vertraagd | gevertraagd | vertraagt].
-- **geschrappen** for geschrapt · participle formed wrongly · `kof` Past tense · Door de mist worden vanavond alle treinen [geschrapt | geschrapd | geschrappen].
-- **gestelen** for gestolen · participle formed wrongly · `perf` Past tense · Gisteren werd mijn fiets op het station [gestolen | gestelen | gestoolen].
-- **geversierd** for versierd · participle: ge- where it does not go · `passief` Verb form · Met carnaval wordt het hele station [versierd | geversierd | versiert].
-- **gevertrokken** for vertrokken · participle: ge- where it does not go · `plusq` Past tense · Toen ik op het perron kwam, was de trein al [vertrokken | gevertrokken | vertrekt].
-- **gemissen** for gemist · participle formed wrongly · `kof` Past tense · Ik had de laatste trein [gemist | gemisd | gemissen], dus ik moest lopen.
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola had de kaartjes al [gekocht | gekoopt | gekoopd] voordat ik thuiskwam.
-- **gekoopd** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola had de kaartjes al [gekocht | gekoopt | gekoopd] voordat ik thuiskwam.
-- **geweggereden** for weggereden · participle: ge- where it does not go · `sep` Verb form · We kwamen te laat aan, want de bus was al [weggereden | geweggereden | weggereed].
-- **weggereed** for weggereden · separable participle formed wrongly · `sep` Verb form · We kwamen te laat aan, want de bus was al [weggereden | geweggereden | weggereed].
-
-### Level 111 (maastricht) `content/new/L111.js`
-
-- **geopgelost** for opgelost · participle: ge- where it does not go · `sep` Verb form · De storing wordt nu [opgelost | geopgelost | oplost].
-- **geuitgesteld** for uitgesteld · participle: ge- where it does not go · `kof` Past tense · De release werd gisteren [uitgesteld | uitgestelt | geuitgesteld].
-- **getekenen** for getekend · participle formed wrongly · `kof` Past tense · Het verdrag werd hier in 1992 [getekend | getekent | getekenen].
-- **gefixen** for gefixt · participle formed wrongly · `kof` Past tense · De bug is al [gefixt | gefixd | gefixen].
-- **gebeantwoord** for beantwoord · participle: ge- where it does not go · `perf` Past tense · De klachten worden door de stagiair [beantwoord | gebeantwoord | beantwoordt].
-- **geafgelopen** for afgelopen · participle: ge- where it does not go · `sep` Verb form · Toen ik inlogde, was de standup al [afgelopen | geafgelopen | afgelopt].
-- **afgelopt** for afgelopen · separable participle formed wrongly · `sep` Verb form · Toen ik inlogde, was de standup al [afgelopen | geafgelopen | afgelopt].
-- **gewerken** for gewerkt · participle formed wrongly · `kof` Past tense · We hadden tot middernacht [gewerkt | gewerkd | gewerken], dus ik was moe.
-- **gezeen** for gezien · participle formed wrongly · `perf` Past tense · Wij hadden het probleem al [gezien | geziet | gezeen] voordat de klant belde.
-
-### Level 112 (maastricht) `content/new/L112.js`
-
-- **geuitgesteld** for uitgesteld · participle: ge- where it does not go · `sep` Verb form · Vanwege de regen wordt de wedstrijd [uitgesteld | geuitgesteld | uitgestelt].
-- **afgesluit** for afgesloten · separable participle formed wrongly · `sep` Verb form · Gisteren werd de Sint-Servaasbrug voor fietsers [afgesloten | afgesluit | afgesloot].
-- **gevonde** for gevonden · other non-word · `passief` Verb form · De golfballen werden door de honden [gevonden | gevind | gevonde].
-- **afgesluit** for afgesloten · separable participle formed wrongly · `passief` Verb form · Het wandelpad is al een week [afgesloten | afgesluit].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola was al naar huis [gegaan | gegaat | gegaand] toen ik aankwam.
-- **gegaand** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola was al naar huis [gegaan | gegaat | gegaand] toen ik aankwam.
-- **opgeeten** for opgegeten · separable participle formed wrongly · `sep` Verb form · De honden hadden mijn golfhandschoen [opgegeten | opgeeten | geopgegeten].
-- **geopgegeten** for opgegeten · participle: ge- where it does not go · `sep` Verb form · De honden hadden mijn golfhandschoen [opgegeten | opgeeten | geopgegeten].
-- **gezwemd** for gezwommen · irregular verb made regular (koopte, gegaand) · `plusq` Past tense · Voor de mist had ik nooit in de Maas [gezwommen | gezwemd | gezwomd].
-- **gezwomd** for gezwommen · irregular verb made regular (koopte, gegaand) · `plusq` Past tense · Voor de mist had ik nooit in de Maas [gezwommen | gezwemd | gezwomd].
-- **gezeen** for gezien · participle formed wrongly · `perf` Past tense · De scheidsrechter vroeg of wij de bal hadden [gezien | geziet | gezeen].
-- **geuitgelaten** for uitgelaten · participle: ge- where it does not go · `sep` Verb form · Paola zei dat ze de honden al had [uitgelaten | geuitgelaten | uitgelaat].
-- **uitgelaat** for uitgelaten · separable participle formed wrongly · `sep` Verb form · Paola zei dat ze de honden al had [uitgelaten | geuitgelaten | uitgelaat].
-- **zoud** for zou · other non-word · `indirect` Word order · Het weerbericht zei dat het morgen [zou | zouden | zoud] regenen.
-- **zwaarer** for zwaarder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Op de heuvels is fietsen [zwaarder | zwaarer | zwaar] dan in Alblasserdam.
-
-### Level 113 (maastricht) `content/new/L113.js`
-
-- **geuitnodigd** for uitgenodigd · participle: ge- where it does not go · `sep` Verb form · De buren worden vandaag [uitgenodigd | geuitnodigd | uitnodigd] voor de borrel.
-- **geontvangen** for ontvangen · participle: ge- where it does not go · `perf` Past tense · Iedereen wordt hartelijk [ontvangen | geontvangen | ontvangt] met een stuk vlaai.
-- **geteken** for getekend · participle formed wrongly · `kof` Past tense · Het verdrag werd hier in 1992 [getekend | getekent | geteken].
-- **geuitruimd** for uitgeruimd · participle: ge- where it does not go · `passief` Verb form · Voor de borrel moet de vaatwasser nog [uitgeruimd worden | uitgeruimd wordt | geuitruimd worden].
-- **geafzegd** for afgezegd · participle: ge- where it does not go · `sep` Verb form · De borrel is helaas [afgezegd | geafzegd | afzegd].
-- **gevertrokken** for vertrokken · participle: ge- where it does not go · `plusq` Past tense · Toen we bij de Helpoort aankwamen, was iedereen al [vertrokken | gevertrokken | vertrokt].
-- **vertrokt** for vertrokken · irregular verb made regular (koopte, gegaand) · `plusq` Past tense · Toen we bij de Helpoort aankwamen, was iedereen al [vertrokken | gevertrokken | vertrokt].
-- **geontmoet** for ontmoet · participle: ge- where it does not go · `kof` Past tense · Voor die avond had ik de buren nog nooit [ontmoet | ontmoetd | geontmoet].
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Paola was al naar bed [gegaan | gegaat | gaan].
-- **geuitnodigd** for uitgenodigd · participle: ge- where it does not go · `sep` Verb form · Hij zei dat hij de buren al [had uitgenodigd | had uitnodigd | had geuitnodigd].
-- **lekkerer** for lekkerder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · De vlaai in Maastricht is [lekkerder | lekkerer | meer lekker] dan in Rotterdam.
-- **gevergist** for vergist · participle: ge- where it does not go · `refl` Which word · Sorry, ik heb me [vergist | gevergist | vergissen], dat is niet mijn jas.
-
-### Level 114 (maastricht) `content/new/L114.js`
-
-- **geverbouwd** for verbouwd · participle: ge- where it does not go · `perf` Past tense · De basiliek wordt al jaren [verbouwd | geverbouwd | verbouwen].
-- **geuitruimd** for uitgeruimd · participle: ge- where it does not go · `sep` Verb form · De vaatwasser moet voor de borrel nog [uitgeruimd | geuitruimd | uitruimen] worden.
-- **gebezorgd** for bezorgd · participle: ge- where it does not go · `passief` Verb form · Komt u de vlaai afhalen of moet hij [bezorgd | gebezorgd | bezorgen] worden?
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik was met de honden naar de grotten [gegaan | gegaat], maar het was te koud.
-- **geverkocht** for verkocht · participle: ge- where it does not go · `perf` Past tense · De bakker had de laatste vlaai al [verkocht | geverkocht | verkoopt] toen wij kwamen.
-- **gewerken** for gewerkt · participle formed wrongly · `kof` Past tense · Voor de mist had hij altijd in Rotterdam [gewerkt | gewerkd | gewerken].
-- **gegebruikt** for gebruikt · participle: ge- where it does not go · `kof` Past tense · De gids zei dat de mergel vroeger voor huizen [gebruikt | gebruikd | gegebruikt] werd.
-- **lekkerer** for lekkerder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Volgens mij is de vlaai hier [lekkerder | meer lekker | lekkerer] dan thuis.
-- **geuitlaten** for uitgelaten · participle: ge- where it does not go · `sep` Verb form · Gisteren hebben we de honden langs de Maas [uitgelaten | geuitlaten | uitgelaat].
-- **uitgelaat** for uitgelaten · separable participle formed wrongly · `sep` Verb form · Gisteren hebben we de honden langs de Maas [uitgelaten | geuitlaten | uitgelaat].
-
-### Level 115 (nijmegen) `content/new/L115.js`
-
-- **eenmaals** for eenmaal · other non-word · `soft` Which word · De honden moeten alweer uit. Zo zijn ze [nou eenmaal | nou eenmalig | nu eenmaals].
-- **afgesluit** for afgesloten · separable participle formed wrongly · `sep` Verb form · Onze straat is sinds gisteren [afgesloten | afgesluit | geafsloten] vanwege de Vierdaagse.
-- **geafsloten** for afgesloten · participle: ge- where it does not go · `sep` Verb form · Onze straat is sinds gisteren [afgesloten | afgesluit | geafsloten] vanwege de Vierdaagse.
-- **gewaarschuwen** for gewaarschuwd · participle formed wrongly · `kof` Past tense · Toen we in Nijmegen kwamen wonen, had niemand ons voor de heuvel [gewaarschuwd | gewaarschuwt | gewaarschuwen].
-
-### Level 116 (nijmegen) `content/new/L116.js`
-
-- **gekoopt** for gekocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Ik heb deze wandelsokken voor een appel en een ei [gekocht | gekoopt].
-- **wachting** for In · other non-word · `formeel` Which word · [In afwachting van | In wachting van | In verwachting van] uw antwoord, met vriendelijke groet, Santi Sanchez.
-- **geopkocht** for opgekocht · participle: ge- where it does not go · `sep` Verb form · Toen ik bij de bakker kwam, hadden de wandelaars alle broodjes al [opgekocht | geopkocht | opgekoopt].
-- **opgekoopt** for opgekocht · separable participle formed wrongly · `sep` Verb form · Toen ik bij de bakker kwam, hadden de wandelaars alle broodjes al [opgekocht | geopkocht | opgekoopt].
-
-### Level 117 (nijmegen) `content/new/L117.js`
-
-- **gefrituren** for gefrituurd · participle formed wrongly · `kof` Past tense · Op de Waalkade worden de bitterballen vers [gefrituurd | gefrituurt | gefrituren].
-
-### Level 118 (nijmegen) `content/new/L118.js`
-
-- **geloopt** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De Vierdaagse wordt al sinds 1909 [gelopen | geloopt | gelopt].
-- **gelopt** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De Vierdaagse wordt al sinds 1909 [gelopen | geloopt | gelopt].
-- **honderdtste** for honderdste · other non-word · `datum` Which word · De eerste Vierdaagse was in 1909, de [honderdste | honderd | honderdtste] in 2016.
-- **steilder** for steiler · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · De weg naar de Stevenskerk is [steiler | steilder | meer steil] dan je denkt.
-
-### Level 119 (nijmegen) `content/new/L119.js`
-
-- **geuitsteld** for uitgesteld · participle: ge- where it does not go · `kof` Past tense · De release wordt tot na de Vierdaagse [uitgesteld | uitgestelt | geuitsteld].
-- **geopgelost** for opgelost · participle: ge- where it does not go · `sep` Verb form · Toen ik inlogde, had mijn collega het incident al [opgelost | geopgelost | opgelossen].
-- **opgelossen** for opgelost · separable participle formed wrongly · `sep` Verb form · Toen ik inlogde, had mijn collega het incident al [opgelost | geopgelost | opgelossen].
-
-### Level 120 (nijmegen) `content/new/L120.js`
-
-- **geafgelast** for afgelast · participle: ge- where it does not go · `kof` Past tense · De wedstrijd werd gisteren door de regen [afgelast | afgelasd | geafgelast].
-- **gewachten** for gewacht · irregular verb made regular (koopte, gegaand) · `kof` Past tense · Toen ik bij de finish kwam, had Paola al een uur [gewacht | gewachtd | gewachten].
-- **zwaarer** for zwaarder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · De zevende heuvel is [zwaarder | zwaarer | meer zwaar] dan de eerste.
-
-### Level 121 (nijmegen) `content/new/L121.js`
-
-- **gehelpt** for geholpen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De oude buurvrouw wordt door de hele straat [geholpen | gehelpt | geholpt].
-- **geholpt** for geholpen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De oude buurvrouw wordt door de hele straat [geholpen | gehelpt | geholpt].
-- **gehoren** for gehoord · participle formed wrongly · `kof` Past tense · Voordat we hier kwamen wonen, hadden we nog nooit van de Vierdaagse [gehoord | gehoort | gehoren].
-
-### Level 122 (nijmegen) `content/new/L122.js`
-
-- **geloopt** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Na vier dagen hadden we honderdzestig kilometer [gelopen | geloopt | gelopt].
-- **gelopt** for gelopen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Na vier dagen hadden we honderdzestig kilometer [gelopen | geloopt | gelopt].
-- **getoejuicht** for toegejuicht · participle: ge- where it does not go · `sep` Verb form · Op vrijdag worden de wandelaars langs de Via Gladiola [toegejuicht | toegejuichd | getoejuicht].
-- **tweeduizenden** for tweeduizend · invented numeral · `getal` Which word · De Romeinen woonden hier [tweeduizend | tweehonderd | tweeduizenden] jaar geleden.
-
-### Level 123 (amsterdam) `content/new/L123.js`
-
-- **gehijsd** for gehesen · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Omdat de trap te smal is, wordt de bank met de hijsbalk naar boven [gehesen | gehijsd | gehijsen].
-- **gehijsen** for gehesen · participle formed wrongly · `perf` Past tense · Omdat de trap te smal is, wordt de bank met de hijsbalk naar boven [gehesen | gehijsd | gehijsen].
-- **tweeduizendeenhonderd** for tweeduizendhonderd · invented numeral · `getal` Which word · De huur is [tweeduizendhonderd | tweeduizendeenhonderd | twaalfhonderd] euro per maand, dus we delen hem tot op de cent.
-
-### Level 124 (amsterdam) `content/new/L124.js`
-
-- **achttig** for tachtig · invented numeral · `getal` Which word · Met twintig procent korting kost de jas [tachtig | achttig | tachttig] euro in plaats van honderd.
-- **tachttig** for tachtig · invented numeral · `getal` Which word · Met twintig procent korting kost de jas [tachtig | achttig | tachttig] euro in plaats van honderd.
-- **viertien** for veertien · invented numeral · `getal` Which word · Dat is dan [veertien | viertien] euro tachtig, alstublieft.
-- **achttig** for tachtig · invented numeral · `getal` Which word · Dat is dan veertien euro [tachtig | achttig], alstublieft.
-- **durer** for duurder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · De Negen Straatjes zijn kleiner, rustiger en veel [duurder | durer | meer duur] dan de Kalverstraat.
-
-### Level 125 (amsterdam) `content/new/L125.js`
-
-- **vijfzeventig** for vijfenzeventig · invented numeral · `getal` Which word · Twee biertjes en een jenever: dat wordt elf euro [vijfenzeventig | zevenenvijftig | vijfzeventig].
-- **viertig** for veertig · invented numeral · `getal` Which word · Ik stuur je een Tikkie voor jouw helft, dat is acht euro [veertig | viertig].
-- **opgeëten** for opgegeten · separable participle formed wrongly · `sep` Verb form · Toen de rijsttafel kwam, hadden we alle kroepoek al [opgegeten | opgeëten | geopgeten].
-- **geopgeten** for opgegeten · participle: ge- where it does not go · `sep` Verb form · Toen de rijsttafel kwam, hadden we alle kroepoek al [opgegeten | opgeëten | geopgeten].
-
-### Level 126 (amsterdam) `content/new/L126.js`
-
-- **uitgestaped** for uitgestapt · separable participle formed wrongly · `aux` Past tense · Ik wacht altijd tot iedereen [is uitgestapt | heeft uitgestapt | is uitgestaped].
-
-### Level 127 (amsterdam) `content/new/L127.js`
-
-- **stijgde** for steeg · irregular verb made regular (koopte, gegaand) · `imp` Past tense · De omzet [steeg | stijgde | stoog] met drie komma vijf procent, tot een miljoen tweehonderdduizend euro.
-- **stoog** for steeg · other non-word · `imp` Past tense · De omzet [steeg | stijgde | stoog] met drie komma vijf procent, tot een miljoen tweehonderdduizend euro.
-- **goedste** for beste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Dit is het [beste | goedste | betere] kwartaal dat we ooit hebben gehad.
-- **gehebt** for gehad · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Dit is het beste kwartaal dat we ooit [hebben gehad | hebben gehebt].
-- **thuisgeblijfd** for thuisgebleven · separable participle formed wrongly · `perf` Past tense · Als ik dat had geweten, was ik [thuisgebleven | thuisgeblijfd].
+- **liefer** for liever · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Spelling · Ik zou vandaag [liever | liefer] thuis werken.
 
 ### Level 128 (amsterdam) `content/new/L128.js`
 
-- **zesentien** for zestien · invented numeral · `getal` Which word · De loop is tien Engelse mijl, dat is ongeveer [zestien | zesentien | zeventien] kilometer.
-- **vijfveertig** for vijfenveertig · invented numeral · `getal` Which word · De wedstrijd werd gewonnen door een man uit Ethiopië, in minder dan [vijfenveertig | vijfveertig | vijfenvertig] minuten.
-- **vijfenvertig** for vijfenveertig · invented numeral · `getal` Which word · De wedstrijd werd gewonnen door een man uit Ethiopië, in minder dan [vijfenveertig | vijfveertig | vijfenvertig] minuten.
-- **scorede** for scoorde · other non-word · `imp` Past tense · Ajax [scoorde | scoorden | scorede] op de valreep.
-- **snelder** for sneller · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Als ik meer had getraind, had ik [sneller | snelder] gelopen.
-- **gesloegen** for geslagen · participle formed wrongly · `perf` Past tense · Ik heb de bal in de sloot [geslagen | geslaagd | gesloegen], dus ik krijg een strafslag.
-- **beroemste** for beroemdste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Ajax speelt in de Johan Cruijff ArenA, genoemd naar de [beroemdste | beroemste] speler van de club.
-- **harter** for harder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Kom op, [harder | harter], je kunt het wel, gabber.
-- **gegaat** for gegaan · irregular verb made regular (koopte, gegaand) · `perf` Past tense · Toen ik aankwam, waren de anderen al naar huis [gegaan | gegaat].
-- **geopwarmd** for opgewarmd · participle: ge- where it does not go · `sep` Verb form · Ik ben stijf omdat ik te weinig heb [opgewarmd | geopwarmd | opgewarmt].
-
-### Level 129 (amsterdam) `content/new/L129.js`
-
-- **geïnwijd** for ingewijd · participle: ge- where it does not go · `sep` Verb form · De Oude Kerk werd in 1306 [ingewijd | geïnwijd | ingewijdt] en is het oudste gebouw van de stad.
-- **snelder** for sneller · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Comparison · Een Amsterdammer loopt [sneller | snelder] dan een toerist, en fietst nog sneller.
-- **gezoekt** for gezocht · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De toerist zei dat hij al een uur naar het station [had gezocht | had gezoekt | was gezocht].
-
-### Level 130 (amsterdam) `content/new/L130.js`
-
-- **gegraafd** for gegraven · irregular verb made regular (koopte, gegaand) · `perf` Past tense · De grachtengordel werd vanaf 1612 [gegraven | gegraafd | gegroeven] en staat sinds 2010 op de Werelderfgoedlijst.
-- **gegroeven** for gegraven · participle formed wrongly · `perf` Past tense · De grachtengordel werd vanaf 1612 [gegraven | gegraafd | gegroeven] en staat sinds 2010 op de Werelderfgoedlijst.
-- **vijfachttig** for vijfentachtig · invented numeral · `getal` Which word · De Westertoren is [vijfentachtig | achtenvijftig | vijfachttig] meter hoog en draagt de blauwe keizerskroon van Maximiliaan.
-- **geherbouwd** for herbouwd · participle: ge- where it does not go · `perf` Past tense · De Magere Brug werd in 1934 [herbouwd | geherbouwd | herbouwt], en 's nachts wordt hij verlicht door honderden lampjes.
-- **vertrekte** for vertrok · irregular verb made regular (koopte, gegaand) · `imp` Past tense · Elke keer als ik het probeerde, schakelden de Nederlanders over op Engels, [dus de taal vertrok | dus de taal vertrekte].
+- **beroemste** for beroemdste · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Spelling · Ajax speelt in de Johan Cruijff ArenA, genoemd naar de [beroemdste | beroemste] speler van de club.
+- **harter** for harder · comparative formed wrongly (graager, gooder, duurer) · `vergelijk` Spelling · Kom op, [harder | harter], je kunt het wel, gabber.
 
 ## Legitimate Spelling contrasts
 
@@ -678,13 +78,9 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 - **brooden** for broden · open and closed syllables (vowel or consonant doubling) · `spel` · Mag ik twee [broden | brooden | broods], alstublieft?
 - **broods** for broden · plural spelling · `spel` · Mag ik twee [broden | brooden | broods], alstublieft?
-- **kostt** for kost · d or t ('t kofschip, wordt, snijdt) · `pres` (needs the Spelling label) · De pindakaas [kost | kosten | kostt] drie euro.
+- **kostt** for kost · d or t ('t kofschip, wordt, snijdt) · `pres` (needs the Spelling label) · De pindakaas [kost | kostt] drie euro.
 - **broodjen** for broodjes · diminutive spelling · `meervoud` · Mag ik vier [broodjes | broodjen | broodje's]?
 - **broodje's** for broodjes · plural spelling · `meervoud` · Mag ik vier [broodjes | broodjen | broodje's]?
-
-### Level 7 (kinderdijk)
-
-- **snijt** for snijdt · d or t ('t kofschip, wordt, snijdt) · `pres` (needs the Spelling label) · De slager [snijdt | snijd | snijt] het vlees.
 
 ### Level 9 (kinderdijk)
 
@@ -692,127 +88,101 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 ### Level 47 (kinderdijk)
 
-- **sportt** for sport · d or t ('t kofschip, wordt, snijdt) · `pres` (needs the Spelling label) · Paola [sport | sportt | sporten] op zondag.
+- **sportt** for sport · d or t ('t kofschip, wordt, snijdt) · `pres` (needs the Spelling label) · Paola [sport | sportt] op zondag.
 
 ### Level 11 (gouda)
 
-- **wachtt** for wacht · d or t ('t kofschip, wordt, snijdt) · `presens` (needs the Spelling label) · Mark [wacht | wachtt | wachten] nog op mijn review.
-- **zegg** for zeg · open and closed syllables (vowel or consonant doubling) · `spel` · Ik [zeg | zegg | zegt] nog steeds u tegen mijn baas.
-- **stur** for stuur · open and closed syllables (vowel or consonant doubling) · `spel` · Ik [stuur | stur | stuurt] mijn vrouw even een berichtje.
-- **bell** for bel · open and closed syllables (vowel or consonant doubling) · `spel` · Ik [bel | bell | belt] de klant.
+- **wachtt** for wacht · d or t ('t kofschip, wordt, snijdt) · `presens` (needs the Spelling label) · Mark [wacht | wachtt] nog op mijn review.
+- **zegg** for zeg · open and closed syllables (vowel or consonant doubling) · `spel` · Ik [zeg | zegg] nog steeds u tegen mijn baas.
+- **stur** for stuur · open and closed syllables (vowel or consonant doubling) · `spel` · Ik [stuur | stur] mijn vrouw even een berichtje.
+- **bell** for bel · open and closed syllables (vowel or consonant doubling) · `spel` · Ik [bel | bell] de klant.
 
 ### Level 49 (gouda)
 
-- **ontbijtt** for ontbijt · d or t ('t kofschip, wordt, snijdt) · `presens` (needs the Spelling label) · Paola [ontbijt | ontbijten | ontbijtt] in de keuken.
-
-### Level 66 (utrecht)
-
-- **Lett** for let · d or t ('t kofschip, wordt, snijdt) · `gebod` (needs the Spelling label) · [Let | Lett | Letten] op, er zijn studenten op het fietspad.
+- **ontbijtt** for ontbijt · d or t ('t kofschip, wordt, snijdt) · `presens` (needs the Spelling label) · Paola [ontbijt | ontbijtt] in de keuken.
 
 ### Level 67 (denhaag)
 
-- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · Schat, ik ben thuis. Ik heb vandaag lang [gewerkt | gewerkd | gewerken].
+- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · Schat, ik ben thuis. Ik heb vandaag lang [gewerkt | gewerkd].
 - **gewoont** for gewoond · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben vroeger in Alblasserdam [gewoond | gewoont].
-- **gekookd** for gekookt · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft [gekookt | gekookd | gekoken]. Het ruikt heerlijk.
-- **gefietsd** for gefietst · d or t ('t kofschip, wordt, snijdt) · `kof` · Zondag zijn we naar Scheveningen [gefietst | gefietsd | gefiets].
+- **gekookd** for gekookt · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft [gekookt | gekookd]. Het ruikt heerlijk.
+- **gefietsd** for gefietst · d or t ('t kofschip, wordt, snijdt) · `kof` · Zondag zijn we naar Scheveningen [gefietst | gefietsd].
 - **gepraatt** for gepraat · d or t ('t kofschip, wordt, snijdt) · `kof` · Op tv heeft de minister drie uur [gepraat | gepraatt | gepraatd].
 - **gepraatd** for gepraat · d or t ('t kofschip, wordt, snijdt) · `kof` · Op tv heeft de minister drie uur [gepraat | gepraatt | gepraatd].
-- **geziet** for gezien · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · Gisteren hebben we samen een film [gezien | geziet | gezient].
-- **opgebelt** for opgebeld · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Heb je je moeder al [opgebeld | geopbeld | opgebelt]?
-- **uitgeruimt** for uitgeruimd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Heb jij de vaatwasser al [uitgeruimd | geuitruimd | uitgeruimt]?
 
 ### Level 68 (denhaag)
 
-- **geweesd** for geweest · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · Ik ben vanmorgen naar de apotheek [geweest | gezijnd | geweesd].
 - **geruilt** for geruild · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft de trui [geruild | geruilt].
-- **gekosd** for gekost · d or t ('t kofschip, wordt, snijdt) · `kof` · Wat heeft die jas [gekost | gekosd | gekostet]?
-- **gepint** for gepind · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb bij de haringkar [gepind | gepint | gepinnd].
-- **gepinnd** for gepind · open and closed syllables (vowel or consonant doubling) · `kof` · Ik heb bij de haringkar [gepind | gepint | gepinnd].
+- **gekosd** for gekost · d or t ('t kofschip, wordt, snijdt) · `kof` · Wat heeft die jas [gekost | gekosd]?
+- **gepint** for gepind · d or t ('t kofschip, wordt, snijdt) · `kof` · Bij de haringkar heb ik [gepind | gepint | gepinnd].
+- **gepinnd** for gepind · open and closed syllables (vowel or consonant doubling) · `kof` · Bij de haringkar heb ik [gepind | gepint | gepinnd].
 - **gepasd** for gepast · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb de schoenen [gepast | gepasd], ze zijn te klein.
-- **gewinkelt** for gewinkeld · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben de hele middag in Den Haag [gewinkeld | gewinkelt | gewinkelen].
-- **gedeelt** for gedeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · De minister heeft de rekening ook [gedeeld | gedeelt | gedelen].
-- **terugebracht** for teruggebracht · open and closed syllables (vowel or consonant doubling) · `sep` (needs the Spelling label) · Ik heb het overhemd [teruggebracht | geterugbracht | terugebracht].
-- **afgerekent** for afgerekend · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · We hebben bij de kassa [afgerekend | geafrekend | afgerekent].
+- **gewinkelt** for gewinkeld · d or t ('t kofschip, wordt, snijdt) · `kof` · De hele middag hebben we in Den Haag [gewinkeld | gewinkelt].
+- **gedeelt** for gedeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · De minister heeft de rekening ook [gedeeld | gedeelt].
 
 ### Level 69 (denhaag)
 
-- **afgerekent** for afgerekend · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · We hebben al [afgerekend | geafrekend | afgerekent].
-- **opgehaalt** for opgehaald · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · Ik heb de bestelling bij de toko [opgehaald | geophaald | opgehaalt].
-- **gereserveert** for gereserveerd · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben [gereserveerd | gereserveert | reserveerd] op naam van Santiago.
-- **reserveerd** for gereserveerd · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben [gereserveerd | gereserveert | reserveerd] op naam van Santiago.
-- **gekookd** for gekookt · d or t ('t kofschip, wordt, snijdt) · `kof` · De kok heeft de hele avond [gekookt | gekookd | gekoken].
+- **gereserveert** for gereserveerd · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben [gereserveerd | gereserveert] op naam van Santiago.
+- **gekookd** for gekookt · d or t ('t kofschip, wordt, snijdt) · `kof` · De hele avond heeft de kok [gekookt | gekookd].
 - **geproeft** for geproefd · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft de haring al [geproefd | geproeft].
-- **gedeelt** for gedeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Natuurlijk hebben we de rekening [gedeeld | gedeelt | gedelen].
-- **gestuurt** for gestuurd · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft iedereen een Tikkie van vier euro zevenendertig [gestuurd | gestuurt | gestuurde].
+- **gedeelt** for gedeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Natuurlijk hebben we de rekening [gedeeld | gedeelt].
+- **gestuurt** for gestuurd · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft iedereen een Tikkie van vier euro zevenendertig [gestuurd | gestuurt].
 
 ### Level 70 (denhaag)
 
 - **gemisd** for gemist · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb de trein [gemist | gemisd].
-- **ingecheckd** for ingecheckt · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola heeft bij het poortje [ingecheckt | ingecheckd | incheckt].
-- **gewachtd** for gewacht · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb een uur op spoor vijf [gewacht | gewachtd].
-- **opgebelt** for opgebeld · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola heeft me net [opgebeld | geopbeld | opgebelt].
-- **overgestapd** for overgestapt · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Ik ben in Rotterdam [overgestapt | geoverstapt | overgestapd].
-- **gereist** for gereisd · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben de hele dag met de trein [gereisd | gereist].
+- **ingecheckd** for ingecheckt · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola heeft bij het poortje [ingecheckt | ingecheckd].
+- **gewachtd** for gewacht · d or t ('t kofschip, wordt, snijdt) · `kof` · Op spoor vijf heb ik een uur [gewacht | gewachtd].
+- **gereist** for gereisd · d or t ('t kofschip, wordt, snijdt) · `kof` · De hele dag hebben we met de trein [gereisd | gereist].
 
 ### Level 71 (denhaag)
 
-- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteren heb ik aan de dashboards [gewerkt | gewerkd | gewerken].
+- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteren heb ik aan de dashboards [gewerkt | gewerkd].
 - **gewoont** for gewoond · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb twee jaar in Den Haag [gewoond | gewoont].
-- **gelunchd** for geluncht · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben op het Plein [geluncht | gelunchd | gelunchen].
+- **gelunchd** for geluncht · d or t ('t kofschip, wordt, snijdt) · `kof` · We hebben op het Plein [geluncht | gelunchd].
 - **gebelt** for gebeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb de minister al twee keer [gebeld | gebelt].
-- **uitgezett** for uitgezet · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Ik heb de laptop al [uitgezet | geuitzet | uitgezett].
 
 ### Level 72 (denhaag)
 
-- **gespeelt** for gespeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb zaterdag golf [gespeeld | gespeelt | spelen].
-- **gefietsd** for gefietst · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik ben naar de golfbaan [gefietst | gefietsd | fietsen].
+- **gespeelt** for gespeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb zaterdag golf [gespeeld | gespeelt].
+- **gefietsd** for gefietst · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik ben naar de golfbaan [gefietst | gefietsd].
 - **gesportt** for gesport · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteren heb ik in de sportschool [gesport | gesportt | gesportd].
 - **gesportd** for gesport · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteren heb ik in de sportschool [gesport | gesportt | gesportd].
-- **gewandelt** for gewandeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft met de honden in het Haagse Bos [gewandeld | gewandelt | wandelen].
-- **opgebelt** for opgebeld · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Ik heb de buurman over de starttijd [opgebeld | geopbeld | opgebelt].
+- **gewandelt** for gewandeld · d or t ('t kofschip, wordt, snijdt) · `kof` · In het Haagse Bos heeft Paola met de honden [gewandeld | gewandelt].
 - **geregent** for geregend · d or t ('t kofschip, wordt, snijdt) · `kof` · Het heeft de hele dag op de baan [geregend | geregent].
 
 ### Level 73 (denhaag)
 
-- **uitgenodigt** for uitgenodigd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola heeft de buren voor een borrel [uitgenodigd | geuitnodigd | uitgenodigt].
-- **gepraatd** for gepraat · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij hebben lang met de buren [gepraat | gepraatd | gepraten].
-- **gekletsd** for gekletst · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft een uur met de buurvrouw [gekletst | gekletsd | gekletsen].
-- **bedankd** for bedankt · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb haar voor de bloemen [bedankt | gebedankt | bedankd].
-- **gefeliciteert** for gefeliciteerd · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb mijn collega met zijn verjaardag [gefeliciteerd | gefeliciteert | feliciteerd].
-- **feliciteerd** for gefeliciteerd · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb mijn collega met zijn verjaardag [gefeliciteerd | gefeliciteert | feliciteerd].
-- **gehuilt** for gehuild · d or t ('t kofschip, wordt, snijdt) · `kof` · De politicus heeft in het debat [gehuild | gehuilt | gehuilen].
-- **geglimlachd** for geglimlacht · d or t ('t kofschip, wordt, snijdt) · `kof` · De buurvrouw heeft naar me [geglimlacht | geglimlachd | geglimlachen].
+- **gepraatd** for gepraat · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij hebben lang met de buren [gepraat | gepraatd].
+- **gekletsd** for gekletst · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft een uur met de buurvrouw [gekletst | gekletsd].
+- **bedankd** for bedankt · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb haar voor de bloemen [bedankt | bedankd].
+- **gefeliciteert** for gefeliciteerd · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb mijn collega met zijn verjaardag [gefeliciteerd | gefeliciteert].
+- **gehuilt** for gehuild · d or t ('t kofschip, wordt, snijdt) · `kof` · De politicus heeft in het debat [gehuild | gehuilt].
+- **geglimlachd** for geglimlacht · d or t ('t kofschip, wordt, snijdt) · `kof` · De buurvrouw heeft naar me [geglimlacht | geglimlachd].
 
 ### Level 74 (denhaag)
 
 - **geduurt** for geduurd · d or t ('t kofschip, wordt, snijdt) · `kof` · Het debat heeft de hele nacht [geduurd | geduurt].
 - **gestemt** for gestemd · d or t ('t kofschip, wordt, snijdt) · `kof` · Heb je al [gestemd | gestemt]?
-- **gedebatteert** for gedebatteerd · d or t ('t kofschip, wordt, snijdt) · `kof` · De Tweede Kamer heeft drie uur [gedebatteerd | gedebatteert | gedebatteren].
+- **gedebatteert** for gedebatteerd · d or t ('t kofschip, wordt, snijdt) · `kof` · De Tweede Kamer heeft drie uur [gedebatteerd | gedebatteert].
 - **gewandelt** for gewandeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Zondag hebben we op de pier [gewandeld | gewandelt].
 - **gepikd** for gepikt · d or t ('t kofschip, wordt, snijdt) · `kof` · Een meeuw heeft mijn patatje [gepikt | gepikd].
-- **opgebelt** for opgebeld · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Ik heb Paola vanaf de pier [opgebeld | geopbeld | opgebelt].
 
 ### Level 75 (rotterdam)
 
-- **werkde** for werkte · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik [werkte | werkde | werkt] gisteren de hele dag thuis.
-- **kookde** for kookte · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola [kookte | kookde | kookten] en ik deed de afwas.
-- **haden** for hadden · open and closed syllables (vowel or consonant doubling) · `imp` (needs the Spelling label) · We [hadden | had | haden] geen tijd, daarom bestelden we pizza.
+- **kookde** for kookte · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola [kookte | kookde] en ik deed de afwas.
 - **herinnerte** for herinnerde · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik [herinnerde | herinnerte] me de naam van de buurman niet.
-- **verveelten** for verveelden · d or t ('t kofschip, wordt, snijdt) · `kof` · De honden [verveelden | verveelde | verveelten] zich in de woonkamer.
-- **opruimd** for opgeruimd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola heeft de rommel al [opgeruimd | geopruimd | opruimd].
 
 ### Level 76 (rotterdam)
 
-- **bakde** for bakte · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De bakker [bakte | bakde | bakkede] de hele nacht brood.
-- **betaalte** for betaalde · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De klant [betaalde | betaalte | betaald] met de pinpas.
-- **legte** for legde · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik zag de prijs en [legde | legte | gelegd] de kaas terug.
-- **gepasd** for gepast · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft in de paskamer drie jurken [gepast | gepasd | gepassen].
+- **bakde** for bakte · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De bakker [bakte | bakde] de hele nacht brood.
+- **betaalte** for betaalde · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De klant [betaalde | betaalte] met de pinpas.
+- **legte** for legde · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik zag de prijs en [legde | legte] de kaas terug.
+- **gepasd** for gepast · d or t ('t kofschip, wordt, snijdt) · `kof` · Paola heeft in de paskamer drie jurken [gepast | gepasd].
 
 ### Level 77 (rotterdam)
 
-- **werkde** for werkte · d or t ('t kofschip, wordt, snijdt) · `kof` · De kok [werkte | werkde | werkten] de hele nacht in de keuken.
-- **opente** for opende · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · In 2014 [opende | opente | opend] de Markthal. Daarna kwamen de toeristen.
-- **opend** for opende · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · In 2014 [opende | opente | opend] de Markthal. Daarna kwamen de toeristen.
+- **opente** for opende · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · In 2014 [opende | opente] de Markthal. Daarna kwamen de toeristen.
 - **haalte** for haalde · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Ik [haalde | haalte] de kapsalon om zeven uur op.
 
 ### Level 78 (rotterdam)
@@ -822,43 +192,29 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 ### Level 79 (rotterdam)
 
-- **werkde** for werkte · d or t ('t kofschip, wordt, snijdt) · `kof` · Vorig jaar [werkte | werkde | werkt] ik bij een bank in Rotterdam.
-- **wachtde** for wachtten · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteravond ging ik laat naar huis. De honden [wachtten | wachtte | wachtde] al.
 - **belte** for belde · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik zag de fout op mijn scherm en [belde | belte] Mark.
 - **lachde** for lachte · d or t ('t kofschip, wordt, snijdt) · `kof` · Tijdens de standup sprak ik Nederlands en niemand [lachte | lachde].
-- **uitgerolt** for uitgerold · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Gisteren heb ik de bug opgelost en de fix [uitgerold | geuitrold | uitgerolt].
 
 ### Level 80 (rotterdam)
 
-- **fietsde** for fietste · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Ik [fietste | fietsde | fietsten] elke dag langs de Maas.
-- **voelte** for voelde · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Na het hardlopen [voelde ik | ik voelde | voelte ik] me geweldig.
-- **vergisden** for vergisten · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · We kwamen te laat, want we [vergisten | vergisden | vergist] ons in de tijd.
+- **fietsde** for fietste · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Ik [fietste | fietsde] elke dag langs de Maas.
+- **vergisden** for vergisten · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · We kwamen te laat, want we [vergisten | vergisden] ons in de tijd.
 
 ### Level 81 (rotterdam)
 
-- **veranderte** for veranderde · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen kwam de mist en iedereen [veranderde | veranderte | veranderden].
-- **kletsde** for kletsten · d or t ('t kofschip, wordt, snijdt) · `kof` · In de haven [kletsten | kletsde | kletste] we niet, we werkten.
-- **werkde** for werkten · d or t ('t kofschip, wordt, snijdt) · `kof` · In de haven kletsten we niet, we [werkten | werkde | werkte].
-- **zwaaite** for zwaaide · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik zag haar in de Markthal en ik [zwaaide | zwaaite | zwaaiden].
-- **maakde** for maakten · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij [maakten | maakte | maakde] ruzie over de afwas, en Paola won.
-- **voelte** for voelde · d or t ('t kofschip, wordt, snijdt) · `kof` · In Rotterdam [voelde | voelden | voelte] ik me meteen thuis.
-- **herinnerte** for herinnerde · d or t ('t kofschip, wordt, snijdt) · `kof` · Op de borrel [herinnerde | herinnerte | herinnerden] ik me haar naam niet meer.
-- **voorstelen** for voorstellen · open and closed syllables (vowel or consonant doubling) · `sep` (needs the Spelling label) · Mag ik me even [voorstellen | stellen voor | voorstelen]? Ik woon hiernaast.
-- **hooger** for hoger · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · De Euromast is veel [hoger | hooger | meer hoog] dan het Witte Huis.
+- **veranderte** for veranderde · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen kwam de mist en iedereen [veranderde | veranderte].
+- **zwaaite** for zwaaide · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik zag haar in de Markthal en ik [zwaaide | zwaaite].
+- **hooger** for hoger · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · De Euromast is veel [hoger | hooger] dan het Witte Huis.
 
 ### Level 82 (rotterdam)
 
-- **werkde** for werkte · d or t ('t kofschip, wordt, snijdt) · `kof` · Mijn opa [werkte | werkde | werkten] vroeger in de haven.
-- **haden** for hadden · open and closed syllables (vowel or consonant doubling) · `imp` (needs the Spelling label) · De havenarbeiders [hadden | had | haden] geen tijd voor koffie.
-- **scheepen** for schepen · open and closed syllables (vowel or consonant doubling) · `woord` (needs the Spelling label) · De honden wilden de [schepen | scheepen | schipen] zien.
-- **schipen** for schepen · plural spelling · `woord` (needs the Spelling label) · De honden wilden de [schepen | scheepen | schipen] zien.
+- **scheepen** for schepen · open and closed syllables (vowel or consonant doubling) · `woord` (needs the Spelling label) · De honden wilden de [schepen | scheepen] zien.
 - **voelte** for voelde · d or t ('t kofschip, wordt, snijdt) · `kof` · Na de nachtdienst [voelde | voelte] de havenarbeider zich moe.
-- **druker** for drukker · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · Het is hier [drukker | druker | drukter] dan in Alblasserdam.
-- **gelosd** for gelost · d or t ('t kofschip, wordt, snijdt) · `kof` · De havenarbeiders hebben het schip [gelost | gelosd | gelossen].
+- **druker** for drukker · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · Het is hier [drukker | druker] dan in Alblasserdam.
+- **gelosd** for gelost · d or t ('t kofschip, wordt, snijdt) · `kof` · De havenarbeiders hebben het schip [gelost | gelosd].
 
 ### Level 83 (urk)
 
-- **werkde** for werkte · d or t ('t kofschip, wordt, snijdt) · `kof` · De buurman [werkte | werkde | werkten] vroeger op een kotter.
 - **gefietsd** for gefietst · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteren ben ik zonder helm naar de haven [gefietsd | gefietst].
 
 ### Level 86 (urk)
@@ -879,11 +235,10 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 - **grotter** for groter · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · Ik denk dat de kotters hier [groter | grotter | grooter] zijn dan de boten in Alblasserdam.
 - **grooter** for groter · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · Ik denk dat de kotters hier [groter | grotter | grooter] zijn dan de boten in Alblasserdam.
-- **werkde** for werkte · d or t ('t kofschip, wordt, snijdt) · `kof` · Mijn opa [werkte | werkde | werkten] veertig jaar op een kotter.
 
-### Level 92 (texel)
+### Level 94 (texel)
 
-- **gekommen** for gekomen · open and closed syllables (vowel or consonant doubling) · `perf` (needs the Spelling label) · We zijn vanochtend met de veerboot [gekomen | gekomt | gekommen].
+- **sneler** for sneller · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · Op Texel is de fiets [sneller | sneler] dan de bus.
 
 ### Level 96 (texel)
 
@@ -891,7 +246,6 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 ### Level 97 (texel)
 
-- **ontmoetde** for ontmoette · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De man die ik gisteren [ontmoette | ontmoetde | ontmoetten], is boer.
 - **voelte** for voelde · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik [voelde | voelte | voeld] me hier meteen thuis.
 - **voeld** for voelde · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik [voelde | voelte | voeld] me hier meteen thuis.
 
@@ -904,28 +258,26 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 ### Level 101 (groningen)
 
-- **gemaakd** for gemaakt · d or t ('t kofschip, wordt, snijdt) · `kof` · Volgens mij hebben ze de metworst zelf [gemaakt | gemaakd | gemaken].
+- **gemaakd** for gemaakt · d or t ('t kofschip, wordt, snijdt) · `kof` · Volgens mij hebben ze de metworst zelf [gemaakt | gemaakd].
 - **komje** for kommetje · diminutive spelling · `verklein` · Mag ik een [kommetje | komje | komtje] soep, alstublieft?
 - **komtje** for kommetje · diminutive spelling · `verklein` · Mag ik een [kommetje | komje | komtje] soep, alstublieft?
 - **gesplitsd** for gesplitst · d or t ('t kofschip, wordt, snijdt) · `kof` · Gisteravond zijn we uit eten gegaan en hebben we de rekening [gesplitst | gesplitsd].
 
 ### Level 102 (groningen)
 
-- **gemisd** for gemist · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb de laatste trein net [gemist | gemisd | gemissen].
-- **stopde** for stopte · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De bus [stopte | stopde] bij de halte en wij stapten in.
-- **stapden** for stapten · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · De bus stopte bij de halte en wij [stapten | stapden] in.
+- **gemisd** for gemist · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik heb de laatste trein net [gemist | gemisd].
+- **stopde** for stopte · d or t ('t kofschip, wordt, snijdt) · `kof` · De bus [stopte | stopde] bij de halte en wij stapten in.
+- **stapden** for stapten · d or t ('t kofschip, wordt, snijdt) · `kof` · De bus stopte bij de halte en wij [stapten | stapden] in.
 
 ### Level 103 (groningen)
 
 - **mailje** for mailtje · diminutive spelling · `verklein` · Kun je me even een [mailtje | mailje] sturen?
 - **koffieje** for koffietje · diminutive spelling · `verklein` · Zullen we nog een [koffietje | koffieje] halen voor de standup?
-- **oppgepakt** for opgepakt · open and closed syllables (vowel or consonant doubling) · `sep` (needs the Spelling label) · Vanochtend heb ik de melding [opgepakt | geoppakt | oppgepakt].
 
 ### Level 104 (groningen)
 
 - **baltje** for balletje · diminutive spelling · `verklein` · Hij slaat het [balletje | baltje] in de bunker.
 - **rondtje** for rondje · diminutive spelling · `verklein` · Zullen we nog een [rondje | rondtje] door het Noorderplantsoen lopen?
-- **schaatsde** for schaatste · d or t ('t kofschip, wordt, snijdt) · `kof` · Vroeger [schaatste | schaatsde] ik elke winter op het Paterswoldsemeer.
 
 ### Level 105 (groningen)
 
@@ -934,13 +286,12 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 - **borrelje** for borreltje · diminutive spelling · `verklein` · Na het werk drinken we een [borreltje | borrelje] op de Grote Markt.
 - **praatden** for praatten · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Gisteren kwam de buurvrouw langs en we [praatten | praatden | praaten] urenlang.
 - **praaten** for praatten · open and closed syllables (vowel or consonant doubling) · `imp` (needs the Spelling label) · Gisteren kwam de buurvrouw langs en we [praatten | praatden | praaten] urenlang.
-- **opgebelt** for opgebeld · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · Mijn buurman heeft me gisteren [opgebeld | geopbeld | opgebelt] over de heg.
-- **grotter** for groter · open and closed syllables (vowel or consonant doubling) · `vergelijk` (needs the Spelling label) · Paola is nog steeds [groter | meer groot | grotter] dan ik.
+- **opgebelt** for opgebeld · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · Mijn buurman heeft me gisteren [opgebeld | opgebelt] over de heg.
 
 ### Level 106 (groningen)
 
 - **koppje** for kopje · open and closed syllables (vowel or consonant doubling) · `verklein` · Het [kopje | koppje] koffie is leeg.
-- **fietsde** for fietste · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Vroeger [fietste ik | fietsde ik | ik fietste] elke dag naar mijn werk.
+- **fietsde** for fietste · d or t ('t kofschip, wordt, snijdt) · `imp` (needs the Spelling label) · Vroeger [fietste | fietsde] ik elke dag naar mijn werk.
 
 ### Level 99 (groningen)
 
@@ -949,126 +300,113 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 ### Level 107 (maastricht)
 
-- **gebouwt** for gebouwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Ons huis werd in 1890 van mergel [gebouwd | gebouwt | gebouwen].
-- **geschildert** for geschilderd · d or t ('t kofschip, wordt, snijdt) · `kof` · De muur is gisteren [geschilderd | geschildert | schilderd].
-- **schilderd** for geschilderd · d or t ('t kofschip, wordt, snijdt) · `kof` · De muur is gisteren [geschilderd | geschildert | schilderd].
-- **gekookd** for gekookt · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen ik thuiskwam, had Paola al [gekookt | gekookd | gekoken].
+- **gebouwt** for gebouwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Ons huis werd in 1890 van mergel [gebouwd | gebouwt].
+- **geschildert** for geschilderd · d or t ('t kofschip, wordt, snijdt) · `kof` · De muur is gisteren [geschilderd | geschildert].
+- **gekookd** for gekookt · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen ik thuiskwam, had Paola al [gekookt | gekookd].
 - **geblafd** for geblaft · d or t ('t kofschip, wordt, snijdt) · `kof` · We hadden niet geslapen, want de honden hadden de hele nacht [geblaft | geblafd].
 
 ### Level 108 (maastricht)
 
-- **klaargezeet** for klaargezet · open and closed syllables (vowel or consonant doubling) · `sep` (needs the Spelling label) · De apotheker had de medicijnen al [klaargezet | geklaargezet | klaargezeet].
-- **weggegooit** for weggegooid · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola zei dat ze de bon al had [weggegooid | geweggegooid | weggegooit].
-- **afgeprijst** for afgeprijsd · d or t ('t kofschip, wordt, snijdt) · `kof` · De jas die ik gisteren zag is nu [afgeprijsd | afgeprijst | geafgeprijsd].
+- **weggegooit** for weggegooid · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Paola zei dat ze de bon al had [weggegooid | weggegooit].
+- **afgeprijst** for afgeprijsd · d or t ('t kofschip, wordt, snijdt) · `kof` · De jas die ik gisteren zag is nu [afgeprijsd | afgeprijst].
 
 ### Level 109 (maastricht)
 
-- **gedekd** for gedekt · d or t ('t kofschip, wordt, snijdt) · `kof` · De tafel wordt op het Vrijthof [gedekt | gedekd | gedekken].
+- **gedekd** for gedekt · d or t ('t kofschip, wordt, snijdt) · `kof` · Op het Vrijthof wordt de tafel [gedekt | gedekd].
 - **besteldde** for bestelde · open and closed syllables (vowel or consonant doubling) · `kof` · Het stuk vlaai dat Paola [bestelde | besteldde | bestelte], was enorm.
 - **bestelte** for bestelde · d or t ('t kofschip, wordt, snijdt) · `kof` · Het stuk vlaai dat Paola [bestelde | besteldde | bestelte], was enorm.
 - **gesplitsd** for gesplitst · d or t ('t kofschip, wordt, snijdt) · `kof` · Zaterdag hebben we op het Vrijthof gegeten en de rekening [gesplitst | gesplitsd].
 
 ### Level 110 (maastricht)
 
-- **geschrapd** for geschrapt · d or t ('t kofschip, wordt, snijdt) · `kof` · Door de mist worden vanavond alle treinen [geschrapt | geschrapd | geschrappen].
-- **gestoolen** for gestolen · open and closed syllables (vowel or consonant doubling) · `perf` (needs the Spelling label) · Gisteren werd mijn fiets op het station [gestolen | gestelen | gestoolen].
-- **gerookd** for gerookt · d or t ('t kofschip, wordt, snijdt) · `kof` · Op het perron wordt niet [gerookt | gerookd | gerokt].
-- **gemisd** for gemist · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik had de laatste trein [gemist | gemisd | gemissen], dus ik moest lopen.
+- **geschrapd** for geschrapt · d or t ('t kofschip, wordt, snijdt) · `kof` · Door de mist worden vanavond alle treinen [geschrapt | geschrapd].
+- **gerookd** for gerookt · d or t ('t kofschip, wordt, snijdt) · `kof` · Op het perron wordt niet [gerookt | gerookd].
+- **gemisd** for gemist · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik had de laatste trein [gemist | gemisd], dus ik moest lopen.
 
 ### Level 111 (maastricht)
 
-- **uitgestelt** for uitgesteld · d or t ('t kofschip, wordt, snijdt) · `kof` · De release werd gisteren [uitgesteld | uitgestelt | geuitgesteld].
-- **getekent** for getekend · d or t ('t kofschip, wordt, snijdt) · `kof` · Het verdrag werd hier in 1992 [getekend | getekent | getekenen].
-- **gefixd** for gefixt · d or t ('t kofschip, wordt, snijdt) · `kof` · De bug is al [gefixt | gefixd | gefixen].
-- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · We hadden tot middernacht [gewerkt | gewerkd | gewerken], dus ik was moe.
-- **geziet** for gezien · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · Wij hadden het probleem al [gezien | geziet | gezeen] voordat de klant belde.
+- **uitgestelt** for uitgesteld · d or t ('t kofschip, wordt, snijdt) · `kof` · De release werd gisteren [uitgesteld | uitgestelt].
+- **getekent** for getekend · d or t ('t kofschip, wordt, snijdt) · `kof` · In 1992 werd het verdrag hier [getekend | getekent].
+- **gefixd** for gefixt · d or t ('t kofschip, wordt, snijdt) · `kof` · De bug is al [gefixt | gefixd].
+- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · We hadden tot middernacht [gewerkt | gewerkd], dus ik was moe.
 
 ### Level 112 (maastricht)
 
-- **uitgestelt** for uitgesteld · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Vanwege de regen wordt de wedstrijd [uitgesteld | geuitgesteld | uitgestelt].
-- **gespeelt** for gespeeld · d or t ('t kofschip, wordt, snijdt) · `passief` (needs the Spelling label) · Hoe laat wordt de wedstrijd morgen [gespeeld | gespeelt | spelen]?
-- **gespeelt** for gespeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij hadden al [gespeeld | gespeelt | speeld] toen het begon te regenen.
-- **speeld** for gespeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij hadden al [gespeeld | gespeelt | speeld] toen het begon te regenen.
-- **geziet** for gezien · d or t ('t kofschip, wordt, snijdt) · `perf` (needs the Spelling label) · De scheidsrechter vroeg of wij de bal hadden [gezien | geziet | gezeen].
+- **uitgestelt** for uitgesteld · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Vanwege de regen wordt de wedstrijd [uitgesteld | uitgestelt].
+- **gespeelt** for gespeeld · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij hadden al [gespeeld | gespeelt] toen het begon te regenen.
 - **fietsde** for fietste · d or t ('t kofschip, wordt, snijdt) · `kof` · Vroeger [fietste | fietsde] ik elk weekend met Paola.
 
 ### Level 113 (maastricht)
 
-- **uitnodigd** for uitgenodigd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · De buren worden vandaag [uitgenodigd | geuitnodigd | uitnodigd] voor de borrel.
-- **getekent** for getekend · d or t ('t kofschip, wordt, snijdt) · `kof` · Het verdrag werd hier in 1992 [getekend | getekent | geteken].
+- **getekent** for getekend · d or t ('t kofschip, wordt, snijdt) · `kof` · Het verdrag werd hier in 1992 [getekend | getekent].
 - **gefeesd** for gefeest · d or t ('t kofschip, wordt, snijdt) · `kof` · Met carnaval wordt er drie dagen [gefeest | gefeesd | gefeestt].
 - **gefeestt** for gefeest · d or t ('t kofschip, wordt, snijdt) · `kof` · Met carnaval wordt er drie dagen [gefeest | gefeesd | gefeestt].
-- **afzegd** for afgezegd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · De borrel is helaas [afgezegd | geafzegd | afzegd].
-- **ontmoetd** for ontmoet · d or t ('t kofschip, wordt, snijdt) · `kof` · Voor die avond had ik de buren nog nooit [ontmoet | ontmoetd | geontmoet].
-- **uitnodigd** for uitgenodigd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Hij zei dat hij de buren al [had uitgenodigd | had uitnodigd | had geuitnodigd].
 
 ### Level 114 (maastricht)
 
-- **getekent** for getekend · d or t ('t kofschip, wordt, snijdt) · `kof` · Het verdrag werd in 1992 in Maastricht [getekend | getekent | tekenen].
-- **gebouwt** for gebouwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Na de oorlog werd de Sint-Servaasbrug opnieuw [gebouwd | gebouwt | gebouwen].
-- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · Voor de mist had hij altijd in Rotterdam [gewerkt | gewerkd | gewerken].
-- **gebruikd** for gebruikt · d or t ('t kofschip, wordt, snijdt) · `kof` · De gids zei dat de mergel vroeger voor huizen [gebruikt | gebruikd | gegebruikt] werd.
+- **getekent** for getekend · d or t ('t kofschip, wordt, snijdt) · `kof` · Het verdrag werd in 1992 in Maastricht [getekend | getekent].
+- **gebouwt** for gebouwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Na de oorlog werd de Sint-Servaasbrug opnieuw [gebouwd | gebouwt].
+- **gewerkd** for gewerkt · d or t ('t kofschip, wordt, snijdt) · `kof` · Voor de mist had hij altijd in Rotterdam [gewerkt | gewerkd].
+- **gebruikd** for gebruikt · d or t ('t kofschip, wordt, snijdt) · `kof` · De gids zei dat de mergel vroeger voor huizen [gebruikt | gebruikd] werd.
 
 ### Level 115 (nijmegen)
 
 - **hondmand** for hondenmand · compound linking letters (tussen-s, tussen-n) · `samen` · De [hondenmand | hondmand | hondsmand] staat naast de wasmachine.
 - **hondsmand** for hondenmand · compound linking letters (tussen-s, tussen-n) · `samen` · De [hondenmand | hondmand | hondsmand] staat naast de wasmachine.
-- **gewaarschuwt** for gewaarschuwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen we in Nijmegen kwamen wonen, had niemand ons voor de heuvel [gewaarschuwd | gewaarschuwt | gewaarschuwen].
+- **gewaarschuwt** for gewaarschuwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen we in Nijmegen kwamen wonen, had niemand ons voor de heuvel [gewaarschuwd | gewaarschuwt].
 
 ### Level 116 (nijmegen)
 
-- **stadcentrum** for stadscentrum · compound linking letters (tussen-s, tussen-n) · `samen` · De sportwinkel zit in [het stadscentrum | de stadscentrum | het stadcentrum], naast de boekhandel.
+- **stadcentrum** for stadscentrum · compound linking letters (tussen-s, tussen-n) · `samen` · De sportwinkel zit in [het stadscentrum | het stadcentrum], naast de boekhandel.
 - **besteldde** for bestelde · open and closed syllables (vowel or consonant doubling) · `kof` · Geachte heer, mevrouw, de schoenen die ik [bestelde | besteldde | bestelte] waren te klein.
 - **bestelte** for bestelde · d or t ('t kofschip, wordt, snijdt) · `kof` · Geachte heer, mevrouw, de schoenen die ik [bestelde | besteldde | bestelte] waren te klein.
-- **gelevert** for geleverd · d or t ('t kofschip, wordt, snijdt) · `kof` · De nieuwe wandelschoenen worden morgen [geleverd | gelevert | geleverdt].
-- **geleverdt** for geleverd · d or t ('t kofschip, wordt, snijdt) · `kof` · De nieuwe wandelschoenen worden morgen [geleverd | gelevert | geleverdt].
+- **gelevert** for geleverd · d or t ('t kofschip, wordt, snijdt) · `kof` · Morgen worden de schoenen [geleverd | gelevert | geleverdt].
+- **geleverdt** for geleverd · d or t ('t kofschip, wordt, snijdt) · `kof` · Morgen worden de schoenen [geleverd | gelevert | geleverdt].
 
 ### Level 117 (nijmegen)
 
 - **erwtesoep** for erwtensoep · compound linking letters (tussen-s, tussen-n) · `samen` · De [erwtensoep | erwtesoep | erwtsoep] in het bruine café is de beste van de stad.
 - **erwtsoep** for erwtensoep · compound linking letters (tussen-s, tussen-n) · `samen` · De [erwtensoep | erwtesoep | erwtsoep] in het bruine café is de beste van de stad.
-- **gefrituurt** for gefrituurd · d or t ('t kofschip, wordt, snijdt) · `kof` · Op de Waalkade worden de bitterballen vers [gefrituurd | gefrituurt | gefrituren].
+- **gefrituurt** for gefrituurd · d or t ('t kofschip, wordt, snijdt) · `kof` · Op de Waalkade worden de bitterballen vers [gefrituurd | gefrituurt].
 - **gereserveert** for gereserveerd · d or t ('t kofschip, wordt, snijdt) · `kof` · We hadden een tafel [gereserveerd | gereserveert], maar niemand had het opgeschreven.
 
 ### Level 118 (nijmegen)
 
-- **stationplein** for stationsplein · compound linking letters (tussen-s, tussen-n) · `samen` · Bij de kaartautomaat op [het stationsplein | het stationplein | de stationsplein] is de rij lang.
+- **stationplein** for stationsplein · compound linking letters (tussen-s, tussen-n) · `samen` · Bij de kaartautomaat op [het stationsplein | het stationplein] is de rij lang.
 - **gladioolen** for gladiolen · open and closed syllables (vowel or consonant doubling) · `meervoud` · Op vrijdag krijgen de wandelaars [gladiolen | gladioolen | gladiolens] langs de Via Gladiola.
 - **gladiolens** for gladiolen · plural spelling · `meervoud` · Op vrijdag krijgen de wandelaars [gladiolen | gladioolen | gladiolens] langs de Via Gladiola.
 
 ### Level 119 (nijmegen)
 
-- **wachtswoord** for wachtwoord · compound linking letters (tussen-s, tussen-n) · `samen` · Ik ben [het wachtwoord | de wachtwoord | het wachtswoord] weer vergeten.
-- **thuiswerksdag** for thuiswerkdag · compound linking letters (tussen-s, tussen-n) · `samen` · Op dinsdag werk ik thuis, dat is mijn [thuiswerkdag | thuiswerksdag | werkthuisdag].
-- **werkthuisdag** for thuiswerkdag · compound linking letters (tussen-s, tussen-n) · `samen` · Op dinsdag werk ik thuis, dat is mijn [thuiswerkdag | thuiswerksdag | werkthuisdag].
-- **uitgestelt** for uitgesteld · d or t ('t kofschip, wordt, snijdt) · `kof` · De release wordt tot na de Vierdaagse [uitgesteld | uitgestelt | geuitsteld].
+- **thuiswerksdag** for thuiswerkdag · compound linking letters (tussen-s, tussen-n) · `samen` · Op dinsdag werk ik thuis, dat is mijn [thuiswerkdag | thuiswerksdag].
+- **uitgestelt** for uitgesteld · d or t ('t kofschip, wordt, snijdt) · `kof` · De release wordt tot na de Vierdaagse [uitgesteld | uitgestelt].
 
 ### Level 120 (nijmegen)
 
 - **hardloopsschoenen** for hardloopschoenen · open and closed syllables (vowel or consonant doubling) · `samen` · Voor de Zevenheuvelenloop koop ik nieuwe [hardloopschoenen | hardloopsschoenen | hardlopenschoenen].
 - **hardlopenschoenen** for hardloopschoenen · plural spelling · `samen` · Voor de Zevenheuvelenloop koop ik nieuwe [hardloopschoenen | hardloopsschoenen | hardlopenschoenen].
-- **afgelasd** for afgelast · d or t ('t kofschip, wordt, snijdt) · `kof` · De wedstrijd werd gisteren door de regen [afgelast | afgelasd | geafgelast].
-- **gewachtd** for gewacht · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen ik bij de finish kwam, had Paola al een uur [gewacht | gewachtd | gewachten].
+- **afgelasd** for afgelast · d or t ('t kofschip, wordt, snijdt) · `kof` · De wedstrijd werd gisteren door de regen [afgelast | afgelasd].
+- **gewachtd** for gewacht · d or t ('t kofschip, wordt, snijdt) · `kof` · Toen ik bij de finish kwam, had Paola al een uur [gewacht | gewachtd].
 
 ### Level 121 (nijmegen)
 
-- **welkomen** for welkom · plural spelling · `woord` (needs the Spelling label) · Geachte buurtbewoners, u bent van harte [welkom | welkomen] op onze borrel.
-- **verjaardagenfeest** for verjaardagsfeest · compound linking letters (tussen-s, tussen-n) · `samen` · Morgen is het [verjaardagsfeest | verjaardagfeest | verjaardagenfeest] van de buurvrouw.
+- **verjaardagenfeest** for verjaardagsfeest · compound linking letters (tussen-s, tussen-n) · `samen` · Morgen is het [verjaardagsfeest | verjaardagenfeest] van de buurvrouw.
 - **huisgenooten** for huisgenoten · open and closed syllables (vowel or consonant doubling) · `samen` · De zoon van de buren woont met vijf [huisgenoten | huisgenooten | huizengenoten] op kamers.
 - **huizengenoten** for huisgenoten · plural spelling · `samen` · De zoon van de buren woont met vijf [huisgenoten | huisgenooten | huizengenoten] op kamers.
-- **gehoort** for gehoord · d or t ('t kofschip, wordt, snijdt) · `kof` · Voordat we hier kwamen wonen, hadden we nog nooit van de Vierdaagse [gehoord | gehoort | gehoren].
+- **gehoort** for gehoord · d or t ('t kofschip, wordt, snijdt) · `kof` · Voordat we hier kwamen wonen, hadden we nog nooit van de Vierdaagse [gehoord | gehoort].
 
 ### Level 122 (nijmegen)
 
 - **stadmuur** for stadsmuur · compound linking letters (tussen-s, tussen-n) · `samen` · Delen van de oude [stadsmuur | stadmuur | stedenmuur] staan nog in het Kronenburgerpark.
 - **stedenmuur** for stadsmuur · compound linking letters (tussen-s, tussen-n) · `samen` · Delen van de oude [stadsmuur | stadmuur | stedenmuur] staan nog in het Kronenburgerpark.
-- **toegejuichd** for toegejuicht · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Op vrijdag worden de wandelaars langs de Via Gladiola [toegejuicht | toegejuichd | getoejuicht].
-- **woondden** for woonden · open and closed syllables (vowel or consonant doubling) · `kof` · De Romeinen [woonden | woondden | woonde] hier tweeduizend jaar geleden.
+- **toegejuichd** for toegejuicht · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Op vrijdag worden de wandelaars langs de Via Gladiola [toegejuicht | toegejuichd].
+- **woondden** for woonden · open and closed syllables (vowel or consonant doubling) · `kof` · De Romeinen [woonden | woondden | woonten] hier tweeduizend jaar geleden.
+- **woonten** for woonden · d or t ('t kofschip, wordt, snijdt) · `kof` · De Romeinen [woonden | woondden | woonten] hier tweeduizend jaar geleden.
 
 ### Level 123 (amsterdam)
 
-- **gejaat** for gejat · open and closed syllables (vowel or consonant doubling) · `kof` · Ik kan mijn fiets niet vinden. Hij is alweer [gejat | gejaat | gejatte].
-- **geverft** for geverfd · d or t ('t kofschip, wordt, snijdt) · `kof` · De vorige huurders hebben de muren roze [geverfd | geverft | verfde], zegt de huisbaas.
+- **gejatt** for gejat · d or t ('t kofschip, wordt, snijdt) · `kof` · Ik kan mijn fiets niet vinden. Hij is alweer [gejat | gejatt].
+- **geverft** for geverfd · d or t ('t kofschip, wordt, snijdt) · `kof` · De vorige huurders hebben de muren roze [geverfd | geverft], zegt de huisbaas.
 
 ### Level 124 (amsterdam)
 
@@ -1084,19 +422,18 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 
 ### Level 127 (amsterdam)
 
-- **geïnformeerdt** for geïnformeerd · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij vertrouwen erop u hiermee voldoende [te hebben geïnformeerd | te hebben geïnformeerdt | hebben te geïnformeerd].
-- **getesd** for getest · d or t ('t kofschip, wordt, snijdt) · `passief` (needs the Spelling label) · De nieuwe release moet voor vrijdag door het hele team [worden getest | worden getesd | wordt getest].
+- **geïnformeerdt** for geïnformeerd · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij vertrouwen erop u hiermee voldoende te hebben [geïnformeerd | geïnformeerdt | geïnformeert].
+- **geïnformeert** for geïnformeerd · d or t ('t kofschip, wordt, snijdt) · `kof` · Wij vertrouwen erop u hiermee voldoende te hebben [geïnformeerd | geïnformeerdt | geïnformeert].
 
 ### Level 128 (amsterdam)
 
-- **gewonen** for gewonnen · open and closed syllables (vowel or consonant doubling) · `perf` (needs the Spelling label) · De wedstrijd werd [gewonnen | gewint | gewonen] door een man uit Ethiopië, in minder dan vijfenveertig minuten.
 - **getraint** for getraind · d or t ('t kofschip, wordt, snijdt) · `kof` · Als ik meer [had getraind | had getraint], had ik sneller gelopen.
-- **paaden** for paden · open and closed syllables (vowel or consonant doubling) · `meervoud` · In het Vondelpark loop je hard op de [paden | paaden | pads] rond de vijvers.
-- **opgewarmt** for opgewarmd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Ik ben stijf omdat ik te weinig heb [opgewarmd | geopwarmd | opgewarmt].
+- **paaden** for paden · open and closed syllables (vowel or consonant doubling) · `meervoud` · In het Vondelpark loop je hard op de [paden | paaden] rond de vijvers.
+- **opgewarmt** for opgewarmd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · Ik ben stijf omdat ik te weinig heb [opgewarmd | opgewarmt].
 
 ### Level 129 (amsterdam)
 
-- **ingewijdt** for ingewijd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · De Oude Kerk werd in 1306 [ingewijd | geïnwijd | ingewijdt] en is het oudste gebouw van de stad.
+- **ingewijdt** for ingewijd · d or t ('t kofschip, wordt, snijdt) · `sep` (needs the Spelling label) · De Oude Kerk werd in 1306 [ingewijd | ingewijdt] en is het oudste gebouw van de stad.
 
 ### Level 130 (amsterdam)
 
@@ -1104,14 +441,6 @@ These may stay, in a fork labelled Spelling whose wrong options differ from the 
 - **woonboots** for woonboten · plural spelling · `meervoud` · In de grachten liggen ongeveer tweeduizendvijfhonderd [woonboten | woonbooten | woonboots].
 - **zonopgang** for zonsopgang · compound linking letters (tussen-s, tussen-n) · `samen` · Bij [zonsopgang | zonopgang] luiden de klokken van de Westertoren over de hele grachtengordel.
 - **gebouwt** for gebouwd · d or t ('t kofschip, wordt, snijdt) · `kof` · Amsterdam is ook niet in één dag [gebouwd | gebouwt], en jouw Nederlands ook niet.
-
-## Check by hand
-
-- L85 **slaapten** · Toen de rekening kwam, [sliepen de honden | de honden sliepen | slaapten de honden] al.
-- L104 **gekoch** · Ik heb gisteren nieuwe hardloopschoenen [gekocht | gekoopt | gekoch].
-- L125 **theebladeren** · Of het café morgen opengaat, is [koffiedik kijken | theebladeren kijken | koffie kijken].
-- L128 **valtrap** · Ajax scoorde [op de valreep | op de valtrap | in de valreep].
-- L130 **moetten** · Natuurlijk: de hond. De honden [moesten | moeste | moetten] uit.
 
 ## Words in right answers the list does not know
 
