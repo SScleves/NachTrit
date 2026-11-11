@@ -1,5 +1,7 @@
 # Opus 5.5 DT: instructions for the remote heavy-lifting agent
 
+**Start here (11 November 2026): `PLAN.md` in this folder is the current plan and the order of work. It replaces the ordering in BACKLOG.md and NEXT-STEPS.md, which remain as detail for single items.**
+
 Status on 27 October 2026: how the game was built, every tool used and how to test it is in `HOW-IT-WAS-BUILT.md`.
 What is left, as instructions, is in `NEXT-STEPS.md`. Read those two first, then this file.
 

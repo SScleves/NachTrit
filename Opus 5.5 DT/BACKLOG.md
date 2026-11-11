@@ -1,5 +1,7 @@
 # Backlog for the Opus 5.5 DT agent
 
+**11 November 2026: the order of work is now in `PLAN.md`. The items below are kept as detail. PLAN.md refers to them by id (A1 to A5, D1 to D3) and says where it changes them.**
+
 Ordered by weight and by what unblocks the rest. Each item names its branch, what done means,
 and how it is verified. Items marked LAPTOP need Santi's GPU or his accounts and are not yours;
 they are listed so you know the whole picture. Check `reports/` and the open `dt/*` branches on
