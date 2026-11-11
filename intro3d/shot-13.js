@@ -232,7 +232,7 @@
 
     // his coat a little self-lit, so the orange stays the one saturated colour of the frame: his own copy, given back at the end
     const warm = W.Mat({ color: W.M.shirt.color.getHex() }); warm.emissive.copy(W.M.shirt.color).multiplyScalar(0.26); ownMat(warm);
-    W.bike.traverse(m => { if (m.isMesh && m.material === W.M.shirt) { st.coat.push(m); m.material = warm; } });
+    W.rider.coat(warm);
 
     // the dead across the street
     st.deadTex = shellTex(W, false);
@@ -307,14 +307,14 @@
   C[12] = {
     hold: 9.6,
     build(W) {
-      st = { mats: [], tex: [], geo: [], props: [], coat: [], dead: [], s: 0 };
+      st = { mats: [], tex: [], geo: [], props: [], dead: [], s: 0 };
       const rand0 = Math.random; Math.random = rng(SEED);
       try { build(W); } finally { Math.random = rand0; }
       this.update(W, 0, 0);
     },
     update(W, t, dt) {
       if (!st || !st.helmet) return;
-      const b = W.bike, u = b.userData;
+      const b = W.bike, him = W.rider;
       // him: still by the door, then off down the street, out onto the road and to the right of its middle. Pushing off he
       // wobbles toward the wall for a moment, and his shoulder catches the helmet
       let v = 0;
@@ -326,13 +326,13 @@
       st.rig.position.set(bx, 0, bz); st.rig.rotation.set(0, yaw, wob - dxds * 0.45 * W.clamp(v / V, 0, 1));
       b.position.set(0, b.position.y, 0); b.rotation.set(0, 0, 0);
       if (t >= GO && !W.beam.visible) W.beam.visible = true;
-      u.lampMesh.visible = u.lampGlow.visible = t >= GO + 0.2;   // a dynamo lamp: dark while he stands, it comes on as he pedals
+      him.showLamp(t >= GO + 0.2);   // a dynamo lamp: dark while he stands, it comes on as he pedals
       if (t < GO + 0.2) W.lampLight.intensity = 0;
       // his lamp: parked, it shines away from the house toward the road; riding, down the street ahead of him
       const L = W.lampLight, ride = ease(W, t, GO, 0.8), aim = yaw - 0.36 * (1 - ride), fwx = -Math.sin(yaw), fwz = -Math.cos(yaw);
       L.position.set(bx - fwx * 0.4, 1.1, bz - fwz * 0.4); L.target.position.set(bx - Math.sin(aim) * 20, 0.2, bz - Math.cos(aim) * 20);
       // his head: across at the keen dead, to the helmet, then to us; riding, ahead
-      const h = u.head; h.rotation.order = 'YXZ';
+      const h = him.head; h.rotation.order = 'YXZ';
       const a1 = ease(W, t, 1.15, 0.42), a2 = ease(W, t, 2.65, 0.36), a3 = ease(W, t, GO - 0.1, 0.6);
       let hy = W.lerp(W.lerp(-0.78, 1.36, a1), -0.1, a2), hx = W.lerp(W.lerp(0.02, -0.04, a1), -0.08, a2);
       hy = W.lerp(hy, 0, a3); hx = W.lerp(hx, 0, a3);
@@ -393,7 +393,7 @@
       if (W && W.bike && st && st.rig) { st.rig.remove(W.bike); W.scene.add(W.bike); W.scene.remove(st.rig); W.bike.position.set(0, 0, 0); }
       if (W && W.beam) W.beam.visible = true;
       if (!st) return;
-      if (W && W.bike) { const u = W.bike.userData, h = u.head; h.rotation.x = 0; h.rotation.order = 'XYZ'; u.lampMesh.visible = u.lampGlow.visible = true; for (const m of st.coat) m.material = W.M.shirt; }
+      if (W && W.rider) W.rider.restore();   // his head, his lamp and his coat as the game has them
       // the kits built fresh geometry for this shot (the bikes too); the game's shared parts, the zombies' among them, stay
       const PG = W ? Object.values(W.PG) : [];
       for (const p of st.props) p.traverse(m => { if (m.isMesh && m.geometry && m.geometry.userData.kit && !PG.includes(m.geometry)) m.geometry.dispose(); });

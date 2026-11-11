@@ -12,7 +12,7 @@ import { bikeRow, bins, crates, ducks, lamppost, moorings, setTownId, setTownSty
 import { bench, bikeProp, boat, bollard, bridge, cheeseCart, church, drawbridge, house, reeds, tulipBox } from './houses.js?v=38';
 import { backRow, canalBridge, flagNL, LANDMARK, terrace, tower, treeCard } from './backdrop.js?v=38';
 import { buildScenery, scenery, theme, THEMES } from './scenery.js?v=38';
-import { beam, bike, setCineDogs, setFace } from './rider.js?v=38';
+import { beam, bike, rider, setFace } from './rider.js?v=38';
 import { labelTexture } from './signs.js?v=38';
 import { ghostFigure } from './cast.js?v=38';
 import { fence, wisp, zombie, zombieParts } from './zombies.js?v=38';
@@ -30,7 +30,7 @@ let cineShot = null, cineT = 0, cineFrozen = false, cineTitleAt = Infinity, cine
 function setCineFrozen(v) { cineFrozen = v; }   // ?cine=N&t=S holds a shot (an imported binding is read-only)
 const cineProps = [], cineSays = [], cineHidden = [], _cineV = new THREE.Vector3();
 const W = {
-  THREE, NODE: NODEFX, scene, camera, bike, beam, lampLight, render, ROAD_W, KERB_W,
+  THREE, NODE: NODEFX, scene, camera, rider, bike, beam, lampLight, render, ROAD_W, KERB_W,
   house, terrace, backRow, lamppost, treeCard, reeds, boat, moorings, ducks, canalBridge, drawbridge, bridge, windmill, church, tower, LANDMARK,
   zombie, zombieParts, ghostFigure, bikeProp, bikeRow, fence, bollard, bench, tulipBox, cheeseCart, crates, bins, flagNL, wisp, labelTexture,
   kit, kb, kadd, ktube, kbuild, Mat, GlowMat, glowTex, M, PM, PK, PG, KG, THEMES, TINT,
@@ -84,16 +84,17 @@ const W = {
 window.NRW = W;   // the world handle: the shots, QA camera shots and the console use it
 function cineBegin(i) {
   const shot = typeof i === 'object' ? i : CINE[i]; if (!shot) return false;   // an intro panel's index, or a shot object (the level cards)
-  cineEnd(); cineShot = shot; cineT = 0; cineTitleAt = Infinity; setCineDogs(typeof i === 'object' || i === 7 || i === 13);
+  cineEnd(); cineShot = shot; cineT = 0; cineTitleAt = Infinity; rider.showDogs(!!shot.dogs);   // a shot that wants the dogs beside him says dogs: true
   try { shot.build(W); } catch (e) { console.error(`cine shot ${typeof i === 'object' ? 'card' : i + 1}: ${e && e.message}`); cineEnd(); return false; }
   $('intro').classList.add('cine'); document.body.classList.add('cine'); cineFrame(); return true;
 }
 function cineEnd() {
   if (cineShot && cineShot.dispose) try { cineShot.dispose(W); } catch (e) {}
+  if (cineShot) rider.restore();   // whatever the shot did to him and did not undo itself
   for (const p of cineProps) { scene.remove(p); p.traverse(m => { if (m.userData.ownTex && m.material) { if (m.material.map) m.material.map.dispose(); m.material.dispose(); } }); }
   cineProps.length = 0; for (const s of cineSays) s.el.remove(); cineSays.length = 0;
   for (const o of cineHidden) { o.mesh.visible = true; o.cineHidden = false; } cineHidden.length = 0;
-  $('cinetitle').style.opacity = 0; cineShot = null; setCineDogs(true); cineFrozen = false; S.fogMul = 1; S.cineSpeed = 0; bike.visible = true; beam.visible = true; W.ride(0); bike.rotation.set(0, 0, 0);
+  $('cinetitle').style.opacity = 0; cineShot = null; cineFrozen = false; S.fogMul = 1; S.cineSpeed = 0; bike.visible = true; beam.visible = true; W.ride(0); bike.rotation.set(0, 0, 0);
   setBehind(10, 20); cineDy = 0; camera.clearViewOffset();
   if (S.mode === 'cine') S.mode = 'start';
   $('intro').classList.remove('cine'); document.body.classList.remove('cine');

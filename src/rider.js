@@ -4,6 +4,7 @@
 import { clamp, ROAD_W, THREE } from './engine.js?v=38';
 import { scene } from './render.js?v=38';
 import { GlowMat, glowTex, M, Mat, TINT } from './materials.js?v=38';
+import { PM } from './props.js?v=38';
 import { kadd, kb, kbuild, KG, kit, ktube, MODELS } from './kit.js?v=38';
 import { modelClone } from './models.js?v=38';
 import { add, ghostFigure, S } from './main.js?v=38';   // later modules, through the hub
@@ -101,8 +102,7 @@ function legIK(L, a, s) {   // ankle onto the pedal at crank angle a; s: 1 right
   const hip = Math.acos(clamp((RL1 * RL1 + d * d - RL2 * RL2) / (2 * RL1 * d), -1, 1)), knee = Math.acos(clamp((RL1 * RL1 + RL2 * RL2 - d * d) / (2 * RL1 * RL2), -1, 1));
   L[0].rotation.x = base + hip; L[1].rotation.x = -(Math.PI - knee); L[2].rotation.x = -(L[0].rotation.x + L[1].rotation.x) + 0.12;
 }
-let cineDogs = true;   // the dogs run beside him in the intro only where he rides (shots 8 and 14); indoors and beside the tall lady they stay out
-function setCineDogs(on) { cineDogs = on; }   // the intro sets it (an imported binding is read-only)
+let cineDogs = true;   // the dogs run beside him; a shot shows them only when it says dogs: true (shots 8 and 14, the title, the level cards)
 let _dogT = 0;
 function riderTick(dw, dt) {   // dw: how far the wheels turn this frame
   const md = bike.userData.model;
@@ -179,5 +179,88 @@ const follower = new THREE.Group();
 }
 follower.visible = false; scene.add(follower);
 
-export { beam, bike, dogs, drawFace, dropPassenger, faceState, follower, mountPassenger, rackGhost, riderModel, riderTick, setCineDogs, setFace,
+// ---------- the rider as a shot poses him ----------
+// W.rider: what an intro shot (and later the ending) may do to him. The shots use only this, never bike.children or
+// bike.userData, so the bike, the model and the body can change without breaking a shot. restore() undoes all of it; cineEnd
+// calls it after every shot's own dispose.
+const OWN = new Set(bike.children);   // the bike's own pieces as built above; the model, a passenger and a shot's props come later
+const posed = { hidden: [], torso: null, torsoWas: false, limbs: null, coat: null, coated: [], bikeOff: [] };
+const isHim = c => c === bike.userData.head || (c.isMesh && (c.material === M.shirt || c.material === M.rider));
+function riderParts() {   // { him, bike }: the game's own pieces, the primitives and (once it has loaded) the model's nodes
+  const md = bike.userData.model && bike.userData.model.wf.parent, him = [], bk = [];
+  for (const c of bike.children) {
+    if (c === md) { for (const n of md.children) (n.name === 'body' || n.name.startsWith('thigh_') ? him : bk).push(n); continue; }
+    if (OWN.has(c)) (isHim(c) ? him : bk).push(c);
+  }
+  return { him, bike: bk };
+}
+function hideAllBut(keep) { for (const ch of bike.children) if (!keep.includes(ch) && ch.visible) { ch.visible = false; posed.hidden.push(ch); } }
+function offBike(o, limbsOf) {   // the seated and standing poses: the bike and his riding limbs hidden, his torso and head shown, limbs built
+  rider.pose('ride');
+  let torso = null;
+  for (const ch of bike.children) if (ch.isMesh && (ch.material === M.shirt || ch.material === posed.coat) && ch.geometry && ch.geometry.type === 'CapsuleGeometry') torso = ch;
+  hideAllBut([torso, bike.userData.head]);
+  if (torso) { posed.torso = torso; posed.torsoWas = torso.visible; torso.visible = true; }   // the rider model hides the game's own torso: these poses need it back
+  const k = kit(); limbsOf(k, o.floor == null ? 0 : o.floor, posed.coat || M.shirt, o.skin || bike.userData.mats.skin);
+  posed.limbs = kbuild(k); bike.add(posed.limbs);
+}
+const rider = {
+  obj: bike,                          // the group: where he is, what a speech bubble follows, what a shot's rig holds
+  head: bike.userData.head,           // the look target: turn it (rotation.order 'YXZ' turns and then tilts); restore() squares it
+  lens: bike.userData.lampMesh.position, halo: bike.userData.lampGlow.position,   // where the headlamp's lens and halo sit on the bike (read only)
+  // 'ride': on the bike, as the game has him. 'seated': off the bike, sitting: the bike, its lamp and his riding arms and legs
+  // hidden, his torso and head kept, legs bent down to o.floor (y in the bike's frame) and hands in his lap (o.skin: their
+  // material). 'standing': off the bike, standing on o.floor (default 0), arms down. 'hidden': nothing of him or the bike shows,
+  // but he stays where the game keeps him and his lamp still lights (W.stage({ rider: false }) puts that out as well).
+  pose(name, o = {}) {
+    for (const ch of posed.hidden) ch.visible = true; posed.hidden.length = 0;
+    if (posed.torso) { posed.torso.visible = posed.torsoWas; posed.torso = null; }
+    if (posed.limbs) { bike.remove(posed.limbs); posed.limbs.traverse(m => { if (m.isMesh && m.geometry) m.geometry.dispose(); }); posed.limbs = null; }
+    if (name === 'hidden') hideAllBut([]);
+    else if (name === 'seated') offBike(o, (k, fy, shirt, skin) => {
+      const legs = M.rider;
+      for (const s of [-1, 1]) {   // s = 1 is his right (the bike's plus x)
+        const hip = [s * 0.1, 1.04, 0.24], knee = [s * 0.13, 1.05, -0.25], ankle = [s * 0.15, fy + 0.07, -0.31];
+        ktube(k, legs, ...hip, ...knee, 0.068); kadd(k, KG.ball, legs, ...knee, 0, 0, 0, 0.14, 0.14, 0.14);
+        ktube(k, legs, ...knee, ...ankle, 0.058); kb(k, PM.pole, s * 0.15, fy + 0.03, -0.37, 0.11, 0.08, 0.25);
+      }
+      // his hands lie in his lap
+      for (const s of [-1, 1]) {
+        const sh = [s * 0.22, 1.6, 0.18], el = [s * 0.3, 1.22, 0.06], wr = [s * 0.13, 1.1, -0.17];
+        ktube(k, shirt, ...sh, ...el, 0.052); kadd(k, KG.ball, shirt, ...el, 0, 0, 0, 0.11, 0.11, 0.11);
+        ktube(k, shirt, ...el, ...wr, 0.048);
+        kadd(k, KG.ball, skin, wr[0], wr[1] - 0.01, wr[2] - 0.05, 0, 0, 0, 0.09, 0.06, 0.12);
+      }
+    });
+    else if (name === 'standing') offBike(o, (k, fy, shirt, skin) => {
+      const legs = M.rider;
+      for (const s of [-1, 1]) {   // straight down from the hips the saddle puts him at, feet flat on the floor
+        const hip = [s * 0.1, 1.04, 0.24], knee = [s * 0.11, fy + 0.55, 0.22], ankle = [s * 0.11, fy + 0.07, 0.2];
+        ktube(k, legs, ...hip, ...knee, 0.068); kadd(k, KG.ball, legs, ...knee, 0, 0, 0, 0.13, 0.13, 0.13);
+        ktube(k, legs, ...knee, ...ankle, 0.058); kb(k, PM.pole, s * 0.11, fy + 0.03, 0.14, 0.11, 0.08, 0.25);
+        const sh = [s * 0.22, 1.6, 0.18], el = [s * 0.27, 1.3, 0.2], wr = [s * 0.28, 1.04, 0.16];   // arms hanging at his sides
+        ktube(k, shirt, ...sh, ...el, 0.052); kadd(k, KG.ball, shirt, ...el, 0, 0, 0, 0.11, 0.11, 0.11);
+        ktube(k, shirt, ...el, ...wr, 0.048);
+        kadd(k, KG.ball, skin, wr[0], wr[1] - 0.05, wr[2], 0, 0, 0, 0.08, 0.12, 0.06);
+      }
+    });
+  },
+  show(on) { bike.visible = on; },    // all of him and the bike; while he is not shown the game puts his lamp's light out
+  showBike(on) {                      // the bike with its lamp lens, halo, tail light and beam; not him
+    for (const c of posed.bikeOff) c.visible = true; posed.bikeOff.length = 0;
+    if (!on) for (const c of riderParts().bike) if (c.visible) { c.visible = false; posed.bikeOff.push(c); }
+  },
+  showLamp(on) { bike.userData.lampMesh.visible = bike.userData.lampGlow.visible = on; },   // the headlamp's lens and halo (not its light)
+  showDogs(on) { cineDogs = on; },    // the two dogs beside him; they show only while he is shown too
+  coat(mat) {                         // his coat in another material (a shot's own self-lit copy); null gives the game's back
+    for (const m of posed.coated) m.material = M.shirt; posed.coated.length = 0; posed.coat = mat || null;
+    if (mat) bike.traverse(m => { if (m.isMesh && m.material === M.shirt) { posed.coated.push(m); m.material = mat; } });
+  },
+  restore() {
+    rider.showBike(true); rider.pose('ride'); rider.coat(null); rider.showLamp(true); rider.showDogs(true); rider.show(true); beam.visible = true;
+    rider.head.rotation.set(0, 0, 0); rider.head.rotation.order = 'XYZ';
+  },
+};
+
+export { beam, bike, dogs, drawFace, dropPassenger, faceState, follower, mountPassenger, rackGhost, rider, riderModel, riderTick, setFace,
   setFaceState, setRackGhost };

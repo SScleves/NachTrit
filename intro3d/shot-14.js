@@ -15,6 +15,7 @@
 
   C[13] = {
     hold: 9.5,
+    dogs: true,   // they run beside him on his way out (cineBegin shows them only for a shot that says so)
     build(W) {
       W.stage({ town: 'alblasserdam', theme: 'street', fog: 1.1 });
       W.speed(V);

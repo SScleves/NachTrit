@@ -11,7 +11,7 @@
   const CAM1 = [10.06, 1.25, 10.95];               // the first camera, low on the terrace, looking across the street
   const Z2 = 3;                                    // where he stands in the second beat: 3 m back, so no lamp stands behind her head
   const HER = [-1.15, Z2 - 0.25];
-  let cast = null, own = [], hidden = [], lampWas = null, coat = [], lens = [], trees = [], walker = null;
+  let cast = null, own = [], hidden = [], lampWas = null, lens = [], trees = [], walker = null;
 
   // the set is built from a fixed seed, so the square looks the same every time the panel plays
   function seeded(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
@@ -92,7 +92,7 @@
     hold: 10,
     build(W) {
       const THREE = W.THREE, R = Math.random; Math.random = seeded(7);
-      own = []; hidden = []; coat = []; lens = [];
+      own = []; hidden = []; lens = [];
       try {
         W.stage({ town: 'alblasserdam', theme: 'square', fog: 0.85 });
         const ac = Math.atan2(CAM1[0] - T[0], CAM1[2] - T[1]);
@@ -147,8 +147,8 @@
       W.speed(0);
       W.ride(Z2);
       W.face('deadpan');
-      const u = W.bike.userData;
-      u.head.rotation.order = 'YXZ';   // he turns to her, then looks up
+      const him = W.rider;
+      him.head.rotation.order = 'YXZ';   // he turns to her, then looks up
       // his lamp, stopped: the spot moves from his back to the headlamp and lights a small pool on the road just ahead of him,
       // not a beam down the street and a disc on his coat; the game sets only its strength every frame
       const L = W.lampLight;
@@ -157,13 +157,13 @@
       W.beam.visible = false;
       // and it burns low and amber: his own lens and halo stand in for the game's, which it brightens every frame
       const lensM = new THREE.MeshBasicMaterial({ color: 0xd8902e }), lensHalo = W.GlowMat(W.glowTex, 0xff9a3a, 0.3, true); own.push(lensM, lensHalo);
-      const disc = new THREE.Mesh(W.KG.disc, lensM); disc.position.copy(u.lampMesh.position); disc.rotation.y = Math.PI; disc.scale.setScalar(0.068 / 0.3);
-      const halo = new THREE.Sprite(lensHalo); halo.position.copy(u.lampGlow.position); halo.scale.set(0.5, 0.5, 1);
+      const disc = new THREE.Mesh(W.KG.disc, lensM); disc.position.copy(him.lens); disc.rotation.y = Math.PI; disc.scale.setScalar(0.068 / 0.3);
+      const halo = new THREE.Sprite(lensHalo); halo.position.copy(him.halo); halo.scale.set(0.5, 0.5, 1);
       lens = [disc, halo]; for (const o of lens) W.bike.add(o);
-      u.lampMesh.visible = false; u.lampGlow.visible = false;
+      him.showLamp(false);
       // his coat a little self-lit, so the orange stays the one saturated colour in the frame: his own copy, given back at the end
       const warm = W.Mat({ color: W.M.shirt.color.getHex() }); warm.emissive.copy(W.M.shirt.color).multiplyScalar(0.28); own.push(warm);
-      W.bike.traverse(m => { if (m.isMesh && m.material === W.M.shirt) { coat.push(m); m.material = warm; } });
+      him.coat(warm);
       W.say('Tikkie: €4,50', [cast.glow.position.x, cast.glow.position.y + 0.28, cast.glow.position.z], { from: 0.4, to: CUT - 0.15, dy: 0 });
       this.update(W, 0, 0);
     },
@@ -181,7 +181,7 @@
       for (const tr of trees) tr.rotation.y = Math.atan2(cam.x - tr.position.x, cam.z - tr.position.z);
       walker.position.z = 27.4 - t * 0.2; walker.rotation.z = Math.sin(t * 2.1) * 0.06;
       const two = t >= CUT;
-      W.bike.visible = her.visible = two;
+      W.rider.show(two); her.visible = two;
       W.lampLight.target.position.y = two ? 0 : 60;   // until he is in the picture his lamp lights nothing
       if (!two) {   // low on the terrace, a slow push in over the table
         const k = W.smooth(W.clamp(t / CUT, 0, 1));
@@ -194,17 +194,14 @@
       const s = t - CUT, k = W.smooth(W.clamp(s / 7.5, 0, 1)), late = Math.max(0, s - 7.5) * 0.03;
       // he looks up at her; late in the beat a deadpan glance at us, then back up at her
       const g = W.smooth(W.clamp((s - 3.3) / 0.35, 0, 1)) * (1 - W.smooth(W.clamp((s - 4.9) / 0.45, 0, 1)));
-      W.bike.userData.head.rotation.y = W.lerp(0.62, -0.08, g); W.bike.userData.head.rotation.x = W.lerp(0.5, 0.04, g);
+      W.rider.head.rotation.y = W.lerp(0.62, -0.08, g); W.rider.head.rotation.x = W.lerp(0.5, 0.04, g);
       W.cam(W.lerp(0.35, 0.15, k), W.lerp(1.92, 1.94, k), Z2 + W.lerp(-7.8, -5.3, k) + late, W.lerp(-0.45, -0.38, k), W.lerp(1.35, 1.98, k), Z2 - 0.2, 34);
       W.drift(t, 0.5);
     },
     dispose(W) {
-      const u = W.bike.userData;
-      for (const m of coat) m.material = W.M.shirt;
       for (const o of lens) W.bike.remove(o);
-      u.lampMesh.visible = true; u.lampGlow.visible = true; W.beam.visible = true;
+      W.rider.restore();   // his coat, lens and head as the game has them, the beam back on
       if (lampWas) { const L = W.lampLight; L.position.y = lampWas.y; L.target.position.y = lampWas.ty; L.angle = lampWas.angle; L.penumbra = lampWas.pen; }
-      u.head.rotation.x = 0; u.head.rotation.order = 'XYZ';
       for (const o of hidden) o.visible = true;
       // only what this shot made: its own materials, and the merged geometry of its own kits and its bike row
       const PG = Object.values(W.PG);
@@ -212,7 +209,7 @@
         if (o.isMaterial) o.dispose();
         else o.traverse(m => { if (m.isMesh && m.geometry && m.geometry.userData.kit && !PG.includes(m.geometry)) m.geometry.dispose(); });
       }
-      cast = null; own = []; hidden = []; coat = []; lens = []; trees = []; walker = null; lampWas = null;
+      cast = null; own = []; hidden = []; lens = []; trees = []; walker = null; lampWas = null;
     },
   };
 })();

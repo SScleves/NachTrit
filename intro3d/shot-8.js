@@ -306,6 +306,7 @@
 
   C[7] = {
     hold: 9,
+    dogs: true,   // they run beside him into the square (cineBegin shows them only for a shot that says so)
     build(W) {
       st = { mats: [], tex: [], geo: [], hidden: [], candles: [], streaks: [], props: [] };
       const rand0 = Math.random; Math.random = rng(SEED);   // the same square, café and faces every time the shot is built
@@ -319,7 +320,7 @@
       // him: hopeful while he tries, then flat, and he turns from them to us
       if (t >= 3.0 && t - dt < 3.0) W.face('deadpan');
       const look = ease(W, t, 3.05, 0.55);
-      W.bike.userData.head.rotation.y = W.lerp(-0.42, -0.98, look) + Math.sin(t * 1.4) * 0.04 * (1 - look);
+      W.rider.head.rotation.y = W.lerp(-0.42, -0.98, look) + Math.sin(t * 1.4) * 0.04 * (1 - look);
       // his friends: two in talk who look up at his "Hoi.", one already on her feet; then the answer and the beaming
       const { A, B, C: Cf } = st;
       const notice = ease(W, t, 0.95, 0.5);

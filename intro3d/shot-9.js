@@ -161,31 +161,14 @@
     return { root, head, ears, tail, eyes, sit: !!o.sit };
   }
 
-  // ---- him: the rider off his bike. The bike, its lamp and his riding arms and legs are hidden; his own torso and head stay, and
-  // seated arms and legs go on in the bike's frame (he faces its minus z), from the game's coat and trouser materials. The bike keeps
-  // the place the game gives it, so nothing here fights the game's own update
+  // ---- him: the rider off his bike, seated (W.rider.pose): the bike, its lamp and his riding arms and legs are hidden; his own
+  // torso and head stay, and seated legs to the floor and hands in his lap go on in the bike's frame (he faces its minus z). The bike
+  // keeps the place the game gives it, so nothing here fights the game's own update
   function seat(W) {
-    const b = W.bike, u = b.userData;
-    let torso = null;
-    for (const ch of b.children) if (ch.isMesh && ch.material === W.M.shirt && ch.geometry && ch.geometry.type === 'CapsuleGeometry') torso = ch;
-    for (const ch of b.children) if (ch !== torso && ch !== u.head && ch.visible) { ch.visible = false; st.bikeHidden.push(ch); }
     // his coat a little self-lit, so its orange stays the one saturated colour in the room: his own copy, given back at the end
     const shirt = ownMat(W.Mat({ color: W.M.shirt.color.getHex() })); shirt.emissive.copy(W.M.shirt.color).multiplyScalar(0.28);
-    if (torso) { torso.material = shirt; st.coat = torso; st.torsoWas = torso.visible; torso.visible = true; }   // the rider model hides the game's own torso: this shot needs it back
-    const k = W.kit(), legs = W.M.rider, fy = FLOOR;
-    for (const s of [-1, 1]) {   // s = 1 is his right (the bike's plus x)
-      const hip = [s * 0.1, 1.04, 0.24], knee = [s * 0.13, 1.05, -0.25], ankle = [s * 0.15, fy + 0.07, -0.31];
-      W.ktube(k, legs, ...hip, ...knee, 0.068); W.kadd(k, W.KG.ball, legs, ...knee, 0, 0, 0, 0.14, 0.14, 0.14);
-      W.ktube(k, legs, ...knee, ...ankle, 0.058); W.kb(k, W.PM.pole, s * 0.15, fy + 0.03, -0.37, 0.11, 0.08, 0.25);
-    }
-    // his hands lie in his lap
-    for (const s of [-1, 1]) {
-      const sh = [s * 0.22, 1.6, 0.18], el = [s * 0.3, 1.22, 0.06], wr = [s * 0.13, 1.1, -0.17];
-      W.ktube(k, shirt, ...sh, ...el, 0.052); W.kadd(k, W.KG.ball, shirt, ...el, 0, 0, 0, 0.11, 0.11, 0.11);
-      W.ktube(k, shirt, ...el, ...wr, 0.048);
-      W.kadd(k, W.KG.ball, st.skinMat, wr[0], wr[1] - 0.01, wr[2] - 0.05, 0, 0, 0, 0.09, 0.06, 0.12);
-    }
-    st.limbs = W.kbuild(k); b.add(st.limbs);
+    W.rider.coat(shirt);
+    W.rider.pose('seated', { floor: FLOOR, skin: st.skinMat });
   }
 
   // ---- the set
@@ -373,14 +356,14 @@
   C[8] = {
     hold: 9,
     build(W) {
-      st = { mats: [], tex: [], geo: [], props: [], bikeHidden: [], limbs: null, coat: null };
+      st = { mats: [], tex: [], geo: [], props: [] };
       try { build(W); } catch (e) { this.dispose(W); throw e; }
       this.update(W, 0, 0);
     },
     update(W, t, dt) {
       if (!st || !st.room) return;
       // him: deadpan; a look down at the brown dog, then back at us
-      const head = W.bike.userData.head, glance = bump(W, t, 1.1, 0.4, 1.0);
+      const head = W.rider.head, glance = bump(W, t, 1.1, 0.4, 1.0);
       head.rotation.order = 'YXZ';
       head.rotation.y = W.lerp(0, -0.55, glance) + Math.sin(t * 0.6) * 0.03;
       head.rotation.x = W.lerp(0, -0.3, glance);
@@ -419,12 +402,7 @@
     },
     dispose(W) {
       if (!st) return;
-      if (W && W.bike) {
-        for (const ch of st.bikeHidden) ch.visible = true;
-        if (st.coat) { st.coat.material = W.M.shirt; st.coat.visible = st.torsoWas; }
-        if (st.limbs) { W.bike.remove(st.limbs); st.limbs.traverse(m => { if (m.isMesh && m.geometry) m.geometry.dispose(); }); }
-        const h = W.bike.userData.head; h.rotation.set(0, 0, 0); h.rotation.order = 'XYZ';
-      }
+      if (W && W.rider) W.rider.restore();   // back on his bike: his coat, his limbs and his head as the game has them
       if (W && W.lampLight && st.lampWas) { const L = W.lampLight, o = st.lampWas; L.color.setHex(o.color); L.angle = o.angle; L.penumbra = o.penumbra; L.distance = o.distance; L.decay = o.decay; L.position.set(0, o.y, 0.4); L.target.position.set(0, 0.2, -20); }
       for (const p of st.props) p.traverse(m => { if (m.isMesh && m.geometry && m.geometry.userData.kit) m.geometry.dispose(); });
       for (const g of st.geo) g.dispose();

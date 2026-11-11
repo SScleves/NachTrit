@@ -115,7 +115,7 @@ function levelCard(lv, k) {
   const town = lv.town || TOWN_OF(lv.id), themeKey = (lv.theme && THEMES[lv.theme]) ? lv.theme : 'polder';
   const side = (lv.id % 2) ? 1 : -1;   // which side of the street the camera favours, varied per level
   return {
-    hold: 4,
+    hold: 4, dogs: true,   // he rides out with his dogs, as on the street shots
     build(W) {
       W.stage({ town, theme: themeKey, seed: lv.id * 7 + k, preroll: 60 });
       W.speed(k ? 6 : 3); W.face('deadpan');
@@ -213,7 +213,7 @@ const startArt = (() => {
       const s1 = CINE[0]; if (!s1 || !up()) return false;
       let T = 0;
       const s = {
-        hold: 0,
+        hold: 0, dogs: true,   // the title keeps the dogs it always had
         build(W) { s1.build(W); },
         // the shot's clock eases from 0 to 3.4 s and back every 28 s: always its first beat, the sails the right way, the mist breathing
         update(W, t, dt) { T += dt; s1.update(W, 3.4 * (0.5 - 0.5 * Math.cos(T * Math.PI / 14)), dt); },

@@ -16,6 +16,7 @@ scripts. A file with only a comment means the pixel panel plays.
   const C = window.NRCINE = window.NRCINE || [];
   C[N - 1] = {
     hold: 8,                    // the panel stays at least this long; reading time and the spoken Dutch can keep it longer
+    dogs: true,                 // optional: his two dogs run beside him (shots 8 and 14, the title and the level cards); without it they stay out
     build(W) { },               // stage the set, place the actors, set the first camera
     update(W, t, dt) { },       // every frame; t is seconds since the shot began
     dispose(W) { },             // optional: drop your own references; props added with W.add are removed for you
@@ -54,6 +55,7 @@ The shot gets `W` (also `window.NRW` in the console).
 | `W.drift(t, a)` | After `cam`: a hand-held drift. `a = 1` is a calm operator. |
 | `W.fog(mul)` | Thicker (above 1) or thinner haze than the theme's, any time. |
 | `W.face(name, secs)` | His face: `deadpan`, `worry`, `smug`, `ouch`, `scream`. |
+| `W.rider` | The rider, as a shot may pose him. See below. Never reach into `W.bike.children` or `W.bike.userData`. |
 | `W.add(obj, x, y, z, ry, { ride })` | Puts a prop in the street. It rolls past with the street, unless `ride: true` keeps it beside him. Returns the object. Removed when the shot ends. |
 | `W.say(text, actor, { from, to, dy })` | A speech bubble over an actor (an Object3D it follows, or a fixed `[x, y, z]`), `dy` above its origin, shown from `from` to `to` seconds. |
 | `W.title(main, sub, at)` | The big title in the sky from `at` seconds. |
@@ -75,8 +77,26 @@ Builders and materials from the game, all on `W`:
   W.kadd(k, geo, mat, x, y, z, rx, ry, rz, sx, sy, sz); W.ktube(k, mat, ax, ay, az, bx, by, bz, r); const g = W.kbuild(k);`
   with the shared geometries in `W.KG` (`box`, `cyl`, `ball`, `dome`, `plane`, ...) and the materials in `W.M`, `W.PM`,
   `W.PK`. `W.Mat(opts)` makes a lit material in the game's look; `W.GlowMat(W.glowTex, color, opacity, sprite)` a glow.
-- Also `W.THREE`, `W.scene`, `W.camera`, `W.bike`, `W.beam`, `W.lampLight`, `W.rnd`, `W.pick`, `W.lerp`, `W.smooth`,
-  `W.clamp`.
+- Also `W.THREE`, `W.scene`, `W.camera`, `W.bike` (the rider's group, the same as `W.rider.obj`), `W.beam`, `W.lampLight`,
+  `W.rnd`, `W.pick`, `W.lerp`, `W.smooth`, `W.clamp`.
+
+## The rider: `W.rider`
+
+The bike, the rider model and his body change from time to time; a shot that reaches into them breaks (shots 2, 9 and 12
+did, more than once). `W.rider` is the surface a shot uses instead (`src/rider.js`). Everything on it is undone by
+`W.rider.restore()`, which the game calls after every shot's own `dispose`; call it in `dispose` as well.
+
+| Call | What it does |
+|---|---|
+| `W.rider.obj` | His group (bike and rider together): place it, hang a speech bubble on it, put it in a rig. |
+| `W.rider.head` | The look target: turn it. `rotation.order = 'YXZ'` turns and then tilts. `restore()` squares it. |
+| `W.rider.pose(name, o)` | `'ride'`: on the bike, as the game has him. `'seated'`: off the bike, sitting; the bike, its lamp and his riding arms and legs hidden, his torso and head kept, legs bent down to `o.floor` (y in the bike's frame) and hands in his lap (`o.skin`, their material). `'standing'`: off the bike on `o.floor` (default 0), arms down. `'hidden'`: nothing of him or the bike shows, but he stays where the game keeps him and his lamp still lights. |
+| `W.rider.show(on)` | All of him and the bike. While he is not shown the game puts his lamp's light out. |
+| `W.rider.showBike(on)` | The bike with its lamp lens, halo, tail light and beam; not him. |
+| `W.rider.showLamp(on)` | The headlamp's lens and halo (not its light). `W.rider.lens` and `W.rider.halo` are where they sit on the bike. |
+| `W.rider.showDogs(on)` | His two dogs; a shot with `dogs: true` starts with them on, every other shot with them off. |
+| `W.rider.coat(mat)` | His coat in another material, for example a self-lit copy of `W.M.shirt`. `null` gives the game's back. |
+| `W.rider.restore()` | All of the above back as the game has it. |
 
 ## Framing
 
@@ -95,13 +115,13 @@ so the first two seconds must already read. Bubbles carry only the words said in
 
 The same machinery plays two more things. `cineBegin` takes a panel index or a shot object.
 
-- The title screen (`startArt` in `index.html`): `startArt.on3d()` wraps shot 1 in a shot object that holds its first
+- The title screen (`startArt` in `src/intro.js`, a shot object with `dogs: true`, as the title always had them): `startArt.on3d()` wraps shot 1 in a shot object that holds its first
   beat behind the title. It feeds shot 1 a clock that eases from 0 to 3.4 seconds and back every 28 seconds, so the
   camera slides along the row of mills and back, the sails keep turning the right way and the mist breathes. Its
   `band()` is the screen under the title. Start cuts into shot 1 from its beginning. The first painting stays as the
   fallback: it plays while the 3D world is not up yet and takes over if the shot breaks (`startArt.watch()`).
   Every way off the title (`openMap`, `start`, the intro) ends the shot with `startArt.off()` or `cineBegin`.
-- The card before a level (`levelCard(lv, k)` in `index.html`): a shot object staged in the level's own town and theme,
+- The card before a level (`levelCard(lv, k)` in `src/intro.js`, also `dogs: true`): a shot object staged in the level's own town and theme,
   seeded by the level id. `k = 0` is the wide shot under the town's rumour, `k = 1` the low shot behind him under the
   level's line.
 

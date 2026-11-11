@@ -185,7 +185,7 @@
     W.speed(0);
     W.beam.visible = false;
     // he is kept where the game keeps him, but nothing of the bike or of him shows: only the hands built here
-    for (const ch of W.bike.children) if (ch.visible) { ch.visible = false; st.bikeHidden.push(ch); }
+    W.rider.pose('hidden');
     const glow = (col, op) => ownMat(W.GlowMat(W.glowTex, col, op, true));
     const flat = (col, op) => ownMat(W.GlowMat(W.glowTex, col, op));
     st.noseMat = ownMat(new THREE.MeshBasicMaterial({ color: 0x0c0a0a }));
@@ -303,7 +303,7 @@
   C[9] = {
     hold: 8.5,
     build(W) {
-      st = { mats: [], tex: [], geo: [], props: [], bikeHidden: [] };
+      st = { mats: [], tex: [], geo: [], props: [] };
       try { build(W); } catch (e) { this.dispose(W); throw e; }
       this.update(W, 0, 0);
     },
@@ -366,7 +366,7 @@
     },
     dispose(W) {
       if (!st) return;
-      if (W && W.bike) for (const ch of st.bikeHidden) ch.visible = true;
+      if (W && W.rider) W.rider.restore();
       if (W && W.lampLight && st.lampWas) { const L = W.lampLight, o = st.lampWas; L.color.setHex(o.color); L.angle = o.angle; L.penumbra = o.penumbra; L.distance = o.distance; L.decay = o.decay; L.position.set(0, o.y, 0.4); L.target.position.set(0, 0.2, -20); }
       for (const p of st.props) p.traverse(m => { if (m.isMesh && m.geometry && m.geometry.userData.kit) m.geometry.dispose(); });
       for (const g of st.geo) g.dispose();
