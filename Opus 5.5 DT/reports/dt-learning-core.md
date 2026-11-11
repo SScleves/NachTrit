@@ -22,8 +22,9 @@ give identical numbers on 16 fields, frame counts and cents included.
 
 1. *Back after 3 to 5 other forks, and once more in the last quarter if missed twice.* When the ride of a missed item is
    over, the item goes back in the queue. The unanswered forks already on the road count first, then the queued items. On
-   every `--miss` ride below, a first return came after 3 or 4 other forks. A second miss came back 10 to 18 forks later,
-   in the last quarter of the ride. An item comes back at most twice. A miss on the very last item comes back straight
+   every `--miss` ride below, a first return came after 3 or 4 other forks. A second miss came back in the last quarter of
+   the ride: 10 to 18 forks later, or 3 later when the second miss already fell in the last quarter. An item comes back
+   at most twice. A miss on the very last item comes back straight
    away (0 forks between), because nothing is left to put between them. If the finish sign was already on the road, it
    moves behind the return.
 2. *An "again" tag and half fare.* The card shows a small light AGAIN pill beside the task label. The fare row shows half
