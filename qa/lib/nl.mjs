@@ -112,6 +112,9 @@ kopen: koop koopt kopen kocht kochten gekocht
 zoeken: zoek zoekt zoeken zocht zochten gezocht
 vragen: vraag vraagt vragen vroeg vroegen gevraagd
 zeggen: zeg zegt zeggen zei zeiden gezegd
+stelen: steel steelt stelen stal stalen gestolen
+schenken: schenk schenkt schenken schonk schonken geschonken
+vangen: vang vangt vangen ving vingen gevangen
 weten: weet weten wist wisten geweten
 laten: laat laten liet lieten gelaten
 slapen: slaap slaapt slapen sliep sliepen geslapen
@@ -184,6 +187,13 @@ function lev(a, b) { const m = a.length, n = b.length; const d = Array.from({ le
 // two tokens are forms of one word (werk / werkte / gewerkt, groot / grote, ben / is)
 export function sameLemma(a, b) {
   a = a.toLowerCase(); b = b.toLowerCase(); if (a === b) return true;
+  // the same particle or prefix on both (uitlaten / uitliet, verkopen / verkocht): compare what follows it
+  for (const p of [...PARTICLES, 'klaar', 'dicht', 'ver', 'ont', 'be', 'her']) if (a.startsWith(p) && b.startsWith(p) && a.length > p.length + 2 && b.length > p.length + 2) {
+    const ra = a.slice(p.length), rb = b.slice(p.length), ga = ra.replace(/^ge(?=..)/, ''), gb = rb.replace(/^ge(?=..)/, '');
+    if (IRREG_OF.has(ra) || IRREG_OF.has(rb) || IRREG_OF.has(ga) || IRREG_OF.has(gb)) { const la = IRREG_OF.get(ra) || IRREG_OF.get(ga), lb = IRREG_OF.get(rb) || IRREG_OF.get(gb); if (la && lb) return la === lb; }
+    if (ra.length >= 3 && rb.length >= 3 && (sameLemma(ra, rb) || sameLemma(ga, gb))) return true;
+    break;
+  }
   const ia = IRREG_OF.get(a), ib = IRREG_OF.get(b);
   if (ia || ib) { if (ia && ib) return ia === ib; }
   if (CLOSED.has(a) || CLOSED.has(b)) return false;
