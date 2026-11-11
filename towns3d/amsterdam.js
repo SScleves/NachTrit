@@ -291,7 +291,7 @@
   function bulbPoints(K, B, mat) {
     const THREE = K.THREE, geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(B.P, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(B.C, 3)); geo.computeBoundingSphere();
-    return new THREE.Points(geo, mat);
+    return K.NODE ? K.NODE.points(geo, mat) : new THREE.Points(geo, mat);   // the node path draws big points as instanced sprites
   }
   // what is moored in the stretch of water before a bridge: a houseboat at the far quay (on the Amstel at the near one), a low open boat
   // at the near quay, so nothing tall stands between the eye and the next bridge's arches. left: the bridge stands left of the road and is
@@ -456,7 +456,7 @@
     for (let i = 0; i < Math.floor(L / 0.6); i++) { const z = -L / 2 + 0.3 + i * 0.6; kb(k, K.M.wood, -0.25, 0.98, z, 0.5, 0.18, 0.5); for (let j = 0; j < 3; j++) kadd(k, K.KG.ball, fill, -0.25 + rnd(-0.12, 0.12), 1.12, z + rnd(-0.15, 0.15), 0, 0, 0, 0.16, 0.14, 0.16); }
     kb(k, pick(r.awnings), -0.05, 2.45, 0, 1.9, 0.04, L + 0.3, 0, 0, 0.32);
     for (let i = 0; i <= Math.round(L / 0.32); i++) P.push(-0.98, 2.1, -L / 2 + i * 0.32);
-    K.kbuild(k, g); const geo = new K.THREE.BufferGeometry(); geo.setAttribute('position', new K.THREE.Float32BufferAttribute(P, 3)); geo.computeBoundingSphere(); g.add(new K.THREE.Points(geo, r.pts));
+    K.kbuild(k, g); const geo = new K.THREE.BufferGeometry(); geo.setAttribute('position', new K.THREE.Float32BufferAttribute(P, 3)); geo.computeBoundingSphere(); g.add(K.NODE ? K.NODE.points(geo, r.pts) : new K.THREE.Points(geo, r.pts));
     g.userData.faceRoad = true; return g;
   }
   // a rowing eight of the dead on the Amstel, sculling through the fog

@@ -7,6 +7,7 @@
 //   --renderer webgl adds ?renderer=webgl (the old WebGLRenderer path, for comparison); webgpu is the default page.
 //   --power low asks for the low-power adapter (the Intel iGPU on a dual-GPU laptop); high picks the discrete one.
 //   --mode headed opens a real window parked off screen, for machines where headless Chrome cannot reach the GPU.
+//   --pages 'cine4=cine=4&t=3;map=map=1' shoots other screens (intro shots, map, title) with their errors.
 //   --extra 'fx=-bloom&post=0' adds page parameters; --lockdpr 1 stops the game lowering its resolution during the ride.
 //   --swift uses SwiftShader instead (software, the old harness's error check; fps is meaningless there).
 // On this machine (Linux, Intel UHD CML + NVIDIA T2000) headless=new with --use-gl=angle --use-angle=gl
@@ -31,6 +32,7 @@ fs.mkdirSync(opt.out, { recursive: true });
 const args = opt.swift
   ? ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--enable-unsafe-webgpu']
   : ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl', '--enable-unsafe-webgpu', '--enable-features=Vulkan', '--enable-gpu-rasterization'];
+if (opt.uncap) args.push('--disable-gpu-vsync', '--disable-frame-rate-limit');   // --uncap 1: fps above 60, to compare GPU cost
 if (opt.mode === 'headless') args.unshift('--headless=new');
 else args.push('--window-position=-3000,-3000', `--window-size=${opt.w},${opt.h}`);
 const browser = await chromium.launch({ executablePath: opt.chrome, headless: opt.mode === 'headless', args });
@@ -87,6 +89,23 @@ for (const lv of String(opt.levels).split(',').map(s => s.trim()).filter(Boolean
   results.push(r);
   console.log(`L${String(lv).padEnd(4)} ${m.backend} | ${m.adapter}\n      calls ${m.calls}  tris ${m.tris}  step ${m.stepMs}ms  luma ${m.luma}  ride ${opt.secs}s: ${m.ride.fps} fps (worst ${m.ride.worstMs} ms, dpr ${m.dpr}->${m.ride.dprAfter}, luma after ${m.ride.lumaAfter})  errors ${errors.length}  (${Math.round(loadMs / 1000)}s)`);
   for (const e of errors.slice(0, 6)) console.log('      ' + e.slice(0, 300));
+  await page.close();
+}
+// other screens: --pages 'name=query;name=query' (e.g. cine4=cine=4&t=3;map=map=1;title=), a PNG and the errors of each after a few seconds
+for (const job of String(opt.pages || '').split(';').filter(Boolean)) {
+  const eq = job.indexOf('='), name = job.slice(0, eq), q = new URLSearchParams(job.slice(eq + 1));
+  if (opt.renderer !== 'webgpu') q.set('renderer', opt.renderer);
+  if (opt.power) q.set('gpu', opt.power);
+  const page = await browser.newPage({ viewport: { width: opt.w, height: opt.h } }), errors = [];
+  page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
+  page.on('pageerror', e => errors.push('page: ' + String(e)));
+  await page.addInitScript(() => { try { localStorage.setItem('nachtrit.intro', '1'); const all = {}; for (let i = 1; i <= 140; i++) all[i] = 3; localStorage.setItem('nachtrit.progress', JSON.stringify(all)); } catch (e) {} });
+  await page.goto(opt.base + '?' + q, { waitUntil: 'load', timeout: 180000 });
+  await page.waitForTimeout(5000);
+  const file = path.join(opt.out, name + '.png'); await page.screenshot({ path: file });
+  const luma = await page.evaluate(() => window.NRbright ? NRbright() : null).catch(() => null);
+  results.push({ page: name, query: String(q), luma, file, errors });
+  console.log(`${name.padEnd(10)} luma ${luma}  errors ${errors.length}`); for (const e of errors.slice(0, 4)) console.log('      ' + e.slice(0, 300));
   await page.close();
 }
 fs.writeFileSync(path.join(opt.out, 'report.json'), JSON.stringify({ opt, args, results }, null, 1));
