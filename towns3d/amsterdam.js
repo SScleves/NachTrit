@@ -24,12 +24,15 @@
 
   // ---------- made once: textures, materials, the sign sheet ----------
   let R = null;
+  const NODE = () => window.NRW && window.NRW.NODE;   // the node path's helpers (WebGPURenderer), null on ?renderer=webgl
   function dimFog(m, key, keep) {   // additive light fades to black in the haze, as the game's glows do, instead of turning into haze; keep: how much is left at full haze
+    if (NODE()) { m.userData.shared = true; return NODE().fogDim(m, keep == null ? 0.15 : keep); }   // the node path (WebGPURenderer)
     const k = (1 - (keep == null ? 0.15 : keep)).toFixed(2);
     m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb *= 1.0 - ' + k + ' * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth ));\n#endif'); };
     m.customProgramCacheKey = () => 'amsPts' + key + k; m.userData.shared = true; return m;
   }
   function thinFog(m, key, part) {   // the haze takes only part of this colour: the blue crown reads through the fog at a distance
+    if (NODE()) { m.userData.shared = true; return NODE().fogThin(m, part); }
     m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, ' + part.toFixed(2) + ' * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth )) );\n#endif'); };
     m.customProgramCacheKey = () => 'amsThin' + key; m.userData.shared = true; return m;
   }
@@ -79,6 +82,7 @@
     // with the depth of the water where the eye meets it, so the quay in front hides it as it would hide a real reflection
     const ptsRefl = (color, size, key) => {
       const m = new THREE.PointsMaterial({ color, size, map: bulbT, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      if (K.NODE) { m.userData.shared = true; return K.NODE.fogDim(m, 0.25); }   // node path: the dimming only; the depth trick for the mirrored bulbs is WebGL only
       m.onBeforeCompile = sh => {
         sh.vertexShader = sh.vertexShader.replace('#include <fog_vertex>', '#include <fog_vertex>\n  { vec4 wp = modelMatrix * vec4( transformed, 1.0 );\n    if ( wp.y < ' + (WY - 0.02).toFixed(2) + ' ) {\n      float tt = ( cameraPosition.y - ' + WY.toFixed(2) + ' ) / max( 0.01, cameraPosition.y - wp.y );\n      vec3 hit = cameraPosition + tt * ( wp.xyz - cameraPosition );\n      hit += normalize( cameraPosition - hit ) * 0.08;\n      vec4 hc = projectionMatrix * viewMatrix * vec4( hit, 1.0 );\n      gl_Position.z = hc.z / hc.w * gl_Position.w;\n    } }');
         sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', '#ifdef FOG_EXP2\n  gl_FragColor.rgb *= 1.0 - 0.75 * (1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth ));\n#endif');

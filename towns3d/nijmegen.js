@@ -24,6 +24,7 @@
   const STEP_BODY = '\nif (uHA > 0.0) { vec4 nrS = modelMatrix * vec4(0.0, 0.0, floor(position.z / 6.0 + 0.5) * 6.0, 1.0); transformed.y += nrHill(uHD - nrS.z) - nrHill(uHD - modelMatrix[3].z); }';
   function keep(m) { m.userData.shared = true; return m; }
   function step(m) {
+    if (window.NRW && window.NRW.NODE) { window.NRW.NODE.hillStep(m, HU); return keep(m); }   // the node path (WebGPURenderer)
     const prev = m.onBeforeCompile, prevKey = Object.prototype.hasOwnProperty.call(m, 'customProgramCacheKey') ? m.customProgramCacheKey : null;
     m.onBeforeCompile = (sh, r) => {
       if (prev) prev(sh, r);
@@ -38,6 +39,7 @@
   const MARCH = { n: { value: 48 } }, PAIRS = 48, PAIR_X0 = 6, PAIR_DX = 3.4;
   function marchTick() { const t = now() % 40; MARCH.n.value = t < 9 ? 1 + t / 9 * PAIRS : PAIRS + 1; }   // the walk takes nine seconds here, then the row stays lit
   function marching(m, dim) {
+    if (window.NRW && window.NRW.NODE) { window.NRW.NODE.march(m, MARCH.n, PAIR_X0, PAIR_DX, dim); return keep(m); }
     const prev = m.onBeforeCompile, prevKey = Object.prototype.hasOwnProperty.call(m, 'customProgramCacheKey') ? m.customProgramCacheKey : null;
     m.onBeforeCompile = (sh, r) => {
       if (prev) prev(sh, r);

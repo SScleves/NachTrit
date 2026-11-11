@@ -22,6 +22,7 @@
   const STEP_BODY = '\nif (uHA > 0.0) { vec4 nrS = modelMatrix * vec4(0.0, 0.0, floor(position.z / 6.0 + 0.5) * 6.0, 1.0); transformed.y += nrHill(uHD - nrS.z) - nrHill(uHD - modelMatrix[3].z); }';
   function keep(m) { m.userData.shared = true; return m; }
   function step(m) {
+    if (window.NRW && window.NRW.NODE) { window.NRW.NODE.hillStep(m, HU); return keep(m); }   // the node path (WebGPURenderer)
     const prev = m.onBeforeCompile, prevKey = Object.prototype.hasOwnProperty.call(m, 'customProgramCacheKey') ? m.customProgramCacheKey : null;
     m.onBeforeCompile = (sh, r) => {
       if (prev) prev(sh, r);
