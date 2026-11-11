@@ -4,6 +4,8 @@
 import vm from 'node:vm'; import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
 const ROOT = process.cwd();
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+// the game's own code: index.html and its modules in src/ (the fallback PANELS and the speak('...') lines live there)
+const code = [html, ...fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js')).sort().map(f => fs.readFileSync(path.join(ROOT, 'src', f), 'utf8'))].join('\n');
 
 // voices: the rider and the narrator are Maarten, passengers and read items are Fenna, the towns talk as Colette
 export const VOICE = { rider: 'nl-NL-MaartenNeural', narrator: 'nl-NL-MaartenNeural', passenger: 'nl-NL-FennaNeural', town: 'nl-NL-ColetteNeural' };
@@ -41,9 +43,9 @@ function addItem(it) {
 for (const lv of ctx.LEVELS || []) { if (lv.soon) continue; (lv.items || []).forEach(addItem); add(lv.introNl, VOICE.narrator, 'intro'); }
 (ctx.SENTENCES || []).forEach(addItem);   // endless mode
 
-// the intro: the painted panels (NRART) and the fallback PANELS in index.html; showIntro speaks p.nl
+// the intro: the painted panels (NRART) and the fallback PANELS in the game's code; showIntro speaks p.nl
 (ctx.NRART && ctx.NRART.panels || []).forEach(p => p && add(p.nl, VOICE.narrator, 'panel'));
-const pb = html.slice(html.indexOf('const PANELS = ['), html.indexOf('function showIntro('));
+const pb = code.slice(code.indexOf('const PANELS = ['), code.indexOf('function showIntro('));
 for (const m of pb.matchAll(/\bnl: '((?:[^'\\]|\\.)*)'/g)) add(m[1].replace(/\\'/g, "'"), VOICE.narrator, 'panel');
 
 // towns: the rumour card the narrator reads (showLevelIntro), and every other Dutch field for the town voice
@@ -58,8 +60,8 @@ const F = ctx.FARES;
 for (let c = 10; c <= 3000; c += 10) add(F.euroToWords(c / 100), VOICE.passenger, 'fare');
 F.TIPS.forEach(t => add(t.nl, VOICE.passenger, 'tip')); F.REFUSE.forEach(r => add(r.nl, VOICE.passenger, 'refuse'));
 
-// fixed lines spoken by index.html: speak('...') with a literal
-for (const m of html.matchAll(/\bspeak\('((?:[^'\\]|\\.)*)'/g)) add(m[1], VOICE.narrator, 'fixed');
+// fixed lines spoken by the game: speak('...') with a literal
+for (const m of code.matchAll(/\bspeak\('((?:[^'\\]|\\.)*)'/g)) add(m[1], VOICE.narrator, 'fixed');
 
 const lines = [...out.values()];
 fs.mkdirSync(path.join(ROOT, 'voice'), { recursive: true });
