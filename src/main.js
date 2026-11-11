@@ -2,7 +2,6 @@
 // code ran when it was one script, and re-exports them. A module imports what comes before it directly and what comes after it
 // from here, so every module is evaluated once, in that order, and the random draws and scene objects are made as before.
 // The pure rules (tasks, reading, lamp, forks, voice) are shared with the unit tests in qa/test.
-import { TASKS } from './tasks.js?v=38';
 import { HOLD_AT, legDist, READ_AHEAD, READ_THR } from './reading.js?v=38';
 import { lampLoss, lampReadK, refuelRight, TUNE } from './lamp.js?v=38';
 import { levelQueue } from './forks.js?v=38';
@@ -48,6 +47,8 @@ import { BASE, DISTRICT_NEED, L, LANE_X, MAXS, nightDepth, progress, S, saveProg
 export * from './state.js?v=38';
 import { plan, signFrac } from './plan.js?v=38';
 export * from './plan.js?v=38';
+import { assembled, card, cardSeq, fareRow, flash, forkCard, hideCard, say, setToastT, showCard, toast, toastT } from './hud.js?v=38';
+export * from './hud.js?v=38';
 // ---------- the rest of the game: not yet in its own module ----------
 let frameAcc = 0, frameN = 0, rideFrames = 0;
 
@@ -88,60 +89,6 @@ window.NRfareFns = { paidLine, payTikkie };   // qa: the toast line and the Tikk
 window.goLevel = id => { const lv = LEVELS.find(l => l.id === id); if (lv && !lv.soon) { openMission(lv); return true; } return false; };
 
 window.NRread = { signFit, legDist, READ_THR, READ_AHEAD };   // qa: how far off a sign text reads (em = signFit(t).px / 250 * 1.02, x1.3 on tier 1)
-// ---------- HUD ----------
-const card = $('card'), toast = $('toast');
-let toastT = 0;
-let cardSeq = 0;
-function showCard(who, en, nlHtml, fareHtml, task) {
-  cardSeq++;
-  card.querySelector('.who').textContent = who; card.querySelector('.en').textContent = en; card.querySelector('.nl').innerHTML = nlHtml; card.querySelector('.fare').innerHTML = fareHtml || ''; card.style.opacity = 1;
-  cardTask(task); card.querySelector('.gohint').textContent = '';
-}
-// the task label: what this fork asks, in its colour; larger the first time the type comes up in a level
-function cardTask(fork) {
-  const el = card.querySelector('.task'), t = fork && TASKS[fork.taskId];
-  el.textContent = t ? t.label : ''; el.style.color = t ? t.color : ''; el.classList.toggle('big', !!(fork && fork.firstTask));
-}
-// the whole Dutch frame: what is chosen, a glowing slot for this fork, dim slots for the later ones
-const SLOT = '<b class="slot">&nbsp;</b>', SLOT_LATER = '<b class="slot later">&nbsp;</b>';
-function cardFrame(st, idx) {
-  const out = []; let fi = 0;
-  for (const p of st.entry.parts) { if (typeof p === 'string') out.push(p); else { out.push(fi < idx ? st.chosen[fi] : fi === idx ? SLOT : SLOT_LATER); fi++; } }
-  return out.join(' ').replace(/\s+([,.?!])/g, '$1');
-}
-// the card for a sentence fork (build, listen, de/het): the passenger's pickup and the gate both use it
-function forkCard(f, fr) {
-  const e = f.entry;
-  if (e.listen) { showCard('Listen', '🔊 …', cardFrame(f.st, f.idx), fr, f); speak(e.nl, false, VOICES.passenger); }
-  else if (e.dehet) showCard('De or het?', e.parts[1], SLOT + ' ' + e.parts[1] + ' <span style="color:#9fb0cc">· ' + e.en + '</span>', fr, f);
-  else showCard('The passenger says', e.en, cardFrame(f.st, f.idx) + (L && L.hint === 'letter' && firstLetterHint(f.o[f.a]) ? ` <span style="color:#9fb0cc">(${firstLetterHint(f.o[f.a])})</span>` : ''), fr, f);
-}
-function hideCard() { card.style.opacity = 0; }   // .fare is left to fade with the rest: showCard always rewrites it
-// the fare line on the card: what the ride is worth, struck through with what is left once a gap went wrong
-function fareRow(fare, wrong, forks) {
-  if (!fare) return '';
-  if (wrong > 0) return `<s>${FARES.fmtEuro(fare)}</s> ${FARES.fmtEuro(FARES.payCents(fare, wrong, forks))}`;
-  return FARES.fmtEuro(fare) + (S.fareTier <= 3 ? ` <i>${FARES.euroToWords(fare / 100)}</i>` : '');
-}
-function say(msg, cls, why, secs = 2.4) {
-  toast.className = cls; toast.innerHTML = msg + (why ? `<span class="why">${why}</span>` : ''); toast.style.opacity = 1; toastT = secs;
-}
-function firstLetterHint(answer) { if (/^(de|het|een|dit|deze)$/i.test(answer.trim())) return ''; const w = answer.replace(/^(de|het|een)\s+/i, ''); return w.slice(0, 1) + '…'; }
-function assembled(st, upToIdx, mark) {
-  // Dutch so far: fixed parts + chosen; current fork shown as ___ ; later parts as …
-  let out = [], fi = 0;
-  for (const p of st.entry.parts) {
-    if (typeof p === 'string') { if (fi <= upToIdx) out.push(p); }
-    else {
-      if (fi < upToIdx) out.push(st.chosen[fi]);
-      else if (fi === upToIdx) out.push(mark || '<b>___</b>');
-      fi++;
-    }
-  }
-  return out.join(' ').replace(/\s+([,.?!])/g, '$1') + (upToIdx < st.forks.length - 1 ? ' …' : '');
-}
-function flash(color, a = 0.5) { const f = $('flash'); f.style.background = color; f.style.opacity = a; setTimeout(() => f.style.opacity = 0, 70); }
-
 // ---------- audio ----------
 function initAudio() {
   if (audioCtx) return;
@@ -275,7 +222,7 @@ function goKnown() { try { return localStorage.getItem('nachtrit.go') === '1'; }
 function goNow() {
   const g = S.activeFork; if (S.mode !== 'ride' || !g || g.resolved || g.go) return;
   g.go = true; g.goEarly = g.legT < g.budget;   // answered before the budget ran out: a little extra lamp if it is right
-  if (g.hold) { g.hold = false; if (S.held) { S.held = false; toastT = Math.min(toastT, 1.2); } }
+  if (g.hold) { g.hold = false; if (S.held) { S.held = false; setToastT(Math.min(toastT, 1.2)); } }
   card.querySelector('.gohint').textContent = '';
   try { localStorage.setItem('nachtrit.go', '1'); } catch (e) {}
 }
@@ -1197,7 +1144,7 @@ function update(dt) {
         k = Math.min(k, room > 0 ? (room / need + far * 0.5) / Math.max(1, S.speed * hillK) : g.legNow ? 0 : g.legT === 0 && -z > READ_AHEAD + 4 ? k : 0.6 / Math.max(1, S.speed * hillK));   // small letters: creep until they read, then wait   // never waits on a sign that does not read
       }
       // the very first gate of a first ride waits, just off the signs, until he steers (a key, a swipe, or NR.lane set by the harness)
-      if (g.hold && S.laneN !== g.laneN0) { g.hold = false; if (S.held) { S.held = false; toastT = Math.min(toastT, 1.2); } }
+      if (g.hold && S.laneN !== g.laneN0) { g.hold = false; if (S.held) { S.held = false; setToastT(Math.min(toastT, 1.2)); } }
       if (g.hold) { k = Math.min(k, Math.max(0, -z - HOLD_AT) / 12); if (!S.held && S.slow < 0.12) { S.held = true; say('Ride through the lit sign.', 'good', 'The bike waits. Steer with ← → or a swipe.', 600); } }
       if (g.go) k = L ? 0.85 : 0.9;   // he pressed go: reading time was the most he could wait, never forced; S.slow eases back up
       S.slowTarget = k;
@@ -1238,7 +1185,7 @@ function update(dt) {
     if (shown !== S.walletLast) { S.walletLast = shown; $('wallet').textContent = FARES.fmtEuro(shown); }
   }
   if (S.fxT > 0) { S.fxT -= dt; if (S.fxT <= 0) { $('walletfx').textContent = ''; $('walletfx').className = ''; } }
-  if (toastT > 0) { toastT -= dt; if (toastT <= 0) toast.style.opacity = 0; }
+  if (toastT > 0) { setToastT(toastT - dt); if (toastT <= 0) toast.style.opacity = 0; }
 }
 
 function loop() {
@@ -1310,4 +1257,5 @@ loop();
 
 
 
-export { TOWN_OF, townOpen, towns };
+
+export { speak, TOWN_OF, townOpen, towns };
