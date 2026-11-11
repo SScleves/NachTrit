@@ -21,7 +21,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 77, act: 7, name: 'Eten en drinken', town: 'rotterdam', place: 'eten', theme: 'square', ...P,
     intro: 'The Markthal has a hundred stalls and the dead still order a kapsalon. The mist changed everything except the order.',
@@ -32,60 +32,46 @@
       want: 'Since the mist the dead are regulars, and they want your order told back in the past tense: was, had, ging, kwam, aten, and zou for everything polite. Nobody here talks, niet lullen maar poetsen (stop talking, start working), so answer fast. The women at the table are still taller than you, the dogs still need a walk, and the bill is still split to the cent.' },
     items: [
       // ---- builds: the imperfectum, regular and irregular
-      { en: 'Last night we ate a kapsalon in the Markthal.', parts: ['Gisteravond', FK(['aten we', 'eten we', 'we aten'], 0, 'imp',
-        'Gisteravond is past and fills slot 1, so the verb comes second and in the past: aten we. eten we is the present tense.'), 'een kapsalon in de Markthal.'] },
-      { en: 'The chef worked in the kitchen all night.', parts: ['De kok', FK(['werkte', 'werkde', 'werkten'], 0, 'kof',
-        'werk ends in k, a soft ketchup letter: werkte with a t. werkten is for more than one chef.'), 'de hele nacht in de keuken.'] },
-      { en: 'The Markthal opened in 2014. Then the tourists came.', parts: ['In 2014', FK(['opende', 'opente', 'opend'], 0, 'imp',
-        'open ends in n, no ketchup letter: opende with a d.'), 'de Markthal. Daarna kwamen de toeristen.'] },
+      { en: 'Last night we ate a kapsalon in the Markthal.', parts: ['Gisteravond', FK(['aten we', 'we aten'], 0, 'v2', 'Gisteravond takes slot 1, so the verb comes second, then we.'), 'een kapsalon in de Markthal.'] },
+      { en: 'The chef worked in the kitchen all night.', parts: ['De kok', FK(['werkte', 'werkten', 'gewerkt'], 0, 'kof', 'werk ends in k, a ketchup letter, so -te, and one chef takes no -n.'), 'de hele nacht in de keuken.'] },
+      { en: 'The Markthal opened in 2014. Then the tourists came.', parts: ['In 2014', FK(['opende', 'opente'], 0, 'imp', 'open ends in n, not a ketchup letter, so the past ends in -de: opende.', 'spell'), 'de Markthal. Daarna kwamen de toeristen.'] },
       { en: 'The terrace was full and we went inside.', parts: ['Het terras', FK(['was', 'waren'], 0, 'imp',
         'One terrace, so was. waren is for more than one.'), 'vol en we', FK(['gingen', 'ging'], 0, 'imp',
         'gaan is irregular: ging for one, gingen for more. We is more than one.'), 'naar binnen.'] },
       { en: 'We had no reservation, but the waiter still had a table.', parts: ['We', FK(['hadden', 'had'], 0, 'imp',
         'hebben is irregular: had for one, hadden for more. We is more than one.'), FK(['geen', 'niet'], 0, 'neg',
-        'reservering has no article, so geen takes its place: geen reservering. niet does not go in front of a bare noun.'), 'reservering, maar de ober had nog een tafel.'] },
-      { en: 'The waitress came with the menu and spoke only Dutch.', parts: ['De serveerster', FK(['kwam', 'komde', 'kwamen'], 0, 'imp',
-        'komen is irregular: kwam for one person. komde does not exist.'), 'met de kaart en', FK(['sprak', 'spreekte', 'sprekte'], 0, 'imp',
-        'spreken is irregular: sprak, the e turns into an a.'), 'alleen Nederlands.'] },
-      { en: 'I walked to the market and bought a herring.', parts: ['Ik', FK(['liep', 'loopte', 'liepte'], 0, 'imp',
-        'lopen is irregular: liep. It takes no -te or -de.'), 'naar de markt en', FK(['kocht', 'kochte', 'koopte'], 0, 'imp',
-        'kopen is irregular: kocht, the stem changes. kochte and koopte do not exist.'), 'een haring.'] },
+        'reservering has no article, so geen takes its place: geen reservering.'), 'reservering, maar de ober had nog een tafel.'] },
+      { en: 'The waitress came with the menu and spoke only Dutch.', parts: ['De serveerster', FK(['kwam', 'kwamen', 'gekomen'], 0, 'imp', 'komen is irregular: the past is kwam, and one person takes no ending.'), 'met de kaart en', FK(['sprak', 'spraken', 'gesproken'], 0, 'imp', 'spreken is irregular: the past is sprak, and one person takes no ending.'), 'alleen Nederlands.'] },
+      { en: 'I walked to the market and bought a herring.', parts: ['Ik', FK(['liep', 'liepen', 'gelopen'], 0, 'imp', 'lopen is irregular: the past is liep, and ik takes no ending.'), 'naar de markt en', FK(['kocht', 'kochten', 'gekocht'], 0, 'imp', 'kopen is irregular: the past is kocht, and ik takes no ending.'), 'een haring.'] },
 
       // ---- builds: reflexives in the past
       { en: 'Sorry, I made a mistake. This is not my bill.', parts: ['Sorry, ik vergiste', FK(['me', 'zich'], 0, 'refl',
-        'The self word matches the subject: ik goes with me. zich is for hij, zij, het and the plural they.'), '. Dit is niet mijn rekening.'] },
+        'The self-word matches the subject: ik goes with me.'), '. Dit is niet mijn rekening.'] },
       { en: 'The dogs were bored under the table.', parts: ['De honden', FK(['verveelden', 'verveelde'], 0, 'imp',
         'verveel ends in l, no ketchup letter: verveelden, and two dogs take -den.'), FK(['zich', 'zij'], 0, 'refl',
-        'A reflexive verb needs its self word: zich for the dogs. zij is a subject word and cannot stand after the verb.'), 'onder de tafel.'] },
+        'A reflexive verb needs its self-word, and for the dogs that is zich.'), 'onder de tafel.'] },
 
       // ---- builds: zou plus infinitive
-      { en: 'May I see the menu, please?', parts: [FK(['Zou', 'Zouden', 'Zoud'], 0, 'zou',
-        'Zou is the polite form of zullen for one person: Zou ik. Zouden is for more than one.'), 'ik de menukaart mogen', FK(['zien', 'te zien'], 0, 'modal',
+      { en: 'May I see the menu, please?', parts: [FK(['Zou', 'Zouden'], 0, 'zou', 'zou is the polite form for one person: zou ik.'), 'ik de menukaart mogen', FK(['zien', 'te zien'], 0, 'modal',
         'mogen sends a bare infinitive to the end: zien, with no te.'), ', alstublieft?'] },
       { en: 'What would you recommend to us?', parts: ['Wat', FK(['zou', 'zouden'], 0, 'zou',
         'u is one person and takes the singular: zou u. zouden is for more than one.'), 'u ons', FK(['aanraden', 'aan raden', 'raden aan'], 0, 'sep',
         'aanraden stays in one piece when it is the infinitive at the end.'), '?'] },
 
       // ---- builds: comparatives and superlatives
-      { en: 'The food in the Markthal is more expensive than at the snack bar.', parts: ['Het eten in de Markthal is', FK(['duurder', 'duurdere', 'meer duur'], 0, 'vergelijk',
-        'duur ends in r, so the -er becomes -der: duurder. duurdere is the form in front of a noun.'), 'dan bij de snackbar.'] },
+      { en: 'The food in the Markthal is more expensive than at the snack bar.', parts: ['Het eten in de Markthal is', FK(['duurder', 'duurdere', 'duur'], 0, 'vergelijk', 'duur ends in r, so the comparative adds -der: duurder, with dan after it.'), 'dan bij de snackbar.'] },
       { en: 'This is the tastiest croquette in all of Rotterdam.', parts: ['Dit is', FK(['de', 'het'], 0, 'dehet',
         'kroket is a de-word, so de.'), FK(['lekkerste', 'lekkerst', 'lekkerder'], 0, 'vergelijk',
         'The superlative before a noun is -ste: de lekkerste. lekkerder means tastier than something.'), 'kroket van heel Rotterdam.'] },
-      { en: 'Paola would rather drink a bakkie pleur than tea.', parts: ['Paola drinkt', FK(['liever', 'graager', 'beter'], 0, 'vergelijk',
-        'The comparative of graag is liever. graager does not exist, and beter would mean better.'), 'een bakkie pleur dan thee.'] },
-      { en: 'The soup was better yesterday than today.', parts: ['De soep', FK(['was', 'is'], 0, 'imp',
-        'gisteren is past, so the verb is past too: was.'), 'gisteren', FK(['beter', 'goeder', 'gooder'], 0, 'vergelijk',
-        'goed has its own comparative: goed, beter, best. goeder does not exist.'), 'dan vandaag.'] },
+      { en: 'Paola would rather drink a bakkie pleur than tea.', parts: ['Paola drinkt', FK(['liever', 'graag', 'liefst'], 0, 'vergelijk', 'With dan you need the comparative of graag: liever.'), 'een bakkie pleur dan thee.'] },
+      { en: 'The soup was better yesterday than today.', parts: ['Gisteren', FK(['was de soep', 'de soep was'], 0, 'v2', 'Gisteren takes slot 1, so the verb comes second, then de soep.'), FK(['beter', 'best', 'goed'], 0, 'vergelijk', 'goed is irregular: goed, beter, best, and dan wants beter.'), 'dan vandaag.'] },
 
       // ---- builds: review of the earlier tiers
       { en: 'After dinner we went home by water taxi.', parts: ['Na het eten', FK(['zijn we', 'we zijn'], 0, 'v2',
-        'Na het eten fills slot 1, so the verb comes second, then we.'), 'met de watertaxi naar huis', FK(['gegaan', 'gegaat', 'gegaand'], 0, 'perf',
-        'gaan has its own participle: gegaan, and it takes zijn.'), '.'] },
+        'Na het eten fills slot 1, so the verb comes second, then we.'), 'met de watertaxi naar huis', FK(['gegaan', 'gingen', 'gaan'], 0, 'perf', 'gaan is irregular: the participle is gegaan.'), '.'] },
       { en: 'Can we split the bill?', parts: ['Kunnen we de rekening', FK(['splitsen', 'gesplitst', 'te splitsen'], 0, 'modal',
         'kunnen sends a bare infinitive to the end: splitsen. No ge, no te.'), '?'] },
-      { en: 'I picked up the kapsalon at seven o\'clock.', parts: ['Ik', FK(['haalde', 'haalte'], 0, 'imp',
-        'haal ends in l, no ketchup letter: haalde with a d.'), 'de kapsalon om zeven uur', FK(['op', 'opgehaald'], 0, 'sep',
+      { en: 'I picked up the kapsalon at seven o\'clock.', parts: ['Ik', FK(['haalde', 'haalte'], 0, 'imp', 'haal ends in l, not a ketchup letter, so the past ends in -de: haalde.', 'spell'), 'de kapsalon om zeven uur', FK(['op', 'opgehaald'], 0, 'sep',
         'ophalen splits: haalde stays in slot 2 and op goes to the end.'), '.'] },
 
       // ---- words: the table, the menu, the bill, Rotterdam on a plate

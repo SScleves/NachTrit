@@ -19,7 +19,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 66, act: 5, name: 'De Dom', town: 'utrecht', place: 'eigen', theme: 'square', ...P,
     intro: 'The Dom tower is 112 metres tall. That makes it taller than the women of Utrecht, but only just.',
@@ -54,40 +54,31 @@
       // ---- builds: separable verbs split in the present, the prefix at the end
       { en: 'At the Dom I get off.', parts: ['Bij de Dom', FK(['stap ik af', 'stap af ik', 'afstap ik'], 0, 'sep',
         'Bij de Dom takes slot 1, stap comes second, then ik, and af waits at the very end.'), '.'] },
-      { en: 'The train arrives at half past eight.', parts: ['De trein', FK(['komt', 'aankomt', 'komen'], 0, 'sep',
-        'aankomen splits in the present: komt in slot 2, aan at the end.'), 'om', FK(['half negen', 'half acht'], 0, 'klok',
+      { en: 'The train arrives at half past eight.', parts: ['De trein', FK(['komt', 'aankomt'], 0, 'sep', 'aankomen splits in the present: komt in slot 2, aan at the end.'), 'om', FK(['half negen', 'half acht'], 0, 'klok',
         'Dutch counts towards the next hour: half negen is half way to nine, so 8:30.'), 'aan.'] },
-      { en: "I'll call you tomorrow, honey.", parts: ['Ik', FK(['bel', 'opbel', 'belt'], 0, 'sep',
-        'opbellen splits in the present: ik bel in slot 2, no t for ik.'), 'je morgen', FK(['op', 'opbellen'], 0, 'sep',
+      { en: "I'll call you tomorrow, honey.", parts: ['Ik', FK(['bel', 'opbel'], 0, 'sep', 'opbellen splits in the present: bel in slot 2, op at the end.'), 'je morgen', FK(['op', 'opbellen'], 0, 'sep',
         'Only the prefix op goes to the end, not the whole verb.'), ', schat.'] },
-      { en: 'Are you coming along to the terrace?', parts: [FK(['Ga je mee', 'Mee ga je', 'Gaat je mee'], 0, 'sep',
-        'A yes/no question starts with the verb. With je behind it the t drops, and mee breaks off after je.'), 'naar het terras?'] },
+      { en: 'Are you coming along to the terrace?', parts: [FK(['Ga je mee', 'Mee ga je'], 0, 'sep', 'A yes or no question starts with the verb, and mee breaks off to the end.'), 'naar het terras?'] },
 
       // ---- builds: zijn + aan het + infinitive
       { en: "I'm looking for my bike.", parts: ['Ik', FK(['ben', 'heb'], 0, 'aanhet',
-        'aan het always runs on zijn: ik ben.'), 'mijn fiets', FK(['aan het zoeken', 'zoeken aan het', 'aan het zoek'], 0, 'aanhet',
+        'aan het always runs on zijn: ik ben.'), 'mijn fiets aan het', FK(['zoeken', 'zoek', 'te zoeken'], 0, 'aanhet',
         'aan het first, then the whole infinitive closes the sentence: aan het zoeken.'), '.'] },
-      { en: 'The dead are drinking beer on the terrace.', parts: ['De doden', FK(['zijn', 'is', 'hebben'], 0, 'aanhet',
-        'The dead, plural, and aan het runs on zijn: zijn.'), 'op het terras bier aan het', FK(['drinken', 'drinkt', 'drink'], 0, 'aanhet',
+      { en: 'The dead are drinking beer on the terrace.', parts: ['De doden', FK(['zijn', 'hebben'], 0, 'aanhet', 'aan het runs on zijn, never hebben: de doden zijn.'), 'op het terras bier aan het', FK(['drinken', 'drinkt', 'drink'], 0, 'aanhet',
         'After aan het comes the infinitive, whole: drinken.'), '.'] },
 
       // ---- builds: gaan + infinitive for the future
-      { en: 'Tomorrow we are going to climb the Dom tower.', parts: ['Morgen', FK(['gaan we', 'we gaan', 'gaat we'], 0, 'v2',
-        'Morgen takes slot 1, so gaan comes second, then we.'), 'de Domtoren', FK(['beklimmen', 'beklimt', 'te beklimmen'], 0, 'fut',
+      { en: 'Tomorrow we are going to climb the Dom tower.', parts: ['Morgen', FK(['gaan we', 'we gaan'], 0, 'v2', 'Morgen takes slot 1, so gaan comes second, then we.'), 'de Domtoren', FK(['beklimmen', 'beklimt', 'te beklimmen'], 0, 'fut',
         'gaan sends the real verb to the end, whole, no te.'), '.'] },
       { en: 'The students are going to split the bill to the cent.', parts: ['De studenten', FK(['gaan', 'gaat'], 0, 'fut',
         'Students, plural: gaan.'), 'de rekening tot op de cent', FK(['delen', 'deelt', 'te delen'], 0, 'fut',
         'After gaan the second verb closes the sentence as an infinitive: delen.'), '.'] },
       { en: 'Tonight I am going to pick up my bike.', parts: ['Vanavond', FK(['ga ik', 'ik ga'], 0, 'v2',
-        'Vanavond in slot 1 pushes ik behind the verb: ga ik.'), 'mijn fiets', FK(['ophalen', 'haal op', 'ophaal'], 0, 'fut',
-        'After gaan the separable verb comes back together at the end: ophalen.'), '.'] },
+        'Vanavond in slot 1 pushes ik behind the verb: ga ik.'), 'mijn fiets', FK(['ophalen', 'ophaalt', 'op te halen'], 0, 'fut', 'After gaan the separable verb goes whole to the end, without te: ophalen.'), '.'] },
 
       // ---- builds: the imperative
-      { en: 'Watch out, there are students on the cycle path.', parts: [FK(['Let', 'Lett', 'Letten'], 0, 'gebod',
-        'A command is the bare stem: let. No t added, no -en. The prefix op stays behind: let op.'), 'op, er', FK(['zijn', 'zit'], 0, 'presens',
-        'studenten is plural, so er zijn.'), 'studenten op het fietspad.'] },
-      { en: "Keep cycling and don't look back.", parts: [FK(['Fiets maar door', 'Fiets door maar', 'Doorfiets maar'], 0, 'gebod',
-        'The command is the bare stem, and the prefix door goes to the end: fiets maar door.'), 'en', FK(['kijk niet om', 'kijk om niet', 'omkijk niet'], 0, 'sep',
+      { en: 'Watch out, there are students on the cycle path.', parts: [FK(['Let', 'Letten'], 0, 'gebod', 'A command is the bare stem: let; op stays behind it.'), 'op, er', FK(['zijn', 'is'], 0, 'presens', 'studenten is plural, so er zijn.'), 'studenten op het fietspad.'] },
+      { en: "Keep cycling and don't look back.", parts: [FK(['Fiets maar door', 'Fiets door maar', 'Doorfiets maar'], 0, 'sep', 'The command is the bare stem, and the prefix door goes to the end: fiets maar door.'), 'en', FK(['kijk niet om', 'kijk om niet', 'omkijk niet'], 0, 'sep',
         'omkijken splits: kijk first, niet before the prefix, om closes the sentence.'), '.'] },
       { en: "Don't go to the cellar.", parts: [FK(['Ga', 'Gaat', 'Gaan'], 0, 'gebod',
         'A command is the bare stem: ga. niet comes straight after it.'), 'niet naar de kelder.'] },

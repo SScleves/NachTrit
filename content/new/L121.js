@@ -27,7 +27,7 @@
   window.RULES.mening = window.RULES.mening || { name: 'Opinions: ik vind dat, volgens mij', note: 'ik-vind' };
   window.RULES.plusq = window.RULES.plusq || { name: 'Plusquamperfectum: had / was + participle', note: 'perfectum' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 121, act: 12, name: 'De mensen', town: 'nijmegen', place: 'mensen', theme: 'square', ...P,
     intro: 'Nijmegen is friendly to everyone, the dead included. Only about Maastricht you had better not start.',
@@ -38,15 +38,11 @@
       want: 'Since the mist the dead of Nijmegen are still friendly, maybe friendlier. They ask whether they may say je to you, zeg maar je, they tease you with old sayings, iemand in de maling nemen, met de deur in huis vallen, and they invite you formally to everything: u bent van harte welkom. At carnaval the town is called Knotsenburg and nobody can tell the living from the dead. Paola, still taller than you, knows every neighbour by name. You know their dogs.' },
     items: [
       // ---- builds: u or je
-      { en: 'No need for u, just say je.', parts: [FK(['Zeg maar je', 'Zegt maar je'], 0, 'gebod',
-        'A command to jij is the bare stem, without -t: zeg maar je. Only with u would it be zegt u.'), ', hoor.'] },
-      { en: 'How do you do?', parts: ['Hoe', FK(['maakt u het', 'maak u het'], 0, 'formeel',
-        'With u the verb takes -t, also when u comes after it: hoe maakt u het.'), '?'] },
+      { en: 'No need for u, just say je.', parts: [FK(['Zeg maar je', 'Zegt maar je'], 0, 'gebod', 'A command to jij is the bare stem without -t: zeg maar je.'), ', hoor.'] },
+      { en: 'How do you do?', parts: ['Hoe', FK(['maakt u het', 'maak u het'], 0, 'formeel', 'With u the verb keeps its -t, even when u comes after it: hoe maakt u het.', 'verb'), '?'] },
       { en: 'May I introduce you to my wife, Paola?', parts: ['Mag ik', FK(['u', 'uw'], 0, 'formeel',
         'Here you introduce the person, so the object is u. uw would need a noun after it.'), 'voorstellen aan mijn vrouw, Paola?'] },
-      { en: 'Dear residents, you are very welcome at our borrel.', parts: ['Geachte buurtbewoners,', FK(['u bent', 'u is'], 0, 'formeel',
-        'u takes bent, like jij: u bent. is belongs to hij and zij.'), 'van harte', FK(['welkom', 'welkomen'], 0, 'woord',
-        'After zijn the adjective welkom gets no ending: u bent van harte welkom. welkomen is not a Dutch word.'), 'op onze borrel.'] },
+      { en: 'Dear residents, you are very welcome at our borrel.', parts: ['Geachte buurtbewoners,', FK(['u bent', 'u is'], 0, 'formeel', 'u takes bent, like jij: u bent.', 'verb'), 'van harte', FK(['welkom', 'welkome'], 0, 'adj', 'After zijn the adjective gets no ending: u bent van harte welkom.'), 'op onze borrel.'] },
 
       // ---- builds: particles among people
       { en: "You're the new neighbour, aren't you?", parts: ['Jij bent', FK(['toch', 'hoor'], 0, 'soft',
@@ -59,37 +55,31 @@
       // ---- builds: idioms about people
       { en: "You're pulling my leg.", parts: ['Je neemt me', FK(['in de maling', 'in de molen', 'op de maling'], 0, 'idioom',
         'iemand in de maling nemen means to tease or fool someone. Only in de maling.'), '.'] },
-      { en: 'Sorry to come straight to the point, but may I borrow your ladder?', parts: ['Sorry dat ik', FK(['met de deur in huis val', 'met de deur in het huis val', 'met het raam in huis val'], 0, 'idioom',
-        'met de deur in huis vallen means to start without any warm-up. The words of the saying never change.'), ', maar mag ik uw ladder lenen?'] },
-      { en: 'I still have a bone to pick with him.', parts: ['Ik heb nog', FK(['een appeltje', 'een peertje', 'een appel'], 0, 'idioom',
-        'een appeltje te schillen hebben met iemand means to have something to settle with him. Only the small apple.'), 'met hem te schillen.'] },
-      { en: 'Will you keep an eye on things while we are away?', parts: ['Wil jij', FK(['een oogje in het zeil', 'een oogje op het zeil'], 0, 'idioom',
-        'een oogje in het zeil houden means to keep an eye on things. It is in het zeil, from the sailing ships.'), 'houden als wij weg zijn?'] },
+      { en: 'Sorry to come straight to the point, but may I borrow your ladder?', parts: ['Sorry dat ik met de', FK(['deur', 'raam'], 0, 'idioom',
+        'met de deur in huis vallen means to start without any warm-up; it is always the deur.'), 'in huis val, maar mag ik uw ladder lenen?'] },
+      { en: 'I still have a bone to pick with him.', parts: ['Ik heb nog', FK(['een appeltje', 'een peertje'], 0, 'idioom', 'een appeltje te schillen hebben means a score to settle, always with appeltje.'), 'met hem te schillen.'] },
+      { en: 'Will you keep an eye on things while we are away?', parts: ['Wil jij een oogje', FK(['in', 'op'], 0, 'idioom',
+        'een oogje in het zeil houden means to keep an eye on things, with in.'), 'het zeil houden als wij weg zijn?'] },
 
       // ---- builds: compound nouns
       { en: 'The street party has been in the neighbourhood app for weeks.', parts: [FK(['Het', 'De'], 0, 'samen',
         'buurt + feest: feest is het, so het buurtfeest.'), 'buurtfeest staat al weken in', FK(['de', 'het'], 0, 'samen',
         'buurt + app: app is de, so de buurtapp.'), 'buurtapp.'] },
-      { en: "Tomorrow is the neighbour's birthday party.", parts: ['Morgen is het', FK(['verjaardagsfeest', 'verjaardagfeest', 'verjaardagenfeest'], 0, 'samen',
-        'verjaardag + s + feest: this compound is glued with an s, like verjaardagstaart.'), 'van de buurvrouw.'] },
-      { en: "The neighbours' son lives in student rooms with five housemates.", parts: ['De zoon van de buren woont met vijf', FK(['huisgenoten', 'huisgenooten', 'huizengenoten'], 0, 'samen',
-        'de huisgenoot becomes huisgenoten: the first part stays huis, and the open syllable needs only one o.'), 'op kamers.'] },
+      { en: "Tomorrow is the neighbour's birthday party.", parts: ['Morgen is het', FK(['verjaardagsfeest', 'verjaardagenfeest'], 0, 'samen', 'verjaardag and feest are glued with an s, like verjaardagstaart.', 'spell'), 'van de buurvrouw.'] },
+      { en: "The neighbours' son lives in student rooms with five housemates.", parts: ['De zoon van de buren woont met vijf', FK(['huisgenoten', 'huisgenooten', 'huizengenoten'], 0, 'samen', 'huisgenoot becomes huisgenoten: huis stays, and the open syllable needs one o.', 'spell'), 'op kamers.'] },
 
       // ---- builds: the Vierdaagse week and carnaval
-      { en: 'On the Wednesday of the Vierdaagse the whole town turns pink.', parts: ['Op de woensdag van de Vierdaagse', FK(['kleurt de hele stad', 'de hele stad kleurt'], 0, 'v2',
-        'The time phrase fills slot 1, so the verb comes second: kleurt de hele stad.'), 'roze.'] },
+      { en: 'On the Wednesday of the Vierdaagse the town turns pink.', parts: ['Op de woensdag van de Vierdaagse', FK(['kleurt de stad', 'de stad kleurt'], 0, 'v2',
+        'The time phrase fills slot 1, so the verb comes second: kleurt de stad.'), 'roze.'] },
       { en: 'At carnival Nijmegen is called Knotsenburg.', parts: ['Met carnaval', FK(['heet Nijmegen', 'Nijmegen heet'], 0, 'v2',
         'Met carnaval fills slot 1, so the verb comes second: heet Nijmegen.'), 'Knotsenburg.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'The old neighbour is helped by the whole street.', parts: ['De oude buurvrouw', FK(['wordt', 'worden'], 0, 'passief',
-        'One neighbour, so wordt: wordt geholpen, with door for the helpers.'), 'door de hele straat', FK(['geholpen', 'gehelpt', 'geholpt'], 0, 'perf',
-        'helpen is irregular: geholpen.'), '.'] },
+        'One neighbour, so wordt: wordt geholpen, with door for the helpers.'), 'door de hele straat', FK(['geholpen', 'helpen', 'hielp'], 0, 'perf', 'After wordt the participle closes the clause: helpen, geholpen.'), '.'] },
       { en: 'Before we came to live here, we had never heard of the Vierdaagse.', parts: ['Voordat we hier kwamen wonen,', FK(['hadden we', 'we hadden'], 0, 'v2',
-        'The voordat-clause fills slot 1, so the main clause starts with its verb: hadden we.'), 'nog nooit van de Vierdaagse', FK(['gehoord', 'gehoort', 'gehoren'], 0, 'kof',
-        'hoor ends in r, not a ketchup letter, so -d: gehoord.'), '.'] },
-      { en: 'The neighbour asked whether we felt like walking along.', parts: ['De buurman vroeg', FK(['of', 'dat'], 0, 'indirect',
-        'A reported yes-or-no question starts with of.'), 'we', FK(['zin hadden', 'hadden zin'], 0, 'bijzin',
+        'The voordat-clause fills slot 1, so the main clause starts with its verb: hadden we.'), 'nog nooit van de Vierdaagse', FK(['gehoord', 'gehoort'], 0, 'kof', 'hoor ends in r, not a ketchup letter, so -d: gehoord.', 'spell'), '.'] },
+      { en: 'The neighbour asked whether we felt like walking along.', parts: ['De buurman vroeg', FK(['of', 'dat'], 0, 'indirect', 'A reported yes-or-no question starts with of.', 'word'), 'we', FK(['zin hadden', 'hadden zin'], 0, 'bijzin',
         'of sends the verb to the end of its clause: zin hadden, then om mee te lopen.'), 'om mee te lopen.'] },
       { en: 'The student who lives above us plays the guitar every night.', parts: ['De student', FK(['die', 'dat'], 0, 'diedat',
         'student is a de-word, so the relative pronoun is die.'), 'boven ons woont, speelt', FK(['elke', 'elk'], 0, 'adj',

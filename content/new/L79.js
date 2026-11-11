@@ -21,7 +21,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[7];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 79, act: 7, name: 'Het werk', town: 'rotterdam', place: 'werk', theme: 'square', ...P,
     intro: 'Rotterdam never stopped working, not even after the end of the world. The standup is still at nine.',
@@ -32,45 +32,35 @@
       want: 'The mist came and everyone who spoke Dutch changed. The colleagues still hold their standup, only in the past tense now, and the project lead is taller than you, like everyone else. Niet lullen maar poetsen: say it right and they let you reach your desk.' },
     items: [
       // ---- builds: the imperfectum, regular by 't kofschip
-      { en: 'Last year I worked at a bank in Rotterdam.', parts: ['Vorig jaar', FK(['werkte', 'werkde', 'werkt'], 0, 'kof',
-        'werk ends in k, a ketchup letter, so the past takes -te: werkte. werkt is the present.'), 'ik bij een bank in Rotterdam.'] },
-      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurte', 'duurt'], 0, 'kof',
-        'duur ends in r, not a ketchup letter, so the past takes -de: duurde. Gisteren asks for the past.'), 'de vergadering twee uur.'] },
-      { en: 'Last night there was an outage at the office.', parts: ['Gisteravond', FK(['was', 'waren', 'heeft'], 0, 'imp',
-        'zijn is irregular in the past: was for one thing, waren for several. One outage, so was.'), 'er een storing op kantoor.'] },
+      { en: 'Last year I worked at a bank in Rotterdam.', parts: ['Vorig jaar', FK(['werkte', 'werkt', 'werkten'], 0, 'kof', 'Vorig jaar is past, so werkte; werkt is now and werkten is for more people.'), 'ik bij een bank in Rotterdam.'] },
+      { en: 'Yesterday the meeting lasted two hours.', parts: ['Gisteren', FK(['duurde', 'duurden', 'duurt'], 0, 'kof', 'Gisteren asks for the past, and one meeting takes no -n: duurde.'), 'de vergadering twee uur.'] },
+      { en: 'Last night there was an outage at the office.', parts: ['Gisteravond', FK(['was', 'waren', 'geweest'], 0, 'imp', 'zijn is irregular in the past: was for one thing, and one outage is one thing.'), 'er een storing op kantoor.'] },
       { en: 'Last night I went home late. The dogs were already waiting.', parts: ['Gisteravond', FK(['ging ik', 'ik ging'], 0, 'v2',
-        'Gisteravond takes slot 1, so the verb comes second, then ik.'), 'laat naar huis. De honden', FK(['wachtten', 'wachtte', 'wachtde'], 0, 'kof',
-        'De honden is plural, so -n. wacht ends in t, a ketchup letter, so -te: wachtten.'), 'al.'] },
+        'Gisteravond takes slot 1, so the verb comes second, then ik.'), 'laat naar huis. De honden', FK(['wachtten', 'wachtte', 'gewacht'], 0, 'kof', 'De honden is plural, so the past takes -ten: wachtten.'), 'al.'] },
       { en: 'I saw the error on my screen and called Mark.', parts: ['Ik', FK(['zag', 'zien', 'zagen'], 0, 'imp',
-        'zien is irregular: ik zag, wij zagen. No -de on the end.'), 'de fout op mijn scherm en', FK(['belde', 'belte'], 0, 'kof',
-        'bel ends in l, not a ketchup letter, so -de: belde.'), 'Mark.'] },
+        'zien is irregular: ik zag, wij zagen. No -de on the end.'), 'de fout op mijn scherm en', FK(['belde', 'belte'], 0, 'kof', 'bel ends in l, not a ketchup letter, so the past ends in -de: belde.', 'spell'), 'Mark.'] },
       { en: 'During the standup I spoke Dutch and nobody laughed.', parts: ['Tijdens de standup', FK(['sprak ik', 'ik sprak'], 0, 'v2',
-        'Tijdens de standup takes slot 1, so the verb comes second, then ik.'), 'Nederlands en niemand', FK(['lachte', 'lachde'], 0, 'kof',
-        'lach ends in ch, a ketchup letter, so -te: lachte.'), '.'] },
+        'Tijdens de standup takes slot 1, so the verb comes second, then ik.'), 'Nederlands en niemand', FK(['lachte', 'lachde'], 0, 'kof', 'lach ends in ch, a ketchup sound, so the past ends in -te: lachte.', 'spell'), '.'] },
       { en: 'After the standup I walked over the Erasmus Bridge to the Markthal.', parts: ['Na de standup', FK(['liep ik', 'ik liep'], 0, 'v2',
         'Na de standup takes slot 1, so the verb comes second, then ik. lopen is irregular: liep.'), 'over de Erasmusbrug naar', FK(['de', 'het'], 0, 'dehet',
         'It is a hal, a de-word, so de Markthal.'), 'Markthal.'] },
       { en: 'I was building a dashboard and the wifi went down.', parts: ['Ik was een dashboard', FK(['aan het', 'aan de'], 0, 'aanhet',
-        'Busy doing something is aan het plus the infinitive, always het.'), 'bouwen en de wifi', FK(['viel', 'valde', 'vielt'], 0, 'imp',
-        'vallen is irregular: viel. uit goes to the end because uitvallen is separable.'), 'uit.'] },
+        'Busy doing something is aan het plus the infinitive, always het.'), 'bouwen en de wifi', FK(['viel', 'vielen', 'gevallen'], 0, 'imp', 'vallen is irregular: viel, and uit goes to the end of the clause.'), 'uit.'] },
 
       // ---- builds: reflexive verbs
       { en: 'I feel better today than yesterday.', parts: ['Ik voel', FK(['me', 'zich', 'ons'], 0, 'refl',
-        'voelen is reflexive and the self word matches the subject: ik voel me. zich is for hij, zij, het.'), 'vandaag', FK(['beter', 'gooder'], 0, 'vergelijk',
-        'goed is irregular: goed, beter, best. Never gooder.'), 'dan gisteren.'] },
+        'voelen takes a self-word that matches the subject: ik voel me.'), 'vandaag', FK(['beter', 'best', 'goed'], 0, 'vergelijk', 'goed is irregular: goed, beter, best, and dan wants beter.'), 'dan gisteren.'] },
       { en: 'Sorry, I made a mistake with the password.', parts: ['Sorry, ik heb', FK(['me', 'zich'], 0, 'refl',
-        'ik goes with me: ik heb me vergist.'), FK(['vergist', 'gevergist'], 0, 'perf',
-        'ver- verbs never take ge: vergist.'), 'in het wachtwoord.'] },
+        'ik goes with me: ik heb me vergist.'), FK(['vergist', 'vergiste', 'vergissen'], 0, 'perf', 'ver- verbs take no ge, and vergis already ends in s: vergist.'), 'in het wachtwoord.'] },
       { en: 'Last Monday I worked at home and the dogs were bored.', parts: ['Afgelopen maandag werkte ik thuis en de honden', FK(['verveelden', 'verveelde'], 0, 'imp',
-        'verveel ends in l, not a ketchup letter, so the past takes -de, and De honden is plural, so -n: verveelden.'), FK(['zich', 'zij'], 0, 'refl',
-        'The dogs are they, so the self word is zich: de honden vervelen zich. zij is a subject word and cannot stand there.'), '.'] },
+        'verveel ends in l, so -de, and de honden is plural: verveelden.'), FK(['zich', 'zij'], 0, 'refl',
+        'The dogs are zij, so the self-word is zich.'), '.'] },
 
       // ---- builds: zou plus infinitive, polite requests and wishes
       { en: 'Could you help me with this alert?', parts: ['Zou je me even', FK(['kunnen', 'kan', 'kon'], 0, 'zou',
         'zou is the polite opener and the next verb stays an infinitive: zou je kunnen.'), 'helpen', FK(['met', 'aan', 'voor'], 0, 'woord',
         'helpen goes with met: helpen met iets.'), 'deze melding?'] },
-      { en: 'I would rather work at home today.', parts: ['Ik zou vandaag', FK(['liever', 'graager', 'meer graag'], 0, 'vergelijk',
-        'graag, liever, liefst: the comparative of graag is liever.'), 'thuis', FK(['werken', 'werk', 'gewerkt'], 0, 'zou',
+      { en: 'I would rather work at home today.', parts: ['Ik zou vandaag', FK(['liever', 'liefer'], 0, 'vergelijk', 'The f of lief becomes a v between vowels: liever.', 'spell'), 'thuis', FK(['werken', 'werk', 'gewerkt'], 0, 'zou',
         'After zou the main verb goes to the end as an infinitive: werken.'), '.'] },
 
       // ---- builds: comparatives and superlatives
@@ -80,13 +70,11 @@
         'The subject is het, one thing, so was.'), 'het de', FK(['langste', 'langer', 'langst'], 0, 'vergelijk',
         'After de the superlative gets -ste: de langste vergadering.'), 'vergadering van het jaar.'] },
       { en: 'On Friday there are fewer people at the office.', parts: ['Op vrijdag', FK(['zijn er', 'er zijn'], 0, 'v2',
-        'Op vrijdag takes slot 1, so the verb comes second, then er.'), FK(['minder', 'meer weinig', 'minst'], 0, 'vergelijk',
-        'weinig, minder, minst: fewer is minder.'), 'mensen op kantoor.'] },
+        'Op vrijdag takes slot 1, so the verb comes second, then er.'), FK(['minder', 'minst'], 0, 'vergelijk', 'weinig, minder, minst: fewer than usual is minder.'), 'mensen op kantoor.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday I fixed the bug and rolled out the fix.', parts: ['Gisteren', FK(['heb ik', 'ik heb'], 0, 'v2',
-        'Gisteren takes slot 1, so heb comes second, then ik.'), 'de bug opgelost en de fix', FK(['uitgerold', 'geuitrold', 'uitgerolt'], 0, 'sep',
-        'The ge goes in the middle: uit + gerold, one word at the end. rol ends in l, so -d.'), '.'] },
+        'Gisteren takes slot 1, so heb comes second, then ik.'), 'de bug opgelost en de fix', FK(['uitgerold', 'uitrolde', 'uitrolt'], 0, 'sep', 'A separable verb puts ge between uit and the verb: uitgerold.'), '.'] },
       { en: "I don't have time for an extra meeting today.", parts: ['Ik heb vandaag', FK(['geen', 'niet'], 0, 'neg',
         'geen goes with a noun: geen tijd. niet is for verbs and adjectives.'), 'tijd voor een extra vergadering.'] },
 

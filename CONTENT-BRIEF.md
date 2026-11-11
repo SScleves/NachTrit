@@ -152,8 +152,9 @@ The engine derives the label from the fork (`taskOf` in index.html), in this ord
 | Listen | teal | listen items |
 | Meaning | cream | read items |
 | Which word | green | word and look items, and every other rule id (woord, neg, diedat, refl, adj, bezit, obj, idioom, soft, er, ...) |
+| Spelling | coral `#ff8a7a` | only with `task: 'spell'` on the fork (never derived from a rule id) |
 
-Override per fork with `task` on the fork object (`{ o, a, r, w, task: 'order' }`) or per item (`task` on a build or read item). Ids: `order`, `past`, `verb`, `comp`, `dehet`, `listen`, `meaning`, `word`. An unknown id shows "Which word". Signs carry only the missing piece; the card shows the full sentence with the gap marked, so keep the fixed parts of the sentence in `parts`.
+Override per fork with `task` on the fork object (`{ o, a, r, w, task: 'order' }`) or per item (`task` on a build or read item). Ids: `order`, `past`, `verb`, `comp`, `dehet`, `listen`, `meaning`, `word`, `spell`. An unknown id shows "Which word". `FK` takes the task as a fifth argument: `FK(['werkte', 'werkde'], 0, 'kof', 'why', 'spell')`. Signs carry only the missing piece; the card shows the full sentence with the gap marked, so keep the fixed parts of the sentence in `parts`.
 
 ## Tier fences for towns 7 to 13 (added 23 Oct 2026; word limits are in `window.TIER_PRESET`)
 
@@ -185,3 +186,32 @@ grammar returns in builds as review.
 - Ids: Rotterdam 75 to 82, Urk 83 to 90, Texel 91 to 98, Groningen 99 to 106, Maastricht 107 to 114,
   Nijmegen 115 to 122, Amsterdam 123 to 130, in the place order thuis, winkels, eten, station, werk, sport,
   mensen, eigen.
+
+## Spelling forks, real wrong options, short why lines (11 Nov 2026, PLAN 3b, 3c, 3d.3, 3e)
+
+**Spelling** is the ninth label. It is the only fork where a wrong option may be a form that does not exist.
+
+- A Spelling fork asks for the written form of one word and nothing else: d or t ('t kofschip, wordt,
+  snijdt, kost not kostt), open and closed syllables (broden not brooden, groter not grooter), the
+  plural and diminutive spelling (pizza's, broodjes), compound linking letters (stadscentrum), ei or
+  ij and similar. Every wrong option is the same word misspelled. `[werkte | werkde]` is a Spelling
+  fork; `[werkte | werkde | werkt]` is not, because werkt is a real tense contrast. Mark it with
+  `task: 'spell'` (fifth argument of `FK`), whatever the rule id.
+- How a form is built is not spelling. An invented participle or a regularised strong verb (geverbouwd,
+  koopte, gegaand, slaapten, graager, tweetig) is never a wrong option. Use a real Dutch form that is
+  wrong in the sentence instead: kocht / koopt / gekocht, verbouwd / verbouwde / verbouwen.
+- A wrong option outside a Spelling fork must be a real Dutch word, and it must not be acceptable in
+  the sentence (the October rule).
+- One thing per fork: the wrong options differ from the answer in one dimension only (word order, form
+  of the same word, word choice, or spelling). Where a sentence asks two things, split it into two
+  forks or narrow the options. The verb-second drill is a two-option word-order fork
+  (`[krijg ik | ik krijg]`), with the verb form fixed.
+- Signs carry at most three words.
+- The why line is one plain English sentence of at most 18 words that names the rule in the learner's
+  terms ("After a time word the verb comes second, so ik moves behind it."). The validator warns above
+  18 words.
+- Threads: from Gouda on, every level has at least three verb-second forks after a fronted word, and
+  at least three de/het forks on nouns met in earlier levels. Build them from words of earlier levels.
+
+`npm run validate` enforces these with the audits in `qa/` (0 mixed forks, 0 non-words outside a
+Spelling fork, the thread minimums).

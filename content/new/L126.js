@@ -28,7 +28,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zullen = window.RULES.zullen || { name: 'zullen: probably (zal wel)', note: 'zullen-belofte-waarschijnlijkheid' };
   const P = window.TIER_PRESET[13];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 126, act: 13, name: 'Het station', town: 'amsterdam', place: 'station', theme: 'square', ...P,
     intro: 'Amsterdam Centraal stands on thousands of wooden piles in the water. The station has never fallen over. The timetable has.',
@@ -42,18 +42,12 @@
       { en: 'I need to get off at the next stop.', parts: ['Ik moet er bij de', FK(['volgende', 'volgend'], 0, 'adj',
         'halte is a de-word, so the adjective takes -e: de volgende halte.'), 'halte', FK(['uit', 'op'], 0, 'woord',
         'eruit moeten is getting off. erop would be getting on.'), '.'] },
-      { en: "Don't forget to check out, or you will pay too much.", parts: ['Vergeet niet', FK(['uit te checken', 'te uitchecken', 'uitchecken te'], 0, 'omte',
-        'vergeten takes te, and with a separable verb te goes between the prefix and the verb: uit te checken.'), ',', FK(['anders betaal je', 'anders je betaalt'], 0, 'v2',
-        'anders takes slot 1, so the verb comes right after it: anders betaal je.'), 'te veel.'] },
-      { en: 'You can no longer pay cash on the tram, only with your bank card.', parts: ['In de tram', FK(['kun je', 'je kunt'], 0, 'v2',
-        'In de tram fills slot 1, so the verb comes second: kun je.'), FK(['niet meer', 'nog niet'], 0, 'woord',
-        'niet meer means no longer, it used to be possible. nog niet means not yet.'), 'contant betalen, alleen met je pinpas.'] },
-      { en: 'Just stand on the right of the escalator, then people can get past.', parts: [FK(['Ga maar rechts', 'Ga rechts maar'], 0, 'soft',
-        'maar comes straight after the verb in a friendly command: ga maar rechts staan.'), 'op de roltrap staan,', FK(['dan kunnen mensen erlangs', 'dan mensen kunnen erlangs'], 0, 'v2',
-        'dan takes slot 1, so the verb comes right after it: dan kunnen mensen.'), '.'] },
-      { en: 'The tram I was waiting for did not come.', parts: ['De tram', FK(['waar ik op wachtte', 'die ik op wachtte'], 0, 'pronadv',
-        'wachten op a thing becomes waar ... op in a relative clause: de tram waar ik op wachtte. die cannot go with op.'), ',', FK(['kwam niet', 'niet kwam'], 0, 'v2',
-        'The whole subject fills slot 1, so the verb comes next: kwam niet.'), '.'] },
+      { en: "Don't forget to check out, or you will pay too much.", parts: ['Vergeet niet', FK(['uit te checken', 'te uitchecken', 'uitchecken te'], 0, 'omte', 'With a separable verb te goes between the prefix and the verb: uit te checken.'), ',', FK(['anders betaal je', 'anders betaalt je'], 0, 'presens', 'When je comes right after the verb, the t drops: anders betaal je.'), 'te veel.'] },
+      { en: 'You can no longer pay cash on the tram, only with your bank card.', parts: ['In de tram', FK(['kun je', 'kunt je'], 0, 'presens', 'When je comes right after the verb, the t drops: kun je.'), 'niet meer contant betalen, alleen met je pinpas.'] },
+      { en: 'Just stand on the right of the escalator, then people can get past.', parts: [FK(['Ga maar rechts', 'Ga rechts maar'], 0, 'soft', 'maar comes straight after the verb in a friendly command: ga maar rechts staan.'), 'op de roltrap staan, dan', FK(['kunnen mensen', 'mensen kunnen'], 0, 'v2',
+        'dan takes slot 1, so the verb comes right after it: dan kunnen mensen.'), 'erlangs.'] },
+      { en: 'The tram I was waiting for did not come.', parts: ['De tram', FK(['waar', 'die'], 0, 'pronadv',
+        'wachten op becomes waar ... op in a relative clause; die cannot take op.'), 'ik op wachtte,', FK(['kwam niet', 'niet kwam'], 0, 'v2', 'The whole subject fills slot 1, so the verb comes next: kwam niet.'), '.'] },
 
       // ---- builds: the station, the ferry, the water
       { en: 'The station was built on almost nine thousand wooden piles.', parts: ['Het station', FK(['werd', 'wordt'], 0, 'passief',
@@ -66,22 +60,19 @@
       { en: 'The bike garage lies beneath the water, in front of the station.', parts: ['De fietsenstalling', FK(['ligt', 'legt'], 0, 'woord',
         'liggen is where something is. leggen is putting something down.'), FK(['onder het water', 'onder water'], 0, 'woord',
         'onder het water is beneath the water. onder water means flooded, which it is not, yet.'), ', voor het station.'] },
-      { en: 'If the train had not been late, we would have caught the last ferry.', parts: ['Als de trein niet', FK(['te laat was geweest', 'laat was geweest'], 0, 'woord',
-        'Late for a train or an appointment is te laat. laat alone means late in the day.'), ',', FK(['hadden we', 'we hadden'], 0, 'v2',
-        'The als-clause fills slot 1, so the main clause starts with its verb: hadden we.'), FK(['het laatste pontje', 'de laatste pontje'], 0, 'dehet',
-        'het pontje is a -je word, so het laatste pontje.'), 'nog gehaald.'] },
+      { en: 'If the train had been on time, we would have caught the last ferry.', parts: ['Als de trein', FK(['op tijd', 'in tijd'], 0, 'woord',
+        'On time is op tijd, always with op.'), 'was geweest,', FK(['hadden we', 'we hadden'], 0, 'v2', 'The als-clause fills slot 1, so the main clause starts with its verb: hadden we.'), FK(['het laatste pontje', 'de laatste pontje'], 0, 'dehet', 'het pontje is a -je word, so het laatste pontje.'), 'nog gehaald.'] },
       { en: 'The train has just left; the next one goes in a quarter of an hour.', parts: ['De trein is', FK(['net', 'netjes'], 0, 'woord',
         'net means just now. netjes means neatly.'), 'vertrokken, de volgende gaat', FK(['over een kwartier', 'na een kwartier'], 0, 'woord',
         'over een kwartier is fifteen minutes from now. na een kwartier means after fifteen minutes of something else.'), '.'] },
 
       // ---- builds: tourists and locals, the way into town
-      { en: 'Excuse me, how do I get to the Dam? Walk all the way down the Damrak, ten minutes.', parts: ['Pardon,', FK(['hoe kom ik bij de Dam', 'hoe ik kom bij de Dam'], 0, 'v2',
-        'In a direct question the verb comes right after the question word: hoe kom ik.'), '?', FK(['Loop het Damrak helemaal af', 'Afloop het Damrak helemaal'], 0, 'sep',
-        'aflopen splits in a command: loop ... af, with af at the end.'), ', tien minuten.'] },
-      { en: 'From the Dam take the second street on the left and then cross the canal.', parts: ['Neem', FK(['vanaf', 'sinds'], 0, 'weg',
-        'vanaf is from a place. sinds is since, for time.'), 'de Dam', FK(['de tweede straat links', 'de twee straat links'], 0, 'weg',
-        'An order needs the ordinal: de tweede straat.'), 'en', FK(['steek daarna de gracht over', 'oversteek daarna de gracht'], 0, 'weg',
-        'oversteken splits in a main clause and a command: steek ... over.'), '.'] },
+      { en: 'Excuse me, how do I get to the Dam? Walk all the way down the Damrak, ten minutes.', parts: ['Pardon, hoe', FK(['kom ik', 'ik kom'], 0, 'v2',
+        'In a direct question the verb comes right after the question word: hoe kom ik.'), 'bij de Dam?', FK(['Loop', 'Afloop'], 0, 'sep',
+        'aflopen splits in a command: loop ... af, with af at the end.', 'order'), 'het Damrak helemaal af, tien minuten.'] },
+      { en: 'From the Dam take the second street on the left and then cross the canal.', parts: ['Neem', FK(['vanaf', 'sinds'], 0, 'weg', 'vanaf is from a place. sinds is since, for time.'), 'de Dam de', FK(['tweede', 'twee'], 0, 'weg',
+        'An order needs the ordinal: de tweede straat.'), 'straat links en', FK(['steek', 'oversteek'], 0, 'sep',
+        'oversteken splits: steek ... over, with over at the end.', 'order'), 'daarna de gracht over.'] },
       { en: 'Excuse me, sir, is this seat free?', parts: ['Pardon meneer, is', FK(['deze', 'dit'], 0, 'dehet',
         'plaats is a de-word, so deze plaats.'), 'plaats nog', FK(['vrij', 'gratis'], 0, 'woord',
         'A free seat is vrij. gratis means it costs nothing.'), '?'] },
@@ -92,18 +83,16 @@
         'door een storing fills slot 1, so the verb comes second: eindigt deze trein.'), 'in Amsterdam Centraal.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'Could you tell me which platform the train to Schiphol leaves from?', parts: ['Kunt u mij vertellen van', FK(['welk', 'welke'], 0, 'dehet',
-        'spoor is a het-word, so welk: welk spoor.'), 'spoor', FK(['de trein naar Schiphol vertrekt', 'vertrekt de trein naar Schiphol'], 0, 'bijzin',
-        'A question inside a question becomes a sub-clause, so the verb goes to the end.'), '?'] },
+      { en: 'Could you tell me which platform the train to Schiphol leaves from?', parts: ['Kunt u mij vertellen van', FK(['welk', 'welke'], 0, 'dehet', 'spoor is a het-word, so welk: welk spoor.'), 'spoor de trein naar Schiphol', FK(['vertrekt', 'vertrekken'], 0, 'presens',
+        'One train is a hij: stem plus t, vertrekt.'), '?'] },
       { en: 'Paola said that she had left her umbrella on the ferry.', parts: ['Paola zei dat ze haar paraplu op het pontje', FK(['had laten liggen', 'had gelaten liggen', 'had laten gelegen'], 0, 'perf',
         'With laten plus another verb the perfect uses two infinitives: had laten liggen, never gelaten.'), '.'] },
       { en: 'The metro is faster, but the tram is more fun: you see more of the city.', parts: ['De metro is', FK(['sneller', 'snellere'], 0, 'vergelijk',
-        'After is, with no noun following, the comparative has no -e: sneller.'), ', maar de tram is', FK(['leuker', 'meer leuk'], 0, 'vergelijk',
-        'leuk becomes leuker. meer leuk is not Dutch.'), ': je ziet meer van de stad.'] },
+        'After is, with no noun following, the comparative has no -e: sneller.'), ', maar de tram is', FK(['leuker', 'leukst'], 0, 'vergelijk', 'Comparing two things takes the comparative: leuk, leuker.'), ': je ziet meer van de stad.'] },
       { en: 'The train will probably be late again, it is raining.', parts: ['De trein zal wel weer', FK(['vertraging hebben', 'vertraging heeft', 'vertraging te hebben'], 0, 'zullen',
         'zal takes a bare infinitive at the end: zal ... vertraging hebben. With wel it means probably.'), ', het regent.'] },
-      { en: 'I always wait until everyone has got off.', parts: ['Ik wacht altijd tot iedereen', FK(['is uitgestapt', 'heeft uitgestapt', 'is uitgestaped'], 0, 'aux',
-        'uitstappen is movement out of something, so zijn: is uitgestapt. stap ends in p, so -t.'), '.'] },
+      { en: 'I always wait until everyone has got off.', parts: ['Ik wacht altijd tot iedereen', FK(['is', 'heeft'], 0, 'aux',
+        'uitstappen is movement out of something, so zijn: is uitgestapt.'), 'uitgestapt.'] },
 
       // ---- words: the station, the ferry, the tram, five replayed from Nijmegen
       { w: 'the little ferry', nl: 'het pontje', wrong: 'de pontje' }, { w: 'the ferry', nl: 'de veerpont' },

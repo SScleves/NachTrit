@@ -18,7 +18,7 @@
 (() => {
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 86, act: 8, name: 'Het station', town: 'urk', place: 'station', theme: 'dyke', ...P,
     intro: 'Urk has no railway station, so the station is a bus stop with big plans, and on Sunday even that one is in church.',
@@ -33,50 +33,43 @@
         'omdat sends the verb to the very end of its clause: de bus vol was.'), '.'] },
       { en: 'I think the train is a quarter of an hour late.', parts: ['Ik denk dat de trein een kwartier', FK(['te laat is', 'is te laat'], 0, 'bijzin',
         'dat sends the verb to the end: dat de trein te laat is.'), '.'] },
-      { en: 'If it rains, I take the bus.', parts: ['Als het regent,', FK(['neem ik', 'ik neem'], 0, 'bijzin',
+      { en: 'If it rains, I take the bus.', parts: ['Als het regent,', FK(['neem ik', 'ik neem'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'de bus.'] },
-      { en: 'When we got to the harbour, the cutter was already gone.', parts: ['Toen we bij de haven', FK(['kwamen', 'kwamen we'], 0, 'bijzin',
-        'toen sends the verb to the end of its clause: toen we bij de haven kwamen.'), ',', FK(['was de kotter', 'de kotter was'], 0, 'bijzin',
+      { en: 'When we got to the harbour, the cutter was already gone.', parts: ['Toen we bij de haven', FK(['kwamen', 'komen', 'kwam'], 0, 'bijzin', 'toen tells a past moment, and we takes kwamen at the end.', 'past'), ',', FK(['was de kotter', 'de kotter was'], 0, 'bijzin',
         'After the toen-clause the main clause starts with its verb: was de kotter al weg.'), 'al weg.'] },
       { en: 'While I wait for the bus, I read my mail.', parts: ['Terwijl', FK(['ik op de bus wacht', 'wacht ik op de bus'], 0, 'bijzin',
-        'terwijl sends the verb to the end: ik op de bus wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'bijzin',
+        'terwijl sends the verb to the end: ik op de bus wacht.'), ',', FK(['lees ik', 'ik lees'], 0, 'v2',
         'The sub-clause came first, so the next clause starts with its verb: lees ik.'), 'mijn mail.'] },
       { en: 'Before I walk to the bus stop, I first walk the dogs.', parts: ['Voordat', FK(['ik naar de bushalte loop', 'loop ik naar de bushalte'], 0, 'bijzin',
         'voordat sends the verb to the end: ik naar de bushalte loop.'), ',', FK(['laat ik', 'ik laat'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: laat ik ... uit.'), 'eerst de honden uit.'] },
       { en: 'Because it is storming, nobody sails out.', parts: ['Omdat', FK(['het stormt', 'stormt het'], 0, 'bijzin',
-        'omdat sends the verb to the end: het stormt.'), ',', FK(['vaart niemand', 'niemand vaart'], 0, 'bijzin',
+        'omdat sends the verb to the end: het stormt.'), ',', FK(['vaart niemand', 'niemand vaart'], 0, 'v2',
         'The sub-clause came first, so vaart goes before niemand. The prefix uit stays at the end.'), 'uit.'] },
-      { en: 'When Urk was still an island, they all went by boat.', parts: ['Toen', FK(['Urk nog een eiland was', 'was Urk nog een eiland'], 0, 'bijzin',
-        'toen sends the verb to the end: Urk nog een eiland was.'), ',', FK(['gingen ze', 'ze gingen'], 0, 'bijzin',
+      { en: 'When Urk was still an island, they all went by boat.', parts: ['Toen Urk nog', FK(['een eiland was', 'was een eiland'], 0, 'bijzin', 'toen sends the verb to the end: toen Urk nog een eiland was.'), ',', FK(['gingen ze', 'ze gingen'], 0, 'bijzin',
         'After the toen-clause the main clause starts with its verb: gingen ze.'), 'allemaal met de boot.'] },
-      { en: 'Do you know if the bus to Emmeloord is running today?', parts: ['Weet u', FK(['of de bus naar Emmeloord vandaag rijdt', 'of rijdt de bus naar Emmeloord vandaag'], 0, 'bijzin',
-        'of works like dat: the verb goes to the end, of de bus vandaag rijdt.'), '?'] },
+      { en: 'Do you know if the bus to Emmeloord is running today?', parts: ['Weet u of de bus naar Emmeloord', FK(['vandaag rijdt', 'rijdt vandaag'], 0, 'bijzin', 'of works like dat: the verb goes to the end, vandaag rijdt.'), '?'] },
       { en: 'I feel sick because the boat rocks so much.', parts: ['Ik voel', FK(['me', 'zich'], 0, 'refl',
-        'The self-word matches the subject: ik voel me. zich is for hij, zij and ze.'), 'niet lekker omdat', FK(['de boot zo schommelt', 'schommelt de boot zo'], 0, 'bijzin',
-        'omdat sends the verb to the end: de boot zo schommelt.'), '.'] },
+        'The self-word matches the subject: ik voel me. zich is for hij, zij and ze.'), 'niet lekker omdat de boot', FK(['zo schommelt', 'schommelt zo'], 0, 'bijzin', 'omdat sends the verb to the end: de boot zo schommelt.'), '.'] },
 
       // ---- builds: omdat against want, and want, maar, dus keep their word order
-      { en: 'I am late because the bus never comes.', parts: ['Ik ben te laat', FK(['omdat', 'want'], 0, 'bijzin',
-        'The verb komt stands at the end, and only omdat sends it there. want would need de bus komt nooit, with the verb second.'), 'de bus nooit komt.'] },
+      { en: 'I am late because the bus never comes.', parts: ['Ik ben te laat', FK(['omdat', 'want'], 0, 'bijzin', 'The verb komt stands at the end, and only omdat sends it there; want keeps it second.', 'word'), 'de bus nooit komt.'] },
       { en: 'I take the bike, because the bus does not run on Sunday.', parts: ['Ik neem de fiets, want de bus', FK(['rijdt niet', 'niet rijdt'], 0, 'bijzin',
         'want keeps normal word order: the verb stays second, de bus rijdt niet.'), 'op zondag.'] },
-      { en: 'No train goes to Urk, so I take the bus.', parts: ['Er rijdt geen trein naar Urk, dus', FK(['ik neem de bus', 'ik de bus neem'], 0, 'bijzin',
-        'dus does not send the verb to the end: the verb stays second, ik neem de bus.'), '.'] },
+      { en: 'No train goes to Urk, so I take the bus.', parts: ['Er rijdt geen trein naar Urk, dus ik', FK(['neem de bus', 'de bus neem'], 0, 'bijzin', 'dus does not send the verb to the end: ik neem de bus.'), '.'] },
       { en: 'I would love to come, but the last bus has already gone.', parts: ['Ik wil graag komen, maar de laatste bus', FK(['is al weg', 'al weg is'], 0, 'bijzin',
         'maar keeps normal word order: the verb is second, de laatste bus is al weg.'), '.'] },
 
       // ---- builds: directions and the time
       { en: 'If you are at the lighthouse, you turn right.', parts: ['Als', FK(['u bij de vuurtoren bent', 'bent u bij de vuurtoren'], 0, 'bijzin',
-        'als sends the verb to the end: u bij de vuurtoren bent.'), ',', FK(['gaat u', 'u gaat'], 0, 'bijzin',
+        'als sends the verb to the end: u bij de vuurtoren bent.'), ',', FK(['gaat u', 'u gaat'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: gaat u rechtsaf.'), 'rechtsaf.'] },
       { en: 'The bus to Emmeloord leaves at half past eight.', parts: ['De bus naar Emmeloord vertrekt om', FK(['half negen', 'half acht'], 0, 'klok',
         'half counts towards the next hour: half negen is 8:30. half acht is 7:30.'), '.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'I have waited an hour at the bus stop already.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
-        'Waiting is not going anywhere, so hebben.'), 'al een uur bij de bushalte', FK(['gewacht', 'gewachtd'], 0, 'kof',
-        'wacht already ends in a t, and Dutch does not add a second one: gewacht.'), '.'] },
+        'Waiting is not going anywhere, so hebben.'), 'al een uur bij de bushalte', FK(['gewacht', 'gewachtd'], 0, 'kof', 'wacht already ends in a t, and Dutch does not add a second one: gewacht.', 'spell'), '.'] },
       { en: 'On Sunday there is no bus, so I cycle.', parts: ['Op zondag is er', FK(['geen', 'niet'], 0, 'neg',
         'geen goes before a noun: geen bus. niet is for verbs and adjectives.'), 'bus, dus ik fiets.'] },
 

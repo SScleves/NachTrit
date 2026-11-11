@@ -13,7 +13,7 @@
 // New props: none. Only water, winkel and nummer are used.
 (() => {
   const P = window.TIER_PRESET[6];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 69, act: 6, name: 'Eten en drinken', town: 'denhaag', place: 'eten', theme: 'square', ...P,
     intro: 'Since the mist, the dead of Den Haag eat the way they govern. Three hours of debate over the menu, no decision, and the bill still split to the cent.',
@@ -24,29 +24,29 @@
     items: [
       // ---- builds: the perfectum, hebben or zijn, 't kofschip, irregular and separable participles
       { en: 'We ate herring in Scheveningen.', parts: ['We', FK(['hebben', 'zijn'], 0, 'aux', 'Eating goes nowhere: team hebben.'), 'in Scheveningen haring',
-        FK(['gegeten', 'geëet', 'gegeet'], 0, 'perf', 'eten is irregular: ge plus the whole infinitive, gegeten.'), '.'] },
+        FK(['gegeten', 'aten', 'eten'], 0, 'perf', 'eten is irregular: the participle is gegeten.'), '.'] },
       { en: 'Who ordered the bitterballen?', parts: ['Wie', FK(['heeft', 'is'], 0, 'aux', 'Ordering is not movement: team hebben, and wie takes heeft.'), 'de bitterballen',
-        FK(['besteld', 'gebesteld', 'bestelt'], 0, 'kof', 'Verbs that start with be- get no ge-. Stem bestel ends in l, so -d.'), '?'] },
+        FK(['besteld', 'bestelt', 'bestelde'], 0, 'perf', 'be- verbs take no ge, and bestel ends in l, so -d: besteld.'), '?'] },
       { en: 'We went to the Haagse Markt.', parts: ['We', FK(['zijn', 'hebben'], 0, 'aux', 'Going to a place is movement: team zijn.'), 'naar de Haagse Markt',
-        FK(['gegaan', 'gegaat', 'gegaand'], 0, 'perf', 'gaan is irregular: gegaan.'), '.'] },
-      { en: 'We already settled up.', parts: ['We hebben al', FK(['afgerekend', 'geafrekend', 'afgerekent'], 0, 'perf', 'afrekenen tucks ge in the middle: af-ge-rekend. Stem reken ends in n, so -d.'), '.'] },
+        FK(['gegaan', 'ging', 'gaan'], 0, 'perf', 'gaan is irregular: the participle is gegaan.'), '.'] },
+      { en: 'We already settled up.', parts: ['We hebben al', FK(['afgerekend', 'afrekenden', 'afrekenen'], 0, 'perf', 'A separable verb puts ge between af and the verb: afgerekend.'), '.'] },
       { en: 'I picked up the order at the toko.', parts: ['Ik heb de bestelling bij de toko',
-        FK(['opgehaald', 'geophaald', 'opgehaalt'], 0, 'perf', 'ophalen tucks ge in the middle: op-ge-haald. Stem haal ends in l, so -d.'), '.'] },
+        FK(['opgehaald', 'ophaalde', 'ophaalt'], 0, 'perf', 'A separable verb puts ge between op and the verb: opgehaald.'), '.'] },
       { en: 'The dogs ate all the bitterballen.', parts: ['De honden', FK(['hebben', 'heeft'], 0, 'perf', 'Two dogs, plural: hebben.'), 'alle bitterballen',
-        FK(['opgegeten', 'geopgeten', 'opgeëten'], 0, 'perf', 'opeten: the prefix op first, then ge, then eten.'), '.'] },
-      { en: 'Have you ever eaten Indonesian food?', parts: [FK(['Heb jij', 'Ben jij', 'Hebben jij'], 0, 'aux', 'Eating takes hebben, and a question opens with the verb. jij after it takes the bare stem: heb jij.'), 'al eens Indonesisch',
-        FK(['gegeten', 'geëten', 'gegeet'], 0, 'perf', 'ge plus the whole infinitive eten: gegeten.'), '?'] },
-      { en: 'We booked under the name Santiago.', parts: ['We hebben', FK(['gereserveerd', 'gereserveert', 'reserveerd'], 0, 'kof', 'Stem reserveer ends in r, not in t kofschip, so -d. And the ge stays.'), 'op naam van Santiago.'] },
-      { en: 'The chef cooked all evening.', parts: ['De kok heeft de hele avond', FK(['gekookt', 'gekookd', 'gekoken'], 0, 'kof', 'Stem kook ends in k, and k is in t kofschip: -t.'), '.'] },
-      { en: 'Paola has already tasted the herring.', parts: ['Paola heeft de haring al', FK(['geproefd', 'geproeft'], 0, 'kof', 'Check the infinitive: proeven has a v, and v is not in t kofschip, so -d. The f in the stem fools everyone.'), '.'] },
-      { en: 'This morning I went to the market.', parts: ['Vanmorgen', FK(['ben ik', 'ik ben', 'heb ik'], 0, 'v2', 'Vanmorgen takes slot 1, so ben comes next and ik after it. Having been somewhere runs on zijn.'), 'naar de markt',
-        FK(['geweest', 'gezijn', 'gebent'], 0, 'perf', 'zijn has its own participle: geweest.'), '.'] },
+        FK(['opgegeten', 'opaten', 'opeten'], 0, 'perf', 'A separable verb puts ge between op and the verb: opgegeten.'), '.'] },
+      { en: 'Have you ever eaten Indonesian food?', parts: [FK(['Heb jij', 'Ben jij'], 0, 'aux', 'Eating takes hebben in the perfect: heb jij gegeten.'), 'al eens Indonesisch',
+        FK(['gegeten', 'at', 'eet'], 0, 'perf', 'eten is irregular: the participle is gegeten.'), '?'] },
+      { en: 'We booked under the name Santiago.', parts: ['We hebben', FK(['gereserveerd', 'gereserveert'], 0, 'kof', 'reserveer ends in r, not a ketchup letter, so the participle ends in d.', 'spell'), 'op naam van Santiago.'] },
+      { en: 'The chef cooked all evening.', parts: ['De hele avond', FK(['heeft de kok', 'de kok heeft'], 0, 'v2', 'De hele avond takes slot 1, so the verb comes next, then de kok.'), FK(['gekookt', 'gekookd'], 0, 'kof', 'kook ends in k, a ketchup letter, so the participle ends in t: gekookt.', 'spell'), '.'] },
+      { en: 'Paola has already tasted the herring.', parts: ['Paola heeft de haring al', FK(['geproefd', 'geproeft'], 0, 'kof', 'proeven has a v, not a ketchup letter, so the participle ends in d.', 'spell'), '.'] },
+      { en: 'This morning I went to the market.', parts: ['Vanmorgen', FK(['ben ik', 'ik ben'], 0, 'v2', 'Vanmorgen takes slot 1, so the verb comes next and ik after it.'), 'naar de markt',
+        FK(['geweest', 'was', 'zijn'], 0, 'perf', 'zijn is irregular: the participle is geweest.'), '.'] },
       { en: 'Of course we split the bill.', parts: ['Natuurlijk', FK(['hebben we', 'we hebben'], 0, 'v2', 'Natuurlijk takes slot 1, so the verb comes second and we after it.'), 'de rekening',
-        FK(['gedeeld', 'gedeelt', 'gedelen'], 0, 'kof', 'Stem deel ends in l, not in t kofschip: -d. It still sounds like a t.'), '.'] },
+        FK(['gedeeld', 'gedeelt'], 0, 'kof', 'deel ends in l, not a ketchup letter, so the participle ends in d: gedeeld.', 'spell'), '.'] },
       { en: 'Paola sent everyone a Tikkie for € 4,37.', parts: ['Paola heeft iedereen een Tikkie van vier euro zevenendertig',
-        FK(['gestuurd', 'gestuurt', 'gestuurde'], 0, 'kof', 'Stem stuur ends in r, not in t kofschip: -d.'), '.'] },
+        FK(['gestuurd', 'gestuurt'], 0, 'kof', 'stuur ends in r, not a ketchup letter, so the participle ends in d.', 'spell'), '.'] },
       { en: 'The minister paid nothing again.', parts: ['De minister', FK(['heeft', 'hebben', 'hebt'], 0, 'perf', 'One minister, so heeft. hebben is for plurals, hebt only for jij and u.'), 'weer niets betaald.'] },
-      { en: 'Did you all drink a lot?', parts: ['Hebben jullie veel', FK(['gedronken', 'gedrinkt', 'gedronkt'], 0, 'perf', 'drinken is irregular: gedronken.'), '?'] },
+      { en: 'Did you all drink a lot?', parts: ['Hebben jullie veel', FK(['gedronken', 'dronk', 'drinkt'], 0, 'perf', 'drinken is irregular: the participle is gedronken.'), '?'] },
 
       // ---- words
       { w: 'the herring', nl: 'de haring', wrong: 'het haring' }, { w: 'the battered fish bites', nl: 'de kibbeling' },

@@ -18,7 +18,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 61, act: 5, name: 'Eten en drinken', town: 'utrecht', place: 'eten', theme: 'square', ...P,
     intro: 'The kitchens in the wharf cellars close at a quarter to ten, mist or no mist. The dead order at five to ten and ask if it is still possible.',
@@ -28,21 +28,21 @@
       want: 'Order, pass the sauce, pick it up, settle up. The waitress is taller than you, the grammar book is still in its wrapper, and nobody leaves before the bill is split.' },
     items: [
       // ---- builds: separable verbs split, aan het, gaan + infinitive, the time, the imperative
-      { en: "I'll pick it up at half past eight.", parts: ['Ik', FK(['haal', 'ophaal', 'haalt'], 0, 'sep', 'ophalen splits in the present: haal sits in slot 2, op waits at the end.'), 'het om',
+      { en: "I'll pick it up at half past eight.", parts: ['Ik', FK(['haal', 'ophaal'], 0, 'sep', 'ophalen splits in the present: haal in slot 2, op at the end.'), 'het om',
         FK(['half negen', 'half acht'], 0, 'klok', 'Dutch counts half towards the next hour: half negen is 8:30, half acht is 7:30.'), 'op.'] },
-      { en: 'What do you recommend? (polite)', parts: ['Wat', FK(['raadt', 'aanraadt', 'raad'], 0, 'sep', 'aanraden splits: raadt in slot 2, aan at the end. And u always takes the -t.'), 'u aan?'] },
+      { en: 'What do you recommend? (polite)', parts: ['Wat', FK(['raadt', 'aanraadt'], 0, 'sep', 'aanraden splits: raadt in slot 2, aan at the end.'), 'u aan?'] },
       { en: 'The waiter pours the wine.', parts: ['De ober', FK(['schenkt', 'inschenkt'], 0, 'sep', 'inschenken splits: schenkt in slot 2, in at the end.'), 'de wijn',
         FK(['in', 'inschenken'], 0, 'sep', 'Only the prefix goes to the end in the present: de wijn in.'), '.'] },
-      { en: 'The dogs eat everything up.', parts: ['De honden', FK(['eten', 'opeten', 'eet'], 0, 'sep', 'opeten splits: eten in slot 2, op at the end. Two dogs, so the plural eten.'), 'alles op.'] },
+      { en: 'The dogs eat everything up.', parts: ['De honden', FK(['eten', 'opeten'], 0, 'sep', 'opeten splits: eten in slot 2, op at the end.'), 'alles op.'] },
       { en: 'Just pass the sauce along.', parts: [FK(['Geef', 'Te geven', 'Geven'], 0, 'gebod', 'A command is the bare stem: geef. No te, no -en.'), 'de saus even',
         FK(['door', 'doorgeven'], 0, 'sep', 'doorgeven splits in a command too: geef ... door.'), '.'] },
       { en: "Get the fish. It's delicious here.", parts: [FK(['Neem', 'Te nemen', 'Nemen'], 0, 'gebod', 'The imperative is the stem of nemen: neem.'), 'de vis. Die is hier heerlijk.'] },
-      { en: 'Come in, have a seat.', parts: [FK(['Kom', 'Te komen', 'Komen'], 0, 'gebod', 'Kom binnen: the bare stem, nothing added.'), 'binnen,',
-        FK(['ga maar zitten', 'ga maar te zitten', 'ga maar zit'], 0, 'gebod', 'ga is the command, maar makes it friendly, zitten closes it as an infinitive.'), '.'] },
+      { en: 'Come in, have a seat.', parts: [FK(['Kom', 'Te komen', 'Komen'], 0, 'gebod', 'Kom binnen: the bare stem, nothing added.'), 'binnen, ga maar',
+        FK(['zitten', 'te zitten', 'zit'], 0, 'gebod', 'ga takes a bare infinitive at the end: ga maar zitten.'), '.'] },
       { en: 'The chef is cooking right now.', parts: ['De kok', FK(['is', 'heeft'], 0, 'aanhet', 'aan het always runs on zijn: de kok is aan het koken.'), 'nu aan het',
         FK(['koken', 'kookt'], 0, 'aanhet', 'After aan het comes the infinitive: koken.'), '.'] },
       { en: 'Paola is still choosing.', parts: ['Paola is nog aan het', FK(['kiezen', 'kiest', 'te kiezen'], 0, 'aanhet', 'aan het takes the bare infinitive: kiezen, no te.'), '.'] },
-      { en: 'The students are drinking down on the wharf.', parts: ['De studenten', FK(['zijn', 'is'], 0, 'presens', 'studenten is plural, so zijn.'), 'op de werf aan het',
+      { en: 'Down on the wharf the students are drinking.', parts: ['Op de werf', FK(['zijn de studenten', 'de studenten zijn'], 0, 'v2', 'Op de werf takes slot 1, so the verb comes next, then de studenten.'), 'aan het',
         FK(['drinken', 'drinkt'], 0, 'aanhet', 'aan het plus the infinitive: drinken.'), '.'] },
       { en: 'What are we going to eat tonight?', parts: ['Wat', FK(['gaan', 'gaat'], 0, 'fut', 'With we the verb is gaan.'), 'we vanavond',
         FK(['eten', 'eet', 'te eten'], 0, 'fut', 'gaan sends the infinitive to the end: eten.'), '?'] },
@@ -52,7 +52,7 @@
         FK(['delen', 'deelt', 'te delen'], 0, 'fut', 'gaan plus the bare infinitive at the end: delen.'), '?'] },
       { en: 'The kitchen closes at a quarter to ten.', parts: ['De keuken', FK(['gaat', 'dichtgaat'], 0, 'sep', 'dichtgaan splits: gaat in slot 2, dicht at the end.'), 'om',
         FK(['kwart voor tien', 'kwart over tien', 'kwart voor negen'], 0, 'klok', 'kwart voor tien is 9:45, a quarter before ten.'), 'dicht.'] },
-      { en: "I'm taking the rest home.", parts: ['Ik neem de rest', FK(['mee', 'meenemen'], 0, 'sep', 'meenemen splits: neem in slot 2, only mee goes to the back.'), 'naar huis.'] },
+      { en: "Later I'll take the rest home.", parts: ['Straks', FK(['neem ik', 'ik neem'], 0, 'v2', 'Straks takes slot 1, so the verb comes second, then ik.'), 'de rest mee naar huis.'] },
 
       // ---- words
       { w: 'the waiter', nl: 'de ober' }, { w: 'the chef', nl: 'de kok' },

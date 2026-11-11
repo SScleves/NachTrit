@@ -17,7 +17,7 @@
   // presens from district3.js, bezit from town-gouda.js; the last two are set again only if missing).
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.bezit = window.RULES.bezit || { name: 'Possessives: mijn, jouw, zijn, haar, ons', note: 'MOC Lidwoorden & voornaamwoorden' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(13, { deliveries: 20, items: [
     // ---- words: the people you meet
@@ -55,13 +55,13 @@
     { en: 'My sister lives in Spain.', parts: ['Mijn zus', FK(['woont', 'woon', 'wonen'], 0, 'presens', 'mijn zus is a zij: stem plus t, woont.'), 'in Spanje.'] },
     { en: 'I speak a little Dutch.', parts: ['Ik', FK(['spreek', 'spreekt', 'spreken'], 0, 'presens', 'ik takes the bare stem: spreek.'), 'een beetje Nederlands.'] },
     { en: 'I think the people here are very nice.', parts: ['Ik', FK(['vind', 'vindt', 'vinden'], 0, 'presens', 'ik takes the bare stem, and vind already ends in d.'), 'de mensen hier heel aardig.'] },
-    { en: 'Paola thinks Gouda is cosy.', parts: ['Paola', FK(['vindt', 'vind', 'vinden'], 0, 'presens', 'Paola is a zij: stem plus t, vindt. Vind and vindt sound the same, but with Paola you write the t.'), 'Gouda gezellig.'] },
-    { en: 'Are you tired?', parts: [FK(['Ben jij', 'Bent jij', 'Is jij'], 0, 'v2', 'A yes or no question starts with the verb, and jij drops the t.'), 'moe?'] },
+    { en: 'Paola thinks Gouda is cosy.', parts: ['Paola', FK(['vindt', 'vind', 'vinden'], 0, 'presens', 'Paola is a zij, so stem plus t: vindt, even though you hear no t.'), 'Gouda gezellig.'] },
+    { en: 'Are you tired?', parts: [FK(['Ben jij', 'Bent jij', 'Is jij'], 0, 'presens', 'When jij comes right after the verb, the t drops: ben jij.'), 'moe?'] },
     { en: "I don't have any brothers.", parts: ['Ik heb', FK(['geen', 'niet'], 0, 'neg', 'A plural without an article takes geen.'), 'broers.'] },
-    { en: 'On Friday I drink a beer with colleagues.', parts: ['Vrijdag', FK(['drink ik', 'ik drink', 'drinkt ik'], 0, 'v2', 'Vrijdag takes slot 1, so the verb comes next, then ik.'), "een biertje met collega's."] },
-    { en: 'On Sunday the neighbours are having a party.', parts: ['Zondag', FK(['geven de buren', 'de buren geven', 'geeft de buren'], 0, 'v2', 'Zondag in slot 1 pushes de buren behind the verb, and buren is plural: geven.'), 'een feest.'] },
-    { en: 'How long have you lived in the Netherlands?', parts: ['Hoe lang', FK(['woon je', 'woont je', 'je woont'], 0, 'v2', 'Question word, then the verb, then je. Still living there, so the present with al.'), 'al in Nederland?'] },
-    { en: 'May I introduce my wife?', parts: ['Mag ik mijn vrouw even', FK(['voorstellen', 'stel voor', 'voorstelt'], 0, 'modal', 'After a modal the verb goes whole to the end: voorstellen.'), '?'] },
-    { en: 'We should meet up again soon.', parts: ['We moeten snel weer', FK(['afspreken', 'spreken af', 'afspreekt'], 0, 'modal', 'After moeten the verb goes whole to the end, prefix and all: afspreken.'), '.'] },
+    { en: 'On Friday I drink a beer with colleagues.', parts: ['Vrijdag', FK(['drink ik', 'ik drink'], 0, 'v2', 'Vrijdag takes slot 1, so the verb comes next, then ik.'), "een biertje met collega's."] },
+    { en: 'On Sunday the neighbours are having a party.', parts: ['Zondag', FK(['geven de buren', 'de buren geven'], 0, 'v2', 'Zondag in slot 1 pushes de buren behind the verb.'), 'een feest.'] },
+    { en: 'How long have you lived in the Netherlands?', parts: ['Hoe lang', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'al in Nederland?'] },
+    { en: 'May I introduce my wife?', parts: ['Mag ik mijn vrouw even', FK(['voorstellen', 'voorstelt', 'voor te stellen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: voorstellen.'), '?'] },
+    { en: 'We should meet up again soon.', parts: ['We moeten snel weer', FK(['afspreken', 'afspreekt', 'af te spreken'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: afspreken.'), '.'] },
   ] });
 })();

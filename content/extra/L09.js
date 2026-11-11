@@ -21,7 +21,7 @@
   //   het telefoonnummer (het nummer), het huis and het café (the deur prop is drawn as a narrow house), and a read about the
   //   order being ready (Bestelling voor Santi. is here). No verb-first questions and no uw or mijn: those are tier 3.
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(9, { deliveries: 20, items: [
     // words: the snack bar counter
@@ -57,9 +57,9 @@
     { look: true, prop: 'nummer', value: 45, nl: 'vijfenveertig', en: '45' },
 
     // builds: one fork each
-    { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben', 'heeft'], 0, 'hebben', 'Hunger is something you have in Dutch, like tengo hambre: ik heb honger.'), 'honger.'] },
+    { en: "I'm hungry.", parts: ['Ik', FK(['heb', 'ben'], 0, 'hebben', 'Hunger is something you have in Dutch, like tengo hambre: ik heb honger.'), 'honger.'] },
     { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'De friet is one portion, so it takes is. Only de frieten would take zijn.'), 'koud.'] },
-    { en: 'Two pizzas, please.', parts: ['Twee', FK(["pizza's", 'pizzas'], 0, 'spel', "pizza ends in a long a, and the 's keeps it long in the plural: pizza's."), ', alstublieft.'] },
+    { en: 'Two pizzas, please.', parts: ['Twee', FK(['pizza\'s', 'pizzas'], 0, 'spel', 'pizza ends in a long a, and the \'s keeps it long in the plural: pizza\'s.', 'spell'), ', alstublieft.'] },
     { en: 'The food is tasty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'eten here is a verb used as a noun, and those are always het: het eten.'), 'eten is lekker.'] },
     { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'pres', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
   ] });

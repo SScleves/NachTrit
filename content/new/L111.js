@@ -24,7 +24,7 @@
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'zullen' };
   const P = window.TIER_PRESET[11];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 111, act: 11, name: 'Het werk', town: 'maastricht', place: 'werk', theme: 'street', ...P,
     intro: 'In Maastricht twelve countries signed one treaty in 1992. Your standup still cannot decide who goes first.',
@@ -35,55 +35,40 @@
       want: 'The mist came and everyone who spoke Dutch changed. In Maastricht the dead wear their carnaval costume all year, so you cannot tell a colleague from a corpse, and they all want the same thing: what is being done, what had been done before you logged in, and what somebody said somebody had done. Worden, had gewerkt, hij zei dat. The women are still taller than you, and they still split the bill.' },
     items: [
       // ---- builds: the passive (new at tier 11)
-      { en: 'The outage is being solved right now.', parts: ['De storing', FK(['wordt', 'worden', 'word'], 0, 'passief',
-        'The passive is worden plus a participle at the end. One outage, so wordt, with the t that goes with de storing.'), 'nu', FK(['opgelost', 'geopgelost', 'oplost'], 0, 'sep',
-        'The ge goes in the middle: op + gelost, written as one word. los ends in s, so a t.'), '.'] },
-      { en: 'The release was postponed yesterday.', parts: ['De release', FK(['werd', 'werden', 'wordt'], 0, 'passief',
-        'werd is the past of worden. gisteren puts it in the past, so not wordt, and one release, so not werden.'), 'gisteren', FK(['uitgesteld', 'uitgestelt', 'geuitgesteld'], 0, 'kof',
-        'uit + gesteld. stel ends in l, which is not a ketchup letter, so a d. The ge is already in the middle.'), '.'] },
-      { en: 'The treaty was signed here in 1992.', parts: ['Het verdrag', FK(['werd', 'werden', 'wordt'], 0, 'passief',
-        'A passive in the past: werd plus the participle at the end. One treaty, so werd, not werden.'), 'hier in 1992', FK(['getekend', 'getekent', 'getekenen'], 0, 'kof',
-        'teken ends in n, which is not a ketchup letter, so a d: getekend.'), '.'] },
-      { en: 'The bug has already been fixed.', parts: ['De bug', FK(['is', 'heeft'], 0, 'passief',
-        'A finished passive takes zijn plus the participle: de bug is gefixt. A bug does not fix anything itself, it gets fixed by someone, so heeft is out.'), 'al', FK(['gefixt', 'gefixd', 'gefixen'], 0, 'kof',
-        'fix ends in x, a ketchup letter, so a t: gefixt.'), '.'] },
+      { en: 'The outage is being solved right now.', parts: ['De storing', FK(['wordt', 'worden', 'word'], 0, 'passief', 'The passive is worden plus participle, and one storing takes wordt.'), 'nu', FK(['opgelost', 'oplossen', 'oplost'], 0, 'sep', 'After wordt comes the participle, with ge in the middle: op-ge-lost.'), '.'] },
+      { en: 'The release was postponed yesterday.', parts: ['De release', FK(['werd', 'werden', 'wordt'], 0, 'passief', 'gisteren is past, so werd, and one release takes werd, not werden.'), 'gisteren', FK(['uitgesteld', 'uitgestelt'], 0, 'kof', 'stel ends in l, not a ketchup letter, so the participle ends in d: uitgesteld.', 'spell'), '.'] },
+      { en: 'In 1992 the treaty was signed here.', parts: ['In 1992', FK(['werd het verdrag', 'het verdrag werd'], 0, 'v2',
+        'In 1992 fills slot 1, so the verb comes second: werd het verdrag.'), 'hier', FK(['getekend', 'getekent'], 0, 'kof',
+        'teken ends in n, not a ketchup letter, so the participle ends in d: getekend.', 'spell'), '.'] },
+      { en: 'The bug has already been fixed.', parts: ['De bug', FK(['is', 'heeft'], 0, 'passief', 'A finished passive takes zijn plus participle: de bug is gefixt.'), 'al', FK(['gefixt', 'gefixd'], 0, 'kof', 'fix ends in x, which sounds like ks, a ketchup letter: gefixt with a t.', 'spell'), '.'] },
       { en: 'The complaints are answered by the intern.', parts: ['De klachten', FK(['worden', 'wordt'], 0, 'passief',
-        'Two or more complaints, so worden. wordt is for one thing.'), 'door de stagiair', FK(['beantwoord', 'gebeantwoord', 'beantwoordt'], 0, 'perf',
-        'be- verbs take no ge: beantwoord. The stem antwoord already ends in d, so nothing is added, and beantwoordt is the present tense hij beantwoordt, not a participle.'), '.'] },
-      { en: 'The server has to be restarted today.', parts: ['De server moet vandaag herstart', FK(['worden', 'wordt', 'geworden'], 0, 'passief',
-        'After moet the last verb is an infinitive: herstart worden. wordt is a finite verb and geworden is a participle.'), '.'] },
+        'Two or more complaints, so worden. wordt is for one thing.'), 'door de stagiair', FK(['beantwoord', 'beantwoorden', 'beantwoordde'], 0, 'perf', 'After worden comes the participle, and be- verbs take no ge: beantwoord.'), '.'] },
+      { en: 'The server has to be restarted today.', parts: ['De server moet vandaag herstart', FK(['worden', 'wordt', 'geworden'], 0, 'passief', 'After moet the last verb is an infinitive: herstart worden.'), '.'] },
 
       // ---- builds: the plusquamperfectum (new at tier 11)
-      { en: 'When I logged in, the standup was already over.', parts: ['Toen ik inlogde,', FK(['was', 'had'], 0, 'plusq',
-        'aflopen is a change of state, something that ends, so zijn: was afgelopen, the past of is afgelopen.'), 'de standup al', FK(['afgelopen', 'geafgelopen', 'afgelopt'], 0, 'sep',
-        'The ge goes in the middle: af + gelopen, written as one word. lopen is irregular, so gelopen and not a kofschip t.'), '.'] },
+      { en: 'When I logged in, the standup was already over.', parts: ['Toen ik inlogde,', FK(['was de standup', 'de standup was'], 0, 'v2',
+        'The toen-clause fills slot 1, so the main clause starts with its verb: was de standup.'), 'al', FK(['afgelopen', 'aflopen', 'afliep'], 0, 'sep',
+        'was plus participle makes the pluperfect, with ge in the middle: af-ge-lopen.'), '.'] },
       { en: 'We had worked until midnight, so I was tired.', parts: ['We', FK(['hadden', 'waren'], 0, 'plusq',
-        'werken takes hebben, and the plusquamperfectum is the imperfectum of hebben plus the participle: hadden gewerkt.'), 'tot middernacht', FK(['gewerkt', 'gewerkd', 'gewerken'], 0, 'kof',
-        'werk ends in k, a ketchup letter: gewerkt with a t.'), ', dus ik was moe.'] },
+        'werken takes hebben, and the plusquamperfectum is the imperfectum of hebben plus the participle: hadden gewerkt.'), 'tot middernacht', FK(['gewerkt', 'gewerkd'], 0, 'kof', 'werk ends in k, a ketchup letter: gewerkt with a t.', 'spell'), ', dus ik was moe.'] },
       { en: 'We had seen the problem before the customer called.', parts: ['Wij', FK(['hadden', 'waren'], 0, 'plusq',
-        'zien takes hebben, so hadden gezien. waren belongs to verbs of going and change, not to zien.'), 'het probleem al', FK(['gezien', 'geziet', 'gezeen'], 0, 'perf',
-        'zien is irregular: gezien, nothing added.'), 'voordat de klant belde.'] },
-      { en: 'He had fallen asleep during the meeting.', parts: ['Hij', FK(['was', 'had'], 0, 'plusq',
-        'in slaap vallen is a change of state, so zijn: was in slaap gevallen. Ingeslapen would mean he died.'), 'tijdens de vergadering in slaap', FK(['gevallen', 'gevalt', 'geviel'], 0, 'perf',
-        'vallen is irregular: viel, gevallen. Nothing from the kofschip here.'), '.'] },
+        'zien takes hebben, so hadden gezien. waren belongs to verbs of going and change, not to zien.'), 'het probleem al', FK(['gezien', 'zien', 'zagen'], 0, 'perf', 'had plus participle makes the pluperfect, and zien is irregular: gezien.'), 'voordat de klant belde.'] },
+      { en: 'He had fallen asleep during the meeting.', parts: ['Hij', FK(['was', 'had'], 0, 'plusq', 'in slaap vallen is a change of state, so zijn: was in slaap gevallen.'), 'tijdens de vergadering in slaap', FK(['gevallen', 'vallen', 'viel'], 0, 'perf', 'was plus participle makes the pluperfect, and vallen is irregular: gevallen.'), '.'] },
 
       // ---- builds: indirect speech (new at tier 11)
-      { en: 'Mark said that he was ill.', parts: ['Mark zei', FK(['dat hij ziek was', 'dat hij was ziek', 'dat was hij ziek'], 0, 'indirect',
-        'zei dat opens a sub-clause, so the verb goes to the end. What was said also moves one tense back: is ziek becomes was ziek.'), '.'] },
-      { en: 'She asked whether I could help her for a moment.', parts: ['Ze vroeg', FK(['of', 'om'], 0, 'indirect',
-        'A yes-or-no question that is reported takes of. om belongs to vragen om iets, as in ze vroeg om hulp.'), 'ik haar even kon helpen.'] },
-      { en: 'He asked what had happened last night.', parts: ['Hij vroeg', FK(['wat er vannacht was gebeurd', 'wat er was vannacht gebeurd', 'wat er vannacht had gebeurd'], 0, 'indirect',
-        'A reported question is a sub-clause: the question word opens it and the verbs go to the end, side by side: was gebeurd, with vannacht in front of them. gebeuren takes zijn, so not had.'), '.'] },
-      { en: 'Paola said that I had to walk the dogs.', parts: ['Paola zei', FK(['dat ik de honden moest uitlaten', 'dat moest ik de honden uitlaten', 'dat ik moest de honden uitlaten'], 0, 'indirect',
-        'After zei dat every verb goes to the end: moest uitlaten. moet became moest, one tense back.'), '.'] },
+      { en: 'Mark said that he was ill.', parts: ['Mark zei dat hij', FK(['ziek was', 'was ziek'], 0, 'indirect',
+        'zei dat opens a sub-clause, so the verb goes to the end: ziek was.'), '.'] },
+      { en: 'She asked whether I could help her for a moment.', parts: ['Ze vroeg', FK(['of', 'om'], 0, 'indirect', 'A reported yes-or-no question takes of; om belongs to vragen om iets.', 'word'), 'ik haar even kon helpen.'] },
+      { en: 'He asked what had happened last night.', parts: ['Hij vroeg wat er vannacht', FK(['was gebeurd', 'had gebeurd'], 0, 'plusq',
+        'gebeuren takes zijn, so the pluperfect is was gebeurd.'), '.'] },
+      { en: 'Paola said that I had to walk the dogs.', parts: ['Paola zei dat ik de honden moest', FK(['uitlaten', 'uitgelaten', 'uit te laten'], 0, 'modal',
+        'After moest the second verb is a bare infinitive at the end: uitlaten.'), '.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Could you share your screen for a second?', parts: ['Zou je je scherm even', FK(['kunnen', 'kan'], 0, 'zou',
         'zou asks politely and goes with an infinitive at the end: zou je kunnen delen.'), 'delen?'] },
-      { en: 'While I was presenting, the sound cut out.', parts: ['Terwijl ik presenteerde,', FK(['viel het geluid', 'het geluid viel'], 0, 'v2',
-        'The sub-clause came first, so the main clause starts with its verb: viel het geluid, with uit at the end.'), 'uit.'] },
-      { en: 'This is the fastest solution of the whole team.', parts: ['Dit is', FK(['de snelste', 'de snelst', 'de sneller'], 0, 'vergelijk',
-        'Before a noun the superlative takes -ste: de snelste oplossing. snelst has no e and sneller is the comparative.'), 'oplossing van het hele team.'] },
+      { en: 'While I was presenting, the sound cut out.', parts: ['Terwijl ik presenteerde,', FK(['viel het geluid', 'het geluid viel'], 0, 'v2', 'The terwijl-clause fills slot 1, so the main clause starts with its verb: viel het geluid.'), 'uit.'] },
+      { en: 'This is the fastest solution of the whole team.', parts: ['Dit is', FK(['de snelste', 'de snelst', 'de sneller'], 0, 'vergelijk', 'Before a noun the superlative takes -e: de snelste oplossing.'), 'oplossing van het hele team.'] },
 
       // ---- words: the desk, the sprint, the review, the treaty, the tart
       { w: 'the release', nl: 'de release' }, { w: 'the bug', nl: 'de bug' }, { w: 'the ticket', nl: 'het ticket', wrong: 'de ticket' },

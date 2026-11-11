@@ -15,7 +15,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 56, act: 4, name: 'De sport', town: 'zeeland', place: 'sport', theme: 'dyke', ...P,
     intro: 'In Zeeland the wind is in your face both ways. The dogs still need a walk, and the women at the gym are still taller than you.',
@@ -40,14 +40,14 @@
         FK(['het leukst', 'het leuker', 'het leuk'], 0, 'vergelijk', 'Best of all after vinden: het leukst.'), '.'] },
       { en: 'Paola is waiting for us at the beach.', parts: ['Paola wacht op het strand op', FK(['ons', 'wij', 'onze'], 0, 'obj', 'After op, we becomes ons. onze only goes before a noun.'), '.'] },
       { en: 'Can you help me with my golf bag?', parts: ['Kun je', FK(['me', 'ik', 'mijn'], 0, 'obj', 'je does the helping. The one being helped is the object, so me, not ik.'), 'even helpen met mijn golftas?'] },
-      { en: 'After the walk I give them water.', parts: ['Na de wandeling', FK(['geef ik', 'ik geef', 'geeft ik'], 0, 'v2', 'Na de wandeling takes slot 1, so the verb comes before ik.'),
+      { en: 'After the walk I give them water.', parts: ['Na de wandeling', FK(['geef ik', 'ik geef'], 0, 'v2', 'Na de wandeling takes slot 1, so the verb comes before ik.'),
         FK(['ze', 'zij'], 0, 'obj', 'The dogs get the water, so they are ze. zij only does things.'), 'water.'] },
-      { en: 'There are sixty-two doors in the barrier.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Sixty-two doors is plural: er zijn.'), 'tweeënzestig deuren in de kering.'] },
-      { en: 'Is there a gym on the island?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One gym, so is er. A question puts the verb first.'), 'een sportschool op',
+      { en: 'There are sixty-two doors in the barrier.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Sixty-two doors is plural: er zijn.', 'verb'), 'tweeënzestig deuren in de kering.'] },
+      { en: 'Is there a gym on the island?', parts: [FK(['Is er', 'Zijn er'], 0, 'er', 'One gym, so is er. A question puts the verb first.', 'verb'), 'een sportschool op',
         FK(['het eiland', 'de eiland'], 0, 'dehet', 'eiland is a het-word: het eiland.'), '?'] },
       { en: "There's a strong wind on the dyke.", parts: ['Er staat een', FK(['harde', 'hard'], 0, 'adj', 'wind is a de-word, so the adjective takes -e: een harde wind.'), 'wind op de dijk.'] },
-      { en: 'Neeltje Jans is a small island.', parts: ['Neeltje Jans is een', FK(['klein', 'kleine'], 0, 'adj', 'A het-word after een loses the -e: een klein eiland.'), 'eiland.'] },
-      { en: 'The cold water is twelve degrees.', parts: [FK(['Het koude', 'Het koud', 'De koude'], 0, 'adj', 'het water, and after het the adjective takes -e: het koude water.'), 'water is twaalf graden.'] },
+      { en: 'The dyke is high here.', parts: ['Hier is', FK(['de', 'het'], 0, 'dehet', 'dijk is a de-word: de dijk.'), 'dijk hoog.'] },
+      { en: 'The cold water is twelve degrees.', parts: [FK(['Het koude', 'Het koud'], 0, 'adj', 'After het the adjective still takes -e: het koude water.'), 'water is twaalf graden.'] },
 
       // ---- words: the sea, the wind, the gym, the course
       { w: 'the sea', nl: 'de zee' }, { w: 'the beach', nl: 'het strand', wrong: 'de strand' }, { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },

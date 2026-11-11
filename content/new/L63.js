@@ -17,7 +17,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 63, act: 5, name: 'Het werk', town: 'utrecht', place: 'werk', theme: 'square', ...P,
     intro: 'An office next to Utrecht Centraal. Since the mist the whole standup speaks Dutch. Most of them are dead, and their cameras are still off.',
@@ -28,38 +28,38 @@
       want: 'The dead run a standup at every desk. They ask what you are working on, what you are going to do and what time the incident call starts. Then they split the lunch bill to the cent. Your manager, a woman a head taller than you, says the prefix goes at the end. At five the dogs need a walk, incident or no incident.' },
     items: [
       // ---- build: separable verbs split in the present, the prefix at the end
-      { en: "I'll call the customer back tomorrow.", parts: ['Ik', FK(['bel', 'terugbel', 'belt'], 0, 'sep', 'terugbellen splits: bel goes in slot 2, terug waits at the end.'),
+      { en: "I'll call the customer back tomorrow.", parts: ['Ik', FK(['bel', 'terugbel'], 0, 'sep', 'terugbellen splits: bel in slot 2, terug at the end.'),
         'de klant morgen', FK(['terug', 'terugbellen'], 0, 'sep', 'Only the prefix goes to the end, terug, not the whole verb.'), '.'] },
       { en: 'At eight o\'clock I log in.', parts: ['Om acht uur', FK(['log ik', 'ik log', 'inlog ik'], 0, 'v2', 'Om acht uur takes slot 1, so log comes second and ik third.'),
         FK(['in', 'inloggen'], 0, 'sep', 'inloggen splits: in goes to the end of the sentence.'), '.'] },
-      { en: "I'll pick up the ticket.", parts: ['Ik', FK(['pak', 'oppak', 'pakt'], 0, 'sep', 'oppakken splits: ik pak, and op goes to the end.'),
+      { en: "I'll pick up the ticket.", parts: ['Ik', FK(['pak', 'oppak'], 0, 'sep', 'oppakken splits: ik pak, and op goes to the end.'),
         'het ticket', FK(['op', 'oppakken'], 0, 'sep', 'The prefix op closes the sentence.'), '.'] },
-      { en: 'The standup always runs over.', parts: ['De standup', FK(['loopt', 'uitloopt', 'lopen'], 0, 'sep', 'uitlopen splits: loopt in slot 2, uit at the end. One standup, so loopt.'), 'altijd uit.'] },
+      { en: 'The standup always runs over.', parts: ['De standup', FK(['loopt', 'uitloopt'], 0, 'sep', 'uitlopen splits: loopt in slot 2, uit at the end.'), 'altijd uit.'] },
       // ---- build: zijn + aan het + infinitive
-      { en: "I'm fixing the outage.", parts: ['Ik', FK(['ben', 'heb', 'is'], 0, 'aanhet', 'aan het always takes zijn: ik ben.'), 'de storing',
-        FK(['aan het oplossen', 'oplossen aan het', 'aan het lossen op'], 0, 'aanhet', 'aan het first, then the whole verb, glued: oplossen.'), '.'] },
-      { en: 'We are testing the new release.', parts: ['We', FK(['zijn', 'hebben', 'is'], 0, 'aanhet', 'aan het takes zijn, never hebben: we zijn.'), 'de',
+      { en: "I'm fixing the outage.", parts: ['Ik', FK(['ben', 'heb'], 0, 'aanhet', 'aan het always takes zijn: ik ben.'), 'de storing aan het',
+        FK(['oplossen', 'oplost', 'op te lossen'], 0, 'aanhet', 'After aan het the separable verb stays whole as an infinitive: oplossen.'), '.'] },
+      { en: 'We are testing the new release.', parts: ['We', FK(['zijn', 'hebben'], 0, 'aanhet', 'aan het takes zijn, never hebben: we zijn.'), 'de',
         FK(['nieuwe', 'nieuw'], 0, 'adj', 'After de the adjective takes -e: de nieuwe release.'), 'release aan het testen.'] },
-      { en: 'Paola is on a call too.', parts: ['Paola', FK(['is', 'heeft', 'zijn'], 0, 'aanhet', 'One person, and aan het goes with zijn: Paola is.'), 'ook',
-        FK(['aan het bellen', 'aan bellen', 'het aan bellen'], 0, 'aanhet', 'The block is always aan het, in that order, then the infinitive.'), '.'] },
+      { en: 'Paola is on a call too.', parts: ['Paola', FK(['is', 'heeft'], 0, 'aanhet', 'aan het goes with zijn, never hebben: Paola is.'), 'ook',
+        FK(['aan het bellen', 'het aan bellen'], 0, 'aanhet', 'The block is always aan het, in that order, then the infinitive.'), '.'] },
       // ---- build: gaan + infinitive at the end
-      { en: "Today I'm going to roll out the new monitoring.", parts: ['Vandaag', FK(['ga ik', 'ik ga', 'gaat ik'], 0, 'v2', 'Vandaag takes slot 1, so ga comes second and ik third.'),
-        'de nieuwe monitoring', FK(['uitrollen', 'rol uit', 'uit te rollen'], 0, 'fut', 'After gaan the verb goes whole to the end, glued and without te: uitrollen.'), '.'] },
-      { en: 'This afternoon we are going to look for the cause.', parts: ['Vanmiddag', FK(['gaan we', 'we gaan', 'gaat we'], 0, 'v2', 'Vanmiddag in slot 1 puts the verb before we.'),
+      { en: "Today I'm going to roll out the new monitoring.", parts: ['Vandaag', FK(['ga ik', 'ik ga'], 0, 'v2', 'Vandaag takes slot 1, so ga comes second and ik third.'),
+        'de nieuwe monitoring', FK(['uitrollen', 'uitrolt', 'uit te rollen'], 0, 'fut', 'After gaan the verb goes whole to the end, without te: uitrollen.'), '.'] },
+      { en: 'This afternoon we are going to look for the cause.', parts: ['Vanmiddag', FK(['gaan we', 'we gaan'], 0, 'v2', 'Vanmiddag in slot 1 puts the verb before we.'),
         'de oorzaak', FK(['zoeken', 'zoekt', 'te zoeken'], 0, 'fut', 'gaan plus the bare infinitive at the end: zoeken, no te.'), '.'] },
-      { en: 'Are you coming to the borrel on Friday?', parts: [FK(['Ga je', 'Gaat je', 'Gaan je'], 0, 'v2', 'A question starts with the verb. Before je the t drops: ga je.'), 'vrijdag',
-        FK(['mee', 'meegaat', 'mee te gaan'], 0, 'sep', 'meegaan splits: ga stands in front in the question, and mee waits at the end.'), 'naar de borrel?'] },
+      { en: 'Are you coming to the borrel on Friday?', parts: [FK(['Ga je', 'Gaat je', 'Gaan je'], 0, 'presens', 'When je comes right after the verb, the t drops: ga je.'), 'vrijdag',
+        FK(['mee', 'meegaat'], 0, 'sep', 'meegaan splits: ga stands in front in the question, mee waits at the end.'), 'naar de borrel?'] },
       // ---- build: the imperative, the bare stem
-      { en: 'Just switch your camera on.', parts: [FK(['Zet', 'Zetten', 'Aanzet'], 0, 'gebod', 'A command is the bare stem: zet. The prefix does not come along.'), 'je camera even',
+      { en: 'Just switch your camera on.', parts: [FK(['Zet', 'Zetten'], 0, 'gebod', 'A command is the bare stem: zet; aan still goes to the end.'), 'je camera even',
         FK(['aan', 'aanzetten'], 0, 'sep', 'aanzetten splits in a command too: aan goes to the end.'), '.'] },
-      { en: 'Just restart your laptop.', parts: [FK(['Start', 'Starten', 'Opstart'], 0, 'gebod', 'Command: the bare stem, start. It already ends in t, so nothing changes.'), 'je laptop even opnieuw',
+      { en: 'Just restart your laptop.', parts: [FK(['Start', 'Starten'], 0, 'gebod', 'A command is the bare stem: start; op still goes to the end.'), 'je laptop even opnieuw',
         FK(['op', 'opstarten'], 0, 'sep', 'opstarten splits: op goes to the very end.'), '.'] },
-      { en: 'Walk the dogs, the call can wait.', parts: [FK(['Laat', 'Uitlaat', 'Laten'], 0, 'gebod', 'Command: the bare stem laat, and uit waits at the end.'), 'de honden',
-        FK(['uit', 'uitlaat', 'uit te laten'], 0, 'sep', 'uitlaten splits: laat stands in front, and only uit goes to the end.'), ', de call kan wachten.'] },
+      { en: 'Walk the dogs, the call can wait.', parts: [FK(['Laat', 'Laten'], 0, 'gebod', 'A command is the bare stem: laat; uit still goes to the end.'), 'de honden',
+        FK(['uit', 'uitlaat'], 0, 'sep', 'uitlaten splits: laat stands in front, and only uit goes to the end.'), ', de call kan wachten.'] },
       // ---- build: telling the time
       { en: 'The call starts at quarter past ten.', parts: ['Om', FK(['kwart over tien', 'kwart voor tien', 'half tien'], 0, 'klok', 'Quarter past ten is kwart over tien. kwart voor tien is 9:45, half tien is 9:30.'),
         FK(['begint de call', 'de call begint'], 0, 'v2', 'A time in slot 1 puts the verb before de call.'), '.'] },
-      { en: 'At twenty past eleven I have a meeting.', parts: ['Om', FK(['tien voor half twaalf', 'tien over half twaalf', 'twintig over twaalf'], 0, 'klok', 'Half twaalf is 11:30, so ten minutes before it, 11:20, is tien voor half twaalf.'),
+      { en: 'At twenty past eleven I have a meeting.', parts: ['Om tien', FK(['voor', 'over'], 0, 'klok', 'Half twaalf is 11:30, so ten minutes before it, 11:20, is tien voor half twaalf.'), 'half twaalf',
         FK(['heb ik', 'ik heb'], 0, 'v2', 'The time takes slot 1, so heb comes before ik.'), 'een vergadering.'] },
 
       // ---- word: the office, the desk, the incident

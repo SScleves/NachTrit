@@ -9,15 +9,15 @@
   // sportschool (de sportschool, het park, wandelen, uitlaten), _site/words (de sport, sporten, de spierpijn, golf,
   // Ik speel zaterdag golf., Waar kan ik mijn spullen kwijt), MOC Het weer, MOC Vrije tijd.
   // Rules used: modal, v2, neg, mag (data.js), presens (district3.js), bezit (town-gouda.js). No new rules or props.
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(15, { deliveries: 20, items: [
     // golf: booking, the first tee, the round
     { en: "I'd like to book a tee time for Saturday.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik wil. A modal never takes a t after ik.'), 'graag een starttijd voor zaterdag',
       FK(['reserveren', 'reserveer', 'te reserveren'], 0, 'modal', 'After wil the verb goes to the end as a bare infinitive. No te.'), '.'] },
     { en: 'Do you still have room for two people?', parts: [FK(['Hebben', 'Heeft', 'Hebt'], 0, 'presens', 'jullie takes the plural: hebben, first in a yes/no question.'), 'jullie nog plek voor twee personen?'] },
-    { en: 'On Saturday I play golf.', parts: ['Zaterdag', FK(['speel ik', 'ik speel', 'speelt ik'], 0, 'v2', 'Zaterdag takes slot 1, so the verb comes second and ik follows it.'), 'golf.'] },
+    { en: 'On Saturday I play golf.', parts: ['Zaterdag', FK(['speel ik', 'ik speel'], 0, 'v2', 'Zaterdag takes slot 1, so the verb comes second and ik follows it.'), 'golf.'] },
     { en: 'May we play through?', parts: [FK(['Mogen', 'Mag'], 0, 'modal', 'we takes the plural: mogen. mag is for one person.'), 'we even',
-      FK(['doorspelen', 'spelen door', 'door te spelen'], 0, 'modal', 'After a modal the verb stays whole at the end: doorspelen.'), '?'] },
+      FK(['doorspelen', 'doorspeelt', 'door te spelen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: doorspelen.'), '?'] },
     { en: 'My ball is in the water.', parts: [FK(['Mijn', 'Mij', 'Ik'], 0, 'bezit', 'Before a noun, my is mijn. mij and ik never stand in front of a noun.'), 'balletje',
       FK(['ligt', 'liggen', 'lig'], 0, 'presens', 'One ball, so stem plus t: ligt.'), 'in het water.'] },
     { en: "What's your handicap?", parts: ['Wat is', FK(['jouw', 'jij', 'jou'], 0, 'bezit', 'Your before a noun is jouw. jij does things, jou has things done to it.'), 'handicap?'] },
@@ -25,11 +25,11 @@
     { en: 'Fancy a beer?', parts: [FK(['Heb je', 'Hebt je', 'Heeft je'], 0, 'presens', 'Verb first with je behind it: the t drops, heb je.'), 'zin in een biertje?'] },
     // cycling there, the dogs, the gym
     { en: 'Are you cycling to the golf course?', parts: [FK(['Fiets jij', 'Fietst jij'], 0, 'presens', 'Verb first, and the t drops before jij: fiets jij.'), 'naar de golfbaan?'] },
-    { en: 'Every morning I walk with the dogs.', parts: ['Elke ochtend', FK(['wandel ik', 'ik wandel', 'wandelt ik'], 0, 'v2', 'Elke ochtend takes slot 1, so the verb comes second, then ik.'), 'met de honden.'] },
+    { en: 'Every morning I walk with the dogs.', parts: ['Elke ochtend', FK(['wandel ik', 'ik wandel'], 0, 'v2', 'Elke ochtend takes slot 1, so the verb comes second, then ik.'), 'met de honden.'] },
     { en: "Dogs don't have to pay.", parts: ['Honden', FK(['hoeven', 'moeten', 'mogen'], 0, 'mag', "Don't have to is hoeven niet te. moeten and mogen never take te."), 'niet te betalen.'] },
-    { en: 'On Tuesday I go to the gym.', parts: ['Dinsdag', FK(['ga ik', 'ik ga', 'gaat ik'], 0, 'v2', 'Dinsdag takes slot 1, so the verb comes second and ik follows it.'), 'naar de sportschool.'] },
+    { en: 'On Tuesday I go to the gym.', parts: ['Dinsdag', FK(['ga ik', 'ik ga'], 0, 'v2', 'Dinsdag takes slot 1, so the verb comes second and ik follows it.'), 'naar de sportschool.'] },
     { en: "Today I'm not in the mood for the gym.", parts: ['Vandaag heb ik', FK(['geen', 'niet'], 0, 'neg', 'zin is a noun with no article in front, so geen.'), 'zin in de sportschool.'] },
-    { en: 'Where can I leave my stuff?', parts: ['Waar', FK(['kan ik', 'ik kan', 'kunnen ik'], 0, 'v2', 'A question word in slot 1, then the verb, then ik.'), 'mijn spullen kwijt?'] },
+    { en: 'Where can I leave my stuff?', parts: ['Waar', FK(['kan ik', 'ik kan'], 0, 'v2', 'A question word in slot 1, then the verb, then ik.'), 'mijn spullen kwijt?'] },
 
     // sport words, four with the wrong article as the second sign
     { w: 'the golf course', nl: 'de golfbaan' }, { w: 'the clubhouse', nl: 'het clubhuis', wrong: 'de clubhuis' },

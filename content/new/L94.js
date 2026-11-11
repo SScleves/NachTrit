@@ -27,7 +27,7 @@
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 94, act: 9, name: 'Het station', town: 'texel', place: 'station', theme: 'dyke', ...P,
     intro: 'Texel has no railway, only a ferry, and if you miss the last boat you live here now. The sheep are already looking at houses for you.',
@@ -40,7 +40,7 @@
       // ---- builds: relative clauses with die and dat, the verb at the end
       { en: 'The ferry that leaves at nine today is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
         'boot is a de-word, so die: de boot die.'), FK(['vandaag om negen uur vertrekt', 'vertrekt vandaag om negen uur'], 0, 'bijzin',
-        'Inside a die or dat clause the verb goes to the very end: die vandaag om negen uur vertrekt.'), ', is vol.'] },
+        'Inside a die clause the verb goes to the very end: om negen uur vertrekt.'), ', is vol.'] },
       { en: 'The ticket that I bought is in my bag.', parts: ['Het kaartje', FK(['dat', 'die'], 0, 'diedat',
         'kaartje is a het-word, so dat: het kaartje dat.'), FK(['ik gekocht heb', 'heb ik gekocht'], 0, 'bijzin',
         'A relative clause is a sub-clause: the subject comes first and the verb goes to the end.'), ', ligt in mijn tas.'] },
@@ -52,12 +52,8 @@
         'die sends the verb to the end of its clause: die vanavond naar De Koog gaat.'), '?'] },
 
       // ---- builds: te and om ... te
-      { en: 'I do not feel like waiting all day.', parts: ['Ik heb geen zin', FK(['om', 'dat'], 0, 'omte',
-        'zin hebben takes om: geen zin om, then te and the infinitive at the end.'), 'de hele dag', FK(['te wachten', 'wachten te', 'wachten'], 0, 'omte',
-        'te stands right in front of the infinitive: om te wachten.'), '.'] },
-      { en: 'It is silly to cycle without a helmet.', parts: ['Het is dom', FK(['om', 'dat'], 0, 'omte',
-        'To say what is silly, easy or nice to do, Dutch uses om ... te.'), 'zonder helm', FK(['te fietsen', 'fietsen te', 'fietsen'], 0, 'omte',
-        'om ... te fietsen: te comes in front of the infinitive, which closes the clause.'), '.'] },
+      { en: 'I do not feel like waiting all day.', parts: ['Ik heb geen zin', FK(['om', 'dat'], 0, 'omte', 'zin hebben takes om: geen zin om, then te and the infinitive at the end.', 'word'), 'de hele dag', FK(['te wachten', 'wachten'], 0, 'omte', 'te stands right in front of the infinitive: om te wachten.'), '.'] },
+      { en: 'It is silly to cycle without a helmet.', parts: ['Het is dom', FK(['om', 'dat'], 0, 'omte', 'To say what is silly, easy or nice to do, Dutch uses om ... te.', 'word'), 'zonder helm', FK(['te fietsen', 'fietsen'], 0, 'omte', 'om ... te fietsen: te comes in front of the infinitive at the end.'), '.'] },
       { en: "Don't forget to check in on the bus.", parts: ['Vergeet niet om in de bus', FK(['in te checken', 'te inchecken'], 0, 'omte',
         'A separable verb is split by te: in te checken, never te inchecken.'), '.'] },
       { en: 'I came early so as not to miss the ferry.', parts: ['Ik', FK(['ben', 'heb'], 0, 'aux',
@@ -68,36 +64,30 @@
       { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'conditie',
         'als sends the verb to the end of its clause: als de boot niet vaart.'), ',', FK(['dan blijven we', 'dan we blijven'], 0, 'v2',
         'dan takes slot 1 of the main clause, so the verb comes next: dan blijven we.'), 'hier.'] },
-      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'conditie',
-        'An if that is not real uses the imperfectum: als ik meer tijd had. ik takes the singular.'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
+      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'conditie', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
         'After the als clause the main clause starts with its verb: zou ik.'), 'de fiets nemen.'] },
       { en: 'If the bus is late, we take the bikes.', parts: ['Als de bus te laat', FK(['is', 'zijn'], 0, 'presens',
         'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'conditie',
         'After the als clause the main clause starts with its verb: nemen we de fietsen.'), 'de fietsen.'] },
       { en: 'Could you tell me where the ferry leaves from?', parts: [FK(['Zou', 'Zouden'], 0, 'zou',
-        'u takes the singular: zou u. zou plus kunnen makes the request polite.'), 'u mij kunnen zeggen', FK(['waar de veerboot vertrekt', 'waar vertrekt de veerboot'], 0, 'bijzin',
-        'An indirect question sends the verb to the end: waar de veerboot vertrekt.'), '?'] },
+        'u takes the singular: zou u. zou plus kunnen makes the request polite.'), 'u mij kunnen zeggen waar', FK(['de veerboot vertrekt', 'vertrekt de veerboot'], 0, 'bijzin', 'An indirect question sends the verb to the end: waar de veerboot vertrekt.'), '?'] },
 
       // ---- builds: er for a quantity and a place, pronominal adverbs
-      { en: 'How many tickets do you have? I have two.', parts: ['Hoeveel kaartjes', FK(['heb je', 'je hebt'], 0, 'v2',
-        'The question word is slot 1, so the verb is second: heb je.'), '? Ik heb', FK(['er', 'ze', 'hen'], 0, 'er',
+      { en: 'How many tickets do you have? I have two.', parts: ['Hoeveel kaartjes', FK(['heb je', 'hebt je'], 0, 'presens', 'When je comes right after the verb, the t drops: heb je.'), '? Ik heb', FK(['er', 'ze', 'hen'], 0, 'er',
         'Counting what was just named needs er: ik heb er twee.'), 'twee.'] },
       { en: 'My sister lives on Texel. I cycle there every year.', parts: ['Mijn zus woont op Texel. Ik fiets', FK(['er', 'het'], 0, 'er',
         'A place that was just named becomes er: ik fiets er.'), 'elk jaar', FK(['naartoe', 'toe'], 0, 'er',
-        'To a place that was just named, er is followed by naartoe in one word: ik fiets er naartoe. toe alone is not enough.'), '.'] },
+        'To a place just named, er takes naartoe: ik fiets er naartoe.'), '.'] },
       { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'vnwadv',
-        'A question about a thing with a preposition starts with waar and ends on the preposition: waar wacht je op.'), 'wacht je op? Ik wacht', FK(['op', 'aan'], 0, 'woord',
+        'A question about a thing with a preposition starts with waar: waar wacht je op.'), 'wacht je op? Ik wacht', FK(['op', 'aan'], 0, 'woord',
         'wachten goes with op: wachten op de bus.'), 'de bus.'] },
       { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'vnwadv',
         'A preposition plus a thing becomes er plus the preposition, one word: ermee, erop, erin.'), 'naar het strand.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'On Texel the bike is faster than the bus.', parts: ['Op Texel is de fiets', FK(['sneller', 'snelder'], 0, 'vergelijk',
-        'snel plus er gives sneller, with a double l to keep the vowel short. There is no d in it.'), FK(['dan', 'van'], 0, 'vergelijk',
+      { en: 'On Texel the bike is faster than the bus.', parts: ['Op Texel is de fiets', FK(['sneller', 'sneler'], 0, 'vergelijk', 'snel plus -er gives sneller, with a double l to keep the e short.', 'spell'), FK(['dan', 'van'], 0, 'vergelijk',
         'After a comparative Dutch uses dan: sneller dan de bus.'), 'de bus.'] },
-      { en: 'When we stood on the deck, we saw the seals.', parts: ['Toen we op het dek', FK(['stonden', 'stonden we'], 0, 'bijzin',
-        'toen sends the verb to the end of its clause: toen we op het dek stonden.'), ',', FK(['zagen we', 'we zagen', 'zien we'], 0, 'imp',
-        'zien is irregular in the past: zagen. The main clause after a toen clause starts with its verb.'), 'de zeehonden.'] },
+      { en: 'When we stood on the deck, we saw the seals.', parts: ['Toen we op het dek', FK(['stonden', 'staan', 'stond'], 0, 'bijzin', 'toen tells a past moment, and we takes stonden at the end.', 'past'), ',', FK(['zagen we', 'we zagen'], 0, 'v2', 'After the toen clause the main clause starts with its verb: zagen we.'), 'de zeehonden.'] },
       { en: 'The last ferry leaves at half past ten.', parts: ['De laatste boot', FK(['vertrekt', 'vertrekken'], 0, 'presens',
         'One ferry, so the verb takes the t: de boot vertrekt.'), 'om', FK(['half elf', 'half tien'], 0, 'klok',
         'half elf is half an hour before eleven, so 10:30.'), '.'] },

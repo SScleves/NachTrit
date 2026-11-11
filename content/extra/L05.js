@@ -17,7 +17,7 @@
 
 (() => {
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(5, { deliveries: 20, items: [
     // ---- words: the shops
@@ -51,7 +51,7 @@
 
     // ---- builds: one fork each
     { en: 'The trousers are too small.', parts: ['De broek', FK(['is', 'zijn'], 0, 'zijn', 'Dutch counts one broek, so is. English says the trousers are.'), 'te klein.'] },
-    { en: "That's €19.", parts: ['Dat is negentien', FK(['euro', "euro's"], 0, 'getal', 'In a price euro stays singular: negentien euro.'), '.'] },
+    { en: "That's €19.", parts: ['Dat is negentien', FK(['euro', "euro's"], 0, 'meervoud', 'In a price euro stays singular: negentien euro.'), '.'] },
     { en: 'I still have the receipt.', parts: ['Ik', FK(['heb', 'heeft', 'hebt'], 0, 'hebben', 'With ik the verb is heb. hebben is irregular: jij hebt, hij heeft.'), 'het bonnetje nog.'] },
   ] });
 })();

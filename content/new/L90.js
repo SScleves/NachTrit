@@ -22,7 +22,7 @@
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
   const P = window.TIER_PRESET[8];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 90, act: 8, name: 'De haven van Urk', town: 'urk', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed, except on Urk, where nobody noticed because everyone was in church.',
@@ -37,14 +37,12 @@
         'omdat sends the verb to the end of its clause: omdat het zondag is.'), '.'] },
       { en: 'I cycle slowly because the quay is slippery.', parts: ['Ik fiets langzaam omdat de kade', FK(['glad is', 'is glad'], 0, 'bijzin',
         'After omdat the verb goes last: omdat de kade glad is.'), '.'] },
-      { en: 'Paola says the dogs are still outside.', parts: ['Paola zegt dat', FK(['de honden nog buiten zijn', 'zijn de honden nog buiten'], 0, 'bijzin',
-        'dat opens a sub-clause, so zijn goes to the end: dat de honden nog buiten zijn.'), '.'] },
+      { en: 'Paola says the dogs are still outside.', parts: ['Paola zegt dat de honden', FK(['nog buiten zijn', 'zijn nog buiten'], 0, 'bijzin', 'dat opens a sub-clause, so zijn goes to the end: nog buiten zijn.'), '.'] },
       { en: 'Paola says I need a helmet.', parts: ['Paola zegt dat ik een helm', FK(['nodig heb', 'heb nodig'], 0, 'bijzin',
         'After dat the verb goes to the end: dat ik een helm nodig heb.'), '.'] },
-      { en: 'I think the cutters here are bigger than the boats in Alblasserdam.', parts: ['Ik denk dat de kotters hier', FK(['groter', 'grotter', 'grooter'], 0, 'vergelijk',
-        'groot loses one o when -er is added, because the long o now sits in an open syllable: gro-ter, with a single t. The comparative of groot is groter, the superlative het grootst.'), 'zijn dan de boten in Alblasserdam.'] },
+      { en: 'I think the cutters here are bigger than the boats in Alblasserdam.', parts: ['Ik denk dat de kotters hier', FK(['groter', 'grotter', 'grooter'], 0, 'vergelijk', 'groot loses one o before -er, because the syllable opens: gro-ter.', 'spell'), 'zijn dan de boten in Alblasserdam.'] },
       { en: 'If it storms, the cutters stay in the harbour.', parts: ['Als het stormt,', FK(['blijven de kotters', 'de kotters blijven'], 0, 'bijzin',
-        'A sub-clause in slot 1 counts as one block, so the main clause starts with its verb: blijven de kotters.'), 'in de haven.'] },
+        'A sub-clause in slot 1 counts as one block, so the verb comes next: blijven de kotters.'), 'in de haven.'] },
       { en: 'When we were at the lighthouse, the door was closed.', parts: ['Toen we bij de vuurtoren', FK(['waren', 'was', 'zijn'], 0, 'imp',
         'toen is for one moment in the past, so the imperfectum: waren, plural for we.'), ',', FK(['was de deur', 'de deur was'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: was de deur dicht.'), 'dicht.'] },
@@ -56,20 +54,16 @@
         'The sub-clause fills slot 1, so the verb of the main clause comes right after the comma.'), 'het net.'] },
 
       // ---- builds: want and maar keep V2
-      { en: 'The church is full, because it is Sunday.', parts: ['De kerk is vol,', FK(['want het is zondag', 'want het zondag is'], 0, 'v2',
-        'want is not a sub-clause word. It keeps normal order: want het is zondag.'), '.'] },
+      { en: 'The church is full, because it is Sunday.', parts: ['De kerk is vol, want het', FK(['is zondag', 'zondag is'], 0, 'v2', 'want is not a sub-clause word, so is stays second: want het is zondag.'), '.'] },
       { en: 'I want kibbeling, but the stall is closed.', parts: ['Ik wil kibbeling, maar de kraam', FK(['is dicht', 'dicht is'], 0, 'v2',
         'maar keeps normal V2 order: the verb stays in second place.'), '.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday we ate kibbeling by the harbour.', parts: ['Gisteren', FK(['hebben we', 'we hebben'], 0, 'v2',
-        'Gisteren takes slot 1, so the verb comes second, then we.'), 'bij de haven kibbeling', FK(['gegeten', 'geeten', 'gegeet'], 0, 'perf',
-        'eten is irregular: gegeten.'), '.'] },
-      { en: 'My grandfather worked on a cutter for forty years.', parts: ['Mijn opa', FK(['werkte', 'werkde', 'werkten'], 0, 'kof',
-        'werk ends in k, a soft ketchup letter, so the past is werkte. One person, so no -n.'), 'veertig jaar op een kotter.'] },
+        'Gisteren takes slot 1, so the verb comes second, then we.'), 'bij de haven kibbeling', FK(['gegeten', 'eten', 'aten'], 0, 'perf', 'eten is irregular, and after hebben comes the participle: gegeten.'), '.'] },
+      { en: 'My grandfather worked on a cutter for forty years.', parts: ['Mijn opa', FK(['werkte', 'werkten', 'gewerkt'], 0, 'kof', 'opa is one person in the past, so werkte without -n.'), 'veertig jaar op een kotter.'] },
       { en: 'The cutter sailed out last night.', parts: ['De kotter', FK(['is', 'heeft'], 0, 'aux',
-        'Sailing out is going somewhere, so zijn: is uitgevaren.'), 'gisteravond', FK(['uitgevaren', 'geuitvaren', 'uitgevaard'], 0, 'sep',
-        'The ge goes inside a separable verb. varen is irregular: uit + gevaren, written as one word.'), '.'] },
+        'Sailing out is going somewhere, so zijn: is uitgevaren.'), 'gisteravond', FK(['uitgevaren', 'uitvaren'], 0, 'sep', 'A separable verb takes ge in the middle: uit + gevaren, one word.'), '.'] },
       { en: 'On the cutter I did not feel well.', parts: ['Op de kotter voelde ik', FK(['me', 'zich'], 0, 'refl',
         'zich voelen: ik takes me, and it sits right after the subject.'), 'niet lekker.'] },
       { en: 'It is a small church by the sea.', parts: ['Het is een', FK(['klein', 'kleine'], 0, 'adj',

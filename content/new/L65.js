@@ -15,7 +15,7 @@
   window.RULES.gebod = window.RULES.gebod || { name: 'The imperative: the bare stem', note: 'de-imperatief-commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart voor zeven', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[5];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([
     { id: 65, act: 5, name: 'De mensen', town: 'utrecht', place: 'mensen', theme: 'square', ...P,
@@ -27,44 +27,33 @@
         want: 'The dead want to make plans: when you meet, who calls back, what you are doing right now. Their women are still taller than you. The grammar book is in your bag, still unopened.' },
       items: [
         // ---- builds: separable verbs split in the present, the prefix at the end
-        { en: "After the borrel I'll call you back.", parts: ['Na de borrel', FK(['bel ik je terug', 'ik bel je terug', 'terugbel ik je'], 0, 'sep',
-          'Na de borrel takes slot 1, bel comes second, and terug waits at the very end.'), '.'] },
-        { en: 'When shall we meet up again?', parts: ['Wanneer', FK(['spreken we', 'we spreken', 'spreekt we'], 0, 'v2',
-          'Question word in slot 1, the verb next, then we.'), 'weer', FK(['af', 'afspreken'], 0, 'sep',
+        { en: "After the borrel I'll call you back.", parts: ['Na de borrel', FK(['bel', 'terugbel'], 0, 'sep',
+          'terugbellen splits: bel in slot 2, terug at the very end.'), 'ik je terug.'] },
+        { en: 'When shall we meet up again?', parts: ['Wanneer', FK(['spreken we', 'we spreken'], 0, 'v2', 'Question word in slot 1, the verb next, then we.'), 'weer', FK(['af', 'afspreken'], 0, 'sep',
           'afspreken splits in the present. Only af goes to the end.'), '?'] },
-        { en: 'May I introduce myself?', parts: ['Mag ik me even', FK(['voorstellen', 'stel voor', 'voor te stellen'], 0, 'sep',
-          'After a modal the separable verb stays in one piece at the end: voorstellen.'), '?'] },
-        { en: 'The dead still pay separately.', parts: ['De doden', FK(['rekenen', 'afrekenen', 'rekent'], 0, 'sep',
-          'afrekenen splits: rekenen in slot 2, af at the end. The dead are plural, so rekenen.'), 'nog steeds apart af.'] },
+        { en: 'May I introduce myself?', parts: ['Mag ik me even', FK(['voorstellen', 'voorstelt', 'voor te stellen'], 0, 'sep', 'After a modal the separable verb stays in one piece at the end: voorstellen.'), '?'] },
+        { en: 'The dead still pay separately.', parts: ['De doden', FK(['rekenen', 'afrekenen'], 0, 'sep', 'afrekenen splits: rekenen in slot 2, af at the end.'), 'nog steeds apart af.'] },
 
         // ---- builds: zijn + aan het + infinitive
-        { en: 'Paola is chatting with the neighbour.', parts: ['Paola', FK(['is', 'heeft', 'zijn'], 0, 'aanhet',
-          'aan het always runs on zijn. One Paola, so is.'), 'met de buurvrouw aan het', FK(['kletsen', 'kletst', 'klets'], 0, 'aanhet',
+        { en: 'Paola is chatting with the neighbour.', parts: ['Paola', FK(['is', 'heeft'], 0, 'aanhet', 'aan het always runs on zijn, never hebben: Paola is.'), 'met de buurvrouw aan het', FK(['kletsen', 'kletst', 'klets'], 0, 'aanhet',
           'After aan het comes the whole infinitive: kletsen.'), '.'] },
-        { en: 'The students on the wharf are singing.', parts: ['De studenten op de werf', FK(['zijn', 'is', 'hebben'], 0, 'aanhet',
-          'Students, plural: zijn. aan het never takes hebben.'), 'aan het', FK(['zingen', 'zingt', 'zing'], 0, 'aanhet',
+        { en: 'The students on the wharf are singing.', parts: ['De studenten op de werf', FK(['zijn', 'hebben'], 0, 'aanhet', 'aan het never takes hebben: de studenten zijn.'), 'aan het', FK(['zingen', 'zingt', 'zing'], 0, 'aanhet',
           'aan het, then the infinitive last: zingen.'), '.'] },
-        { en: 'What are you doing?', parts: ['Wat', FK(['ben je', 'heb je', 'bent je'], 0, 'aanhet',
-          'aan het needs zijn, and with je after the verb it is ben je, not bent je.'), 'aan het doen?'] },
+        { en: 'What are you doing?', parts: ['Wat', FK(['ben je', 'heb je'], 0, 'aanhet', 'aan het needs zijn, never hebben: wat ben je aan het doen?'), 'aan het doen?'] },
 
         // ---- builds: gaan + infinitive for the future
-        { en: "On Friday we're going to have a drink on the wharf.", parts: ['Vrijdag', FK(['gaan we', 'we gaan', 'gaat we'], 0, 'v2',
-          'Vrijdag in slot 1, gaan second, then we.'), 'wat', FK(['drinken', 'drinkt', 'te drinken'], 0, 'fut',
+        { en: "On Friday we're going to have a drink on the wharf.", parts: ['Vrijdag', FK(['gaan we', 'we gaan'], 0, 'v2', 'Vrijdag in slot 1, gaan second, then we.'), 'wat', FK(['drinken', 'drinkt', 'te drinken'], 0, 'fut',
           'gaan sends the real verb to the end, whole, no te.'), 'op de werf.'] },
         { en: "I'm going to invite the new neighbours.", parts: ['Ik', FK(['ga', 'gaat', 'gaan'], 0, 'fut',
-          'ik ga. The t is for jij and hij.'), 'de nieuwe buren', FK(['uitnodigen', 'nodig uit', 'uit te nodigen'], 0, 'fut',
-          'After gaan the separable verb comes back together at the end: uitnodigen.'), '.'] },
-        { en: 'Are you going to call her?', parts: [FK(['Ga je', 'Gaat je'], 0, 'v2',
-          'A yes or no question starts with the verb, and je after the verb drops the t: ga je.'), FK(['haar', 'zij'], 0, 'objpron',
+          'ik ga. The t is for jij and hij.'), 'de nieuwe buren', FK(['uitnodigen', 'uitnodigt', 'uit te nodigen'], 0, 'fut', 'After gaan the separable verb goes whole to the end, without te: uitnodigen.'), '.'] },
+        { en: 'Are you going to call her?', parts: [FK(['Ga je', 'Gaat je'], 0, 'presens', 'When je comes right after the verb, the t drops: ga je.'), FK(['haar', 'zij'], 0, 'objpron',
           'She is the one being called, so haar. zij is only for the one doing it.'), 'bellen?'] },
 
         // ---- builds: the imperative
         { en: 'Have a seat, take a beer.', parts: [FK(['Ga', 'Gaat'], 0, 'gebod',
           'A command is the bare stem: ga. No t.'), 'lekker zitten,', FK(['neem', 'neemt'], 0, 'gebod',
           'Still a command, so still the stem: neem.'), 'een biertje.'] },
-        { en: 'Drop by sometime for a borrel.', parts: [FK(['Kom', 'Komt', 'Langskom'], 0, 'gebod',
-          'The command is the stem, kom, and langs still goes to the end.'), 'een keer', FK(['langs', 'langs te komen'], 0, 'sep',
-          'Only langs goes to the end. kom is already in the command, so nothing else follows it.'), 'voor een borrel.'] },
+        { en: 'Drop by sometime for a borrel.', parts: [FK(['Kom', 'Komt', 'Komen'], 0, 'gebod', 'A command is the bare stem: kom; langs still goes to the end.'), 'een keer', FK(['langs', 'langskom'], 0, 'sep', 'Only langs goes to the end; kom already stands in front.'), 'voor een borrel.'] },
         { en: 'Just keep riding, the dead want to chat.', parts: [FK(['Fiets', 'Fietst'], 0, 'gebod',
           'A command is the bare stem: fiets.'), 'maar', FK(['door', 'doorfietsen'], 0, 'sep',
           'doorfietsen splits in a command too: the stem first, door at the end.'), ', de doden willen kletsen.'] },

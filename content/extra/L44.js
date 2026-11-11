@@ -5,7 +5,7 @@
   // Werk ze nog is the fixed office goodbye from the vault's office situation (tot-morgen-werk-ze-nog), read as a chunk.
   // de suiker and het biertje are replays from level 42 (the office coffee and the vrijmibo beer).
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
   window.extendLevel(44, { deliveries: 20, items: [
     { w: 'the work', nl: 'het werk', wrong: 'de werk' }, { w: 'the problem', nl: 'het probleem', wrong: 'de probleem' },
     { w: 'the team', nl: 'het team', wrong: 'de team' }, { w: 'the quick email', nl: 'het mailtje', wrong: 'de mailtje' },

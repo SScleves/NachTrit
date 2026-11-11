@@ -65,6 +65,7 @@ for (const lv of ctx.LEVELS || []) {
         if (new Set(p.o.map(s => s.trim().toLowerCase())).size !== p.o.length) E.push(`${tag}: duplicate fork options ${JSON.stringify(p.o)}`);
         if (!RULES[p.r]) E.push(`${tag}: unknown rule ${p.r}`);
         if (!p.w) W.push(`${tag}: fork without a why line`);
+        else if (p.w.trim().split(/\s+/).length > 18) W.push(`${tag}: why line over 18 words (PLAN 3d.3): ${p.w}`);
         p.o.forEach(o => bang(o, tag)); bang(p.w, tag);
         sentence.push(p.o[p.a] || '');
       }

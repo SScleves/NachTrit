@@ -32,7 +32,7 @@
   window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[12];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 116, act: 12, name: 'De winkels', town: 'nijmegen', place: 'winkels', theme: 'shops', ...P,
     intro: 'The Lange Hezelstraat is called the oldest shopping street in the country. Maastricht disagrees, and has not bought anything here since.',
@@ -43,70 +43,59 @@
       want: 'Since the mist the dead stand behind every counter, and they are as polite as ever. Zegt u het maar. Kijkt u maar even rond. Mag het iets meer zijn? They speak to you with u, they sell compound words by the metre, de wandelschoen, de blarenpleister, de cadeaubon, and they still know a bargain when they see one: voor een appel en een ei. The women in the queue are still taller than you, and here, south of the Waal, it is friet.' },
     items: [
       // ---- builds: particles and the polite shop assistant
-      { en: 'What can I get you?', parts: [FK(['Zegt u het maar', 'Zeg u het maar', 'Zegt u maar het'], 0, 'formeel',
-        'With u the verb keeps its -t, even when it comes first: zegt u. And the small pronoun het comes before maar.'), '.'] },
-      { en: "No thanks, I'm just looking.", parts: ['Nee hoor, ik kijk alleen', FK(['even rond', 'rond even'], 0, 'soft',
-        'even sits in the middle, and the prefix of rondkijken goes to the very end: ik kijk even rond.'), '.'] },
-      { en: 'Just have a look around, sir.', parts: [FK(['Kijkt u', 'Kijk u'], 0, 'formeel',
-        'With u the verb takes -t, also in a polite request: kijkt u.'), FK(['maar even', 'even maar'], 0, 'soft',
+      { en: 'What can I get you?', parts: [FK(['Zegt u', 'Zeg u'], 0, 'formeel',
+        'With u the verb keeps its -t, even when it comes first: zegt u.', 'verb'), 'het maar.'] },
+      { en: "No thanks, I'm just looking.", parts: ['Nee hoor, ik kijk alleen', FK(['even rond', 'rond even'], 0, 'soft', 'even sits in the middle, and rond goes to the very end: ik kijk even rond.'), '.'] },
+      { en: 'Just have a look around, sir.', parts: [FK(['Kijkt u', 'Kijk u'], 0, 'formeel', 'With u the verb keeps its -t, even when u comes after it: kijkt u maar even rond.', 'verb'), FK(['maar even', 'even maar'], 0, 'soft',
         'Two small words keep a fixed order: maar before even. The other order is not Dutch.'), 'rond, meneer.'] },
-      { en: 'It is a little over. Is that all right?', parts: ['Het is iets meer geworden. Mag het', FK(['iets meer zijn', 'meer iets zijn', 'iets meer is'], 0, 'modal',
-        'After mag the verb zijn stays an infinitive at the end, and iets meer comes before it. The shop assistant asks this when the slice came out big.'), '?'] },
-      { en: 'Just follow me, the fitting rooms are at the back.', parts: [FK(['Volgt u mij maar', 'Volg u mij maar'], 0, 'formeel',
-        'With u the verb keeps its -t: volgt u. Without the -t it is not Dutch.'), ', de paskamers zijn achterin.'] },
-      { en: "You also sell blister plasters, don't you?", parts: ['U verkoopt', FK(['toch', 'hoor'], 0, 'soft',
-        'toch in the middle of a question expects a yes: surely you sell them. hoor only comes at the end of a statement.'), 'ook blarenpleisters?'] },
+      { en: 'It is a little over. Is that all right?', parts: ['Het is iets meer geworden. Mag het iets meer', FK(['zijn', 'is'], 0, 'modal',
+        'After mag the verb waits at the end as an infinitive: mag het iets meer zijn.'), '?'] },
+      { en: 'Just follow me, the fitting rooms are at the back.', parts: [FK(['Volgt u', 'Volg u'], 0, 'formeel',
+        'With u the verb keeps its -t, even when it comes first: volgt u.', 'verb'), 'mij maar, de paskamers zijn achterin.'] },
+      { en: "You also sell blister plasters, don't you?", parts: ['U verkoopt', FK(['toch', 'hoor'], 0, 'soft', 'toch in a question expects a yes: surely you sell them.'), 'ook blarenpleisters?'] },
       { en: 'The bakery is closed, but the chemist is open.', parts: ['De bakker is dicht, maar de drogist is', FK(['wel', 'geen'], 0, 'soft',
         'wel stresses the contrast: this one is open. geen needs a noun after it.'), 'open.'] },
 
       // ---- builds: idioms about money
-      { en: 'I bought these walking socks for next to nothing.', parts: ['Ik heb deze wandelsokken voor', FK(['een appel en een ei', 'een peer en een ei', 'een appel en een peer'], 0, 'idioom',
-        'voor een appel en een ei means very cheap. The words of the saying never change.'), FK(['gekocht', 'gekoopt'], 0, 'perf',
-        'kopen is irregular: gekocht.'), '.'] },
-      { en: 'Those new walking shoes cost an arm and a leg.', parts: ['Die nieuwe wandelschoenen kosten', FK(['een rib uit je lijf', 'een arm en een been', 'een rib uit je been'], 0, 'idioom',
-        'In Dutch something very expensive costs a rib out of your body: een rib uit je lijf. An arm and a leg is English.'), '.'] },
+      { en: 'I bought these walking socks for next to nothing.', parts: ['Ik heb deze wandelsokken voor een appel en een', FK(['ei', 'peer'], 0, 'idioom',
+        'voor een appel en een ei means very cheap, and the saying always ends in ei.'), FK(['gekocht', 'kocht', 'kopen'], 0, 'perf',
+        'After heb the participle closes the sentence: kopen, gekocht.'), '.'] },
+      { en: 'Those new walking shoes cost an arm and a leg.', parts: ['Die nieuwe wandelschoenen kosten een rib uit je', FK(['lijf', 'been', 'arm'], 0, 'idioom',
+        'Something very expensive costs een rib uit je lijf, a rib out of your body.'), '.'] },
       { en: "Don't buy a pig in a poke: try the shoes on first.", parts: ['Koop', FK(['geen', 'niet'], 0, 'neg',
-        'kat is a noun without an article here, so geen.'), FK(['kat in de zak', 'hond in de zak', 'kat in de tas'], 0, 'idioom',
-        'een kat in de zak kopen is a fixed phrase: to buy something without checking it. Only a cat, only a zak.'), ', pas de schoenen eerst even.'] },
+        'kat is a noun without an article here, so geen.'), 'kat in de', FK(['zak', 'tas'], 0, 'idioom',
+        'een kat in de zak kopen means buying without checking, and it is always a zak.'), ', pas de schoenen eerst even.'] },
 
       // ---- builds: compound nouns and a diminutive
       { en: 'The sports shop is in the city centre, next to the bookshop.', parts: [FK(['De', 'Het'], 0, 'samen',
-        'sport + winkel: winkel is de, so de sportwinkel.'), 'sportwinkel zit in', FK(['het stadscentrum', 'de stadscentrum', 'het stadcentrum'], 0, 'samen',
-        'stad + s + centrum, glued with an s, and centrum is het, so het stadscentrum.'), ', naast de boekhandel.'] },
+        'sport + winkel: winkel is de, so de sportwinkel.'), 'sportwinkel zit in', FK(['het stadscentrum', 'het stadcentrum'], 0, 'samen', 'stad and centrum are glued with an s: het stadscentrum.', 'spell'), ', naast de boekhandel.'] },
       { en: 'Would you like the receipt with it?', parts: ['Wilt u', FK(['het', 'de'], 0, 'verklein',
         'Every -je word is het: het bonnetje, even though de bon is a de-word.'), 'bonnetje', FK(['erbij', 'ermee'], 0, 'pronadv',
         'iets erbij willen means to want it along with your shopping. ermee does not fit here.'), '?'] },
 
       // ---- builds: a complaint by letter
       { en: 'Dear Sir or Madam, the shoes I ordered were too small.', parts: ['Geachte heer, mevrouw, de schoenen', FK(['die', 'dat'], 0, 'diedat',
-        'schoenen is a plural, and every plural takes die.'), 'ik', FK(['bestelde', 'besteldde', 'bestelte'], 0, 'kof',
-        'bestel ends in l, not a ketchup letter: bestelde with one d.'), 'waren te klein.'] },
-      { en: 'Awaiting your reply, kind regards, Santi Sanchez.', parts: [FK(['In afwachting van', 'In wachting van', 'In verwachting van'], 0, 'formeel',
-        'In afwachting van uw antwoord is the fixed line for awaiting your reply. In verwachting means pregnant.'), 'uw antwoord, met', FK(['vriendelijke', 'vriendelijk'], 0, 'adj',
+        'schoenen is a plural, and every plural takes die.'), 'ik', FK(['bestelde', 'besteldde', 'bestelte'], 0, 'kof', 'bestel ends in l, not a ketchup letter: bestelde with one d.', 'spell'), 'waren te klein.'] },
+      { en: 'Awaiting your reply, kind regards, Santi Sanchez.', parts: [FK(['In afwachting van', 'In opwachting van'], 0, 'formeel', 'In afwachting van uw antwoord is the fixed closing for awaiting your reply.'), 'uw antwoord, met', FK(['vriendelijke', 'vriendelijk'], 0, 'adj',
         'groet is a de-word, so the adjective takes -e: met vriendelijke groet.'), 'groet, Santi Sanchez.'] },
 
       // ---- builds: the Vierdaagse
-      { en: 'You have to break in new walking shoes before the Vierdaagse.', parts: [FK(['Nieuwe', 'Nieuw'], 0, 'adj',
-        'wandelschoenen is a plural, and before a plural the adjective takes -e.'), 'wandelschoenen moet je voor de Vierdaagse eerst', FK(['inlopen', 'in te lopen', 'lopen in'], 0, 'modal',
-        'After moet the infinitive goes to the end in one piece: inlopen. No te after a modal.'), '.'] },
-      { en: 'The Vierdaagse always starts on the third Tuesday of July.', parts: ['De Vierdaagse begint altijd', FK(['op de derde dinsdag', 'in de derde dinsdag', 'op de drie dinsdag'], 0, 'datum',
-        'Days take op, and the third is derde: op de derde dinsdag.'), 'van juli.'] },
+      { en: 'New walking shoes you have to break in before the Vierdaagse.', parts: ['Nieuwe wandelschoenen', FK(['moet je', 'je moet'], 0, 'v2',
+        'The object fills slot 1, so the verb comes second: moet je.'), 'voor de Vierdaagse eerst', FK(['inlopen', 'inloopt', 'in te lopen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: inlopen.'), '.'] },
+      { en: 'The Vierdaagse always starts on the third Tuesday of July.', parts: ['De Vierdaagse begint altijd', FK(['op', 'in'], 0, 'datum',
+        'Days take op: op dinsdag, op de derde dinsdag.'), 'de derde dinsdag van juli.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'The new walking shoes are delivered tomorrow.', parts: ['De nieuwe wandelschoenen', FK(['worden', 'wordt'], 0, 'passief',
-        'Shoes are plural, so worden: worden geleverd.'), 'morgen', FK(['geleverd', 'gelevert', 'geleverdt'], 0, 'kof',
-        'lever ends in r, not a ketchup letter, so -d: geleverd.'), '.'] },
+      { en: 'The walking shoes are delivered tomorrow.', parts: ['Morgen', FK(['worden de schoenen', 'de schoenen worden'], 0, 'v2',
+        'Morgen fills slot 1, so the verb comes second: worden de schoenen.'), FK(['geleverd', 'gelevert', 'geleverdt'], 0, 'kof', 'lever ends in r, not a ketchup letter, so -d: geleverd.', 'spell'), '.'] },
       { en: 'The salesman said that the shoes would still stretch.', parts: ['De verkoper zei', FK(['dat', 'of'], 0, 'indirect',
-        'zei dat reports a statement. of belongs to a reported question.'), 'de schoenen', FK(['nog wel zouden uitrekken', 'zouden nog wel uitrekken'], 0, 'bijzin',
-        'In a sub-clause the verbs stand together at the end, and nog wel comes before them.'), '.'] },
+        'zei dat reports a statement; of belongs to a reported question.', 'word'), 'de schoenen', FK(['nog wel zouden', 'zouden nog wel'], 0, 'bijzin',
+        'In a sub-clause the verbs stand together at the end, after nog wel.'), 'uitrekken.'] },
       { en: 'The shoes I bought here are cheaper than in Maastricht.', parts: ['De schoenen', FK(['die', 'dat'], 0, 'diedat',
-        'A plural takes die.'), 'ik hier kocht, zijn', FK(['goedkoper', 'goedkoopste', 'meer goedkoop'], 0, 'vergelijk',
-        'With dan you need the comparative: goedkoper dan.'), 'dan in Maastricht.'] },
+        'A plural takes die.'), 'ik hier kocht, zijn', FK(['goedkoper', 'goedkoopste', 'goedkoop'], 0, 'vergelijk', 'With dan you need the comparative: goedkoper dan.'), 'dan in Maastricht.'] },
       { en: 'When I got to the baker, the walkers had already bought up all the rolls.', parts: ['Toen ik bij de bakker kwam,', FK(['hadden de wandelaars', 'de wandelaars hadden'], 0, 'v2',
-        'After a toen-clause the main clause starts with its verb: hadden de wandelaars.'), 'alle broodjes al', FK(['opgekocht', 'geopkocht', 'opgekoopt'], 0, 'sep',
-        'The ge goes in the middle of a separable verb: op + gekocht.'), '.'] },
-      { en: 'There are no walking socks left in my size.', parts: [FK(['Er zijn', 'Er is'], 0, 'er',
-        'wandelsokken is plural, so er zijn.'), FK(['geen', 'niet'], 0, 'neg',
+        'After a toen-clause the main clause starts with its verb: hadden de wandelaars.'), 'alle broodjes al', FK(['opgekocht', 'opkocht', 'opkochten'], 0, 'sep', 'After hadden the participle closes the clause: op + gekocht.'), '.'] },
+      { en: 'There are no walking socks left in my size.', parts: [FK(['Er zijn', 'Er is'], 0, 'er', 'wandelsokken is plural, so er zijn.', 'verb'), FK(['geen', 'niet'], 0, 'neg',
         'A noun without an article takes geen.'), 'wandelsokken meer in mijn maat.'] },
 
       // ---- words: shops, paying, sizes, the walk ahead, five replayed from Maastricht

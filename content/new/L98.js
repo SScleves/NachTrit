@@ -27,7 +27,7 @@
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zachtmakers - wel even maar' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   const P = window.TIER_PRESET[9];
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.defineLevels([{ id: 98, act: 9, name: 'Het eiland', town: 'texel', place: 'eigen', theme: 'dyke', ...P,
     intro: 'The mist came and everyone who spoke Dutch changed. On Texel nobody could tell, because the sheep were already staring at you.',
@@ -38,54 +38,40 @@
       want: 'The dead of Texel talk in long clauses and park the verb at the very end: het schaap dat op de dijk staat. They use om ... te, als ... dan, and little words like ernaar and ermee so they do not have to repeat the thing. The women are still taller than you. The sheep are not, but they look at you as if they were. The sheep know. They are not talking.' },
     items: [
       // ---- builds: relative clauses with die and dat, verb last inside the clause
-      { en: 'The sheep that stands on the dyke is looking at me.', parts: ['Het schaap', FK(['dat op de dijk staat', 'die op de dijk staat', 'dat op staat de dijk'], 0, 'diedat',
-        'schaap is a het-word, so dat. Inside the clause the verb goes last: dat op de dijk staat.'), ', kijkt naar mij.'] },
-      { en: 'The ferry that leaves at nine is already full.', parts: ['De veerboot', FK(['die om negen uur vertrekt', 'dat om negen uur vertrekt', 'die om vertrekt negen uur'], 0, 'diedat',
-        'veerboot is a de-word, so die, and vertrekt goes to the end of its clause.'), ', is al vol.'] },
-      { en: 'The lamb that stands by the gate is still small.', parts: ['Het lam', FK(['dat bij het hek staat', 'die bij het hek staat'], 0, 'diedat',
-        'lam is a het-word: dat. The verb staat closes the clause.'), ', is nog', FK(['klein', 'kleine'], 0, 'adj',
+      { en: 'The sheep that stands on the dyke is looking at me.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat', 'schaap is a het-word, so the relative word is dat.'), 'op de dijk staat, kijkt naar mij.'] },
+      { en: 'The ferry that leaves at nine is already full.', parts: ['De veerboot', FK(['die', 'dat'], 0, 'diedat', 'veerboot is a de-word, so the relative word is die.'), 'om negen uur vertrekt, is al vol.'] },
+      { en: 'The lamb that stands by the gate is still small.', parts: ['Het lam', FK(['dat', 'die'], 0, 'diedat', 'lam is a het-word, so the relative word is dat.'), 'bij het hek staat, is nog', FK(['klein', 'kleine'], 0, 'adj',
         'After is the adjective stays bare: is klein. The -e only comes before a noun.'), '.'] },
-      { en: 'The seal that I saw yesterday was very big.', parts: ['De zeehond', FK(['die ik gisteren zag', 'dat ik gisteren zag', 'die gisteren zag ik'], 0, 'diedat',
-        'zeehond is a de-word: die. The verb zag goes last in the clause: die ik gisteren zag.'), ', was heel groot.'] },
+      { en: 'The seal that I saw yesterday was very big.', parts: ['De zeehond', FK(['die', 'dat'], 0, 'diedat', 'zeehond is a de-word, so the relative word is die.'), 'ik gisteren zag, was heel groot.'] },
 
       // ---- builds: te plus infinitive, om ... te
-      { en: 'I have no time to look at seals.', parts: ['Ik heb geen tijd', FK(['om naar zeehonden te kijken', 'om te naar zeehonden kijken', 'naar zeehonden te om kijken'], 0, 'omte',
-        'om opens the clause and te sits right before the infinitive at the very end: om naar zeehonden te kijken.'), '.'] },
-      { en: 'We cycle to the beach to see seals.', parts: ['We fietsen naar het strand', FK(['om zeehonden te zien', 'om te zeehonden zien', 'om zeehonden zien'], 0, 'omte',
-        'Purpose takes om ... te, and te stands directly in front of zien: om zeehonden te zien.'), '.'] },
+      { en: 'I have no time to look at seals.', parts: ['Ik heb geen tijd om naar zeehonden', FK(['te kijken', 'kijken te'], 0, 'omte', 'te sits right before the infinitive at the very end: te kijken.'), '.'] },
+      { en: 'We cycle to the beach to see seals.', parts: ['We fietsen naar het strand om zeehonden', FK(['te zien', 'zien'], 0, 'omte', 'Purpose takes om ... te, and te stands directly in front of zien.'), '.'] },
       { en: 'I forgot to walk the dogs.', parts: ['Ik ben vergeten de honden', FK(['uit te laten', 'uitte laten', 'te uitlaten'], 0, 'sep',
-        'With a separable verb the te goes between the prefix and the verb: uit te laten. The dogs always need a walk.'), '.'] },
+        'With a separable verb te goes between the prefix and the verb: uit te laten.'), '.'] },
 
       // ---- builds: conditions with als ... dan, was and zouden, polite zou
       { en: 'If it rains, we stay in the pub.', parts: ['Als het regent,', FK(['dan blijven we', 'dan we blijven', 'blijven dan we'], 0, 'alsdan',
         'After an als-clause the main verb comes first: dan blijven we, never dan we blijven.'), 'in de kroeg.'] },
-      { en: 'If the ferry were not full, we would be home by now.', parts: ['Als de veerboot niet vol', FK(['was, zouden we', 'waren, zouden we', 'was, we zouden'], 0, 'alsdan',
-        'An imagined situation uses was in the als-clause, and zouden comes first in the main clause: was, zouden we.'), 'nu thuis zijn.'] },
-      { en: 'If I lived here, I would buy a sheep.', parts: ['Als ik hier', FK(['woonde, zou ik', 'woonden, zou ik', 'woonde, ik zou'], 0, 'alsdan',
-        'ik woonde with -de, and after the als-clause zou comes before ik: woonde, zou ik.'), 'een schaap kopen.'] },
-      { en: 'Would you hold my bike for a moment?', parts: ['Zou je', FK(['mijn fiets even willen vasthouden', 'mijn fiets even te willen vasthouden', 'even willen mijn fiets vasthouden'], 0, 'zou',
-        'zou is the polite opener, and willen vasthouden stands at the end with no te.'), '?'] },
+      { en: 'If the ferry were not full, we would be home by now.', parts: ['Als de veerboot niet vol was,', FK(['zouden we', 'we zouden'], 0, 'v2', 'The als-clause came first, so the main clause starts with its verb: zouden we.'), 'nu thuis zijn.'] },
+      { en: 'If I lived here, I would buy a sheep.', parts: ['Als ik hier', FK(['woonde', 'woonden'], 0, 'alsdan', 'An imagined situation takes the imperfectum, and ik takes woonde without -n.', 'past'), ', zou ik een schaap kopen.'] },
+      { en: 'Would you hold my bike for a moment?', parts: ['Zou je mijn fiets even', FK(['willen vasthouden', 'te willen vasthouden'], 0, 'zou', 'zou is polite, and willen vasthouden stands at the end with no te.'), '?'] },
 
       // ---- builds: er as place and quantity
-      { en: 'On Texel there are more sheep than people.', parts: ['Op Texel', FK(['zijn er', 'er zijn', 'is er'], 0, 'er',
-        'Op Texel takes slot 1, so the verb comes second: zijn er. Plural schapen, so zijn.'), 'meer schapen dan mensen.'] },
+      { en: 'On Texel there are more sheep than people.', parts: ['Op Texel', FK(['zijn er', 'er zijn'], 0, 'v2', 'Op Texel takes slot 1, so the verb comes second: zijn er.'), 'meer schapen dan mensen.'] },
       { en: 'How many lambs? I have seen three.', parts: ['Hoeveel lammetjes? Ik heb', FK(['er drie', 'drie er'], 0, 'er',
         'er stands for the lambs you counted: ik heb er drie gezien.'), 'gezien.'] },
       { en: 'I cycle slowly because there is a lot of sand on the road.', parts: ['Ik fiets langzaam omdat', FK(['er veel zand op de weg ligt', 'er ligt veel zand op de weg', 'ligt er veel zand op de weg'], 0, 'bijzin',
-        'omdat sends the verb to the end, and er stays in front: omdat er veel zand op de weg ligt.'), '.'] },
+        'omdat sends the verb to the end, and er stays in front: er ... ligt.'), '.'] },
 
       // ---- builds: pronominal adverbs
-      { en: 'The ferry is waiting and the dog is looking at it.', parts: ['De veerboot ligt klaar en de hond kijkt', FK(['ernaar', 'naar het', 'naar er'], 0, 'pronadv',
-        'For a thing, er and the preposition become one word: ernaar, not naar het.'), '.'] },
-      { en: 'Do you have a helmet on? No, I do not think about it.', parts: ['Heb je een helm op? Nee, ik denk', FK(['er niet aan', 'niet aan er', 'aan het niet'], 0, 'pronadv',
-        'denken aan, and it turns into er in front of aan: ik denk er niet aan.'), '.'] },
-      { en: 'I have a new bell. I am very happy with it.', parts: ['Ik heb een nieuwe bel. Ik ben', FK(['er erg blij mee', 'erg blij met het', 'met er erg blij'], 0, 'pronadv',
-        'blij zijn met, and it turns into er with mee at the end: er erg blij mee.'), '.'] },
+      { en: 'The ferry is waiting and the dog is looking at it.', parts: ['De veerboot ligt klaar en de hond kijkt', FK(['ernaar', 'naar het'], 0, 'pronadv', 'For a thing, er and the preposition become one word: ernaar.'), '.'] },
+      { en: 'Do you have a helmet on? No, I do not think about it.', parts: ['Heb je een helm op? Nee, ik denk', FK(['er', 'het'], 0, 'pronadv', 'denken aan a thing turns into er ... aan: ik denk er niet aan.'), 'niet aan.'] },
+      { en: 'I have a new bell. I am very happy with it.', parts: ['Ik heb een nieuwe bel. Ik ben', FK(['er', 'het'], 0, 'pronadv', 'blij zijn met a thing turns into er ... mee: er erg blij mee.'), 'erg blij mee.'] },
 
       // ---- build: review of the perfectum and V2
       { en: 'Yesterday we took the ferry to Texel.', parts: ['Gisteren', FK(['zijn we', 'we zijn'], 0, 'v2',
-        'Gisteren takes slot 1, so the verb comes second, then we.'), 'met de veerboot naar Texel', FK(['gevaren', 'gevaard', 'gevaarn'], 0, 'perf',
-        'varen is irregular and takes zijn when it goes to a place: we zijn gevaren.'), '.'] },
+        'Gisteren takes slot 1, so the verb comes second, then we.'), 'met de veerboot naar Texel', FK(['gevaren', 'varen'], 0, 'perf', 'varen is irregular and takes zijn when it goes to a place: gevaren.'), '.'] },
 
       // ---- words: the island, the animals, the weather, the food
       { w: 'the ferry', nl: 'de veerboot' }, { w: 'the crossing', nl: 'de overtocht' }, { w: 'the sheep', nl: 'het schaap', wrong: 'de schaap' },

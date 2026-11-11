@@ -23,7 +23,7 @@
   // the other extra files; both are set again below only if they are missing.
   window.RULES.pres = window.RULES.pres || { name: 'Present tense', note: 'presens' };
   window.RULES.hebben = window.RULES.hebben || { name: 'hebben (to have)', note: 'hebben' };
-  const FK = (o, a, r, w) => ({ o, a, r, w });
+  const FK = (o, a, r, w, task) => (task ? { o, a, r, w, task } : { o, a, r, w });
 
   window.extendLevel(10, { deliveries: 20, items: [
     // ---- words: the station and getting around
