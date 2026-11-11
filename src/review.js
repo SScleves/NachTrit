@@ -57,9 +57,10 @@ export function markRight(nl, right) {
  *   how its return went ('' none, 'right', 'wrong') and whether the miss was on the item's first ride
  * @typedef {Object<string, { tried: number, missed: number }>} Tally   first rides per task id
  */
-/** the misses grouped by rule (the task label), the most missed rule first, and the weakest rule. Weakest is the most misses
+/** the misses grouped by rule (the task label), the weakest rule first, and the weakest rule itself. Weakness is the misses
  * times the share missed (missed x missed / tried) on first rides, so 3 of 3 beats 4 of 15 and 3 of 5 beats 1 of 1; then the
- * most misses, then the first group. weakest is null when nothing was missed on a first ride.
+ * most misses, then the order missed. A rule missed only on returns comes last. weakest is null when nothing was missed on a
+ * first ride.
  * @param {Miss[]} misses @param {Tally} tally @param {Object<string, { label: string, color: string }>} tasks TASKS from src/tasks.js */
 export function groupMisses(misses, tally, tasks) {
   /** @type {{ task: string, label: string, color: string, items: Miss[] }[]} */
@@ -70,15 +71,11 @@ export function groupMisses(misses, tally, tasks) {
     g.items.push(m);
   }
   const order = groups.map(g => g.task);
-  groups.sort((a, b) => b.items.length - a.items.length || order.indexOf(a.task) - order.indexOf(b.task));
-  /** @type {{ task: string, label: string, missed: number, tried: number } | null} */
-  let weakest = null;
-  for (const g of groups) {
-    const t = tally[g.task]; if (!t || !t.missed) continue;
-    const w = { task: g.task, label: g.label, missed: t.missed, tried: t.tried };
-    const k = w.missed * w.missed / w.tried, kw = weakest ? weakest.missed * weakest.missed / weakest.tried : -1;
-    if (k > kw + 1e-9 || (Math.abs(k - kw) < 1e-9 && w.missed > weakest.missed)) weakest = w;
-  }
+  const weak = task => { const t = tally[task]; return t && t.missed ? t.missed * t.missed / t.tried : -1; };
+  const firstMissed = task => { const t = tally[task]; return t ? t.missed : 0; };
+  groups.sort((a, b) => weak(b.task) - weak(a.task) || firstMissed(b.task) - firstMissed(a.task) || b.items.length - a.items.length || order.indexOf(a.task) - order.indexOf(b.task));
+  const g = groups[0], t = g && tally[g.task];
+  const weakest = t && t.missed ? { task: g.task, label: g.label, missed: t.missed, tried: t.tried } : null;
   return { groups, weakest };
 }
 

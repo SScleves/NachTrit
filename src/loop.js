@@ -187,8 +187,9 @@ function update(dt) {
       else if (o.type === 'puddle') { o.hit = true; S.speed = clamp(S.speed - 2, BASE, MAXS); S.stumble = 0.6; }
       else if (o.type === 'obstacle') {
         o.hit = true; S.stumble = 1; flash('#000', 0.6); thump(0.8);
-        if (o.zombie) { S.lamp = clamp(S.lamp - 8, 0, 100); S.speed = BASE; say('€4,50', 'bad', 'Tikkie.', 1.4); setFace('ouch', 1.5); o.mesh.rotation.z = 1.2; payTikkie(); }
-        else if (!o.forkFence) { S.lamp = clamp(S.lamp - 10, 0, 100); S.speed = BASE; say('Au.', 'bad', null, 1); setFace('ouch', 1.5); }
+        const hurt = S.onReview ? 0 : 1;   // review never kills: on review road a hit costs no lamp (a zombie bike can drift onto it from the road after)
+        if (o.zombie) { S.lamp = clamp(S.lamp - 8 * hurt, 0, 100); S.speed = BASE; say('€4,50', 'bad', 'Tikkie.', 1.4); setFace('ouch', 1.5); o.mesh.rotation.z = 1.2; payTikkie(); }
+        else if (!o.forkFence) { S.lamp = clamp(S.lamp - 10 * hurt, 0, 100); S.speed = BASE; say('Au.', 'bad', null, 1); setFace('ouch', 1.5); }
       }
     }
     if (o.type === 'passenger' && !o.hit && z > -2) {

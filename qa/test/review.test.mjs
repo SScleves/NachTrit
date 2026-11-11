@@ -58,10 +58,10 @@ test('markRight finds the right form as a whole word or phrase, any case', () =>
   assert.deepEqual(markRight('', ''), ['', '', '']);
 });
 const miss = (task, nl, extra = {}) => ({ task, nl, right: 'x', said: 'y', why: '', again: '', first: true, ...extra });
-test('misses group by task label, the most missed rule first, items in the order missed', () => {
+test('misses group by task label, the weakest rule first, items in the order missed', () => {
   const { groups } = groupMisses([miss('word', 'a'), miss('past', 'b'), miss('past', 'c'), miss('order', 'd'), miss('word', 'e'), miss('past', 'f')],
     { word: { tried: 9, missed: 2 }, past: { tried: 4, missed: 3 }, order: { tried: 2, missed: 1 } }, TASKS);
-  assert.deepEqual(groups.map(g => g.label), ['Past tense', 'Which word', 'Word order']);
+  assert.deepEqual(groups.map(g => g.label), ['Past tense', 'Word order', 'Which word'], '2.25, then 0.5, then 0.44');
   assert.deepEqual(groups[0].items.map(m => m.nl), ['b', 'c', 'f']);
   assert.equal(groups[0].color, TASKS.past.color);
 });
@@ -74,6 +74,8 @@ test('the weakest rule: misses times the share missed on first tries, then the m
   assert.equal(w({ word: { tried: 5, missed: 3 }, dehet: { tried: 1, missed: 1 } }, 'word', 'dehet'), 'word', '3 of 5 beats a single 1 of 1');
   assert.equal(w({ past: { tried: 3, missed: 3 }, word: { tried: 15, missed: 4 } }, 'word', 'past'), 'past', '3 of 3 beats 4 of 15');
   assert.equal(w({ past: { tried: 2, missed: 2 }, word: { tried: 8, missed: 4 } }, 'past', 'word'), 'word', 'a tie (2.0): more misses');
+  const { groups } = groupMisses([miss('verb', 'a', { first: false }), miss('word', 'b'), miss('word', 'c')], { verb: { tried: 2, missed: 0 }, word: { tried: 6, missed: 2 } }, TASKS);
+  assert.deepEqual(groups.map(x => x.task), ['word', 'verb'], 'a rule missed only on a return comes last');
 });
 test('misses only on returns name no weakest rule; nothing missed gives no line', () => {
   const { groups, weakest } = groupMisses([miss('verb', 'a', { first: false })], { verb: { tried: 3, missed: 0 } }, TASKS);

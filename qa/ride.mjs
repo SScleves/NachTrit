@@ -94,7 +94,8 @@ function pageInit({ seed, teach }) {
 // ---- the ride, in the page (after qa/lampbot.js has defined __bot)
 function rideSetup({ collect, miss, draw, shots }) {
   const R = window.__ride = { frame: 0, forks: 0, missed: 0, ended: false, idx: new WeakMap(), draw,
-    shots: shots ? ['why', 'again'] : [], pause: '', lamp: NR.lamp, rev: false, why: false, lostRev: 0, lostWhy: 0, whySec: 0, revFrames: 0 };
+    shots: shots ? ['why', 'again'] : [], pause: '', lamp: NR.lamp, rev: false, why: false, lostRev: 0, lostWhy: 0, whySec: 0, revFrames: 0,
+    gate: null, gateAfterWhy: false, reads: [] };
   const rr = NRpost().renderer; R.drawCall = rr.render; R.noDraw = () => {};   // the renderer's own draw, and a stand-in that draws nothing
   window.__nl = NR.objs.some(o => o.lane === 2) ? 3 : 2;   // as lamp-balance.mjs: two-lane levels have no lane 2
   R.steer = () => {
@@ -114,11 +115,16 @@ function rideSetup({ collect, miss, draw, shots }) {
     if (d < 0 && R.why && NR.mode === 'ride') R.lostWhy -= d;
     if (why) R.whySec += 1 / 60; if (rev) R.revFrames++;
     R.lamp = NR.lamp; R.rev = rev; R.why = why;
+    // reading time per fork: the legible seconds it had against its budget, and whether a why card came just before it
+    const g0 = NR.activeFork;
+    if (R.gate && R.gate !== g0 && R.gate.resolved) { R.reads.push({ legT: R.gate.legT, budget: R.gate.budget, go: !!R.gate.go, afterWhy: R.gateAfterWhy }); R.gate = null; }
+    if (g0 && g0 !== R.gate) { R.gate = g0; R.gateAfterWhy = R.whyEnded; }
+    if (why) R.whyEnded = true; else if (g0) R.whyEnded = false;
     if (NR.mode === 'dead') { R.ended = true; throw R; }   // the summary card is up: stop on this frame
     if (R.frame % 12 === 0) R.steer();
     if (R.shots.length && NR.mode === 'ride') {   // --shots: stop the chunk on the frame worth a picture
       const g = NR.activeFork;
-      if (R.shots[0] === 'why' && why && R.whySec > 0.6) { R.pause = R.shots.shift(); throw R; }
+      if (R.shots[0] === 'why' && why && R.whySec > 1.6) { R.pause = R.shots.shift(); throw R; }
       if (R.shots.includes('again') && g && g.fork.entry.again && g.legT > 0.8) { R.shots.splice(R.shots.indexOf('again'), 1); R.pause = 'again'; throw R; }
     }
   };
@@ -147,6 +153,8 @@ function rideResult() {
     learn: { returns: NR.learn.returns, againRight: NR.learn.right, againWrong: NR.learn.wrong, whyCards: NR.learn.whyN, whySec: Math.round(R.whySec * 10) / 10,
       reviewM: Math.round(NR.reviewM), lampLostOnReview: Math.round(R.lostRev * 100) / 100, lampLostUnderWhy: Math.round(R.lostWhy * 100) / 100, missedItems: NR.missList.length,
       weakest: (document.querySelector('#s_missed .weak') || {}).textContent || '',
+      reading: (() => { const sum = list => ({ forks: list.length, short: list.filter(r => r.legT < r.budget - 1e-6).length, minRatio: list.length ? Math.round(Math.min(...list.map(r => r.legT / r.budget)) * 100) / 100 : null });
+        return { afterWhy: sum(R.reads.filter(r => r.afterWhy)), others: sum(R.reads.filter(r => !r.afterWhy)) }; })(),
       log: NR.learn.log.map(r => ({ nl: r.nl, misses: r.misses, afterFork: r.at, gap: r.gap, full: r.full, paid: r.fare, result: r.result })) },
     title: $('sumtitle').textContent, stars: $('stars').textContent, score: NR.score, cents: NR.cents, mistakes: NR.mistakes.length,
     summaryShown: $('summary').style.display === 'flex', errBox: $('err').textContent.trim(), timersLeft: __vt.pending(),
@@ -217,6 +225,7 @@ try {
       console.log(`    learning: ${Ln.returns} returns (right ${Ln.againRight}, wrong ${Ln.againWrong}), ${Ln.reviewM} m review road, lamp lost on it ${Ln.lampLostOnReview}; ${Ln.whyCards} why cards, ${Ln.whySec} s up, lamp lost under them ${Ln.lampLostUnderWhy}; ${Ln.missedItems} missed on the end card`);
       for (const x of Ln.log) console.log(`      ${x.misses === 1 ? 'back ' : 'back2'} after fork ${x.afterFork}, ${x.gap} forks between, fare ${x.full} -> ${x.paid}, ${x.result || 'not ridden'}: ${x.nl}`);
       if (Ln.weakest) console.log(`    ${Ln.weakest}`);
+      const rd = Ln.reading; console.log(`    reading time: forks right after a why card ${rd.afterWhy.forks}, short of budget ${rd.afterWhy.short}, lowest legible/budget ${rd.afterWhy.minRatio}; other forks ${rd.others.forks}, short ${rd.others.short}, lowest ${rd.others.minRatio}`);
     }
     for (const f of r.shots) console.log('    shot: ' + f);
     for (const e of r.errors.slice(0, 6)) console.log('    ' + e.slice(0, 300));
