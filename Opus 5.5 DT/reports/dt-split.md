@@ -183,6 +183,8 @@ A1's page checks, the old tree (a `git archive` of `106280e` on port 8790) again
   errors on both trees alike (a texture import size on this driver). `gpu-shot` with its own flags runs the node path with 0
   errors (section 3).
 - `npm test` covers `fares.test.mjs`, the validator and the audits; `tsc` is clean.
+- CI on the pushed branch (run 43086646987, https://github.com/SScleves/NachTrit/actions/runs/43086646987): `checks`
+  (with `tsc`) 20 s and the SwiftShader `ride` of 1 and 75, 48 s, both green.
 
 ## Open
 
