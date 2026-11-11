@@ -39,21 +39,21 @@
 
     // builds: present tense, the verb first in questions, V2 after a time word, niet and geen, modals, possessives
     { en: 'Are you working from home today?', parts: [FK(['Werk', 'Werkt', 'Werken'], 0, 'presens', 'When je comes after the verb, the t drops: werk je.'), 'je vandaag thuis?'] },
-    { en: 'In the morning I always take a long shower.', parts: ["'s Ochtends", FK(['douche ik', 'ik douche', 'douchet ik'], 0, 'v2', "'s Ochtends takes slot 1, so the verb comes next, then ik."), 'altijd lang.'] },
-    { en: 'Paola has breakfast in the kitchen.', parts: ['Paola', FK(['ontbijt', 'ontbijten', 'ontbijtt'], 0, 'presens', 'Paola is a zij, stem plus t, but the stem ontbijt already ends in t.'), 'in de keuken.'] },
+    { en: 'In the morning I always take a long shower.', parts: ["'s Ochtends", FK(['douche ik', 'ik douche'], 0, 'v2', '\'s Ochtends takes slot 1, so the verb comes next, then ik.'), 'altijd lang.'] },
+    { en: 'Paola has breakfast in the kitchen.', parts: ['Paola', FK(['ontbijt', 'ontbijtt'], 0, 'presens', 'The stem ontbijt already ends in t, and Dutch never writes tt at the end.', 'spell'), 'in de keuken.'] },
     { en: 'We have two dogs and no cat.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural: hebben.'), 'twee honden en',
       FK(['geen', 'niet'], 0, 'neg', 'een kat becomes geen kat. A noun with een takes geen.'), 'kat.'] },
     { en: 'Is the dog sleeping in your bed?', parts: [FK(['Slaapt', 'Slaap', 'Slapen'], 0, 'presens', 'One dog, so the hij-form: slaapt, even with the verb first.'), 'de hond in',
       FK(['jouw', 'jij'], 0, 'bezit', 'Your before a noun is jouw. jij is only the subject, the one who does something.'), 'bed?'] },
     { en: 'Can you walk the dogs?', parts: [FK(['Kun', 'Kunnen'], 0, 'modal', 'One person, so kun je. kunnen is for we, jullie and zij.'), 'je de honden',
-      FK(['uitlaten', 'uitlaat', 'laat uit'], 0, 'modal', 'After a modal the whole infinitive goes to the end: uitlaten.'), '?'] },
-    { en: 'My mother calls every Sunday.', parts: ['Elke zondag', FK(['belt mijn moeder', 'mijn moeder belt', 'bel mijn moeder'], 0, 'v2', 'Elke zondag in slot 1: the verb comes second, then mijn moeder.'), '.'] },
+      FK(['uitlaten', 'uitlaat', 'uit te laten'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: uitlaten.'), '?'] },
+    { en: 'My mother calls every Sunday.', parts: ['Elke zondag', FK(['belt mijn moeder', 'mijn moeder belt'], 0, 'v2', 'Elke zondag in slot 1: the verb comes second, then mijn moeder.'), '.'] },
     { en: 'Our bedroom is upstairs.', parts: [FK(['Onze', 'Ons'], 0, 'bezit', 'slaapkamer is a de-word, so onze slaapkamer. ons is for het-words.'), 'slaapkamer is boven.'] },
     { en: "The keys aren't on the table.", parts: ['De sleutels', FK(['liggen', 'ligt'], 0, 'presens', 'sleutels is plural: liggen.'),
       FK(['niet', 'geen'], 0, 'neg', 'No noun with een to cancel, so niet, before the place.'), 'op tafel.'] },
     { en: 'Do you want tea or coffee?', parts: [FK(['Wil', 'Willen'], 0, 'modal', 'One person, je: wil je. willen is for we, jullie and zij.'), 'je thee of koffie?'] },
     { en: "You don't have to cook tonight.", parts: ['Je', FK(['hoeft', 'moet', 'mag'], 0, 'mag', 'hoeft niet te is no need. moet niet is you shouldn\'t, mag niet is you\'re not allowed.'), 'vanavond niet te koken.'] },
     { en: "Tonight Paola's sister is coming.", parts: ['Vanavond', FK(['komt de zus', 'de zus komt'], 0, 'v2', 'Vanavond in slot 1, then the verb, then de zus.'), 'van Paola.'] },
-    { en: 'Are the dogs hungry?', parts: [FK(['Hebben', 'Zijn', 'Heeft'], 0, 'woord', 'In Dutch you have hunger: honger hebben. Two dogs, so hebben.'), 'de honden honger?'] },
+    { en: 'Are the dogs hungry?', parts: [FK(['Hebben', 'Zijn'], 0, 'hebben', 'In Dutch you have hunger: honger hebben, not honger zijn.'), 'de honden honger?'] },
   ] });
 })();

@@ -26,17 +26,17 @@
       FK(['zoek', 'zoekt', 'zoeken'], 0, 'presens', 'ik takes the bare stem: zoek.'), 'het station.'] },
     { en: 'How far is it to the station?', parts: ['Hoe ver', FK(['is het', 'het is'], 0, 'v2', 'Hoe ver takes slot 1, so the verb comes next, then het.'), 'naar het station?'] },
     { en: 'We have to cross here.', parts: ['We', FK(['moeten', 'moet'], 0, 'modal', 'we is plural, so the modal is plural too: moeten.'), 'hier',
-      FK(['oversteken', 'steken over', 'over te steken'], 0, 'modal', 'After a modal the verb stays whole at the end: oversteken.'), '.'] },
-    { en: "Tomorrow we're going by bike.", parts: ['Morgen', FK(['gaan we', 'we gaan', 'gaat we'], 0, 'v2', 'Morgen takes slot 1, so the verb jumps ahead of we.'), 'met de fiets.'] },
+      FK(['oversteken', 'oversteekt', 'over te steken'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: oversteken.'), '.'] },
+    { en: "Tomorrow we're going by bike.", parts: ['Morgen', FK(['gaan we', 'we gaan'], 0, 'v2', 'Morgen takes slot 1, so the verb jumps ahead of we.'), 'met de fiets.'] },
 
     // ---- builds: at the ticket counter
     { en: "I'd like a ticket to Utrecht.", parts: ['Ik', FK(['wil', 'wilt', 'willen'], 0, 'modal', 'ik takes the bare stem of willen: wil. No t for ik.'), 'graag een kaartje naar Utrecht.'] },
     { en: "A return, please. I'll be back tonight.", parts: ['Een retour, alstublieft. Ik', FK(['ben', 'heb'], 0, 'zijn', 'Being back is built on zijn: ik ben terug.'), 'vanavond weer terug.'] },
-    { en: 'Do I have to change anywhere?', parts: ['Moet ik ergens', FK(['overstappen', 'stap over', 'over te stappen'], 0, 'modal', 'After moet the verb goes whole to the end, no te: overstappen.'), '?'] },
+    { en: 'Do I have to change anywhere?', parts: ['Moet ik ergens', FK(['overstappen', 'overstapt', 'over te stappen'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: overstappen.'), '?'] },
     { en: 'This train is direct.', parts: [FK(['Deze', 'Dit'], 0, 'dehet', 'trein is a de-word, so this one is deze trein. dit is for het-words.'), 'trein is rechtstreeks, hoor.'] },
-    { en: 'Which track does the train leave from?', parts: ['Van welk spoor', FK(['vertrekt de trein', 'de trein vertrekt', 'vertrekken de trein'], 0, 'v2', 'Question word in slot 1, then the verb, then de trein. One train: vertrekt.'), '?'] },
+    { en: 'Which track does the train leave from?', parts: ['Van welk spoor', FK(['vertrekt de trein', 'de trein vertrekt'], 0, 'v2', 'Question word in slot 1, then the verb, then de trein.'), '?'] },
     { en: 'Can I check in with my OV-chipkaart?', parts: ['Kan ik met', FK(['mijn', 'mij', 'ik'], 0, 'bezit', 'Before a noun, my is mijn. mij and ik never stand in front of a noun.'), 'OV-chipkaart',
-      FK(['inchecken', 'check in', 'in te checken'], 0, 'modal', 'After kan the verb goes whole to the end: inchecken.'), '?'] },
+      FK(['inchecken', 'incheckt', 'in te checken'], 0, 'modal', 'After a modal the verb stays whole at the end, without te: inchecken.'), '?'] },
 
     // ---- builds: delays, the bus, the commute
     { en: 'My train is delayed again.', parts: ['Mijn trein', FK(['heeft', 'is'], 0, 'woord', 'Dutch says a train has delay: vertraging hebben. One train, so heeft.'), 'weer vertraging.'] },

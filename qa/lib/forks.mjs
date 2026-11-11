@@ -11,6 +11,9 @@ export function compare(answer, wrong, allow) {
   const A = tokens(answer).map(t => t.toLowerCase()), Dt = tokens(wrong), D = Dt.map(t => t.toLowerCase());
   const orig = new Map(Dt.map(t => [t.toLowerCase(), t])), real = t => isWord(orig.get(t) || t, allow, false);
   const dims = new Set(), notes = [], nonWords = Dt.filter(t => !isWord(t, allow, false));
+  // a separable verb in its te-form (uit te laten) is one form of uitlaten: glue it, so only the te differs
+  const glueTe = (L, M) => { for (let i = 0; i + 2 < L.length; i++) if (L[i + 1] === 'te' && M.includes(L[i] + L[i + 2]) && M[M.indexOf(L[i] + L[i + 2]) - 1] !== 'te') L.splice(i, 3, 'te', L[i] + L[i + 2]); return L; };
+  glueTe(A, D); glueTe(D, A);
   if (A.join(' ') === D.join(' ')) { dims.add('spelling'); notes.push('punctuation or case only'); return { dims, notes, nonWords }; }
   const remA = A.slice(), remD = [];
   for (const t of D) if (!take(remA, t)) remD.push(t);
