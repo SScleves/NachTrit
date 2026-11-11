@@ -111,7 +111,7 @@ window.defineLevels([
       { dehet: true, nl: 'hondje', art: 'het', en: 'the little dog', w: 'A diminutive is always het, even for de hond.' }, { dehet: true, nl: 'weekend', art: 'het', en: 'the weekend' },
       { dehet: true, nl: 'werk', art: 'het', en: 'the work' }, { dehet: true, nl: 'buurman', art: 'de', en: 'the neighbour' }, { dehet: true, nl: 'dorp', art: 'het', en: 'the village' },
       { dehet: true, nl: 'molen', art: 'de', en: 'the windmill' }, { dehet: true, nl: 'brug', art: 'de', en: 'the bridge' }, { dehet: true, nl: 'golfbaan', art: 'de', en: 'the golf course' },
-      { dehet: true, nl: 'vergadering', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de.' }, { dehet: true, nl: 'dashboard', art: 'het', en: 'the dashboard' },
+      { dehet: true, nl: 'vergadering', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de.' }, { dehet: true, nl: 'adres', art: 'het', en: 'the address' },
       { dehet: true, nl: 'Nederlands', art: 'het', en: 'the Dutch language', w: 'Languages are het.' }, { dehet: true, nl: 'nummer', art: 'het', en: 'the number' },
     ] },
 ]);

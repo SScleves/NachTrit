@@ -19,8 +19,8 @@
 // New props: none. Only hond, water and molen are used (not fiets: de huurfiets and het fietspad are in the word pool).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te + infinitive, om te', note: 'modale werkwoorden' };
-  window.RULES.alsdan = window.RULES.alsdan || { name: 'als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
-  window.RULES.vnwadv = window.RULES.vnwadv || { name: 'ermee, erover, ervan: er + preposition', note: 'MOC Voorzetsels' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.zou = window.RULES.zou || { name: 'zou plus infinitive: polite requests', note: 'modale werkwoorden' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
@@ -56,7 +56,7 @@
 
       // ---- builds: als ... dan and zou
       { en: 'If you miss the last ferry, you live here from now on.', parts: ['Als je de laatste boot mist, dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
-      { en: 'If the wind did not blow so hard, I would play golf.', parts: ['Als het niet zo hard', FK(['waaide', 'waaite'], 0, 'kof', 'waai does not end in a letter of t kofschip, so the past is waaide.', 'spell'), ',', FK(['zou ik', 'ik zou'], 0, 'alsdan',
+      { en: 'If the wind did not blow so hard, I would play golf.', parts: ['Als het niet zo hard', FK(['waaide', 'waaite'], 0, 'kof', 'waai does not end in a letter of t kofschip, so the past is waaide.', 'spell'), ',', FK(['zou ik', 'ik zou'], 0, 'cond',
         'The als-clause fills slot 1, so zou comes before ik.'), 'golfen.'] },
       { en: 'If I had more time, I would go to the gym more often.', parts: ['Als ik meer tijd', FK(['had', 'hadden'], 0, 'imp',
         'ik takes had. hadden is for wij, jullie and zij.'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
@@ -70,13 +70,13 @@
         'When the noun was already named, er stands for it: ik heb er twee, right after the verb.'), ', ze moeten altijd uit.'] },
 
       // ---- builds: pronominal adverbs
-      { en: 'My dog has found a golf ball and is playing with it.', parts: ['Mijn hond heeft een golfbal gevonden en speelt', FK(['ermee', 'met het'], 0, 'vnwadv',
+      { en: 'My dog has found a golf ball and is playing with it.', parts: ['Mijn hond heeft een golfbal gevonden en speelt', FK(['ermee', 'met het'], 0, 'pronadv',
         'met plus a thing becomes ermee: er + met, glued together. met het cannot stand alone.'), '.'] },
-      { en: "I've been talking about it with Paola all week.", parts: ['Ik praat', FK(['er', 'het'], 0, 'vnwadv',
+      { en: "I've been talking about it with Paola all week.", parts: ['Ik praat', FK(['er', 'het'], 0, 'pronadv',
         'over plus a thing becomes er ... over, with er early and over at the end.'), 'al de hele week met Paola over.'] },
-      { en: 'Fancy a match? I feel like it.', parts: ['Zin in een wedstrijd? Ik heb', FK(['er zin in', 'het zin in'], 0, 'vnwadv',
+      { en: 'Fancy a match? I feel like it.', parts: ['Zin in een wedstrijd? Ik heb', FK(['er zin in', 'het zin in'], 0, 'pronadv',
         'zin hebben in a thing: er goes before zin and in stays behind.'), '.'] },
-      { en: 'I love it when it blows.', parts: ['Ik hou', FK(['ervan', 'van er'], 0, 'vnwadv', 'houden van a thing becomes ervan: er and van glued together as one word.', 'order'), 'als het waait.'] },
+      { en: 'I love it when it blows.', parts: ['Ik hou', FK(['ervan', 'van er'], 0, 'pronadv', 'houden van a thing becomes ervan: er and van glued together as one word.', 'order'), 'als het waait.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday I walked the dogs along the beach.', parts: ['Gisteren', FK(['heb ik', 'ik heb'], 0, 'v2',
@@ -99,11 +99,11 @@
 
       // ---- reads: a trap on dat, a trap on te, a trap on er zin in, then the island's own lines
       { read: true, nl: 'Het schaap dat op het fietspad staat, wil niet weg.', o: ['The sheep standing on the cycle path does not want to move.', 'The cyclist on the path does not want the sheep to move.', 'The sheep next to the path wants to leave.'], a: 0, r: 'diedat',
-        w: 'dat points back to het schaap and staat sits at the end of its clause: the sheep is the one standing there. wil niet weg is the main clause.' },
+        w: 'dat points back to het schaap, and staat sits at the end of its clause.' },
       { read: true, nl: 'Ik probeer elke dag een uur te sporten.', o: ['I try to exercise for an hour every day.', 'I tried to exercise for an hour yesterday.', 'I am not allowed to exercise for an hour every day.'], a: 0, r: 'omte',
-        w: 'probeer is present, and te sporten is what is being tried. Past would be probeerde, not allowed would be mag niet.' },
-      { read: true, nl: 'Ik heb er geen zin in.', o: ['I do not feel like it.', 'I have no time for it.', 'I have no sentence in it.'], a: 0, r: 'vnwadv',
-        w: 'zin hebben in means to feel like it, and er stands for the thing. zin is also sentence, but not here.' },
+        w: 'probeer is present, and te sporten is what is being tried. Past would be probeerde.' },
+      { read: true, nl: 'Ik heb er geen zin in.', o: ['I do not feel like it.', 'I have no time for it.', 'I have no sentence in it.'], a: 0, r: 'pronadv',
+        w: 'zin hebben in means to feel like it, and er stands for the thing.' },
       { read: true, nl: 'Hoe laat vertrekt de laatste boot terug?', en: 'What time does the last ferry back leave?' },
       { read: true, nl: 'Een buitje deert ons niet.', en: 'A little shower does not bother us.' },
       { read: true, nl: 'Een Skuumkoppe, graag.', en: "A Skuumkoppe, please (the island brewery's best-known beer)." },

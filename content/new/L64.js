@@ -12,7 +12,6 @@
 // New rules: imper (imperative; the existing imp is the imperfectum) and klok (telling the time). Both guarded.
 // New props: none. Only fiets, hond, brug and water are used.
 (() => {
-  window.RULES.imper = window.RULES.imper || { name: 'Imperative: the bare stem', note: 'De imperatief · commands' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 

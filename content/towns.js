@@ -96,8 +96,8 @@ window.TOWNS = [
     id: 'zeeland', name: 'Zeeland: de Deltawerken', tier: 4, cefr: 'A2',
     rumour: "Someone called the whole country Holland. Again.", rumourNl: "Weer iemand die het hele land Holland noemde.",
     pos: [0.101, 0.685], // Neeltje Jans 51.633 N, 3.695 E (Zierikzee 51.650 N, 3.918 E; Middelburg 51.499 N, 3.614 E)
-    blurb: 'In 1953 the sea came in at night and 1,836 people died. Now there are doors in the sea, and they close when it storms.',
-    blurbNl: 'In 1953 kwam de zee \'s nachts binnen en vielen er 1.836 doden. Nu staan er deuren in de zee, en die gaan dicht als het stormt.',
+    blurb: 'In 1953 the sea came in at night. Now there are doors in the sea, and they close when it storms.',
+    blurbNl: 'In 1953 kwam de zee \'s nachts binnen. Nu staan er deuren in de zee, en die gaan dicht als het stormt.',
     joke: 'The barrier has 62 doors. On storm nights they all close. Someone still knocks.',
     jokeNl: 'De kering heeft 62 deuren. Bij storm gaan ze allemaal dicht. Er klopt toch iemand.',
     look: 'Flat, wide land under a huge sky, long dykes with a road on top and the wind always in your face. The barrier runs nine kilometres across the water on concrete pillars with steel gates, with the flat island of Neeltje Jans halfway. Small brick towns with harbours and stepped gables, the thick tower of Zierikzee and the tall Lange Jan of Middelburg on the horizon.',
@@ -303,8 +303,8 @@ window.TOWNS = [
     id: 'maastricht', name: 'Maastricht', tier: 11, cefr: 'B1-B2',
     rumour: "Someone ordered \"patat\" in Maastricht. Here it is \"friet\". Nobody has got over it.", rumourNl: "Iemand bestelde patat in Maastricht. Dat heet hier friet. Daar is nog niemand overheen.",
     pos: [0.612, 0.965], // Vrijthof 50.849 N, 5.688 E
-    blurb: 'The far south, almost Belgium. Hills, old churches, good pastry and a dialect that sounds like German singing. The European Union was signed here in 1992.',
-    blurbNl: 'Het verre zuiden, bijna België. Heuvels, oude kerken, goede vlaai en een dialect dat klinkt als zingend Duits. In 1992 werd hier de Europese Unie getekend.',
+    blurb: 'The far south, almost Belgium. Hills, old churches, good pastry and a dialect that sounds like German singing. The Treaty of Maastricht was signed here in 1992.',
+    blurbNl: 'Het verre zuiden, bijna België. Heuvels, oude kerken, goede vlaai en een dialect dat klinkt als zingend Duits. In 1992 werd hier het Verdrag van Maastricht getekend.',
     joke: 'At carnaval everyone is in costume for days. In Maastricht you cannot tell the living from the dead. Nobody really tries.',
     jokeNl: 'Met carnaval loopt iedereen dagenlang verkleed rond. In Maastricht zie je dan geen verschil tussen de levenden en de doden. Niemand doet ook echt moeite.',
     look: 'Narrow winding streets of pale yellow marl, grey stone and whitewashed brick, French-looking houses with shutters and slate roofs. Short steep slopes, old city walls and gates, café terraces on wide squares. The Maas runs wide through the middle under an old stone bridge, green hills to the south.',

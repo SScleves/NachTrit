@@ -71,7 +71,7 @@
       { en: 'The cup of coffee is empty.', parts: [FK(['Het', 'De'], 0, 'verklein',
         'Every word ending in -je is a het-word: het kopje.'), FK(['kopje', 'koppje'], 0, 'verklein', 'kop plus -je is kopje; the p does not double before -je.', 'spell'), 'koffie is leeg.'] },
       { en: 'Many students cycle over the little bridge to the city.', parts: ['Over het', FK(['bruggetje', 'brugje'], 0, 'verklein',
-        'brug has a short vowel, so the g doubles and the ending is -etje: bruggetje.'), 'fietsen veel studenten naar de stad.'] },
+        'brug has a short vowel, so the g doubles and the ending is -etje: bruggetje.', 'spell'), 'fietsen veel studenten naar de stad.'] },
 
       // ---- builds: the adjective -e
       { en: 'The white town hall stands on a big square.', parts: ['Het', FK(['witte', 'wit'], 0, 'adj',

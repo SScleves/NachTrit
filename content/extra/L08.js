@@ -21,7 +21,7 @@
     // the furniture
     { w: 'the couch', nl: 'de bank', wrong: 'het bank' }, { w: 'the chair', nl: 'de stoel', wrong: 'het stoel' },
     { w: 'the cupboard', nl: 'de kast', wrong: 'het kast' }, { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' },
-    { w: 'the painting', nl: 'het schilderij', wrong: 'de schilderij' }, { w: 'the desk', nl: 'het bureau', wrong: 'de bureau' },
+    { w: 'the painting', nl: 'het schilderij' }, { w: 'the desk', nl: 'het bureau', wrong: 'de bureau' },
     // the kitchen
     { w: 'the dishwasher', nl: 'de vaatwasser', wrong: 'het vaatwasser' }, { w: 'the cup', nl: 'het kopje', wrong: 'de kopje' },
     { w: 'the plate', nl: 'het bord', wrong: 'de bord' },
@@ -38,7 +38,7 @@
     { read: true, nl: 'Ik ga naar huis.', en: "I'm going home.",
       o: ["I'm going home.", "I'm at home.", "I'm going out."], a: 0, r: 'woord', w: 'naar huis is on your way home. Once you are there, you are thuis.' },
     { read: true, nl: 'Het eten is klaar.', en: 'Dinner is ready.',
-      o: ['Dinner is ready.', "We're done eating.", "I'm ready to eat."], a: 0, r: 'woord', w: 'klaar means ready, and here it is the food that is ready. Done eating would be Wij zijn klaar met eten.' },
+      o: ['Dinner is ready.', "We're done eating.", "I'm ready to eat."], a: 0, r: 'woord', w: 'klaar means ready: the food is ready. Done eating would be klaar met eten.' },
     { read: true, nl: 'Wij hebben geen tafel.', en: "We don't have a table." },
     { read: true, nl: 'Het licht doet het niet.', en: "The light isn't working.",
       o: ["The light isn't working.", "It isn't light yet.", "Don't turn on the light."], a: 0, r: 'woord', w: 'doen also means to work, for any light, machine or gadget: het doet het niet.' },

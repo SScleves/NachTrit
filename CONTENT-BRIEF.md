@@ -144,9 +144,9 @@ The engine derives the label from the fork (`taskOf` in index.html), in this ord
 
 | Label | Colour | When |
 |---|---|---|
-| Word order | blue | every option has two or more words and all options are the same words in another order (any rule id); also rule ids v2, bijzin, tmp, sepbz, hoewel, indirect, alsdan, cond, conditie, voorwaarde |
+| Word order | blue | every option has two or more words and all options are the same words in another order (any rule id); also rule ids v2, bijzin, tmp, sepbz, hoewel, indirect, cond |
 | Past tense | orange | imp, kof, perf, plusq, aux |
-| Verb form | purple | sep, modal, zou, fut, zullen, aanhet, presens, pres, passief, gebod, omte, al, zijn, hebben, om |
+| Verb form | purple | sep, modal, zou, fut, zullen, aanhet, presens, passief, gebod, omte, al, zijn, hebben, om |
 | Comparison | pink | vergelijk |
 | de or het | gold | de/het items (rule dehet) |
 | Listen | teal | listen items |

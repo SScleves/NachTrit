@@ -114,7 +114,7 @@
       { read: true, nl: 'Neem maar gewoon de volgende trein, hoor.', o: ['Just take the next train, it is fine.', 'Do not take the next train.', 'Listen to the next train.'], a: 0, r: 'soft',
         w: 'maar and gewoon soften the advice, and hoor reassures. Nothing is forbidden, and nobody has to listen.' },
       { read: true, nl: 'Die trein is al lang en breed vertrokken.', o: ['That train left ages ago.', 'That train is long and wide.', 'That train leaves in a long while.'], a: 0, r: 'idioom',
-        w: 'lang en breed is a fixed phrase: well and truly, long ago. It says nothing about the size of the train.' },
+        w: 'lang en breed is a fixed phrase: well and truly, long ago. It is not about size.' },
       { read: true, nl: 'Geachte reizigers, wij verzoeken u de trein te verlaten.', o: ['Dear passengers, we ask you to leave the train.', 'Dear passengers, we ask you to board the train.', 'Dear passengers, we thank you for travelling with us.'], a: 0, r: 'formeel',
         w: 'verlaten means to leave. Boarding would be instappen, and verzoeken is the formal word for asking.' },
       { read: true, nl: 'Je kunt de trein nog wel halen, als je even doorloopt.', o: ['You can still catch the train if you hurry a bit.', 'You cannot catch the train any more, even if you run.', 'You can still walk through the train.'], a: 0, r: 'soft',

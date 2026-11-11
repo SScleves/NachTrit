@@ -1,8 +1,8 @@
 // Shared prop materials (PM) and geometries (PG), and what makes street light: the lamp pool, streak, cone and halo, the lit
 // window glow, and setTownLight for a town's lamp and window colour.
-import { THREE } from './engine.js?v=40';
-import { GlowMat, glowTex, Mat } from './materials.js?v=40';
-import './road.js?v=40';   // keeps the order the game's code runs in
+import { THREE } from './engine.js?v=41';
+import { GlowMat, glowTex, Mat } from './materials.js?v=41';
+import './road.js?v=41';   // keeps the order the game's code runs in
 
 // ---------- props ----------
 const PM = {

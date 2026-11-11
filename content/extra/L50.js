@@ -23,7 +23,7 @@
     // words: the table, the drinks, the food, the market
     { w: 'the restaurant', nl: 'het restaurant', wrong: 'de restaurant' }, { w: 'the glass', nl: 'het glas', wrong: 'de glas' },
     { w: 'the plate', nl: 'het bord' }, { w: 'the wine', nl: 'de wijn' }, { w: 'the fish', nl: 'de vis' },
-    { w: 'the cake', nl: 'de taart' }, { w: 'the terrace', nl: 'het terras' }, { w: 'the market stall', nl: 'de kraam' },
+    { w: 'the cake', nl: 'de taart' }, { w: 'the terrace', nl: 'het terras' }, { w: 'nothing', nl: 'niets' },
     { w: 'the bitterballen (fried snacks)', nl: 'de bitterballen' }, { w: 'the dessert', nl: 'het toetje', wrong: 'de toetje' },
 
     // reads: two meaning traps, four plain lines
@@ -38,11 +38,11 @@
 
     // listen: ee and ij in heerlijk, ui in de ui, the price on the bill
     { listen: true, nl: 'heerlijk', en: 'delicious' }, { listen: true, nl: 'de ui', en: 'the onion' },
-    { listen: true, nl: 'achtentwintig euro', en: '€ 28' },
+    { listen: true, nl: 'het regent', en: 'it\'s raining' },
 
     // look: the lamp over the café door, the door itself, the table number
     { look: true, prop: 'lamp', nl: 'de lamp', en: 'the lamp' }, { look: true, prop: 'deur', nl: 'de deur', en: 'the door' },
-    { look: true, prop: 'nummer', value: 24, nl: 'vierentwintig', en: '24' },
+    { look: true, prop: 'nummer', value: 43, nl: 'drieënveertig', en: '43' },
 
     // builds: present tense, verb-first questions, V2, modals, niet/geen, onze, de/het and a number
     { en: 'We have a reservation for two.', parts: ['We', FK(['hebben', 'heeft', 'hebt'], 0, 'presens', 'we is plural, so the plural form: hebben.'), 'een reservering voor twee.'] },

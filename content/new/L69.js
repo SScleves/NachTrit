@@ -50,7 +50,7 @@
 
       // ---- words
       { w: 'the herring', nl: 'de haring', wrong: 'het haring' }, { w: 'the battered fish bites', nl: 'de kibbeling' },
-      { w: 'the market stall', nl: 'de marktkraam', wrong: 'het marktkraam' }, { w: 'the punnet', nl: 'het bakje', wrong: 'de bakje' },
+      { w: 'the market stall', nl: 'de marktkraam' }, { w: 'the punnet', nl: 'het bakje', wrong: 'de bakje' },
       { w: 'the strawberries', nl: 'de aardbeien' }, { w: 'the terrace', nl: 'het terras' },
       { w: 'the bill', nl: 'de rekening' }, { w: 'the receipt', nl: 'het bonnetje', wrong: 'de bonnetje' },
       { w: 'the tip', nl: 'de fooi' }, { w: 'the waitress', nl: 'de serveerster' },
@@ -83,6 +83,6 @@
 
       // ---- de of het
       { dehet: true, nl: 'menu', art: 'het', en: 'the menu', w: 'het menu, but de menukaart: a compound takes the article of its last word.' },
-      { dehet: true, nl: 'kraam', art: 'de', en: 'the stall' },
+      { dehet: true, nl: 'haringkar', art: 'de', en: 'the herring cart', w: 'de kar, so de haringkar. A compound takes the article of its last word.' },
     ] }]);
 })();

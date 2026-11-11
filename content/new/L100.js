@@ -81,8 +81,8 @@
       // ---- words: students, the market, paying, returns and the bag, plus a few replayed
       { w: 'the student discount', nl: 'de studentenkorting' }, { w: 'the second-hand shop', nl: 'de kringloopwinkel' },
       { w: 'the bookshop', nl: 'de boekhandel' }, { w: 'the bike mender', nl: 'de fietsenmaker' },
-      { w: 'the shelf in a shop', nl: 'het schap', wrong: 'de schap' }, { w: 'the spiced breakfast cake', nl: 'de ontbijtkoek' },
-      { w: 'the Groningen minced-pork sausage', nl: 'de metworst' }, { w: 'the medicine', nl: 'het medicijn', wrong: 'de medicijn' },
+      { w: 'the shelf in a shop', nl: 'het schap' }, { w: 'the spiced breakfast cake', nl: 'de ontbijtkoek' },
+      { w: 'the Groningen minced-pork sausage', nl: 'de metworst' }, { w: 'the medicine', nl: 'het medicijn' },
       { w: 'the painkiller', nl: 'de pijnstiller' }, { w: 'the deposit on a bottle', nl: 'het statiegeld', wrong: 'de statiegeld' },
       { w: 'the proof of purchase', nl: 'het aankoopbewijs', wrong: 'de aankoopbewijs' }, { w: 'the little shopping list', nl: 'het boodschappenlijstje', wrong: 'de boodschappenlijstje' },
       { w: 'the clearance sale', nl: 'de uitverkoop' }, { w: 'the zip', nl: 'de rits' }, { w: 'the customer service', nl: 'de klantenservice' },
@@ -96,7 +96,7 @@
       { read: true, nl: 'Ondanks de korting kost de jas nog honderd euro.', o: ['Even with the discount the jacket still costs a hundred euros.', 'Because of the discount the jacket costs a hundred euros.', 'The discount on the jacket is a hundred euros.'], a: 0, r: 'hoewel',
         w: 'ondanks = despite, and nog = still. Because of would be door or vanwege.' },
       { read: true, nl: 'Ik vind het jammer dat de winkel zo vroeg dichtgaat.', o: ['I think it is a shame that the shop closes so early.', 'I think it is a shame that the shop opens so early.', 'I think the shop is closing for good.'], a: 0, r: 'mening',
-        w: 'ik vind het jammer dat = I think it is a shame that, and dichtgaat = closes. Opens would be opengaat.' },
+        w: 'ik vind het jammer dat = I think it is a shame that. dichtgaat means closes.' },
       { read: true, nl: 'Hoewel het regent, is de markt vol.', en: 'Although it is raining, the market is full.' },
       { read: true, nl: 'Dit jasje is mij te klein, maar de rits is nog goed.', en: 'This little jacket is too small for me, but the zip is still fine.' },
 

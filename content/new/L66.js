@@ -43,7 +43,7 @@
       { w: 'the square', nl: 'het plein' },
       { w: 'the church bell', nl: 'de kerkklok' },
       { w: 'the lock', nl: 'het slot', wrong: 'de slot' },
-      { w: 'the saddle', nl: 'het zadel', wrong: 'de zadel' },
+      { w: 'the saddle', nl: 'het zadel' },
       { w: 'the handlebars', nl: 'het stuur' },
       { w: 'the tyre', nl: 'de band' },
       { w: 'the brake', nl: 'de rem' },

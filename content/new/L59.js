@@ -27,7 +27,7 @@
         { en: 'Every evening I walk the dogs.', parts: ['Elke avond', FK(['laat', 'uitlaat'], 0, 'sep',
           'uitlaten splits in the present: laat in slot 2, uit at the very end.'), 'ik de honden uit.'] },
         { en: 'The Dom wakes me up every morning.', parts: ['De Dom', FK(['maakt', 'maken', 'maak'], 0, 'sep', 'One Dom, so stem plus t: maakt, and wakker waits at the end.'), 'me elke ochtend wakker.'] },
-        { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt', 'opbelt Paola'], 0, 'v2',
+        { en: 'Every Sunday Paola calls her mother.', parts: ['Elke zondag', FK(['belt Paola', 'Paola belt'], 0, 'v2',
           'A time in slot 1 pushes Paola behind the verb: belt Paola.'), 'haar moeder', FK(['op', 'opbellen'], 0, 'sep',
           'opbellen splits in the present. Only op goes to the end.'), '.'] },
         { en: 'The neighbours are coming round tonight.', parts: ['De buren', FK(['komen', 'langskomen'], 0, 'sep', 'langskomen splits: komen in slot 2, langs at the end.'), 'vanavond langs.'] },
@@ -74,7 +74,7 @@
         { read: true, nl: 'Het is half acht.', o: ['It is half past seven.', 'It is half past eight.', 'It is quarter to eight.'], a: 0, r: 'klok',
           w: 'half acht is half way to eight, so 7:30. Dutch counts towards the next hour.' },
         { read: true, nl: 'De honden moeten nog uit.', o: ['The dogs still need to go out.', 'The dogs are still out.', 'The dogs must not go out.'], a: 0, r: 'modal',
-          w: 'moeten nog uit: they still have to go out. After a modal Dutch can leave out the verb of motion. They are still inside.' },
+          w: 'moeten nog uit: they still have to go out. A modal can drop the verb of motion.' },
         { read: true, nl: 'Ik ben de keuken aan het opruimen.', o: ['I am tidying the kitchen.', 'I have tidied the kitchen.', 'I am going to tidy the kitchen.'], a: 0, r: 'aanhet',
           w: 'zijn + aan het is busy right now. Not done yet, not later.' },
         { read: true, nl: 'Ik laat de honden wel even uit.', en: "I'll walk the dogs." },
@@ -90,7 +90,7 @@
         { look: true, prop: 'water', nl: 'het water', en: 'the water' },
 
         // ---- de of het
-        { dehet: true, nl: 'gordijn', art: 'het', en: 'the curtain' },
+        { dehet: true, nl: 'huis', art: 'het', en: 'the house' },
         { dehet: true, nl: 'kussen', art: 'het', en: 'the cushion', w: 'het kussen. Only the plural is de: de kussens.' },
       ] },
   ]);

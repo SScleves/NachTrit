@@ -66,7 +66,7 @@
 
       // ---- reads: three traps with their own options, two plain
       { read: true, nl: 'Als de kotters binnen zijn, is het stil in de haven.', o: ['When the cutters are in, it is quiet in the harbour.', 'The cutters are in because it is quiet in the harbour.', 'If the harbour is quiet, the cutters come in.'], a: 0, r: 'bijzin',
-        w: 'als means when here: the cutters are in first, then the quiet. The verb zijn sits at the end of the als-clause.' },
+        w: 'als means when here, and the verb zijn sits at the end of the als-clause.' },
       { read: true, nl: 'Voordat Paola thuis is, ruimen we de rommel op.', o: ['Before Paola gets home, we clear up the mess.', 'After Paola got home, we cleared up the mess.', 'Paola comes home because we clear up the mess.'], a: 0, r: 'bijzin',
         w: 'voordat is before. After would be nadat, and because would be omdat.' },
       { read: true, nl: 'Terwijl de buurvrouw praat, kijkt Paola op haar telefoon.', o: ['While the neighbour talks, Paola looks at her phone.', 'Because the neighbour talks, Paola looks at her phone.', 'After the neighbour talks, Paola looks at her phone.'], a: 0, r: 'bijzin',

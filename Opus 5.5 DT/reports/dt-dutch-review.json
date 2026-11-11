@@ -1,0 +1,158 @@
+{
+  "report": "Opus 5.5 DT/reports/dt-dutch-review.md",
+  "branch": "dt/dutch-review",
+  "base": "main fe7c967 (merged)",
+  "reviewed": { "levels": 105, "items": 5817, "forks": 2706, "reads": 717, "intros": 105, "townTexts": 39, "fareLines": 12, "introPanels": 14 },
+  "counts": { "wrong": 14, "unnatural": 7, "mismatch": 1, "doubtful": 6, "total": 28 },
+  "findings": [
+    { "id": "W1", "severity": "wrong", "kind": "dehet-both", "noun": "dashboard", "woordenlijst": "m/o",
+      "locations": [
+        { "file": "levels.js", "line": 114, "level": 41, "item": "dehet dashboard art het", "fix": "swap dehet noun to a het-only word not yet tested in the level, e.g. scherm" },
+        { "file": "content/town-alblasserdam.js", "line": 73, "level": 44, "item": "word het dashboard wrong de dashboard", "fix": "drop wrong" },
+        { "file": "content/town-alblasserdam.js", "line": 88, "level": 44, "item": "build [Het|De] dashboard is groen.", "fix": "noun scherm: [Het|De] scherm is groen. why: scherm is a het-word: het scherm." },
+        { "file": "content/town-kinderdijk.js", "line": 36, "level": 46, "item": "word het dashboard wrong de dashboard", "fix": "drop wrong" },
+        { "file": "content/new/L79.js", "line": 85, "level": 79, "item": "word het dashboard wrong de dashboard", "fix": "drop wrong" },
+        { "file": "content/new/L111.js", "line": 105, "level": 111, "item": "dehet dashboard art het", "fix": "swap dehet noun to scherm or kantoor" },
+        { "file": "content/new/L127.js", "line": 77, "level": 127, "item": "build [Het|De] dashboard staat al sinds vanochtend op rood", "fix": "noun scherm: [Het|De] scherm staat al sinds vanochtend op rood. why: scherm is a het-word." }
+      ],
+      "reason": "Woordenlijst gives dashboard as de and het; the fork has two right answers.", "source": "woordenlijst.org MolexServe find_wordform dashboard" },
+    { "id": "W2", "severity": "wrong", "kind": "dehet-both", "noun": "ticket", "woordenlijst": "m/o",
+      "locations": [
+        { "file": "content/new/L111.js", "line": 74, "level": 111, "item": "word het ticket wrong de ticket", "fix": "drop wrong" },
+        { "file": "content/new/L119.js", "line": 100, "level": 119, "item": "word het ticket wrong de ticket", "fix": "drop wrong" }
+      ], "reason": "Woordenlijst: ticket (m/o).", "source": "woordenlijst.org find_wordform ticket" },
+    { "id": "W3", "severity": "wrong", "kind": "dehet-both", "noun": "schap", "woordenlijst": "m/v/o",
+      "locations": [ { "file": "content/new/L100.js", "line": 84, "level": 100, "item": "word het schap wrong de schap", "fix": "drop wrong" } ],
+      "reason": "Woordenlijst: schap (m/v/o).", "source": "woordenlijst.org find_wordform schap" },
+    { "id": "W4", "severity": "wrong", "kind": "dehet-both", "noun": "tikkie", "woordenlijst": "m/o (betaalverzoek)",
+      "locations": [ { "file": "content/new/L125.js", "line": 99, "level": 125, "item": "word het Tikkie wrong de Tikkie", "fix": "drop wrong; the reads with het Tikkie can stay" } ],
+      "reason": "Woordenlijst: tikkie, betaalverzoek, (m/o).", "source": "woordenlijst.org find_wordform tikkie" },
+    { "id": "W5", "severity": "wrong", "kind": "dehet-both", "noun": "kraam, marktkraam", "woordenlijst": "m/v/o",
+      "locations": [
+        { "file": "content/new/L69.js", "line": 53, "level": 69, "item": "word de marktkraam wrong het marktkraam", "fix": "drop wrong" },
+        { "file": "content/new/L69.js", "line": 86, "level": 69, "item": "dehet kraam art de", "fix": "swap dehet noun to de haringkar (or het bakje)" }
+      ], "reason": "Woordenlijst: kraam and marktkraam (m/v/o). Audit question 2.", "source": "woordenlijst.org find_wordform kraam, marktkraam" },
+    { "id": "W6", "severity": "wrong", "kind": "dehet-both", "noun": "gordijn", "woordenlijst": "m/v/o",
+      "locations": [
+        { "file": "content/new/L51.js", "line": 35, "level": 51, "item": "word het gordijn wrong de gordijn", "fix": "drop wrong" },
+        { "file": "content/new/L59.js", "line": 93, "level": 59, "item": "dehet gordijn art het", "fix": "swap dehet noun to het dekbed" },
+        { "file": "content/new/L75.js", "line": 91, "level": 75, "item": "word het gordijn wrong de gordijn", "fix": "drop wrong" },
+        { "file": "content/new/L107.js", "line": 81, "level": 107, "item": "word het gordijn wrong de gordijn", "fix": "drop wrong" }
+      ], "reason": "Woordenlijst: gordijn (m/v/o).", "source": "woordenlijst.org find_wordform gordijn" },
+    { "id": "W7", "severity": "wrong", "kind": "dehet-both", "noun": "medicijn", "woordenlijst": "m/v/o",
+      "locations": [
+        { "file": "content/new/L52.js", "line": 60, "level": 52, "item": "word het medicijn wrong de medicijn", "fix": "drop wrong" },
+        { "file": "content/new/L100.js", "line": 85, "level": 100, "item": "word het medicijn wrong de medicijn", "fix": "drop wrong" }
+      ], "reason": "Woordenlijst: medicijn (m/v/o).", "source": "woordenlijst.org find_wordform medicijn" },
+    { "id": "W8", "severity": "wrong", "kind": "dehet-both", "noun": "zadel", "woordenlijst": "m/o",
+      "locations": [
+        { "file": "content/new/L66.js", "line": 46, "level": 66, "item": "word het zadel wrong de zadel", "fix": "drop wrong" },
+        { "file": "content/new/L94.js", "line": 99, "level": 94, "item": "word het zadel wrong de zadel", "fix": "drop wrong" }
+      ], "reason": "Woordenlijst: zadel (m/o).", "source": "woordenlijst.org find_wordform zadel" },
+    { "id": "W9", "severity": "wrong", "kind": "dehet-both", "noun": "schilderij", "woordenlijst": "v/o",
+      "locations": [
+        { "file": "content/extra/L08.js", "line": 24, "level": 8, "item": "word het schilderij wrong de schilderij", "fix": "drop wrong" },
+        { "file": "content/new/L67.js", "line": 102, "level": 67, "item": "dehet schilderij art het", "fix": "swap dehet noun to het dekbed or het balkon" }
+      ], "reason": "Woordenlijst: schilderij (v/o).", "source": "woordenlijst.org find_wordform schilderij" },
+    { "id": "W10", "severity": "wrong", "kind": "dehet-both", "noun": "rooster", "woordenlijst": "m/o",
+      "locations": [
+        { "file": "content/new/L87.js", "line": 106, "level": 87, "item": "dehet rooster art het", "fix": "swap dehet noun to het incident; why: het incident, learn it with its article" },
+        { "file": "content/new/L95.js", "line": 112, "level": 95, "item": "dehet rooster art het", "fix": "swap dehet noun to het overleg" }
+      ], "reason": "Woordenlijst: rooster (m/o).", "source": "woordenlijst.org find_wordform rooster" },
+    { "id": "W11", "severity": "wrong", "kind": "why", "file": "content/new/L105.js", "line": 119, "level": 105,
+      "current": "Words ending in -ing are de: de ontmoeting, de afspraak, de uitnodiging.",
+      "fix": "Words ending in -ing are de: de ontmoeting, de uitnodiging, de vergadering.",
+      "reason": "afspraak does not end in -ing.", "source": "own reading" },
+    { "id": "W12", "severity": "wrong", "kind": "nonword-outside-spell", "file": "content/new/L74.js", "line": 37, "level": 74,
+      "current": "FK(['gerend', 'gerent'], 0, 'kof', ...)", "fix": "add task 'spell' as the fifth argument",
+      "reason": "gerent is not a word; a non-word is only allowed in a Spelling fork.", "source": "CONTENT-BRIEF" },
+    { "id": "W13", "severity": "wrong", "kind": "nonword-outside-spell", "file": "content/new/L98.js", "line": 50, "level": 98,
+      "current": "FK(['uit te laten', 'uitte laten', 'te uitlaten'], 0, 'sep', ...)", "fix": "FK(['uit te laten', 'te uitlaten'], 0, 'sep', ...)",
+      "reason": "uitte is not a word.", "source": "CONTENT-BRIEF" },
+    { "id": "W14", "severity": "wrong", "kind": "nonword-outside-spell", "file": "content/new/L106.js", "line": 73, "level": 106,
+      "current": "FK(['bruggetje', 'brugje'], 0, 'verklein', ...)", "fix": "add task 'spell' as the fifth argument",
+      "reason": "brugje is not a word; the fork tests spelling.", "source": "CONTENT-BRIEF" },
+
+    { "id": "U1", "severity": "unnatural", "kind": "read", "file": "content/extra/L07.js", "line": 44, "level": 7,
+      "current": "De rest is voor u.", "fix": "Laat maar zitten.", "en": "Keep the change.",
+      "reason": "Not the idiom; Dutch says laat maar zitten or hou de rest maar.", "source": "own reading; fares.js:74-76" },
+    { "id": "U2", "severity": "unnatural", "kind": "build-fixed", "file": "content/new/L84.js", "line": 35, "level": 84,
+      "current": ", was ze al dicht.", "fix": ", was die al dicht.",
+      "reason": "In the Netherlands de apotheek is picked up with hij or die, not ze.", "source": "taaladvies.net/woordgeslacht-algemeen/" },
+    { "id": "U3", "severity": "unnatural", "kind": "build-fork", "file": "content/new/L93.js", "line": 53, "level": 93,
+      "current": "Het terras dat [hier ligt | ligt hier], is al vol.", "fix": "Het terras dat [zo mooi ligt | ligt zo mooi], is al vol.",
+      "en": "The terrace that is so well placed is already full.", "why": "The verb of a dat-clause stands at the end: dat zo mooi ligt.",
+      "reason": "dat hier ligt is stilted.", "source": "own reading" },
+    { "id": "U4", "severity": "unnatural", "kind": "build-fixed", "file": "content/new/L94.js", "line": 48, "level": 94,
+      "current": "Het schaap dat [al uren staat | staat al uren], wil niet van het fietspad af.", "fix": "fixed part 'Het schaap dat er'; fork unchanged",
+      "why": "The verb of the dat clause goes to the end: dat er al uren staat.", "reason": "staan wants er or a place.", "source": "own reading; agrees with the author" },
+    { "id": "U5", "severity": "unnatural", "kind": "build-fixed", "file": "content/new/L97.js", "line": 39, "level": 97,
+      "current": "Het schaap dat al jaren [hier woont | woont hier], kent iedereen.", "fix": "fixed part 'Het schaap dat hier'; fork [al jaren woont | woont al jaren]",
+      "why": "A relative clause is a sub-clause: the verb goes to the end, hier al jaren woont.", "reason": "The usual order is hier al jaren woont.", "source": "own reading; agrees with the author" },
+    { "id": "U6", "severity": "unnatural", "kind": "build-fork", "priority": "low", "file": "content/new/L95.js", "line": 45, "level": 95,
+      "current": "Het schaap [dat al wacht | dat wacht al], wil meedoen aan de standup.", "fix": "fixed part 'Het schaap dat'; fork [al klaarstaat | staat al klaar]",
+      "en": "The sheep that is already in place wants to join the standup.", "reason": "dat al wacht is bare; optional.", "source": "own reading" },
+    { "id": "U7", "severity": "unnatural", "kind": "mixed-fork", "priority": "low", "file": "content/new/L59.js", "line": 30, "level": 59,
+      "current": "FK(['belt Paola', 'Paola belt', 'opbelt Paola'], 0, 'v2', ...)", "fix": "drop 'opbelt Paola'",
+      "reason": "Mixes word order with the separable prefix; two things in one fork.", "source": "CONTENT-BRIEF, one thing per fork" },
+
+    { "id": "M1", "severity": "mismatch", "kind": "town", "file": "content/towns.js", "line": 307, "town": "maastricht",
+      "current": "In 1992 werd hier de Europese Unie getekend. / The European Union was signed here in 1992.",
+      "fix": "In 1992 werd hier het Verdrag van Maastricht getekend. / The Treaty of Maastricht was signed here in 1992.",
+      "reason": "A union is not signed; the treaty is.", "source": "own reading" },
+
+    { "id": "D1", "severity": "doubtful", "kind": "build-fork", "file": "content/new/L79.js", "line": 36, "level": 79, "question": 1,
+      "current": "Gisteren [duurde | duurden | duurt] de vergadering twee uur.", "fix": "replace duurt with geduurd",
+      "why": "Gisteren asks for the past, and one meeting takes no -n: duurde. geduurd needs heeft.",
+      "reason": "The historic present is attested in spoken narrative, so the present is not safely wrong.", "source": "taaladvies.net tegenwoordige tijd of verleden tijd (algemeen)" },
+    { "id": "D2", "severity": "doubtful", "kind": "build-fork", "file": "content/new/L129.js", "line": 57, "level": 129, "question": 9,
+      "current": "met de fiets [aan de hand | in de hand | op de hand] lopen", "fix": "[aan de hand | bij de hand | op de hand]",
+      "reason": "ANWB writes 'met de fiets in de hand'; a native does say it.", "source": "anwb.nl/fiets/tips/kind-leren-fietsen" },
+    { "id": "D3", "severity": "doubtful", "kind": "dialect", "level": "107-114",
+      "locations": [
+        { "file": "content/new/L107.js", "line": 97 }, { "file": "content/new/L108.js", "line": 92 }, { "file": "content/new/L108.js", "line": 93 },
+        { "file": "content/new/L109.js", "line": 102 }, { "file": "content/new/L110.js", "line": 115 }, { "file": "content/new/L111.js", "line": 93 },
+        { "file": "content/new/L112.js", "line": 94 }, { "file": "content/new/L113.js", "line": 104 }, { "file": "content/new/L113.js", "line": 105 }, { "file": "content/new/L114.js", "line": 103 }
+      ],
+      "current": "Noondezju (glossed as Maastricht dialect)", "fix": "spell Nondedju; gloss: a southern curse, from French nom de Dieu, also heard in Maastricht",
+      "reason": "ANW headword nondedju, vooral in België, variant nondeju; the spelling Noondezju and the Maastricht label are unverified.", "source": "anw.ivdnt.org/article/nondedju" },
+    { "id": "D4", "severity": "doubtful", "kind": "dialect", "file": "content/new/L111.js", "line": 98, "level": 111,
+      "current": "listen salu = hi, or bye (Maastricht dialect, from French salut)", "fix": "gloss: bye (informal, southern; from French salut), or swap for bompa = grandpa (Maastrichtian)",
+      "reason": "nl.wiktionary: informal farewell, quoted as Antwerp usage; not attested as hi, not placed in Maastricht.", "source": "nl.wiktionary.org/wiki/salu; en.wiktionary.org/wiki/bomma (bompa)" },
+    { "id": "D5", "severity": "doubtful", "kind": "read", "file": "content/new/L99.js", "line": 119, "level": 99, "question": 3,
+      "current": "Er zit een scheur in de muur sinds de beving.", "fix": "Er zit een scheur in de muur.", "en": "There is a crack in the wall.",
+      "reason": "Rule 8 judgement: a quake crack in the player's own house in a horror game; the vocabulary stays.", "source": "judgement" },
+    { "id": "D6", "severity": "doubtful", "kind": "town", "file": "content/towns.js", "line": 100, "town": "zeeland", "question": 4,
+      "current": "In 1953 kwam de zee 's nachts binnen en vielen er 1.836 doden. Nu staan er deuren in de zee, en die gaan dicht als het stormt.",
+      "fix": "In 1953 kwam de zee 's nachts binnen. Nu staan er deuren in de zee, en die gaan dicht als het stormt. (en: drop the death toll too, towns.js:99)",
+      "reason": "Next to the death toll the joke 'Er klopt toch iemand' reads as the drowned knocking.", "source": "judgement" }
+  ],
+  "questions": [
+    { "n": 1, "topic": "historic present", "answer": "Attested in spoken narrative (Taaladvies); not natural as a flat statement. L77 no longer has the fork; L79: swap duurt for geduurd (D1).", "source": "taaladvies.net tegenwoordige tijd of verleden tijd (algemeen)" },
+    { "n": 2, "topic": "kraam de/het", "answer": "Both (m/v/o). L69 dehet kraam and marktkraam wrong must go (W5).", "source": "woordenlijst.org find_wordform kraam" },
+    { "n": 3, "topic": "Groningen earthquake words", "answer": "Keep the vocabulary; drop 'sinds de beving' from the L99 Thuis read (D5).", "source": "judgement" },
+    { "n": 4, "topic": "Zeeland town text", "answer": "Keep the joke, drop the death toll from the blurb (D6); L58 keeps the history.", "source": "judgement" },
+    { "n": 5, "topic": "bomma", "answer": "Real Maastricht dialect (Wiktionary Limburgish, Maastrichtian; Wikipedia table bomma(ma)/bompa(pa); Woordenlijst bomma v). Keep.", "source": "en.wiktionary.org/wiki/bomma; en.wikipedia.org/wiki/Maastrichtian_dialect" },
+    { "n": 6, "topic": "wel even / even wel", "answer": "even wel is not produced by Netherlands speakers here; keep as wrong option.", "source": "judgement; e-ans 21.4" },
+    { "n": 7, "topic": "Ik zal graag ... willen", "answer": "Not said; keep zal as wrong option.", "source": "judgement" },
+    { "n": 8, "topic": "helpen aan", "answer": "iemand aan iets helpen exists (to get someone something) but does not fit; keep aan as wrong option.", "source": "en.wiktionary.org/wiki/helpen" },
+    { "n": 9, "topic": "fiets aan/in de hand", "answer": "Both used (ANWB: in de hand). Replace in de hand with bij de hand (D2).", "source": "anwb.nl/fiets/tips/kind-leren-fietsen" },
+    { "n": 10, "topic": "hem/haar for de taal", "answer": "taal is m/v; the north uses hem, so hem is right; zich is wrong (points at niemand). Keep; soften the why line.", "source": "taaladvies.net/woordgeslacht-algemeen/" },
+    { "n": 11, "topic": "Urk families", "answer": "Keep.", "source": "judgement" },
+    { "n": 12, "topic": "dronken Duitser", "answer": "Keep.", "source": "judgement" },
+    { "n": 13, "topic": "pizza's / pizzas", "answer": "pizza's is the only spelling; the apostrophe is what the Spelling fork tests. Keep.", "source": "taaladvies.net apostrophe rule; Woordenlijst pizza (m/v)" }
+  ],
+  "authorFlagged": [
+    { "level": 86, "text": "Als u daar bent, gaat u bij de vuurtoren rechtsaf.", "verdict": "ok" },
+    { "level": 86, "text": "Voordat ik vertrek, laat ik eerst de honden uit.", "verdict": "ok" },
+    { "level": 87, "text": "omdat ik de hele dag vergaderingen heb", "verdict": "ok" },
+    { "level": 90, "text": "wrong option: voordat ik ga naar huis", "verdict": "ok as wrong option; naar huis is a bare directional complement and is not moved behind the verb" },
+    { "level": 91, "text": "De hond die altijd slaapt, mag niet op de bank liggen.", "verdict": "ok" },
+    { "level": 93, "text": "Het terras dat hier ligt, is al vol.", "verdict": "unnatural, see U3" },
+    { "level": 94, "text": "Is dit de bus naar De Koog die vanavond vertrekt?", "verdict": "ok" },
+    { "level": 94, "text": "Het schaap dat al uren staat, wil niet van het fietspad af.", "verdict": "unnatural, see U4 (add er)" },
+    { "level": 95, "text": "Het schaap dat al wacht, wil meedoen aan de standup.", "verdict": "acceptable; optional U6" },
+    { "level": 97, "text": "Het schaap dat al jaren hier woont, kent iedereen.", "verdict": "unnatural, see U5 (hier al jaren woont)" },
+    { "level": 98, "text": "omdat er op de weg veel zand ligt", "verdict": "ok" }
+  ]
+}

@@ -1,8 +1,8 @@
 // The signs: G, the shared geometries of everything that spawns often (boards, posts, carts, puddles, wisps), and the labels:
 // the largest font that fits a board, the sign texture, the signpost and the big sign of a fork.
-import { THREE } from './engine.js?v=40';
-import { M, Mat } from './materials.js?v=40';
-import './rider.js?v=40';   // keeps the order the game's code runs in
+import { THREE } from './engine.js?v=41';
+import { M, Mat } from './materials.js?v=41';
+import './rider.js?v=41';   // keeps the order the game's code runs in
 
 // shared geometries for everything that spawns often
 const G = {

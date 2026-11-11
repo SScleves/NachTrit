@@ -32,7 +32,7 @@
       { en: 'I see that the checkout is closed.', parts: ['Ik zie dat de kassa', FK(['dicht is', 'is dicht'], 0, 'bijzin', 'dat sends the verb to the end: dat de kassa dicht is.'), '.'] },
       { en: 'If it is on offer, I take two.', parts: ['Als het in de aanbieding is,', FK(['neem ik', 'ik neem'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: neem ik.'), 'twee.'] },
-      { en: 'When I got to the chemist, it was already closed.', parts: ['Toen ik bij de apotheek', FK(['kwam', 'kwamen', 'kom'], 0, 'bijzin', 'komen is irregular in the past: ik kwam, at the end of the toen clause.', 'past'), ', was ze al dicht.'] },
+      { en: 'When I got to the chemist, it was already closed.', parts: ['Toen ik bij de apotheek', FK(['kwam', 'kwamen', 'kom'], 0, 'bijzin', 'komen is irregular in the past: ik kwam, at the end of the toen clause.', 'past'), ', was die al dicht.'] },
       { en: 'While Paola pays, I wait outside with the dogs.', parts: [FK(['Terwijl Paola betaalt', 'Terwijl betaalt Paola'], 0, 'bijzin',
         'terwijl sends the verb to the end: terwijl Paola betaalt.'), ',', FK(['wacht ik', 'ik wacht'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: wacht ik.'), 'buiten met de honden.'] },
@@ -71,9 +71,9 @@
 
       // ---- reads: three traps with their own options, three plain lines
       { read: true, nl: 'Als de winkel dicht is, kom ik morgen terug.', o: ['If the shop is closed, I will come back tomorrow.', 'Because the shop is closed, I came back yesterday.', 'When the shop opens, I will come back tomorrow.'], a: 0, r: 'bijzin',
-        w: 'als = if, dicht is = is closed at the end, and kom ik terug = I come back. Because would be omdat.' },
+        w: 'als = if, dicht is = is closed at the end. Because would be omdat.' },
       { read: true, nl: 'Ik heb geen pinpas, maar ik heb wel contant geld.', o: ['I have no card, but I do have cash.', 'I have no card, because I have no cash.', 'I have a card, but I have no cash.'], a: 0, r: 'neg',
-        w: 'geen pinpas = no card, maar = but, wel = I do have. Because would be omdat or want.' },
+        w: 'geen pinpas = no card, maar = but, wel = I do have. Because would be omdat.' },
       { read: true, nl: 'Voordat de winkel opengaat, staat er al een rij.', o: ['Before the shop opens, there is already a queue.', 'After the shop opens, there is a queue again.', 'The shop has opened and the queue has gone.'], a: 0, r: 'bijzin',
         w: 'voordat = before, and opengaat joins up at the end. After would be nadat.' },
       { read: true, nl: 'Heeft u dit ook in een andere maat?', en: 'Do you have this in another size too?' },

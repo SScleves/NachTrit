@@ -98,7 +98,7 @@
       { read: true, nl: 'We hadden al betaald toen de band begon te spelen.', o: ['We had already paid when the band started to play.', 'We paid after the band started to play.', 'We will have paid when the band plays.'], a: 0, r: 'plusq',
         w: 'hadden plus betaald is the pluperfect: paying came before the band. Both things lie in the past.' },
       { read: true, nl: 'Hij zei dat de kok ziek was.', o: ['He said that the cook was ill.', 'He asked whether the cook was ill.', 'He told the cook he was ill.'], a: 0, r: 'indirect',
-        w: 'zei dat reports a statement. Asking would be vroeg of, and the cook is the one who is ill.' },
+        w: 'zei dat reports a statement, and the cook is the sick one. Asking would be vroeg of.' },
       { read: true, nl: 'Noondezju, de vlaai is op.', en: 'Damn it, the tart is sold out (Noondezju is Maastricht dialect).' },
       { read: true, nl: 'Kunnen we apart betalen? Ik had alleen de soep.', en: 'Can we pay separately? I only had the soup.' },
       { read: true, nl: 'Zonder dat verdrag hadden we de euro niet gehad.', en: 'Without that treaty we would not have had the euro.' },

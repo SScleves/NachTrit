@@ -89,9 +89,9 @@
 
       // ---- reads: three traps with their own options, three plain lines from the station and from the city
       { read: true, nl: 'Mijn trein had een uur vertraging.', o: ['My train was an hour late.', 'My train will be an hour late.', 'My train leaves in an hour.'], a: 0, r: 'imp',
-        w: 'had is the past of hebben, so it already happened. A train that is late right now says heeft, and one that will be late says krijgt.' },
+        w: 'had is the past of hebben, so it already happened. Now would be heeft, later krijgt.' },
       { read: true, nl: 'Zou je even kunnen opschuiven?', o: ['Could you move over a bit?', 'Did you move over?', 'You have to move over.'], a: 0, r: 'modal',
-        w: 'zou plus kunnen is the polite way to ask. It is a question, not a past and not an order.' },
+        w: 'zou plus kunnen is the polite way to ask. It is not a past tense or an order.' },
       { read: true, nl: 'De metro is sneller dan de tram, maar de bus is goedkoper.', o: ['The metro is faster than the tram, but the bus is cheaper.', 'The metro is faster than the bus, but the tram is cheaper.', 'The metro is cheaper than the tram, but the bus is faster.'], a: 0, r: 'vergelijk',
         w: 'sneller dan is faster than, and goedkoper is cheaper. Read which vehicle sits on each side of dan.' },
       { read: true, nl: 'Niet lullen maar poetsen.', en: 'Stop talking and get to work.' },

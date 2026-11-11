@@ -74,8 +74,8 @@
         'Na twee jaar fills slot 1, so the verb comes second: heb ik.'), 'het nieuwe systeem', FK(['eindelijk', 'eigenlijk'], 0, 'woord',
         'eindelijk means at last. eigenlijk means actually.'), FK(['onder de knie', 'onder de voet', 'op de knie'], 0, 'idioom',
         'iets onder de knie hebben means to have mastered it. Only onder de knie.'), '.'] },
-      { en: 'The dashboard has been red since this morning, and nobody knows why.', parts: [FK(['Het', 'De'], 0, 'dehet',
-        'dashboard is a het-word: het dashboard.'), 'dashboard', FK(['staat', 'stond'], 0, 'al', 'It is still red, so the present with al: staat al sinds vanochtend.'), 'al sinds vanochtend op rood, en niemand weet waarom.'] },
+      { en: 'The screen has been red since this morning, and nobody knows why.', parts: [FK(['Het', 'De'], 0, 'dehet',
+        'scherm is a het-word: het scherm.'), 'scherm', FK(['staat', 'stond'], 0, 'al', 'It is still red, so the present with al: staat al sinds vanochtend.'), 'al sinds vanochtend op rood, en niemand weet waarom.'] },
       { en: "I'll just forward the email.", parts: ['Ik stuur de mail', FK(['even door', 'door even'], 0, 'soft',
         'even stands in the middle, and door closes the sentence.'), '.'] },
       { en: 'Since the mist my manager has been working his socks off.', parts: ['Sinds de mist', FK(['werkt mijn manager', 'mijn manager werkt'], 0, 'v2',
@@ -107,9 +107,9 @@
 
       // ---- words: the office, the figures, five replayed from Nijmegen
       { w: 'the business district of Amsterdam', nl: 'de Zuidas' }, { w: 'the report', nl: 'het rapport', wrong: 'de rapport' },
-      { w: 'the turnover', nl: 'de omzet' }, { w: 'the quarter (three months)', nl: 'het kwartaal', wrong: 'de kwartaal' },
-      { w: 'the annual report', nl: 'het jaarverslag', wrong: 'de jaarverslag' }, { w: 'the attachment', nl: 'de bijlage' },
-      { w: 'the open-plan office', nl: 'de kantoortuin' }, { w: 'the head office', nl: 'het hoofdkantoor', wrong: 'de hoofdkantoor' },
+      { w: 'the turnover', nl: 'de omzet' }, { w: 'the ferry', nl: 'de veerpont' },
+      { w: 'the check-in pole', nl: 'de incheckpaal' }, { w: 'the attachment', nl: 'de bijlage' },
+      { w: 'the wooden pile', nl: 'de paal' }, { w: 'the jenever tasting room', nl: 'het proeflokaal', wrong: 'de proeflokaal' },
       { w: 'the lunch break', nl: 'de lunchpauze' }, { w: 'the colleague', nl: 'de collega' },
       { w: 'the figure, the number', nl: 'het cijfer', wrong: 'de cijfer' }, { w: 'the meeting', nl: 'de vergadering' },
       { w: 'the signature', nl: 'de handtekening' }, { w: 'the quote (for a client)', nl: 'de offerte' },
@@ -124,12 +124,12 @@
       { read: true, nl: 'Ik ben eindelijk klaar.', o: ['I am finally done.', 'I am actually done.', 'I am almost done.'], a: 0, r: 'woord',
         w: 'eindelijk means at last. eigenlijk means actually, and almost would be bijna.' },
       { read: true, nl: 'Wij nemen zo spoedig mogelijk contact met u op.', o: ['We will contact you as soon as possible.', 'Please contact us as soon as possible.', 'We contacted you as quickly as we could.'], a: 0, r: 'formeel',
-        w: 'wij nemen contact op: we are the ones who will get in touch. zo spoedig mogelijk is formal for as soon as possible.' },
+        w: 'wij nemen contact op: we will get in touch. zo spoedig mogelijk is as soon as possible.' },
       { read: true, nl: 'Aan de Herengracht woonden vroeger de rijke kooplieden; nu zitten er banken en advocaten.', en: 'The rich merchants used to live on the Herengracht; now it is banks and lawyers.' },
       { read: true, nl: 'In Amsterdam was de voertaal op kantoor jarenlang Engels.', en: 'In Amsterdam the working language in the office was English for years.' },
 
       // ---- listens: a figure, the canal of the merchants, a sum, a letter ending
-      { listen: true, nl: 'drie komma vijf procent', en: '3,5 %' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
+      { listen: true, nl: 'samsam', en: 'fifty-fifty, each pays half' }, { listen: true, nl: 'de Herengracht', en: 'the canal of the merchants' },
       { listen: true, nl: 'een miljoen euro', en: '€ 1.000.000' }, { listen: true, nl: 'met vriendelijke groet', en: 'kind regards' },
 
       // ---- looks: the dog, the desk lamp, the bike outside
@@ -138,6 +138,6 @@
 
       // ---- de of het
       { dehet: true, nl: 'budget', art: 'het', en: 'the budget', w: 'het budget. Learn it with its article: there is no rule.' },
-      { dehet: true, nl: 'functie', art: 'de', en: 'the job title', w: 'Nouns ending in -tie are de: de functie, de informatie.' },
+      { dehet: true, nl: 'tramkaartje', art: 'het', en: 'the tram ticket', w: 'Every -je word is het: het tramkaartje.' },
     ] }]);
 })();

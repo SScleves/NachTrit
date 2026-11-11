@@ -1,0 +1,15 @@
+# Nouns the Woordenlijst (woordenlijst.org, MolexServe find_wordform, database gig_pro_wrdlst) gives with both genders:
+# a de/het test on them has two right answers, so the game must not test their article.
+# qa/lib/validate.mjs fails any de/het item, word `wrong` article or article build fork on these nouns (one noun per line, lower case).
+# They may still appear as plain words and inside sentences. Source: Dutch review 11 Nov 2026, qa/lib/dehet-both.mjs.
+dashboard   # m/o
+ticket      # m/o
+schap       # m/v/o
+tikkie      # m/o
+kraam       # m/v/o
+marktkraam  # m/v/o
+gordijn     # m/v/o
+medicijn    # m/v/o
+zadel       # m/o
+schilderij  # v/o
+rooster     # m/o

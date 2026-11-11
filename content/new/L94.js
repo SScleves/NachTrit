@@ -22,8 +22,8 @@
 // New rules: omte, conditie, vnwadv (all guarded below). New props: none (water, kerk, hond).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te and om ... te + infinitive', note: 'heb-je-zin-om-zaterdag-te-golfen' };
-  window.RULES.conditie = window.RULES.conditie || { name: 'als ... dan: if clauses', note: 'bijzin - werkwoord naar het einde' };
-  window.RULES.vnwadv = window.RULES.vnwadv || { name: 'erop, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
   window.RULES.klok = window.RULES.klok || { name: 'Telling the time: half negen, kwart over', note: 'MOC Tijd, dagen & maanden' };
   const P = window.TIER_PRESET[9];
@@ -38,18 +38,18 @@
       want: 'Since the mist came, everyone who spoke Dutch changed, and on Texel nobody noticed, because the sheep never spoke Dutch anyway. The dead in the queue now talk in long sentences: die for the de-words, dat for the het-words, the verb at the very end of the clause. They use om te, they say als ... dan, and they say erop and ermee instead of repeating themselves. The women are still taller than you. The sheep are not, but they act like it.' },
     items: [
       // ---- builds: relative clauses with die and dat, the verb at the end
-      { en: 'The ferry that leaves at nine today is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
-        'boot is a de-word, so die: de boot die.'), FK(['vandaag om negen uur vertrekt', 'vertrekt vandaag om negen uur'], 0, 'bijzin',
-        'Inside a die clause the verb goes to the very end: om negen uur vertrekt.'), ', is vol.'] },
+      { en: 'The ferry that leaves today is full.', parts: ['De boot', FK(['die', 'dat'], 0, 'diedat',
+        'boot is a de-word, so die: de boot die.'), FK(['vandaag vertrekt', 'vertrekt vandaag'], 0, 'bijzin',
+        'Inside a die clause the verb goes to the very end: vandaag vertrekt.'), ', is vol.'] },
       { en: 'The ticket that I bought is in my bag.', parts: ['Het kaartje', FK(['dat', 'die'], 0, 'diedat',
         'kaartje is a het-word, so dat: het kaartje dat.'), FK(['ik gekocht heb', 'heb ik gekocht'], 0, 'bijzin',
         'A relative clause is a sub-clause: the subject comes first and the verb goes to the end.'), ', ligt in mijn tas.'] },
-      { en: 'The sheep that has been standing on the cycle path for hours does not want to leave.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat: het schaap dat.'), FK(['al uren op het fietspad staat', 'staat al uren op het fietspad'], 0, 'bijzin',
-        'The verb of the dat clause goes to the end: dat al uren op het fietspad staat.'), ', wil niet weg.'] },
-      { en: 'Is this the bus that goes to De Koog tonight?', parts: ['Is dit de bus', FK(['die', 'dat'], 0, 'diedat',
-        'bus is a de-word, so die: de bus die.'), FK(['vanavond naar De Koog gaat', 'gaat vanavond naar De Koog'], 0, 'bijzin',
-        'die sends the verb to the end of its clause: die vanavond naar De Koog gaat.'), '?'] },
+      { en: 'The sheep that has been standing for hours does not want to leave the cycle path.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so dat: het schaap dat.'), 'er', FK(['al uren staat', 'staat al uren'], 0, 'bijzin',
+        'The verb of the dat clause goes to the end: dat er al uren staat.'), ', wil niet van het fietspad af.'] },
+      { en: 'Is this the bus to De Koog that leaves tonight?', parts: ['Is dit de bus naar De Koog', FK(['die', 'dat'], 0, 'diedat',
+        'bus is a de-word, so die: de bus die.'), FK(['vanavond vertrekt', 'vertrekt vanavond'], 0, 'bijzin',
+        'die sends the verb to the end of its clause: die vanavond vertrekt.'), '?'] },
 
       // ---- builds: te and om ... te
       { en: 'I do not feel like waiting all day.', parts: ['Ik heb geen zin', FK(['om', 'dat'], 0, 'omte', 'zin hebben takes om: geen zin om, then te and the infinitive at the end.', 'word'), 'de hele dag', FK(['te wachten', 'wachten'], 0, 'omte', 'te stands right in front of the infinitive: om te wachten.'), '.'] },
@@ -61,13 +61,13 @@
         'niet stands before te: om de veerboot niet te missen.'), '.'] },
 
       // ---- builds: conditionals with als ... dan and zou
-      { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'conditie',
+      { en: 'If the ferry does not sail because of the fog, we stay here.', parts: ['Als de boot door de mist', FK(['niet vaart', 'vaart niet'], 0, 'cond',
         'als sends the verb to the end of its clause: als de boot niet vaart.'), ',', FK(['dan blijven we', 'dan we blijven'], 0, 'v2',
         'dan takes slot 1 of the main clause, so the verb comes next: dan blijven we.'), 'hier.'] },
-      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'conditie', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
+      { en: 'If I had more time, I would take the bike.', parts: ['Als ik meer tijd', FK(['had', 'hebben', 'hadden'], 0, 'cond', 'An if that is not real takes the imperfectum: als ik meer tijd had.', 'past'), ',', FK(['zou ik', 'ik zou'], 0, 'zou',
         'After the als clause the main clause starts with its verb: zou ik.'), 'de fiets nemen.'] },
       { en: 'If the bus is late, we take the bikes.', parts: ['Als de bus te laat', FK(['is', 'zijn'], 0, 'presens',
-        'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'conditie',
+        'One bus, so the verb takes the singular: de bus is.'), ',', FK(['nemen we', 'we nemen'], 0, 'cond',
         'After the als clause the main clause starts with its verb: nemen we de fietsen.'), 'de fietsen.'] },
       { en: 'Could you tell me where the ferry leaves from?', parts: [FK(['Zou', 'Zouden'], 0, 'zou',
         'u takes the singular: zou u. zou plus kunnen makes the request polite.'), 'u mij kunnen zeggen waar', FK(['de veerboot vertrekt', 'vertrekt de veerboot'], 0, 'bijzin', 'An indirect question sends the verb to the end: waar de veerboot vertrekt.'), '?'] },
@@ -78,10 +78,10 @@
       { en: 'My sister lives on Texel. I cycle there every year.', parts: ['Mijn zus woont op Texel. Ik fiets', FK(['er', 'het'], 0, 'er',
         'A place that was just named becomes er: ik fiets er.'), 'elk jaar', FK(['naartoe', 'toe'], 0, 'er',
         'To a place just named, er takes naartoe: ik fiets er naartoe.'), '.'] },
-      { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'vnwadv',
+      { en: 'What are you waiting for? I am waiting for the bus.', parts: [FK(['Waar', 'Wat'], 0, 'pronadv',
         'A question about a thing with a preposition starts with waar: waar wacht je op.'), 'wacht je op? Ik wacht', FK(['op', 'aan'], 0, 'woord',
         'wachten goes with op: wachten op de bus.'), 'de bus.'] },
-      { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'vnwadv',
+      { en: 'What do you do with that old bike? I cycle to the beach on it.', parts: ['Wat doe je met die oude fiets? Ik fiets', FK(['ermee', 'met het'], 0, 'pronadv',
         'A preposition plus a thing becomes er plus the preposition, one word: ermee, erop, erin.'), 'naar het strand.'] },
 
       // ---- builds: review of earlier tiers
@@ -96,7 +96,7 @@
       { w: 'the crossing', nl: 'de overtocht' }, { w: 'the deck', nl: 'het dek', wrong: 'de dek' }, { w: 'the queue', nl: 'de wachtrij' },
       { w: 'the return ticket', nl: 'het retourtje', wrong: 'de retourtje' }, { w: 'the single ticket', nl: 'de enkele reis' },
       { w: 'the fare', nl: 'het tarief' }, { w: 'the driver', nl: 'de chauffeur' }, { w: 'the suitcase', nl: 'de koffer' },
-      { w: 'the rental bike', nl: 'de huurfiets' }, { w: 'the flat tyre', nl: 'de lekke band' }, { w: 'the saddle', nl: 'het zadel', wrong: 'de zadel' },
+      { w: 'the rental bike', nl: 'de huurfiets' }, { w: 'the flat tyre', nl: 'de lekke band' }, { w: 'the saddle', nl: 'het zadel' },
       { w: 'the helmet', nl: 'de helm' }, { w: 'the roundabout', nl: 'de rotonde' }, { w: 'the crossroads', nl: 'het kruispunt', wrong: 'de kruispunt' },
       { w: 'the detour', nl: 'de omleiding' }, { w: 'the destination', nl: 'de bestemming' },
       // replay from level 86 (Urk)

@@ -88,7 +88,7 @@
         w: 'heb plus a participle at the end is something done: gefixt. Found would be gevonden.' },
       { read: true, nl: 'Je hoeft je camera niet aan te zetten.', en: "You don't have to turn your camera on.",
         o: ["You don't have to turn your camera on.", "You mustn't turn your camera on.", "Your camera isn't on."], a: 0, r: 'mag',
-        w: 'Je hoeft niet te means you don\'t have to. You mustn\'t would be je mag je camera niet aanzetten.' },
+        w: 'hoeft niet te means you don\'t have to. You mustn\'t would be je mag je camera niet aanzetten.' },
       { read: true, nl: 'De Kamer heeft weer drie uur vergaderd.', en: 'Parliament met for three hours again.',
         o: ['Parliament met for three hours again.', 'Parliament will meet for three hours.', 'Parliament has three rooms again.'], a: 0, r: 'perf',
         w: 'heeft plus vergaderd is done and over. ver- words take no ge-: vergaderd.' },

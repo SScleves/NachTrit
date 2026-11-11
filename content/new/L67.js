@@ -99,6 +99,6 @@
 
       // ---- de of het
       { dehet: true, nl: 'meubel', art: 'het', en: 'the piece of furniture', w: 'het meubel. The plural is de meubels, because every plural is de.' },
-      { dehet: true, nl: 'schilderij', art: 'het', en: 'the painting' },
+      { dehet: true, nl: 'gezin', art: 'het', en: 'the family' },
     ] }]);
 })();

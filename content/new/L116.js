@@ -114,7 +114,7 @@
       { read: true, nl: 'Dat is wel duur, hè?', o: ["That is quite expensive, isn't it?", 'That is not expensive at all.', "That is cheap, isn't it?"], a: 0, r: 'soft',
         w: 'wel here makes duur a little stronger, and hè asks you to agree. Nothing in it says cheap.' },
       { read: true, nl: 'Kunt u mij vertellen waar de paskamers zijn?', o: ['Could you tell me where the fitting rooms are?', 'Could you take me to the fitting rooms?', 'Can I tell you where the fitting rooms are?'], a: 0, r: 'formeel',
-        w: 'u is the one you ask and mij is you: can you tell me. vertellen is tell, not take.' },
+        w: 'u is the one asked and mij is the speaker. vertellen is tell, not take.' },
       { read: true, nl: 'De verkoop van wandelschoenen loopt als een trein.', o: ['Walking shoes are selling extremely well.', 'Walking shoes are sold at the station.', 'Walking shoes sell as slowly as a train.'], a: 0, r: 'idioom',
         w: 'als een trein lopen is a fixed phrase: it goes smoothly and fast. Nobody takes a train.' },
       { read: true, nl: 'In de uitverkoop vlogen de schoenen de deur uit.', o: ['In the sale the shoes sold very fast.', 'In the sale the shoes were thrown out of the shop.', 'In the sale the door was left open.'], a: 0, r: 'idioom',

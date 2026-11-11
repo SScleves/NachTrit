@@ -24,8 +24,8 @@
 // hond, huis and fiets are not word items here either).
 (() => {
   window.RULES.omte = window.RULES.omte || { name: 'te plus infinitive: om ... te', note: 'Thuis met je vrouw' };
-  window.RULES.voorwaarde = window.RULES.voorwaarde || { name: 'If ... then: als ... dan, zou', note: 'zullen' };
-  window.RULES.erop = window.RULES.erop || { name: 'Pronominal adverbs: erop, er ... over', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
+  window.RULES.cond = window.RULES.cond || { name: 'Conditionals: als ... dan, zou', note: 'bijzin - werkwoord naar het einde' };
+  window.RULES.pronadv = window.RULES.pronadv || { name: 'Pronominal adverbs: erbij, ermee, waar ... op', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.er = window.RULES.er || { name: 'er: place, quantity, there is', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'trappen-van-vergelijking-comparison' };
   window.RULES.zou = window.RULES.zou || { name: 'zou + infinitive: polite requests', note: 'zullen' };
@@ -41,12 +41,12 @@
       want: 'Since the mist everyone who spoke Dutch has changed, and on Texel they changed into sheep, or into someone who talks to sheep. They fill every room and explain which one, why and what if: die and dat, om te, als dan, and the little words er, erop and ermee. Paola, still taller than you, checks where you put the verb. The sheep know. The sheep are not talking.' },
     items: [
       // ---- builds: relative clauses, die for de-words, dat for het-words, the verb at the very end
-      { en: 'The dog that always sleeps on the couch is not allowed to lie there.', parts: ['De hond', FK(['die', 'dat'], 0, 'diedat',
-        'hond is a de-word, so die. dat is for het-words.'), FK(['altijd op de bank slaapt', 'slaapt altijd op de bank'], 0, 'bijzin',
-        'A die-clause is a sub-clause, so the verb goes to the very end: altijd op de bank slaapt.'), ', mag daar niet liggen.'] },
-      { en: 'The sheep that is still standing behind the barn is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
-        'schaap is a het-word, so dat.'), FK(['nog achter de schapenboet staat', 'staat nog achter de schapenboet'], 0, 'bijzin',
-        'The verb of the dat-clause goes last: nog achter de schapenboet staat.'), ', is niet van ons.'] },
+      { en: 'The dog that always sleeps is not allowed to lie on the couch.', parts: ['De hond', FK(['die', 'dat'], 0, 'diedat',
+        'hond is a de-word, so die. dat is for het-words.'), FK(['altijd slaapt', 'slaapt altijd'], 0, 'bijzin',
+        'A die-clause is a sub-clause, so the verb goes to the very end: altijd slaapt.'), ', mag niet op de bank liggen.'] },
+      { en: 'The sheep that is standing over there is not ours.', parts: ['Het schaap', FK(['dat', 'die'], 0, 'diedat',
+        'schaap is a het-word, so dat.'), FK(['daar staat', 'staat daar'], 0, 'bijzin',
+        'The verb of the dat-clause goes last: daar staat.'), ', is niet van ons.'] },
       { en: 'The chair that Paola bought is now in the guest room.', parts: ['De stoel', FK(['die', 'dat'], 0, 'diedat', 'stoel is a de-word, so the relative word is die.'), 'Paola kocht, staat nu in de logeerkamer.'] },
 
       // ---- builds: te plus infinitive and om ... te
@@ -56,9 +56,9 @@
 
       // ---- builds: als ... dan and zou
       { en: 'If I had time, I would walk to the lighthouse with the dogs.', parts: ['Als ik tijd had,', FK(['zou ik', 'ik zou'], 0, 'v2',
-        'The als-clause fills slot 1, so the verb comes next: zou ik.'), 'met de honden naar de vuurtoren', FK(['lopen', 'liep', 'gelopen'], 0, 'voorwaarde', 'zou is followed by the bare infinitive at the end: zou lopen.', 'verb'), '.'] },
-      { en: 'If you miss the last ferry, you live here from now on.', parts: [FK(['Als je de laatste boot mist,', 'Als je mist de laatste boot,'], 0, 'bijzin',
-        'als opens the condition and sends mist to the end of its clause. dan opens the result.'), 'dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
+        'The als-clause fills slot 1, so the verb comes next: zou ik.'), 'met de honden naar de vuurtoren', FK(['lopen', 'liep', 'gelopen'], 0, 'cond', 'zou is followed by the bare infinitive at the end: zou lopen.', 'verb'), '.'] },
+      { en: 'If you miss the ferry, you live here from now on.', parts: ['Als je', FK(['de boot mist', 'mist de boot'], 0, 'bijzin',
+        'als sends the verb to the end of its clause: de boot mist.'), ', dan', FK(['woon je', 'woont je'], 0, 'presens', 'When je comes right after the verb, the t drops: woon je.'), 'hier voortaan.'] },
       { en: 'Could you walk the dogs for a moment?', parts: ['Zou je de honden even', FK(['kunnen uitlaten', 'te kunnen uitlaten', 'kan uitlaten'], 0, 'zou',
         'zou asks politely, kunnen follows as an infinitive and uitlaten closes: kunnen uitlaten.'), '?'] },
 
@@ -72,9 +72,9 @@
         'After meer or any comparative, Dutch says dan.'), 'mensen.'] },
 
       // ---- builds: pronominal adverbs
-      { en: 'On Saturday we go to Texel. I am looking forward to it.', parts: ['Zaterdag gaan we naar Texel. Ik verheug me', FK(['erop', 'ermee', 'eraan'], 0, 'erop',
+      { en: 'On Saturday we go to Texel. I am looking forward to it.', parts: ['Zaterdag gaan we naar Texel. Ik verheug me', FK(['erop', 'ermee', 'eraan'], 0, 'pronadv',
         'verheugen takes op, and op plus it becomes erop.'), '.'] },
-      { en: 'The neighbour has a new shed and talks about it all day.', parts: ['De buurman heeft een nieuwe schuur en praat', FK(['er', 'het', 'zich'], 0, 'erop', 'praten over a thing becomes er ... over: er early, over at the end.'), 'de hele dag over.'] },
+      { en: 'The neighbour has a new shed and talks about it all day.', parts: ['De buurman heeft een nieuwe schuur en praat', FK(['er', 'het', 'zich'], 0, 'pronadv', 'praten over a thing becomes er ... over: er early, over at the end.'), 'de hele dag over.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'I stay home because the ferry is not sailing.', parts: ['Ik blijf thuis omdat de veerboot', FK(['niet vaart', 'vaart niet'], 0, 'bijzin', 'omdat sends vaart to the end: niet vaart.'), '.'] },
@@ -98,10 +98,10 @@
       // ---- reads: three traps with their own options, three lines from the island
       { read: true, nl: 'De schapen die op de dijk staan, kijken naar de veerboot.', o: ['The sheep that stand on the dyke look at the ferry.', 'The sheep stand on the dyke when they look at the ferry.', 'The ferry looks at the sheep on the dyke.'], a: 0, r: 'diedat',
         w: 'die points back to de schapen and the clause says which sheep. It is not a when.' },
-      { read: true, nl: 'Als het niet zo hard waaide, zouden de schapen buiten blijven.', o: ['If it did not blow so hard, the sheep would stay outside.', 'When it does not blow so hard, the sheep stay outside.', 'The sheep stayed outside because it blew so hard.'], a: 0, r: 'voorwaarde',
-        w: 'als plus the past waaide, then zouden plus the infinitive: a what-if, not something that happens. The plain past would be bleven.' },
-      { read: true, nl: 'Het dak is lek. Kun je er even naar kijken?', o: ['The roof leaks. Can you take a look at it?', 'The roof leaks. Can you look over there for a moment?', 'The roof leaks. Can you look it up later?'], a: 0, r: 'erop',
-        w: 'er ... naar kijken is look at it: er stands for het dak and naar waits at the end. Over there would be daar.' },
+      { read: true, nl: 'Als het niet zo hard waaide, zouden de schapen buiten blijven.', o: ['If it did not blow so hard, the sheep would stay outside.', 'When it does not blow so hard, the sheep stay outside.', 'The sheep stayed outside because it blew so hard.'], a: 0, r: 'cond',
+        w: 'als plus waaide, then zouden plus the infinitive: a what-if. The plain past would be bleven.' },
+      { read: true, nl: 'Het dak is lek. Kun je er even naar kijken?', o: ['The roof leaks. Can you take a look at it?', 'The roof leaks. Can you look over there for a moment?', 'The roof leaks. Can you look it up later?'], a: 0, r: 'pronadv',
+        w: 'er ... naar kijken is look at it: er stands for het dak. Over there would be daar.' },
       { read: true, nl: 'Een Skuumkoppe, graag.', en: "A Skuumkoppe, please (the island brewery's best-known beer)." },
       { read: true, nl: 'Hoe laat vertrekt de laatste boot terug?', en: 'What time does the last ferry back leave?' },
       { read: true, nl: 'De schapen weten ervan. De schapen zeggen niks.', en: 'The sheep know about it. The sheep are not saying anything.' },

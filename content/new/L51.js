@@ -32,7 +32,7 @@
       // the house, room by room
       { w: 'the hallway', nl: 'de gang' }, { w: 'the attic', nl: 'de zolder' }, { w: 'the chair', nl: 'de stoel' },
       { w: 'the cupboard', nl: 'de kast' }, { w: 'the fridge', nl: 'de koelkast' }, { w: 'the wall', nl: 'de muur' },
-      { w: 'the curtain', nl: 'het gordijn', wrong: 'de gordijn' }, { w: 'the mirror', nl: 'de spiegel' },
+      { w: 'the curtain', nl: 'het gordijn' }, { w: 'the mirror', nl: 'de spiegel' },
       { w: 'the heating', nl: 'de verwarming', wrong: 'het verwarming' }, { w: 'the pillow', nl: 'het kussen', wrong: 'de kussen' },
       { w: 'the plate', nl: 'het bord', wrong: 'de bord' },
       // replay from Alblasserdam and Gouda

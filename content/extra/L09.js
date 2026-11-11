@@ -44,7 +44,7 @@
     { read: true, nl: 'Nog tien minuten.', en: 'Ten more minutes.',
       o: ['Ten more minutes.', 'Ten minutes ago.', 'Ten minutes late.'], a: 0, r: 'woord', w: 'Ten more minutes. nog is still or more. Ago is geleden, late is te laat.' },
     { read: true, nl: 'De pin doet het niet.', en: "The card machine isn't working.",
-      o: ["The card machine isn't working.", 'We only take cards.', 'Enter your PIN.'], a: 0, r: 'woord', w: "The card machine isn't working. doet het niet means does not work, and de pin is the card machine." },
+      o: ["The card machine isn't working.", 'We only take cards.', 'Enter your PIN.'], a: 0, r: 'woord', w: "doet het niet means does not work, and de pin is the card machine." },
     { read: true, nl: 'Ik trakteer.', en: "It's my treat.",
       o: ["It's my treat.", "Let's split it.", 'You pay this time.'], a: 0, r: 'woord', w: "It's my treat. trakteren means you pay for everyone, so nobody splits anything." },
 
@@ -61,6 +61,6 @@
     { en: 'The fries are cold.', parts: ['De friet', FK(['is', 'zijn'], 0, 'zijn', 'De friet is one portion, so it takes is. Only de frieten would take zijn.'), 'koud.'] },
     { en: 'Two pizzas, please.', parts: ['Twee', FK(['pizza\'s', 'pizzas'], 0, 'spel', 'pizza ends in a long a, and the \'s keeps it long in the plural: pizza\'s.', 'spell'), ', alstublieft.'] },
     { en: 'The food is tasty.', parts: [FK(['Het', 'De'], 0, 'dehet', 'eten here is a verb used as a noun, and those are always het: het eten.'), 'eten is lekker.'] },
-    { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'pres', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
+    { en: 'We split the bill.', parts: ['We', FK(['delen', 'deelt', 'deel'], 0, 'presens', 'we is plural, so the verb is the whole infinitive: delen.'), 'de rekening.'] },
   ] });
 })();

@@ -12,8 +12,8 @@
 
 (() => {
   window.RULES.vergelijk = window.RULES.vergelijk || { name: 'Comparing: groter dan, het grootst', note: 'Trappen van vergelijking · comparison' };
-  window.RULES.objpron = window.RULES.objpron || { name: 'Object pronouns: me, je, hem, haar, ons, ze', note: 'hem / haar' };
-  window.RULES.eris = window.RULES.eris || { name: 'er is, er zijn', note: 'ER — het kleine woord met veel banen · the little word' };
+  window.RULES.obj = window.RULES.obj || { name: 'Object pronouns: me, je, hem, haar, ons, jullie, ze', note: 'MOC Lidwoorden & voornaamwoorden' };
+  window.RULES.er = window.RULES.er || { name: 'er is, er zijn', note: 'er-het-kleine-woord-met-veel-banen-the-little-word' };
   window.RULES.presens = window.RULES.presens || { name: 'Present tense endings', note: 'presens' };
 
   const P = window.TIER_PRESET[4];
@@ -30,8 +30,8 @@
       // ---- words
       { w: 'the sea', nl: 'de zee', wrong: 'het zee' },
       { w: 'the storm surge barrier', nl: 'de stormvloedkering' },
-      { w: 'the pillar', nl: 'de pijler' },
-      { w: 'the gate (of a barrier)', nl: 'de schuif' },
+      { w: 'the tourist', nl: 'de toerist' },
+      { w: 'the feeling', nl: 'het gevoel', wrong: 'de gevoel' },
       { w: 'the island', nl: 'het eiland', wrong: 'de eiland' },
       { w: 'the sea dyke', nl: 'de zeedijk' },
       { w: 'the flood disaster of 1953', nl: 'de watersnoodramp' },
@@ -45,13 +45,13 @@
       { w: 'the tower', nl: 'de toren' },
       { w: 'the rising tide', nl: 'de vloed' },
       { w: 'low tide', nl: 'de eb' },
-      { w: 'the seagull', nl: 'de meeuw' },
+      { w: 'the swimming pool', nl: 'het zwembad', wrong: 'de zwembad' },
       { w: 'the museum', nl: 'het museum', wrong: 'de museum' },
-      { w: 'the concrete', nl: 'het beton', wrong: 'de beton' },
+      { w: 'the coach', nl: 'de trainer' },
       { w: 'the helmet', nl: 'de helm' },
 
       // ---- builds: er is / er zijn
-      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'eris', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
+      { en: 'There are 62 doors in the sea.', parts: ['Er', FK(['zijn', 'is'], 0, 'er', 'Sixty-two doors is plural, so er zijn.', 'verb'), 'tweeënzestig deuren in de zee.'] },
       { en: 'There is a museum in Ouwerkerk.', parts: ['In Ouwerkerk', FK(['is er', 'er is'], 0, 'v2', 'In Ouwerkerk takes slot 1, so the verb comes next and er follows it.'), 'een museum.'] },
       { en: 'Tonight there is a storm at sea.', parts: ['Vannacht', FK(['is er', 'er is'], 0, 'v2', 'Vannacht takes slot 1, so the verb comes next and er follows it.'), 'een storm op zee.'] },
 
@@ -69,22 +69,22 @@
       { en: 'Neeltje Jans is a big island.', parts: ['Neeltje Jans is een', FK(['groot', 'grote'], 0, 'adj', 'een plus a het-word is the one cell without -e: een groot eiland.'), 'eiland.'] },
 
       // ---- builds: object pronouns
-      { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'objpron', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
+      { en: "Someone is knocking. I can't see him.", parts: ['Er klopt iemand. Ik zie', FK(['hem', 'hij', 'zijn'], 0, 'obj', 'He gets seen, he does not do the seeing: hem.'), 'niet.'] },
       { en: "In the mist I can't see her.", parts: ['In de mist', FK(['zie ik', 'ik zie'], 0, 'v2', 'In de mist takes slot 1, so the verb comes second, then ik.'), 'haar niet.'] },
-      { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'objpron', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
-      { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'objpron', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
-      { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'objpron', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },
+      { en: "The dogs are gone. I'm looking for them.", parts: ['De honden zijn weg. Ik zoek', FK(['ze', 'zij'], 0, 'obj', 'After the verb, them is ze. zij is only the one doing it.'), '.'] },
+      { en: 'Sir, can you help us?', parts: ['Meneer, kunt u', FK(['ons', 'wij', 'onze'], 0, 'obj', 'We get the help, so ons. wij does things, onze goes before a noun.'), 'helpen?'] },
+      { en: 'Paola calls me. Where are you?', parts: ['Paola belt', FK(['me', 'ik', 'mijn'], 0, 'obj', 'Paola does the calling, I get called: me.'), '. Waar ben je?'] },
 
       // ---- reading
       { read: true, nl: 'Het waait vandaag hard.', en: 'It is blowing hard today.' },
       { read: true, nl: 'De kering is dicht.', o: ['The barrier is closed.', 'The barrier is close by.', 'The barrier is broken.'], a: 0, r: 'woord', w: 'dicht means shut. Close by is dichtbij, broken is kapot.' },
-      { read: true, nl: 'De golven zijn hoog.', o: ['The waves are high.', 'The golfers are high.', 'The gulls are high.'], a: 0, r: 'woord', w: 'de golf is a wave, de golven the waves. The sport is het golf and has no plural. Gulls are meeuwen.' },
+      { read: true, nl: 'De golven zijn hoog.', o: ['The waves are high.', 'The golfers are high.', 'The gulls are high.'], a: 0, r: 'woord', w: 'de golf is a wave, de golven the waves. The sport is het golf. Gulls are meeuwen.' },
       { read: true, nl: 'Het is eb.', o: ['The tide is out.', 'It is evening.', 'It is over.'], a: 0, r: 'woord', w: 'eb is low tide, vloed is the rising tide. Evening is de avond.' },
       { read: true, nl: 'Er is geen gevaar.', en: 'There is no danger.' },
       { read: true, nl: 'Mosselen zijn hier het lekkerst.', en: 'Mussels taste best here.' },
 
       // ---- listening
-      { listen: true, nl: 'negentien drieënvijftig', en: '1953' },
+      { listen: true, nl: 'eb en vloed', en: 'low and high tide' },
       { listen: true, nl: 'tweeënzestig deuren', en: '62 doors' },
       { listen: true, nl: 'de Zeeuwse bolus', en: 'the Zeeland bolus' },
 

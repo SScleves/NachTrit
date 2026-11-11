@@ -58,18 +58,18 @@ const rare = [...gameStems].filter(s => !seenStem.has(s)).length;
 // ---- grammar sequence ----
 // a standard order for Dutch as a second language (Nederlands in gang, Code Nederlands, the A1-B1 NT2 syllabi),
 // as ranks: lower comes first. Rules with the same rank may come in any order.
-const RANK = { groet: 1, woord: 1, getal: 1, zijn: 1, hebben: 1, dehet: 1, pres: 2, presens: 2, bezit: 2, vraag: 3, neg: 3, meervoud: 3, spel: 3, klok: 3, datum: 3, cult: 3,
-  v2: 4, tmp: 4, adj: 4, obj: 4, objpron: 4, er: 4, eris: 4, verklein: 4, weg: 4, imper: 5, gebod: 5, modal: 5, soft: 5, formeel: 5, mag: 6, sep: 6, fut: 6, vergelijk: 6, vgl: 6, refl: 6, samen: 6,
-  perf: 7, aux: 7, kof: 7, aanhet: 7, al: 7, imp: 8, omte: 8, mening: 9, bijzin: 9, diedat: 9, zou: 9, zullen: 9, idioom: 9, pronadv: 10, erop: 10, vnwadv: 10, sepbz: 10, indirect: 10, hoewel: 10,
-  cond: 10, conditie: 10, alsdan: 10, voorwaarde: 10, plusq: 11, passief: 11 };
+const RANK = { groet: 1, woord: 1, getal: 1, zijn: 1, hebben: 1, dehet: 1, presens: 2, bezit: 2, vraag: 3, neg: 3, meervoud: 3, spel: 3, klok: 3, datum: 3, cult: 3,
+  v2: 4, tmp: 4, adj: 4, obj: 4, er: 4, verklein: 4, weg: 4, gebod: 5, modal: 5, soft: 5, formeel: 5, mag: 6, sep: 6, fut: 6, vergelijk: 6, refl: 6, samen: 6,
+  perf: 7, aux: 7, kof: 7, aanhet: 7, al: 7, imp: 8, omte: 8, mening: 9, bijzin: 9, diedat: 9, zou: 9, zullen: 9, idioom: 9, pronadv: 10, sepbz: 10, indirect: 10, hoewel: 10,
+  cond: 10, plusq: 11, passief: 11 };
 // what each rule needs first (any one of each inner list)
 const NEEDS = {
-  v2: [['pres', 'presens', 'zijn', 'hebben']], vraag: [['pres', 'presens', 'zijn', 'hebben']], neg: [['pres', 'presens', 'zijn', 'hebben']], modal: [['pres', 'presens']], sep: [['pres', 'presens'], ['v2']],
-  perf: [['pres', 'presens', 'hebben'], ['v2']], aux: [['perf']], kof: [['perf', 'imp']], imp: [['pres', 'presens']], plusq: [['perf'], ['imp']], passief: [['perf']],
+  v2: [['presens', 'zijn', 'hebben']], vraag: [['presens', 'zijn', 'hebben']], neg: [['presens', 'zijn', 'hebben']], modal: [['presens']], sep: [['presens'], ['v2']],
+  perf: [['presens', 'hebben'], ['v2']], aux: [['perf']], kof: [['perf', 'imp']], imp: [['presens']], plusq: [['perf'], ['imp']], passief: [['perf']],
   bijzin: [['v2']], sepbz: [['sep'], ['bijzin']], diedat: [['bijzin'], ['dehet']], indirect: [['bijzin'], ['vraag']], hoewel: [['bijzin']], mening: [['bijzin']],
-  cond: [['bijzin']], conditie: [['bijzin']], alsdan: [['bijzin']], voorwaarde: [['bijzin']], zou: [['modal'], ['imp']], zullen: [['modal']], fut: [['modal', 'pres', 'presens']],
-  omte: [['modal']], aanhet: [['pres', 'presens']], refl: [['pres', 'presens'], ['obj', 'objpron']], adj: [['dehet']], vergelijk: [['adj']], vgl: [['adj']], verklein: [['dehet']],
-  mag: [['modal'], ['neg']], pronadv: [['obj', 'objpron', 'er', 'eris']], erop: [['er', 'eris']], vnwadv: [['er', 'eris']], tmp: [['v2']], gebod: [['pres', 'presens']], imper: [['pres', 'presens']],
+  cond: [['bijzin']], zou: [['modal'], ['imp']], zullen: [['modal']], fut: [['modal', 'presens']],
+  omte: [['modal']], aanhet: [['presens']], refl: [['presens'], ['obj']], adj: [['dehet']], vergelijk: [['adj']], verklein: [['dehet']],
+  mag: [['modal'], ['neg']], pronadv: [['obj', 'er']], tmp: [['v2']], gebod: [['presens']],
 };
 const first = {}, firstCount = {};
 levels.forEach((lv, i) => { for (const it of lv.items) for (const f of forksOf(it)) { if (!(f.r in first)) first[f.r] = i; if (first[f.r] === i) firstCount[f.r] = (firstCount[f.r] || 0) + 1; } });
@@ -84,7 +84,7 @@ for (const [r, groups] of Object.entries(NEEDS)) {
   }
 }
 // rank inversions on the core path the plan names
-const CORE = [['pres/presens', ['pres', 'presens']], ['v2', ['v2']], ['questions (vraag)', ['vraag']], ['modal', ['modal']], ['sep', ['sep']], ['perf', ['perf']], ['imp', ['imp']], ['bijzin', ['bijzin']]];
+const CORE = [['pres/presens', ['presens']], ['v2', ['v2']], ['questions (vraag)', ['vraag']], ['modal', ['modal']], ['sep', ['sep']], ['perf', ['perf']], ['imp', ['imp']], ['bijzin', ['bijzin']]];
 const coreFirst = CORE.map(([n, ids]) => [n, Math.min(...ids.map(x => first[x] ?? Infinity))]);
 const coreInv = []; for (let a = 0; a < coreFirst.length; a++) for (let b = a + 1; b < coreFirst.length; b++) if (coreFirst[b][1] < coreFirst[a][1]) coreInv.push(`${coreFirst[b][0]} (${at(coreFirst[b][1] === Infinity ? null : coreFirst[b][1])}) before ${coreFirst[a][0]} (${at(coreFirst[a][1] === Infinity ? null : coreFirst[a][1])})`);
 // structures used in right sentences before the rule is first tested
@@ -133,9 +133,11 @@ md.push(coreInv.length ? 'Out of order: ' + coreInv.join('; ') + '.' : 'In order
 const late = seq.filter(x => x.rank != null && x.rank <= 5 && x.index > 50);
 md.push('', '### Basics that arrive late', '', 'Rules of rank 5 or lower whose first fork comes after play position 50 (halfway). The words may be used earlier; the rule is not tested.', '');
 md.push(late.length ? late.map(x => `- **${x.rule}** (${x.name}), rank ${x.rank}: first tested at L${x.first}, position ${x.index}, ${x.town}`).join('\n') : 'None.');
+// ids that once named the same rule (merged on 11 Nov 2026); a group is reported again if two of its ids are in use
 const SYN = [['pres', 'presens'], ['vergelijk', 'vgl'], ['obj', 'objpron'], ['er', 'eris'], ['gebod', 'imper'], ['cond', 'conditie', 'alsdan', 'voorwaarde'], ['pronadv', 'vnwadv', 'erop']];
-md.push('', '### Rule ids that name the same rule', '', 'These pairs split one rule over two or more ids, so a per-rule count (the weakest-rule line in 3d, the learner model in phase 4) sees two half-rules. Merge them before phase 4.', '');
-for (const g of SYN) md.push(`- ${g.map(r => `\`${r}\` (${(RULES[r] || {}).name || '?'}, ${seq.find(x => x.rule === r) ? 'first L' + seq.find(x => x.rule === r).first : 'unused'})`).join(' = ')}`);
+md.push('', '### Rule ids that name the same rule', '', 'Two ids for one rule would give a per-rule count (the weakest-rule line in 3d, the learner model in phase 4) two half-rules. The seven groups found on 11 Nov 2026 were merged (pres into presens, vgl into vergelijk, objpron into obj, eris into er, imper into gebod, conditie, alsdan and voorwaarde into cond, vnwadv and erop into pronadv).', '');
+const dupGroups = SYN.map(g => g.filter(r => seq.some(x => x.rule === r))).filter(g => g.length > 1);
+md.push(dupGroups.length ? dupGroups.map(g => `- ${g.map(r => `\`${r}\``).join(' = ')} are both in use again: merge them.`).join('\n') : 'None in use.');
 md.push('', '### Structures used in right sentences before their rule is tested', '', 'Not wrong in itself (a learner can read a sentence before being tested on its grammar), but a fork elsewhere in the sentence then rests on grammar the player has not met.', '');
 for (const [r, u] of Object.entries(usedEarly)) md.push(`- **${r}** (first tested ${u.firstTested}): ${u.sentences} sentences in ${u.levels.length} earlier levels. ${u.examples.join(' · ')}`);
 md.push('', '## Every level', '', '| Level | Town | CEFR | Lemmas | New | Cumulative | New met 4+ times | Never again |', '|---|---|---|---|---|---|---|---|');

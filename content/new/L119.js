@@ -97,7 +97,7 @@
       { w: 'the coffee vending machine', nl: 'de koffieautomaat' }, { w: 'the meeting room', nl: 'de vergaderruimte' },
       { w: 'the working-from-home day', nl: 'de thuiswerkdag' }, { w: 'the leave, the time off', nl: 'het verlof', wrong: 'de verlof' },
       { w: 'the start-up', nl: 'de start-up' }, { w: 'the soup factory', nl: 'de soepfabriek' },
-      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket', wrong: 'de ticket' },
+      { w: 'the intern', nl: 'de stagiair' }, { w: 'the ticket (in the backlog)', nl: 'het ticket' },
       { w: 'the backup', nl: 'de back-up' }, { w: 'the alert', nl: 'de melding' },
       { w: 'the Friday drinks', nl: 'de vrijmibo' }, { w: 'the payslip', nl: 'de loonstrook' },
 
@@ -107,7 +107,7 @@
       { read: true, nl: 'Het voorstel viel in het water.', o: ['The proposal fell through.', 'The proposal fell into the river.', 'The proposal was soaked.'], a: 0, r: 'idioom',
         w: 'in het water vallen means a plan does not go ahead. Nothing got wet, not even in Nijmegen.' },
       { read: true, nl: 'Mocht u verhinderd zijn, dan verzoeken wij u dit tijdig te melden.', o: ['If you cannot come, please let us know in good time.', 'If you can come, please tell us in good time.', 'You may not come late, please be on time.'], a: 0, r: 'formeel',
-        w: 'Mocht u ... zijn is a formal if, and verhinderd means unable to come. tijdig means in good time.' },
+        w: 'Mocht u ... zijn is a formal if, and verhinderd means unable to come. tijdig means in time.' },
       { read: true, nl: 'Dat is wel even wat anders.', o: ['That is really something else.', 'That is the same thing for a moment.', 'That will change in a minute.'], a: 0, r: 'soft',
         w: 'wel even does not mean a moment here: it stresses how different it is.' },
       { read: true, nl: 'Tot morgen, werk ze nog.', en: 'See you tomorrow, good luck with the rest of the work (a fixed goodbye between colleagues).' },

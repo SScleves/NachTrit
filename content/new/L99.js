@@ -113,10 +113,10 @@
       { read: true, nl: 'Hoewel de keuken klein is, eten we er graag.', o: ['Although the kitchen is small, we like eating there.', 'Because the kitchen is small, we like eating there.', 'The kitchen is small, so we want a bigger one.'], a: 0, r: 'hoewel',
         w: 'hoewel means although: the small size is a fact and we eat there anyway. Because would be omdat.' },
       { read: true, nl: 'Paola zal nu wel moe zijn van de borrel.', o: ['Paola is probably tired from the drinks by now.', 'Paola will be tired from the drinks tomorrow.', 'Paola wants to be tired from the drinks.'], a: 0, r: 'zullen',
-        w: 'zal nu wel is a guess about now: she is probably tired. Tomorrow would need morgen, and wants would be wil.' },
+        w: 'zal nu wel is a guess about now: she is probably tired. Wants would be wil.' },
       { read: true, nl: 'Volgens Paola is de bank te groot.', o: ['According to Paola the couch is too big.', 'Paola thinks that I find the couch too big.', 'Paola says the couch is big enough.'], a: 0, r: 'mening',
         w: 'volgens Paola is according to Paola, and te groot is too big. Big enough would be groot genoeg.' },
-      { read: true, nl: 'Er zit een scheur in de muur sinds de beving.', en: 'There has been a crack in the wall since the quake.' },
+      { read: true, nl: 'Er zit een scheur in de muur.', en: 'There is a crack in the wall.' },
       { read: true, nl: 'Ik vind dat het te vroeg is om op te staan.', en: 'I think it is too early to get up.' },
       { read: true, nl: 'Hoe was je dag? Kon minder.', en: 'How was your day? Could be worse.' },
 

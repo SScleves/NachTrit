@@ -10,7 +10,7 @@ import { wordBag } from './lib/tasks.mjs';
 
 const ROOT = process.cwd(), OUT = path.join(ROOT, 'Opus 5.5 DT', 'reports'), MIN = 3;
 const { levels, towns } = loadContent(ROOT);
-const SUBCLAUSE = new Set(['bijzin', 'indirect', 'hoewel', 'sepbz', 'cond', 'conditie', 'alsdan', 'voorwaarde', 'diedat', 'omte', 'mening']);
+const SUBCLAUSE = new Set(['bijzin', 'indirect', 'hoewel', 'sepbz', 'cond', 'diedat', 'omte', 'mening']);
 const SUBJ = new Set('ik je jij u hij zij ze we wij jullie het er men'.split(' '));
 const ART = [['de', 'het'], ['deze', 'dit'], ['die', 'dat'], ['welke', 'welk']];
 const isArtFork = o => ART.some(pair => o.every(x => pair.includes(String(x).trim().toLowerCase())));

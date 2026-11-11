@@ -100,7 +100,7 @@
 
       // ---- reads: four traps with their own options, two plain lines
       { read: true, nl: 'We liepen ons de benen uit het lijf.', o: ['We walked ourselves off our feet.', 'Our legs fell off on the way.', 'We walked very slowly.'], a: 0, r: 'idioom',
-        w: 'zich de benen uit het lijf lopen is a fixed phrase for walking or running yourself into the ground. The legs stay on.' },
+        w: 'zich de benen uit het lijf lopen is a fixed phrase for exhausting yourself. The legs stay on.' },
       { read: true, nl: 'Rustig aan, hoor. Het is geen wedstrijd.', o: ['Take it easy, it is not a race.', 'Hurry up, it is a race.', 'Listen, the race is quiet.'], a: 0, r: 'soft',
         w: 'rustig aan means slow down, and hoor makes it friendly. It has nothing to do with listening.' },
       { read: true, nl: 'Deelnemers worden verzocht hun startbewijs zichtbaar te dragen.', o: ['Participants are asked to wear their start card where it can be seen.', 'Participants are asked to hide their start card.', 'Participants have to hand in their start card at the end.'], a: 0, r: 'formeel',

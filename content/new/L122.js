@@ -103,9 +103,9 @@
 
       // ---- words: the walk, the route, the city, six replayed from earlier places
       { w: 'the walker', nl: 'de wandelaar' }, { w: 'the gladiolus, handed to the finishers', nl: 'de gladiool' },
-      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the pontoon bridge', nl: 'de pontonbrug' },
+      { w: 'the Vierdaagse cross', nl: 'het Vierdaagsekruis', wrong: 'de Vierdaagsekruis' }, { w: 'the person from Nijmegen', nl: 'de Nijmegenaar' },
       { w: 'the field where the walk starts and ends', nl: 'de Wedren' }, { w: 'the crowd', nl: 'het publiek', wrong: 'de publiek' },
-      { w: 'the soldier', nl: 'de militair' }, { w: 'the rest stop', nl: 'de rustpost' },
+      { w: 'the soldier', nl: 'de militair' }, { w: 'the local resident', nl: 'de buurtbewoner' },
       { w: 'the Roman', nl: 'de Romein' }, { w: 'the oldest city', nl: 'de oudste stad' },
       { w: 'the Valkhof (the park on the hill by the river)', nl: 'het Valkhof', wrong: 'de Valkhof' }, { w: 'the rucksack', nl: 'de rugzak' },
       { w: 'the walking shoe', nl: 'de wandelschoen' }, { w: 'the blister', nl: 'de blaar' },
@@ -125,7 +125,7 @@
       { read: true, nl: 'Op de laatste dag lopen de wandelaars bij Cuijk over een pontonbrug die het leger over de Maas legt.', en: 'On the last day the walkers cross the Maas at Cuijk on a pontoon bridge laid by the army.' },
 
       // ---- listens: the last stretch, the crowd of walkers, the flowers, the river land
-      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'tienduizenden wandelaars', en: 'tens of thousands of walkers' },
+      { listen: true, nl: 'de Via Gladiola', en: 'the last stretch, where the walkers get their gladioli' }, { listen: true, nl: 'de bovenburen', en: 'the upstairs neighbours' },
       { listen: true, nl: 'de gladiolen', en: 'the gladioli' }, { listen: true, nl: 'de Betuwe', en: 'the river land north of the Waal' },
 
       // ---- looks: the dog, a lamp on the dyke, a tree on the route
@@ -133,7 +133,7 @@
       { look: true, prop: 'boom', nl: 'de boom', en: 'the tree' },
 
       // ---- de of het
-      { dehet: true, nl: 'kruisje', art: 'het', en: 'the small cross', w: 'Every -je word is het: het kruisje.' },
-      { dehet: true, nl: 'wandeltocht', art: 'de', en: 'the long walk', w: 'The last part decides: de tocht, so de wandeltocht.' },
+      { dehet: true, nl: 'eindsprint', art: 'de', en: 'the final sprint', w: 'The last part decides: de sprint, so de eindsprint.' },
+      { dehet: true, nl: 'inlogscherm', art: 'het', en: 'the login screen', w: 'The last part decides: het scherm, so het inlogscherm.' },
     ] }]);
 })();

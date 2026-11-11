@@ -97,7 +97,7 @@
 
       // ---- reads: four traps with their own options, two plain
       { read: true, nl: 'Volgens mij heeft hij een slecht humeur.', o: ['In my opinion he is in a bad mood.', 'He told me he is in a bad mood.', 'I am in a bad mood, he thinks.'], a: 0, r: 'mening',
-        w: 'Volgens mij is the speaker\'s opinion, and the verb comes right after it. The one in the bad mood is hij.' },
+        w: 'Volgens mij is the speaker\'s opinion, and the verb comes right after it.' },
       { read: true, nl: 'Hoewel het regent, gaan we naar de borrel.', o: ['Although it is raining, we are going to the borrel.', 'Because it is raining, we are going to the borrel.', 'It is raining, so we are not going to the borrel.'], a: 0, r: 'mening',
         w: 'hoewel means although. The rain is a reason to stay, and they go anyway.' },
       { read: true, nl: 'Hij zal wel moe zijn.', o: ['He is probably tired.', 'He will certainly be tired tomorrow.', 'He is not tired at all.'], a: 0, r: 'fut',
@@ -116,7 +116,7 @@
       { look: true, prop: 'brug', nl: 'de brug', en: 'the bridge' },
 
       // ---- de of het
-      { dehet: true, nl: 'ontmoeting', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de: de ontmoeting, de afspraak, de uitnodiging.' },
+      { dehet: true, nl: 'ontmoeting', art: 'de', en: 'the meeting', w: 'Words ending in -ing are de: de ontmoeting, de uitnodiging, de vergadering.' },
       { dehet: true, nl: 'gezeur', art: 'het', en: 'the nagging', w: 'Most nouns starting with ge- are het: het gezeur, het gesprek, het gevoel.' },
     ] }]);
 })();
