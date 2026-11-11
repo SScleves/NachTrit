@@ -1,13 +1,13 @@
 // The world map and the mission card: towns by tier (window.TOWNS, painted by map-art.js), which town is open and saved, the
 // route board with the cyclist riding between towns, the de/het bonus level per town, the town card, and the mission card with
 // its fares and the pictograms of its three words.
-import { $, FARES } from './engine.js?v=42';
-import { PICTO, PICTO_ALIAS } from './houses.js?v=42';
-import { DISTRICT_NEED, progress, S, scores, UNLOCK_ALL } from './state.js?v=42';
-import { audioCtx, initAudio } from './audio.js?v=42';
-import { startArt } from './intro.js?v=42';
-import './cine.js?v=42';   // keeps the order the game's code runs in
-import { trophyLevel, warmUp } from './main.js?v=42';   // later modules, through the hub
+import { $, FARES } from './engine.js?v=43';
+import { PICTO, PICTO_ALIAS } from './houses.js?v=43';
+import { DISTRICT_NEED, progress, S, scores, UNLOCK_ALL } from './state.js?v=43';
+import { audioCtx, initAudio } from './audio.js?v=43';
+import { startArt } from './intro.js?v=43';
+import './cine.js?v=43';   // keeps the order the game's code runs in
+import { trophyLevel, warmUp } from './main.js?v=43';   // later modules, through the hub
 
 // ---------- the world map ----------
 const PLACES = [['thuis', 'Thuis'], ['winkels', 'De winkels'], ['eten', 'Eten en drinken'], ['station', 'Het station'], ['werk', 'Het werk'], ['sport', 'De sport'], ['mensen', 'De mensen'], ['eigen', 'Alleen hier'], ['practice', 'Practice'], ['trophy', 'Trophy']];

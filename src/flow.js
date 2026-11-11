@@ -5,27 +5,27 @@
 // The learner model (PLAN.md phase 4, src/learn.js): a level ride counts in the save's ride counter, items due from earlier
 // levels replace up to a quarter of its deliveries (addReview), each item's first try moves its box (noteLearn), and the
 // save is written when the end card shows.
-import { refuelRight, TUNE } from './lamp.js?v=42';
-import { itemToEntry, levelQueue } from './forks.js?v=42';
-import { duePositions, noteItem, noteRule, reviewCap, selectDue } from './learn.js?v=42';
-import { whyBudget } from './reading.js?v=42';
-import { TASKS } from './tasks.js?v=42';
-import { VOICES } from './voice.js?v=42';
-import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=42';
-import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=42';
-import { camera, scene } from './render.js?v=42';
-import { setRoadLook } from './road.js?v=42';
-import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=42';
-import { buildScenery, theme, THEMES } from './scenery.js?v=42';
-import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=42';
-import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=42';
-import { plan, unplanFinish } from './plan.js?v=42';
-import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=42';
-import { chime, initAudio } from './audio.js?v=42';
-import { speak, speakSeq } from './speech.js?v=42';
-import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=42';
-import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=42';
-import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=42';   // later modules, through the hub
+import { refuelRight, TUNE } from './lamp.js?v=43';
+import { itemToEntry, levelQueue } from './forks.js?v=43';
+import { duePositions, noteItem, noteRule, reviewCap, selectDue } from './learn.js?v=43';
+import { whyBudget } from './reading.js?v=43';
+import { TASKS } from './tasks.js?v=43';
+import { VOICES } from './voice.js?v=43';
+import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=43';
+import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=43';
+import { camera, scene } from './render.js?v=43';
+import { setRoadLook } from './road.js?v=43';
+import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=43';
+import { buildScenery, theme, THEMES } from './scenery.js?v=43';
+import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=43';
+import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=43';
+import { plan, unplanFinish } from './plan.js?v=43';
+import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=43';
+import { chime, initAudio } from './audio.js?v=43';
+import { speak, speakSeq } from './speech.js?v=43';
+import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=43';
+import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=43';
+import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=43';   // later modules, through the hub
 
 // ---------- game flow ----------
 function start(lv) {
@@ -109,7 +109,7 @@ function showSummary(won) {
     if (stars > (progress[L.id] || 0)) { progress[L.id] = stars; saveProgress(); }
   }
   $('sumtitle').textContent = !L ? 'IT HAS YOU.' : !won ? 'IT HAS YOU.' : L.practice ? 'PRACTISED.' : stars ? 'DELIVERED.' : 'NOT ENOUGH.';
-  $('stars').textContent = L && won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+  $('stars').textContent = L && won && !L.practice ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
   $('sumline').textContent = !won ? (S.bad === 0 ? 'No mistakes. The lamp just ran out. Ride faster, collect the wisps.' : `${S.missList.length} mistake${S.missList.length === 1 ? '' : 's'} to practise.`)
     : L.practice ? 'A practice ride gives no stars. What you got right on the first try moves up in the word book.'
     : stars ? (stars === 3 ? 'Every delivery, lamp never below half. The dead are pleased.' : (L.deliveries >= 16 ? 'Delivered. Three stars allow one miss and need a healthy lamp.' : 'Delivered. Three stars need every one right with a healthy lamp.')) : `You need ${Math.ceil(S.deliveriesTotal * 0.66)} of ${S.deliveriesTotal} right for a star. Stars open the next town.`;
@@ -124,7 +124,7 @@ function showSummary(won) {
   const sk = L ? String(L.id) : 'endless';
   if ((!L || won) && !(L && L.practice) && S.score > (scores[sk] || 0)) scores[sk] = S.score;
   persist();   // stars, the best score and what this ride taught the learner model, in one write
-  $('s_wallet').textContent = FARES.fmtEuro(S.cents); $('s_score').textContent = S.score; $('s_best').textContent = scores[sk] || 0;
+  $('s_wallet').textContent = FARES.fmtEuro(S.cents); $('s_score').textContent = S.score; $('s_best').textContent = L && L.practice ? '–' : scores[sk] || 0;
   const f = FARES.fmtEuro;
   $('s_money').innerHTML = `<div>Fares ${f(S.paid)} · tips ${f(S.tips)} · Tikkie − ${f(S.tikkie)} · missed ${f(S.missed)}</div>`
     + (S.riding ? `<div>Niet afgeleverd · ${f(S.riding.fare)}</div>` : '') + (L && !won ? '<div>Score counts when you get home.</div>' : '')

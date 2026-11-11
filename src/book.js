@@ -4,17 +4,17 @@
 // Also the two rides built from the learner model: the practice ride (the 20 weakest items, no stars, small fares; the end
 // card links to it when there were misses) and the trophy ride per saved town (all its items, no hints, double fares).
 // The rules behind it are pure: src/learn.js (the model, the lists) and src/save.js (the file and the code).
-import { bookWords, ruleRows, weakest } from './learn.js?v=42';
-import { decodeCode, encodeCode, fromFile, toFile } from './save.js?v=42';
-import { entryText } from './forks.js?v=42';
-import { VOICES } from './voice.js?v=42';
-import { $ } from './engine.js?v=42';
-import { contentIndex, persist, S, SAVE } from './state.js?v=42';
-import { esc } from './hud.js?v=42';
-import { initAudio } from './audio.js?v=42';
-import { speak } from './speech.js?v=42';
-import { openMap, openMission, pictogram, TOWN_OF, towns } from './map.js?v=42';
-import './wallet.js?v=42';   // keeps the order the game's code runs in
+import { bookWords, ruleRows, weakest } from './learn.js?v=43';
+import { decodeCode, encodeCode, fromFile, toFile } from './save.js?v=43';
+import { entryText } from './forks.js?v=43';
+import { VOICES } from './voice.js?v=43';
+import { $ } from './engine.js?v=43';
+import { contentIndex, persist, S, SAVE } from './state.js?v=43';
+import { esc } from './hud.js?v=43';
+import { initAudio } from './audio.js?v=43';
+import { speak } from './speech.js?v=43';
+import { openMap, openMission, pictogram, TOWN_OF, towns } from './map.js?v=43';
+import './wallet.js?v=43';   // keeps the order the game's code runs in
 
 // ---------- practice and trophy rides ----------
 const PRACTICE_N = 20, TROPHY_N = 30;

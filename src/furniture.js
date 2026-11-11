@@ -1,11 +1,11 @@
 // Street furniture, each piece one merged kit (parked bikes, bakfiets, bins, moorings, ducks, signs, the windmill, trees,
 // fences, lamp posts), the house style per town, and a town's own look: towns3d/<id>.js registers window.NRTOWNS3D[id], T3()
 // reads the current town's, and townId is the town the world is dressed as.
-import { pick, rnd, THREE } from './engine.js?v=42';
-import { M } from './materials.js?v=42';
-import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PG, PM } from './props.js?v=42';
-import { kadd, kat, kb, kBike, kbuild, kCrate, KG, kit, ktube, MODELS, PK } from './kit.js?v=42';
-import { kModel, townKit, windmillModel } from './main.js?v=42';   // later modules, through the hub
+import { pick, rnd, THREE } from './engine.js?v=43';
+import { M } from './materials.js?v=43';
+import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PG, PM } from './props.js?v=43';
+import { kadd, kat, kb, kBike, kbuild, kCrate, KG, kit, ktube, MODELS, PK } from './kit.js?v=43';
+import { kModel, townKit, windmillModel } from './main.js?v=43';   // later modules, through the hub
 
 // ---------- street furniture: each one a single merged kit ----------
 function bikeRow() {   // bikes chained to a railing at the kerb; one of them sometimes lies on the ground
