@@ -5,7 +5,7 @@
 
 /**
  * One choice on the signs: the options, the index of the right one, the rule it practises (an id in window.RULES) and the why
- * line the toast shows after a wrong answer. task overrides the task label the engine derives (src/tasks.js).
+ * line the why card shows after a wrong answer. task overrides the task label the engine derives (src/tasks.js).
  * @typedef {{ o: string[], a: number, r: string, w: string, task?: string, fixed?: boolean }} Fork
  */
 
@@ -20,9 +20,11 @@
 
 /**
  * What the planner rides: an item turned into forks by itemToEntry (src/forks.js). A build item is its own entry, with nl
- * filled in from its parts.
+ * filled in from its parts. A missed item that comes back (src/review.js) is a copy with again (1 or 2: its first or second
+ * return) and origin (the entry it was missed as).
  * @typedef {{ nl?: string, en?: string, parts?: (string | Fork)[], o?: string[], a?: number, r?: string, w?: string, task?: string,
- *   read?: boolean, dehet?: boolean, look?: boolean, listen?: boolean, word?: boolean, side?: string, prop?: string, value?: number }} Entry
+ *   read?: boolean, dehet?: boolean, look?: boolean, listen?: boolean, word?: boolean, side?: string, prop?: string, value?: number,
+ *   again?: number, origin?: object }} Entry
  */
 
 /** @typedef {{ where: string, carry: string, want: string }} Mission */
@@ -42,10 +44,15 @@
  */
 
 /**
- * The ride's state, S in src/state.js (window.NR). The fields the qa tools read; the engine keeps more.
+ * The ride's state, S in src/state.js (window.NR). The fields the qa tools read; the engine keeps more. good and bad count
+ * first rides only; a returned item's verdicts are in learn. whyT: seconds left on the why card. reviewRoad: [from, to) spans
+ * of review road, reviewM the metres ridden on it, onReview whether the bike is on it now. missList: the end card's misses;
+ * tally: first rides per task id.
  * @typedef {{ mode: 'start' | 'intro' | 'ride' | 'dying' | 'dead' | 'cine', t: number, dist: number, speed: number, lane: number,
  *   laneN: number, lamp: number, streak: number, good: number, bad: number, objs: object[], activeFork: object | null,
- *   mistakes: object[], cents: number, score: number, deliveriesTotal?: number, queue?: Entry[] }} RideState
+ *   mistakes: object[], cents: number, score: number, deliveriesTotal?: number, queue?: Entry[],
+ *   whyT: number, reviewRoad: number[][], reviewM: number, onReview: boolean, missList?: import('./review.js').Miss[],
+ *   tally?: import('./review.js').Tally, learn?: { returns: number, right: number, wrong: number, whyN: number, log: object[] } }} RideState
  */
 
 export {};
