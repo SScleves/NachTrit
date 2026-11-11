@@ -1,6 +1,6 @@
 // PLAN.md 3b.1: what every fork asks, and whether its options differ in more than one way.
 // usage: node qa/audit-forks.mjs            writes Opus 5.5 DT/reports/dt-audit-forks.{json,md}
-// No browser. Loads content like qa/validate-content.mjs; task labels from qa/lib/tasks.mjs (a copy of taskOf in index.html).
+// No browser. Loads content like qa/validate-content.mjs; task labels from qa/lib/tasks.mjs (the game's own src/tasks.js).
 import fs from 'node:fs'; import path from 'node:path';
 import { loadContent, forksOf, kindOf, sentenceOf, contentWords } from './lib/load.mjs';
 import { taskOf, taskLabel, isPureReorder } from './lib/tasks.mjs';

@@ -41,6 +41,16 @@ The combined branch `dt/all` is merged into `main` and live.
   the rider's head, ground mist costs 17 fewer draw calls. GPU run of 1, 12, 58, 75, 123 with 0 errors at
   59-60 fps; all 14 intro shots checked.
 
+## On branch `dt/tests`, waiting for the GPU check and merge (NR_VERSION 37)
+
+Phase 1, the safety net (`reports/dt-tests.md`). No change a player can see.
+- `npm test` (about 10 s, no browser) and CI on every push to `main` and `dt/*`, with a SwiftShader ride of 1 and 75.
+- `qa/ride.mjs`: a seeded, step-driven ride that finishes on a busy machine. `qa/intro-sheet.mjs`: the 14 intro
+  shots on the GPU with automatic checks.
+- The pure rules (task labels, reading budget, lamp maths, level queue, voice file choice) moved from index.html to
+  `src/*.js`, which the game imports and the unit tests share. Seeded rides give the same numbers before and after.
+- Found by the new tests: levels 98 and 113 each have a reading that rides as a single sign (open, content).
+
 ## Pending
 
 The plan and its order are in `PLAN.md` in this folder. In short: tests, the code split,

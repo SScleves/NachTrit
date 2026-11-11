@@ -1,4 +1,5 @@
-// Nachtrit QA: plays the game in headless Chromium and saves frames + a report.
+// Nachtrit QA: plays the game in headless Chromium in real time and saves frames + a report. Kept for screenshots of a ride;
+// for a ride that reaches the end on any machine and gives numbers, use qa/ride.mjs (step-driven, no wall-clock time).
 // usage: node qa/run.mjs [1..25 | endless | intro | all]   (server must run on :8765)
 import { chromium } from 'playwright';
 import fs from 'node:fs';

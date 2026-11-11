@@ -1,0 +1,47 @@
+# Nachtrit CI (PLAN.md phase 1.4): on every push to main and to a dt/* branch.
+#   checks: the version check, npm run validate (content bundles, validator, the fork, distractor and thread audits) and the
+#           unit tests in qa/test, all through npm test. No browser.
+#   ride:   the step-driven ride (qa/ride.mjs) of levels 1 and 75 on SwiftShader in Playwright's Chromium. About 1.5 minutes
+#           on the laptop; the job stops at 10.
+name: ci
+on:
+  push:
+    branches: [main, 'dt/**']
+  workflow_dispatch:
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+  ride:
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Ride levels 1 and 75 (SwiftShader, seed 1)
+        run: node qa/ride.mjs 1,75 --out qa/out/ride/ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ride
+          path: qa/out/ride/ci
+          if-no-files-found: ignore
