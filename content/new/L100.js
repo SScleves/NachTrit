@@ -41,16 +41,14 @@
       { en: 'Although the jumper is expensive, I buy it anyway.', parts: ['Hoewel de trui', FK(['duur is', 'is duur'], 0, 'bijzin',
         'hoewel sends the verb to the end: hoewel de trui duur is.'), ',', FK(['koop ik', 'ik koop'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: koop ik.'), 'hem toch.'] },
-      { en: 'Despite the rain there is a long queue at the market.', parts: [FK(['Ondanks de regen', 'Ondanks het regent', 'Ondanks regent het'], 0, 'hoewel',
-        'ondanks takes a noun, not a clause: ondanks de regen.'), 'staat er een', FK(['lange', 'lang'], 0, 'adj',
-        'rij is a de-word, so after een it takes -e: een lange rij.'), 'rij op de markt.'] },
+      { en: 'Despite the rain there is a long queue at the market.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
+        'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen staat er een lange rij op de markt.'] },
 
       // ---- builds: separable verbs inside sub-clauses
       { en: 'Although the baker only opens at seven, there is already a queue.', parts: ['Hoewel de bakker pas om zeven uur', FK(['opengaat', 'gaat open'], 0, 'sep',
         'In a sub-clause the separable verb joins up again at the end: opengaat.'), ',', FK(['staat er', 'er staat'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: staat er.'), 'al een rij.'] },
-      { en: 'I buy two loaves because the neighbours are coming by tomorrow.', parts: ['Ik koop twee broden, omdat de buren morgen', FK(['langskomen', 'komen langs', 'komen lang'], 0, 'sep',
-        'omdat sends the verb to the end, and the separable verb joins up: langskomen.'), '.'] },
+      { en: 'I buy two loaves because the neighbours are coming by tomorrow.', parts: ['Ik koop twee broden, omdat de buren morgen', FK(['langskomen', 'komen langs'], 0, 'sep', 'omdat sends the verb to the end, and the separable verb joins up: langskomen.'), '.'] },
       { en: 'I think the shop closes too early.', parts: ['Ik vind dat de winkel te vroeg', FK(['dichtgaat', 'gaat dicht'], 0, 'sep',
         'dat sends the verb to the end, and dicht joins it again: dichtgaat.'), '.'] },
 
@@ -61,13 +59,10 @@
         'A guess with wel takes zullen, and the plural students need zullen: zullen wel.'), 'wel in de kringloopwinkel zijn.'] },
 
       // ---- builds: diminutives and their article
-      { en: 'May I have a receipt, please?', parts: ['Mag ik een', FK(['bonnetje', 'bonetje', 'bonnentje'], 0, 'verklein',
-        'After a short vowel the consonant doubles and the ending is -etje: bon, bonnetje.'), ', alstublieft?'] },
+      { en: 'May I have a receipt, please?', parts: ['Mag ik een', FK(['bonnetje', 'bonetje', 'bonnentje'], 0, 'verklein', 'After a short vowel the consonant doubles and the ending is -etje: bonnetje.', 'spell'), ', alstublieft?'] },
       { en: 'The little bag costs ten cents.', parts: [FK(['Het', 'De'], 0, 'dehet',
         'Every word ending in -je is het, even for a de-word like tas: het tasje.'), 'tasje kost tien cent.'] },
-      { en: 'I bought a little ring for Paola.', parts: ['Ik heb een', FK(['ringetje', 'ringje', 'ringtje'], 0, 'verklein',
-        'After -ng the diminutive ends in -etje: ring, ringetje.'), 'voor Paola', FK(['gekocht', 'gekoopt'], 0, 'perf',
-        'kopen is irregular: gekocht.'), '.'] },
+      { en: 'I bought a little ring for Paola.', parts: ['Ik heb een', FK(['ringetje', 'ringje', 'ringtje'], 0, 'verklein', 'After -ng the diminutive ends in -etje: ring, ringetje.', 'spell'), 'voor Paola', FK(['gekocht', 'kocht', 'kopen'], 0, 'perf', 'heb plus a participle makes the perfect, and kopen is irregular: gekocht.'), '.'] },
 
       // ---- builds: the adjective -e in all cases
       { en: 'I am looking for a warm little jacket and a thick jumper.', parts: ['Ik zoek een', FK(['warm', 'warme'], 0, 'adj',
@@ -76,12 +71,10 @@
       { en: 'Do you have fresh apples and fresh bread?', parts: ['Heeft u', FK(['verse', 'vers'], 0, 'adj',
         'A plural without an article takes -e: verse appels.'), 'appels en', FK(['vers', 'verse'], 0, 'adj',
         'brood is a het-word, and with no article it takes no -e: vers brood.'), 'brood?'] },
-      { en: 'Unfortunately this cheap brand is sold out.', parts: ['Dit', FK(['goedkope', 'goedkoop'], 0, 'adj',
-        'After dit, dat, het and de the adjective takes -e, even for a het-word like merk: dit goedkope merk.'), 'merk is helaas uitverkocht.'] },
+      { en: 'Unfortunately this cheap brand is sold out.', parts: ['Dit', FK(['goedkope', 'goedkoop'], 0, 'adj', 'After dit the adjective takes -e, even before a het-word: dit goedkope merk.'), 'merk is helaas uitverkocht.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'On the Grote Markt the cheese is cheaper than in the supermarket.', parts: ['Op de Grote Markt is de kaas', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk',
-        'Add -er to the adjective for a comparative: goedkoop, goedkoper, then dan.'), 'dan in de supermarkt.'] },
+      { en: 'On the Grote Markt the cheese is cheaper than in the supermarket.', parts: ['Op de Grote Markt is de kaas', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'With dan you compare, so add -er: goedkoper dan.'), 'dan in de supermarkt.'] },
       { en: 'Could I get my money back?', parts: ['Zou ik mijn geld terug', FK(['kunnen krijgen', 'kan krijgen', 'te kunnen krijgen'], 0, 'zou',
         'zou makes the request polite and the other verbs stay in the infinitive at the end: kunnen krijgen.'), '?'] },
 

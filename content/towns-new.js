@@ -44,16 +44,14 @@
       { en: 'Although the jumper is expensive, I buy it anyway.', parts: ['Hoewel de trui', FK(['duur is', 'is duur'], 0, 'bijzin',
         'hoewel sends the verb to the end: hoewel de trui duur is.'), ',', FK(['koop ik', 'ik koop'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: koop ik.'), 'hem toch.'] },
-      { en: 'Despite the rain there is a long queue at the market.', parts: [FK(['Ondanks de regen', 'Ondanks het regent', 'Ondanks regent het'], 0, 'hoewel',
-        'ondanks takes a noun, not a clause: ondanks de regen.'), 'staat er een', FK(['lange', 'lang'], 0, 'adj',
-        'rij is a de-word, so after een it takes -e: een lange rij.'), 'rij op de markt.'] },
+      { en: 'Despite the rain there is a long queue at the market.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
+        'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen staat er een lange rij op de markt.'] },
 
       // ---- builds: separable verbs inside sub-clauses
       { en: 'Although the baker only opens at seven, there is already a queue.', parts: ['Hoewel de bakker pas om zeven uur', FK(['opengaat', 'gaat open'], 0, 'sep',
         'In a sub-clause the separable verb joins up again at the end: opengaat.'), ',', FK(['staat er', 'er staat'], 0, 'v2',
         'The sub-clause came first, so the main clause starts with its verb: staat er.'), 'al een rij.'] },
-      { en: 'I buy two loaves because the neighbours are coming by tomorrow.', parts: ['Ik koop twee broden, omdat de buren morgen', FK(['langskomen', 'komen langs', 'komen lang'], 0, 'sep',
-        'omdat sends the verb to the end, and the separable verb joins up: langskomen.'), '.'] },
+      { en: 'I buy two loaves because the neighbours are coming by tomorrow.', parts: ['Ik koop twee broden, omdat de buren morgen', FK(['langskomen', 'komen langs'], 0, 'sep', 'omdat sends the verb to the end, and the separable verb joins up: langskomen.'), '.'] },
       { en: 'I think the shop closes too early.', parts: ['Ik vind dat de winkel te vroeg', FK(['dichtgaat', 'gaat dicht'], 0, 'sep',
         'dat sends the verb to the end, and dicht joins it again: dichtgaat.'), '.'] },
 
@@ -64,13 +62,10 @@
         'A guess with wel takes zullen, and the plural students need zullen: zullen wel.'), 'wel in de kringloopwinkel zijn.'] },
 
       // ---- builds: diminutives and their article
-      { en: 'May I have a receipt, please?', parts: ['Mag ik een', FK(['bonnetje', 'bonetje', 'bonnentje'], 0, 'verklein',
-        'After a short vowel the consonant doubles and the ending is -etje: bon, bonnetje.'), ', alstublieft?'] },
+      { en: 'May I have a receipt, please?', parts: ['Mag ik een', FK(['bonnetje', 'bonetje', 'bonnentje'], 0, 'verklein', 'After a short vowel the consonant doubles and the ending is -etje: bonnetje.', 'spell'), ', alstublieft?'] },
       { en: 'The little bag costs ten cents.', parts: [FK(['Het', 'De'], 0, 'dehet',
         'Every word ending in -je is het, even for a de-word like tas: het tasje.'), 'tasje kost tien cent.'] },
-      { en: 'I bought a little ring for Paola.', parts: ['Ik heb een', FK(['ringetje', 'ringje', 'ringtje'], 0, 'verklein',
-        'After -ng the diminutive ends in -etje: ring, ringetje.'), 'voor Paola', FK(['gekocht', 'gekoopt'], 0, 'perf',
-        'kopen is irregular: gekocht.'), '.'] },
+      { en: 'I bought a little ring for Paola.', parts: ['Ik heb een', FK(['ringetje', 'ringje', 'ringtje'], 0, 'verklein', 'After -ng the diminutive ends in -etje: ring, ringetje.', 'spell'), 'voor Paola', FK(['gekocht', 'kocht', 'kopen'], 0, 'perf', 'heb plus a participle makes the perfect, and kopen is irregular: gekocht.'), '.'] },
 
       // ---- builds: the adjective -e in all cases
       { en: 'I am looking for a warm little jacket and a thick jumper.', parts: ['Ik zoek een', FK(['warm', 'warme'], 0, 'adj',
@@ -79,12 +74,10 @@
       { en: 'Do you have fresh apples and fresh bread?', parts: ['Heeft u', FK(['verse', 'vers'], 0, 'adj',
         'A plural without an article takes -e: verse appels.'), 'appels en', FK(['vers', 'verse'], 0, 'adj',
         'brood is a het-word, and with no article it takes no -e: vers brood.'), 'brood?'] },
-      { en: 'Unfortunately this cheap brand is sold out.', parts: ['Dit', FK(['goedkope', 'goedkoop'], 0, 'adj',
-        'After dit, dat, het and de the adjective takes -e, even for a het-word like merk: dit goedkope merk.'), 'merk is helaas uitverkocht.'] },
+      { en: 'Unfortunately this cheap brand is sold out.', parts: ['Dit', FK(['goedkope', 'goedkoop'], 0, 'adj', 'After dit the adjective takes -e, even before a het-word: dit goedkope merk.'), 'merk is helaas uitverkocht.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'On the Grote Markt the cheese is cheaper than in the supermarket.', parts: ['Op de Grote Markt is de kaas', FK(['goedkoper', 'goedkoop', 'meer goedkoop'], 0, 'vergelijk',
-        'Add -er to the adjective for a comparative: goedkoop, goedkoper, then dan.'), 'dan in de supermarkt.'] },
+      { en: 'On the Grote Markt the cheese is cheaper than in the supermarket.', parts: ['Op de Grote Markt is de kaas', FK(['goedkoper', 'goedkoop', 'goedkoopst'], 0, 'vergelijk', 'With dan you compare, so add -er: goedkoper dan.'), 'dan in de supermarkt.'] },
       { en: 'Could I get my money back?', parts: ['Zou ik mijn geld terug', FK(['kunnen krijgen', 'kan krijgen', 'te kunnen krijgen'], 0, 'zou',
         'zou makes the request polite and the other verbs stay in the infinitive at the end: kunnen krijgen.'), '?'] },
 
@@ -168,35 +161,30 @@
       want: 'Since the mist the dead have opinions about the food, and in Groningen an opinion needs an argument. Ik vind dat and hoewel send the verb all the way to the end, ondanks only wants a noun. The women are still taller than you, the students at the next table still have not paid for the first round, and the dogs always need a walk afterwards.' },
     items: [
       // ---- builds: opinions, with dat and with volgens mij
-      { en: 'I think the soup is too salty.', parts: ['Ik vind', FK(['dat de soep te zout is', 'dat de soep is te zout'], 0, 'mening',
+      { en: 'I think the soup is too salty.', parts: ['Ik vind dat de soep', FK(['te zout is', 'is te zout'], 0, 'mening',
         'vind dat opens a sub-clause, so is goes to the very end: dat de soep te zout is.'), '.'] },
       { en: 'In my opinion the metworst is tastier than the Groninger koek.', parts: ['Volgens mij is de metworst', FK(['lekkerder', 'lekker', 'lekkerste'], 0, 'vergelijk',
         'dan asks for the -er form: lekkerder dan.'), 'dan de Groninger koek.'] },
       { en: 'I think they made the metworst themselves.', parts: ['Volgens mij', FK(['hebben ze', 'ze hebben'], 0, 'v2',
-        'Volgens mij fills slot 1, so the verb comes second: hebben ze.'), 'de metworst zelf', FK(['gemaakt', 'gemaakd', 'gemaken'], 0, 'kof',
-        'maak ends in k, a ketchup letter: gemaakt with a t.'), '.'] },
+        'Volgens mij fills slot 1, so the verb comes second: hebben ze.'), 'de metworst zelf', FK(['gemaakt', 'gemaakd'], 0, 'kof', 'maak ends in k, a ketchup letter: gemaakt with a t.', 'spell'), '.'] },
       { en: 'What do you think of the dessert?', parts: ['Wat vind je', FK(['van', 'over'], 0, 'mening',
         'Opinions use van: wat vind je van het nagerecht.'), 'het nagerecht?'] },
 
       // ---- builds: hoewel against ondanks
-      { en: 'Although the kitchen is closed, we still get soup.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
-        'hoewel opens a whole clause with its own verb. ondanks would need a noun.'), 'de keuken dicht is,', FK(['krijgen we', 'we krijgen'], 0, 'bijzin',
+      { en: 'Although the kitchen is closed, we still get soup.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel', 'hoewel opens a whole clause with its own verb; ondanks only goes before a noun.', 'word'), 'de keuken dicht is,', FK(['krijgen we', 'we krijgen'], 0, 'bijzin',
         'After a sub-clause the main clause starts with its verb: krijgen we.'), 'nog soep.'] },
-      { en: 'Despite the rain we sit outside on the terrace.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks goes with a noun: ondanks de regen. hoewel needs a clause with a verb.'), 'de regen', FK(['zitten we', 'we zitten'], 0, 'v2',
+      { en: 'Despite the rain we sit outside on the terrace.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen', FK(['zitten we', 'we zitten'], 0, 'v2',
         'The opening phrase fills slot 1, so the verb comes second: zitten we.'), 'buiten op het terras.'] },
 
       // ---- builds: separable verbs inside sub-clauses
-      { en: 'I think the waiter pours the wine too late.', parts: ['Ik vind dat de ober de wijn te laat', FK(['inschenkt', 'schenkt in', 'inschenk'], 0, 'sep',
-        'Inside a dat-clause the separable verb stays in one piece at the end: inschenkt.'), '.'] },
+      { en: 'I think the waiter pours the wine too late.', parts: ['Ik vind dat de ober de wijn te laat', FK(['inschenkt', 'schenkt in'], 0, 'sep', 'Inside a dat-clause the separable verb stays in one piece at the end: inschenkt.'), '.'] },
       { en: 'We order a dessert while the waiter clears the table.', parts: ['We bestellen een toetje terwijl de ober de tafel', FK(['afruimt', 'ruimt af'], 0, 'sep',
         'After terwijl the verb goes to the end, and a separable verb stays whole: afruimt.'), '.'] },
       { en: 'I pay cash because the card machine keeps failing.', parts: ['Ik betaal contant omdat de pinautomaat steeds', FK(['uitvalt', 'valt uit', 'uit valt'], 0, 'sep',
         'omdat sends the verb to the end, and uitvallen stays in one piece there: uitvalt.'), '.'] },
 
       // ---- builds: zullen for probability
-      { en: 'The kitchen is probably closed already.', parts: ['De keuken', FK(['zal wel', 'zullen wel', 'wel zal'], 0, 'fut',
-        'One kitchen, so zal. wel turns it into a guess: it is probably closed.'), 'al dicht zijn.'] },
+      { en: 'The kitchen is probably closed already.', parts: ['De keuken', FK(['zal wel', 'zullen wel'], 0, 'fut', 'One kitchen, so zal, and wel makes it a guess: it is probably closed.'), 'al dicht zijn.'] },
       { en: 'It will probably be busy on the Grote Markt on Friday night.', parts: ['Het', FK(['zal', 'zullen'], 0, 'fut',
         'Het is singular, so zal.'), 'vrijdagavond wel druk', FK(['zijn', 'is'], 0, 'fut',
         'zal sends the second verb to the end as an infinitive: zijn.'), 'op de Grote Markt.'] },
@@ -204,8 +192,7 @@
       // ---- builds: diminutives, het and the spelling
       { en: 'Is that little glass still clean?', parts: ['Is', FK(['dat', 'die'], 0, 'dehet',
         'glaasje ends in -je, so it is a het-word: dat glaasje.'), 'glaasje nog schoon?'] },
-      { en: 'May I have a small bowl of soup, please?', parts: ['Mag ik een', FK(['kommetje', 'komje', 'komtje'], 0, 'verklein',
-        'A short vowel before m doubles the m and takes -etje: kommetje.'), 'soep, alstublieft?'] },
+      { en: 'May I have a small bowl of soup, please?', parts: ['Mag ik een', FK(['kommetje', 'komje', 'komtje'], 0, 'verklein', 'A short vowel before m doubles the m and takes -etje: kommetje.', 'spell'), 'soep, alstublieft?'] },
 
       // ---- builds: the adjective -e in all its cells
       { en: 'I will take a warm roll and the cold beer.', parts: ['Ik neem een', FK(['warm', 'warme'], 0, 'adj',
@@ -225,8 +212,7 @@
       { en: 'Could you bring us the bill?', parts: ['Zou u ons de rekening', FK(['kunnen brengen', 'kunt brengen', 'te kunnen brengen'], 0, 'zou',
         'zou makes the request polite and is followed by an infinitive, not a second finite verb: kunnen brengen.'), '?'] },
       { en: 'Last night we went out for dinner and split the bill.', parts: ['Gisteravond', FK(['zijn we', 'we zijn'], 0, 'v2',
-        'Gisteravond fills slot 1, so the verb comes second: zijn we.'), 'uit eten gegaan en hebben we de rekening', FK(['gesplitst', 'gesplitsd'], 0, 'kof',
-        'splits ends in s, a ketchup letter: gesplitst with a t.'), '.'] },
+        'Gisteravond fills slot 1, so the verb comes second: zijn we.'), 'uit eten gegaan en hebben we de rekening', FK(['gesplitst', 'gesplitsd'], 0, 'kof', 'splits ends in s, a ketchup letter: gesplitst with a t.', 'spell'), '.'] },
 
       // ---- words: the menu, the bar, the market, the bill
       { w: 'the mustard soup (Groningen speciality)', nl: 'de mosterdsoep' }, { w: 'the spiced sausage', nl: 'de metworst' },
@@ -310,20 +296,17 @@
       want: 'The dead on the platform have opinions and say them loudly: ik vind dat, volgens mij, hoewel, ondanks. They park the verb at the end of the clause and glue the prefix back on (omdat de trein te laat aankomt). The board says zal wel to everything. Anything with a little -je is het, even a bench. The women on the platform are still taller than you, and they are not in a hurry either. Say Moi, take your seat, and get the grammar right before the 17:07 leaves. Could be worse.' },
     items: [
       // ---- builds: opinions, ik vind dat and volgens mij
-      { en: 'I think the train is too expensive.', parts: ['Ik vind', FK(['dat de trein te duur is', 'dat de trein is te duur', 'dat is de trein te duur'], 0, 'mening',
-        'ik vind dat opens a sub-clause, so the verb goes to the end: dat de trein te duur is.'), '.'] },
+      { en: 'I think the train is too expensive.', parts: ['Ik vind dat de trein', FK(['te duur is', 'is te duur'], 0, 'mening',
+        'ik vind dat opens a sub-clause, so the verb goes to the end: te duur is.'), '.'] },
       { en: 'In my opinion the bike is faster than the bus in the city.', parts: ['Volgens mij', FK(['is de fiets', 'de fiets is'], 0, 'v2',
-        'Volgens mij takes slot 1, so the verb comes second, then the subject: is de fiets.'), 'in de stad', FK(['sneller', 'meer snel'], 0, 'vergelijk',
-        'Short adjectives add -er and use dan: sneller dan de bus.'), 'dan de bus.'] },
+        'Volgens mij takes slot 1, so the verb comes second, then the subject: is de fiets.'), 'in de stad', FK(['sneller', 'snel', 'snelst'], 0, 'vergelijk', 'Short adjectives add -er to compare, then dan: sneller dan de bus.'), 'dan de bus.'] },
 
       // ---- builds: hoewel and ondanks
       { en: 'Although the train is late, I am in no hurry.', parts: ['Hoewel de trein', FK(['te laat is', 'is te laat'], 0, 'hoewel',
         'hoewel opens a sub-clause, so the verb goes last: te laat is.'), ',', FK(['heb ik', 'ik heb'], 0, 'v2',
         'After a sub-clause the main clause starts with its verb: heb ik geen haast.'), 'geen haast.'] },
-      { en: 'Despite the rain we cycle to the station.', parts: ['Ondanks', FK(['de regen', 'het regent'], 0, 'hoewel',
-        'ondanks takes a noun: ondanks de regen. With a whole clause you use hoewel het regent.'), 'fietsen we naar het station.'] },
-      { en: 'Although the bus always arrives early, we still wait inside.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
-        'A clause with its own verb needs hoewel. ondanks only goes with a noun.'), 'de bus altijd vroeg', FK(['aankomt', 'komt aan'], 0, 'sep',
+      { en: 'Despite the rain we cycle to the station.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen fietsen we naar het station.'] },
+      { en: 'Although the bus always arrives early, we still wait inside.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel', 'hoewel opens a whole clause with its own verb; ondanks only goes before a noun.', 'word'), 'de bus altijd vroeg', FK(['aankomt', 'komt aan'], 0, 'sep',
         'In a sub-clause the verb sits at the end and the prefix glues back on: aankomt.'), ', wachten we toch binnen.'] },
 
       // ---- builds: separable verbs in sub-clauses
@@ -348,25 +331,20 @@
       { en: 'Groningen has a beautiful old station.', parts: ['Groningen heeft een', FK(['mooi oud', 'mooie oude', 'mooi oude'], 0, 'adj',
         'station is a het-word and een is indefinite, so no -e: een mooi oud station.'), 'station.'] },
       { en: 'I think the old station is more beautiful than the new one.', parts: ['Ik vind het', FK(['oude', 'oud'], 0, 'adj',
-        'After het (or de) the adjective always takes -e: het oude station.'), 'station', FK(['mooier', 'mooi', 'meer mooi'], 0, 'vergelijk',
-        'Comparing takes -er and dan: mooier dan het nieuwe.'), 'dan het nieuwe.'] },
+        'After het (or de) the adjective always takes -e: het oude station.'), 'station', FK(['mooier', 'mooi', 'mooist'], 0, 'vergelijk', 'Comparing takes -er and dan: mooier dan het nieuwe.'), 'dan het nieuwe.'] },
       { en: 'In Groningen many students ride old bikes without a light.', parts: ['In Groningen', FK(['rijden', 'rijdt'], 0, 'presens',
         'veel studenten is plural, so the verb is rijden.'), 'veel studenten op', FK(['oude', 'oud'], 0, 'adj',
         'Plural without an article still takes -e: oude fietsen.'), 'fietsen zonder licht.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'I just missed the last train.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
-        'Missing a train is not movement, so hebben: ik heb gemist.'), 'de laatste trein net', FK(['gemist', 'gemisd', 'gemissen'], 0, 'kof',
-        'mis ends in s, a ketchup letter, so the participle takes -t: gemist.'), '.'] },
-      { en: 'The bus stopped at the stop and we got on.', parts: ['De bus', FK(['stopte', 'stopde'], 0, 'imp',
-        'stop ends in p, a ketchup letter, so the past takes -te: stopte.'), 'bij de halte en wij', FK(['stapten', 'stapden'], 0, 'imp',
-        'stap ends in p too: stapten. The prefix in stays at the end.'), 'in.'] },
+        'Missing a train is not movement, so hebben: ik heb gemist.'), 'de laatste trein net', FK(['gemist', 'gemisd'], 0, 'kof', 'mis ends in s, a ketchup letter, so the participle takes -t: gemist.', 'spell'), '.'] },
+      { en: 'The bus stopped at the stop and we got on.', parts: ['De bus', FK(['stopte', 'stopde'], 0, 'kof', 'stop ends in p, a ketchup letter, so the past takes -te: stopte.', 'spell'), 'bij de halte en wij', FK(['stapten', 'stapden'], 0, 'kof', 'stap ends in p, a ketchup letter, so the past takes -ten: stapten.', 'spell'), 'in.'] },
       { en: 'Walk straight on and turn left at the bridge.', parts: [FK(['Loop', 'Te lopen'], 0, 'gebod',
         'The imperative is the bare stem: loop.'), 'rechtdoor en sla bij de brug links', FK(['af', 'afslaan'], 0, 'sep',
         'afslaan splits in the imperative and the prefix goes to the end: sla ... af.'), '.'] },
-      { en: 'It is difficult to find a spot for your bike in the city.', parts: ['Het is lastig om in de stad een plek voor je fiets', FK(['te vinden', 'vinden te', 'vindt te'], 0, 'omte',
-        'om opens the clause and te stands right before the infinitive at the end: te vinden.'), '.'] },
-      { en: 'The train to Zwolle leaves at 10:20.', parts: ['De trein naar Zwolle vertrekt om', FK(['tien voor half elf', 'tien over half elf', 'tien voor elf'], 0, 'klok',
+      { en: 'It is difficult to find a spot for your bike in the city.', parts: ['Het is lastig om in de stad een plek voor je fiets', FK(['te vinden', 'vinden te'], 0, 'omte', 'te stands right before the infinitive at the end: om ... te vinden.'), '.'] },
+      { en: 'The train to Zwolle leaves at 10:20.', parts: ['De trein naar Zwolle vertrekt om tien', FK(['voor', 'over'], 0, 'klok',
         'Half elf is 10:30. Ten minutes before that is tien voor half elf, 10:20.'), '.'] },
 
       // ---- words: the station, the tracks, the bike shed, the roads
@@ -445,22 +423,18 @@
       want: 'The mist came and everyone who spoke Dutch changed. In Groningen the dead have opinions: ik vind dat, volgens mij, hoewel, ondanks, and the verb waits at the very end like a student for the first bus. Whatever breaks gets a zal wel. The women are still taller than you, and they still split the bill.' },
     items: [
       // ---- builds: opinions and contrast (new at tier 10)
-      { en: 'I think the standup takes too long.', parts: ['Ik vind', FK(['dat de standup te lang duurt', 'dat de standup duurt te lang', 'dat duurt de standup te lang'], 0, 'mening',
+      { en: 'I think the standup takes too long.', parts: ['Ik vind dat de standup', FK(['te lang duurt', 'duurt te lang'], 0, 'mening',
         'ik vind dat opens a sub-clause, so the verb goes to the very end: te lang duurt.'), '.'] },
-      { en: 'In my opinion the problem is in the network.', parts: ['Volgens mij', FK(['zit het probleem', 'het probleem zit'], 0, 'mening',
-        'Volgens mij fills slot 1, so the verb comes next: zit het probleem. It is not a sub-clause like ik vind dat.'), 'in het netwerk.'] },
+      { en: 'In my opinion the problem is in the network.', parts: ['Volgens mij', FK(['zit het probleem', 'het probleem zit'], 0, 'v2', 'Volgens mij fills slot 1, so the verb comes next: zit het probleem.'), 'in het netwerk.'] },
       { en: 'Although it is busy, I am still going to lunch.', parts: ['Hoewel het', FK(['druk is', 'is druk'], 0, 'hoewel',
         'hoewel opens a sub-clause, so the verb goes to the end: druk is.'), ',', FK(['ga ik', 'ik ga'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: ga ik.'), 'toch lunchen.'] },
-      { en: 'Despite the outage the release still went live.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks goes in front of a noun: ondanks de storing. hoewel needs a whole clause with its own verb at the end.'), 'de storing', FK(['ging de release', 'de release ging'], 0, 'v2',
+      { en: 'Despite the outage the release still went live.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de storing.', 'word'), 'de storing', FK(['ging de release', 'de release ging'], 0, 'v2',
         'The opening phrase fills slot 1, so the verb comes next: ging de release.'), 'toch live.'] },
 
       // ---- builds: zullen for probability
-      { en: 'The connection will probably go down again.', parts: ['De verbinding', FK(['zal', 'zul', 'zullen'], 0, 'zullen',
-        'zal wel means probably. One verbinding, so zal. zul belongs to je or jij, zullen is for we, zij and other plurals.'), 'wel weer uitvallen.'] },
-      { en: 'Mark is not here. He is probably stuck in traffic.', parts: ['Mark is er niet. Hij zal wel in de file', FK(['staan', 'staat', 'gestaan'], 0, 'zullen',
-        'zal is the finite verb, so the second verb stays an infinitive at the end: zal wel staan. staat and gestaan are not infinitives.'), '.'] },
+      { en: 'The connection will probably go down again.', parts: ['De verbinding', FK(['zal', 'zul', 'zullen'], 0, 'zullen', 'zal wel means probably, and one verbinding takes zal.'), 'wel weer uitvallen.'] },
+      { en: 'Mark is not here. He is probably stuck in traffic.', parts: ['Mark is er niet. Hij zal wel in de file', FK(['staan', 'staat', 'gestaan'], 0, 'zullen', 'After zal the second verb is a bare infinitive at the end: zal wel staan.'), '.'] },
 
       // ---- builds: separable verbs in sub-clauses
       { en: 'I am tired because I get up early every day.', parts: ['Ik ben moe omdat ik elke dag vroeg', FK(['opsta', 'sta op'], 0, 'sep',
@@ -470,31 +444,25 @@
         'The sub-clause came first, so the main clause starts with its verb: merkt de klant.'), 'er niets van.'] },
 
       // ---- builds: diminutives and het
-      { en: 'Can you send me a quick email?', parts: ['Kun je me even een', FK(['mailtje', 'mailje'], 0, 'verklein',
-        'After an l the diminutive is -tje: mailtje, like tafeltje. The word is then het mailtje.'), 'sturen?'] },
-      { en: 'Shall we get a little coffee before the standup?', parts: ['Zullen we nog een', FK(['koffietje', 'koffieje'], 0, 'verklein',
-        'koffie ends in a vowel, so the diminutive takes -tje: koffietje.'), 'halen voor de standup?'] },
+      { en: 'Can you send me a quick email?', parts: ['Kun je me even een', FK(['mailtje', 'mailje'], 0, 'verklein', 'After an l the diminutive is -tje: mailtje, like tafeltje.', 'spell'), 'sturen?'] },
+      { en: 'Shall we get a little coffee before the standup?', parts: ['Zullen we nog een', FK(['koffietje', 'koffieje'], 0, 'verklein', 'koffie ends in a vowel, so the diminutive takes -tje: koffietje.', 'spell'), 'halen voor de standup?'] },
       { en: 'The little mistake is not so bad.', parts: [FK(['Het', 'De'], 0, 'verklein',
         'Every -je word is het, even though de fout is de: het foutje.'), 'foutje is niet zo erg.'] },
 
       // ---- builds: the adjective -e
       { en: 'The new colleague has a new screen.', parts: ['De', FK(['nieuwe', 'nieuw'], 0, 'adj',
-        'After de the adjective takes -e: de nieuwe collega.'), 'collega heeft een', FK(['nieuw', 'nieuwe'], 0, 'adj',
-        'scherm is a het-word, and after een it stays bare: een nieuw scherm. A de-word would be een nieuwe laptop.'), 'scherm.'] },
+        'After de the adjective takes -e: de nieuwe collega.'), 'collega heeft een', FK(['nieuw', 'nieuwe'], 0, 'adj', 'scherm is a het-word, so after een the adjective stays bare: een nieuw scherm.'), 'scherm.'] },
       { en: 'I work on the customer\'s old dashboard.', parts: ['Ik werk aan het', FK(['oude', 'oud'], 0, 'adj',
         'After het the adjective still takes -e: het oude dashboard. Only after een does a het-word lose it.'), 'dashboard van de klant.'] },
-      { en: 'This is not a good plan.', parts: ['Dit is geen', FK(['goed', 'goede'], 0, 'adj',
-        'plan is a het-word, so after geen it stays bare: geen goed plan. For a de-word it would be geen goede oplader.'), 'plan.'] },
+      { en: 'This is not a good plan.', parts: ['Dit is geen', FK(['goed', 'goede'], 0, 'adj', 'plan is a het-word, so after geen the adjective stays bare: geen goed plan.'), 'plan.'] },
       { en: 'My new boss likes long meetings.', parts: ['Mijn', FK(['nieuwe', 'nieuw'], 0, 'adj',
         'baas is a de-word, so after mijn it takes -e: mijn nieuwe baas.'), 'baas houdt van', FK(['lange', 'lang'], 0, 'adj',
         'A plural always takes -e: lange vergaderingen.'), 'vergaderingen.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'This morning I picked up the alert.', parts: ['Vanochtend', FK(['heb ik', 'ik heb'], 0, 'v2',
-        'Vanochtend fills slot 1, so the verb comes second: heb ik.'), 'de melding', FK(['opgepakt', 'geoppakt', 'oppgepakt'], 0, 'sep',
-        'The ge goes in the middle: op + gepakt, written as one word at the end.'), '.'] },
-      { en: 'The new laptop is faster than the old one.', parts: ['De nieuwe laptop is', FK(['sneller', 'snelder', 'meer snel'], 0, 'vergelijk',
-        'snel takes -er for the comparative: sneller dan.'), 'dan de oude.'] },
+        'Vanochtend fills slot 1, so the verb comes second: heb ik.'), 'de melding', FK(['opgepakt', 'oppakte', 'oppakken'], 0, 'sep', 'heb plus a participle makes the perfect, with ge in the middle: op-ge-pakt.'), '.'] },
+      { en: 'The new laptop is faster than the old one.', parts: ['De nieuwe laptop is', FK(['sneller', 'snel', 'snelst'], 0, 'vergelijk', 'snel takes -er for the comparative, then dan: sneller dan de oude.'), 'dan de oude.'] },
       { en: 'When the server went down, I called the boss.', parts: ['Toen de server', FK(['uitviel', 'viel uit'], 0, 'sep',
         'toen opens a sub-clause: the verb goes to the end and the prefix glues back on, uitviel.'), ',', FK(['belde ik', 'ik belde'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: belde ik.'), 'de baas.'] },
@@ -572,8 +540,7 @@
     items: [
       // ---- builds: opinions and arguments
       { en: 'I think golf is a real sport.', parts: ['Ik vind dat golf een', FK(['echte', 'echt'], 0, 'adj',
-        'sport is a de-word, so after een it takes the -e: een echte sport.'), FK(['sport is', 'is sport'], 0, 'mening',
-        'ik vind dat opens a sub-clause, so the verb goes to the end: dat golf een echte sport is.'), '.'] },
+        'sport is a de-word, so after een it takes the -e: een echte sport.'), FK(['sport is', 'is sport'], 0, 'mening', 'ik vind dat opens a sub-clause, so the verb goes to the end: sport is.'), '.'] },
       { en: 'I think Groningen will win the derby tonight.', parts: ['Volgens mij', FK(['wint Groningen', 'Groningen wint'], 0, 'v2',
         'Volgens mij takes slot 1, so the verb comes second: wint Groningen.'), 'vanavond de derby.'] },
       { en: 'The referee is probably tired after ninety minutes.', parts: ['De scheidsrechter', FK(['zal', 'zult', 'zullen'], 0, 'fut',
@@ -582,29 +549,22 @@
         'Two or more people take zullen. With wel it means they will probably do it.'), 'wel naar het Paterswoldsemeer fietsen.'] },
 
       // ---- builds: hoewel and ondanks
-      { en: 'Although it is raining hard, I still cycle to the lake.', parts: ['Hoewel het hard regent,', FK(['fiets ik', 'ik fiets'], 0, 'hoewel',
-        'After a hoewel clause the main clause starts with its verb: fiets ik.'), 'toch naar het meer.'] },
-      { en: 'I am going for a run despite my muscle ache.', parts: ['Ik ga hardlopen,', FK(['ondanks', 'hoewel'], 0, 'hoewel',
-        'ondanks takes a noun and no verb: ondanks mijn spierpijn. hoewel needs a whole clause.'), 'mijn spierpijn.'] },
-      { en: 'Paola comes along, although it is cold.', parts: ['Paola gaat mee,', FK(['hoewel', 'ondanks'], 0, 'hoewel',
-        'hoewel opens a clause with a verb of its own: hoewel het koud is. ondanks only takes a noun.'), 'het', FK(['koud is', 'is koud'], 0, 'bijzin',
+      { en: 'Although it is raining hard, I still cycle to the lake.', parts: ['Hoewel het hard regent,', FK(['fiets ik', 'ik fiets'], 0, 'v2', 'The hoewel clause fills slot 1, so the main clause starts with its verb: fiets ik.'), 'toch naar het meer.'] },
+      { en: 'I am going for a run despite my muscle ache.', parts: ['Ik ga hardlopen,', FK(['ondanks', 'hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks mijn spierpijn.', 'word'), 'mijn spierpijn.'] },
+      { en: 'Paola comes along, although it is cold.', parts: ['Paola gaat mee,', FK(['hoewel', 'ondanks'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: hoewel het koud is.', 'word'), 'het', FK(['koud is', 'is koud'], 0, 'bijzin',
         'After hoewel the verb goes to the end: het koud is.'), '.'] },
 
       // ---- builds: separable verbs in sub-clauses
-      { en: 'I am tired because I get up at six every morning.', parts: ['Ik ben moe, omdat ik elke ochtend om zes uur', FK(['opsta', 'sta op', 'opstaat'], 0, 'sep',
-        'In a sub-clause the separable verb stays in one piece at the end: omdat ik opsta.'), '.'] },
-      { en: 'Paola thinks I never put my helmet on.', parts: ['Paola denkt dat ik mijn helm nooit', FK(['opzet', 'zet op', 'opzetten'], 0, 'sep',
-        'After dat the verb is last and in one piece: dat ik mijn helm nooit opzet. She is right, which is the problem.'), '.'] },
+      { en: 'I am tired because I get up at six every morning.', parts: ['Ik ben moe, omdat ik elke ochtend om zes uur', FK(['opsta', 'sta op'], 0, 'sep', 'In a sub-clause the separable verb stays in one piece at the end: omdat ik opsta.'), '.'] },
+      { en: 'Paola thinks I never put my helmet on.', parts: ['Paola denkt dat ik mijn helm nooit', FK(['opzet', 'zet op'], 0, 'sep', 'After dat the verb goes last and stays in one piece: dat ik mijn helm opzet.'), '.'] },
       { en: 'The match started late because the crowd arrived late.', parts: ['De wedstrijd begon later, omdat het publiek te laat', FK(['binnenkwam', 'kwam binnen'], 0, 'sep',
         'omdat sends the verb to the end and the prefix sticks back on: binnenkwam.'), '.'] },
 
       // ---- builds: diminutives
       { en: 'The neighbours have a small dog.', parts: ['De buren hebben een', FK(['klein', 'kleine'], 0, 'adj',
         'hondje is a diminutive, so it is a het-word: een klein hondje, no -e after een.'), 'hondje.'] },
-      { en: 'He hits the ball into the bunker.', parts: ['Hij slaat het', FK(['balletje', 'baltje'], 0, 'verklein',
-        'After a short vowel plus l the l doubles and the ending is -etje: bal becomes balletje.'), 'in de bunker.'] },
-      { en: 'Shall we walk another little round through the Noorderplantsoen?', parts: ['Zullen we nog een', FK(['rondje', 'rondtje'], 0, 'verklein',
-        'rond already ends in d, so just add -je: rondje.'), 'door het Noorderplantsoen lopen?'] },
+      { en: 'He hits the ball into the bunker.', parts: ['Hij slaat het', FK(['balletje', 'baltje'], 0, 'verklein', 'After a short vowel plus l the l doubles and the ending is -etje: balletje.', 'spell'), 'in de bunker.'] },
+      { en: 'Shall we walk another little round through the Noorderplantsoen?', parts: ['Zullen we nog een', FK(['rondje', 'rondtje'], 0, 'verklein', 'rond already ends in d, so just add -je: rondje.', 'spell'), 'door het Noorderplantsoen lopen?'] },
       { en: "Have you seen Paola's little sports bag?", parts: ['Heb je', FK(['het', 'de'], 0, 'verklein',
         'Every -je word is het, even when the original is de: de tas, het tasje.'), 'sporttasje van Paola gezien?'] },
 
@@ -612,17 +572,15 @@
       { en: "I like wearing my father's old sports shirt.", parts: ['Ik draag graag het', FK(['oude', 'oud'], 0, 'adj',
         'After het (or dit, dat, mijn) the adjective takes -e, even with a het-word: het oude sportshirt.'), 'sportshirt van mijn vader.'] },
       { en: 'Yesterday I bought new running shoes.', parts: ['Ik heb gisteren', FK(['nieuwe', 'nieuw'], 0, 'adj',
-        'A plural noun with no article always takes the -e: nieuwe hardloopschoenen.'), 'hardloopschoenen', FK(['gekocht', 'gekoopt', 'gekoch'], 0, 'perf',
-        'kopen is irregular: gekocht.'), '.'] },
+        'A plural noun with no article always takes the -e: nieuwe hardloopschoenen.'), 'hardloopschoenen', FK(['gekocht', 'kocht', 'kopen'], 0, 'perf', 'heb plus a participle makes the perfect, and kopen is irregular: gekocht.'), '.'] },
       { en: 'It is a beautiful course, but the wind is cold.', parts: ['Het is een', FK(['mooie', 'mooi'], 0, 'adj',
         'baan is a de-word: een mooie baan.'), 'baan, maar de wind is', FK(['koud', 'koude'], 0, 'adj',
         'After zijn the adjective stands alone, no -e: de wind is koud.'), '.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'I think this is the best team in the north.', parts: ['Volgens mij is dit het', FK(['beste', 'goedste'], 0, 'vergelijk',
-        'goed is irregular: beter, het beste.'), 'team van het noorden.'] },
-      { en: 'I used to skate on the Paterswoldsemeer every winter.', parts: ['Vroeger', FK(['schaatste', 'schaatsde'], 0, 'kof',
-        'schaats ends in s, a ketchup letter: schaatste with a t.'), 'ik elke winter op het Paterswoldsemeer.'] },
+      { en: 'I think this is the best team in the north.', parts: ['Volgens mij is dit het', FK(['beste', 'best'], 0, 'vergelijk', 'goed is irregular, goed, beter, best, and before a noun it is het beste.'), 'team van het noorden.'] },
+      { en: 'I used to skate on the Paterswoldsemeer every winter.', parts: ['Vroeger', FK(['schaatste ik', 'ik schaatste'], 0, 'v2',
+        'Vroeger fills slot 1, so the verb comes second, then ik.'), 'elke winter op het Paterswoldsemeer.'] },
       { en: 'You are not allowed to skate here, the ice is too thin.', parts: ['Je', FK(['mag', 'hoeft'], 0, 'mag',
         'mag niet means not allowed. hoeft would need te: hoeft niet te schaatsen.'), 'hier niet schaatsen, het ijs is te dun.'] },
 
@@ -712,8 +670,7 @@
       { en: 'Although the neighbour gets up early, he is always grumpy.', parts: ['Hoewel de buurman vroeg', FK(['opstaat', 'staat op'], 0, 'sep',
         'In a sub-clause a separable verb stays in one piece at the end: opstaat.'), ',', FK(['is hij', 'hij is'], 0, 'v2',
         'The sub-clause fills slot 1, so the verb jumps in right after the comma: is hij.'), 'altijd chagrijnig.'] },
-      { en: 'Despite the argument they are still friends.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks is a preposition and takes a noun, de ruzie. hoewel needs a whole clause with its own verb.'), 'de ruzie', FK(['zijn ze', 'ze zijn'], 0, 'v2',
+      { en: 'Despite the argument they are still friends.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de ruzie.', 'word'), 'de ruzie', FK(['zijn ze', 'ze zijn'], 0, 'v2',
         'Ondanks de ruzie fills slot 1, so the verb comes next: zijn ze.'), 'nog vrienden.'] },
       { en: 'Paola is grumpy because the neighbour turns on the music in the middle of the night.', parts: ['Paola is chagrijnig omdat de buurman midden in de nacht de muziek', FK(['aanzet', 'zet aan'], 0, 'sep',
         'omdat sends the verb to the end, and a separable verb stays in one piece there: aanzet.'), '.'] },
@@ -724,16 +681,13 @@
       { en: 'The neighbour is probably at home.', parts: ['De buurman', FK(['zal', 'zullen'], 0, 'fut',
         'One neighbour, singular: hij zal. zullen is for wij, jullie and zij plural.'), 'wel thuis', FK(['zijn', 'is'], 0, 'fut',
         'zal sends the next verb to the end as an infinitive: zal wel thuis zijn.'), '.'] },
-      { en: 'He probably wants a small beer.', parts: ['Hij zal wel een biertje', FK(['willen', 'wil'], 0, 'fut',
-        'After zal the second verb is an infinitive at the end: willen. wil would be a second finite verb.'), '.'] },
+      { en: 'He probably wants a small beer.', parts: ['Hij zal wel een biertje', FK(['willen', 'wil'], 0, 'fut', 'After zal the second verb is a bare infinitive at the end: willen.'), '.'] },
 
       // ---- builds: diminutives and their het
       { en: 'Will you walk the neighbours\' little dog?', parts: ['Wil jij', FK(['het', 'de'], 0, 'verklein',
         'Every word ending in -je is het, even if the animal itself is a de-word.'), 'hondje van de buren uitlaten?'] },
-      { en: 'We will take two small beers.', parts: ['We nemen twee', FK(['biertjes', 'bierties', 'biertjen'], 0, 'verklein',
-        'The plural of a diminutive is -jes: biertje, biertjes.'), '.'] },
-      { en: 'After work we have a little drink on the Grote Markt.', parts: ['Na het werk drinken we een', FK(['borreltje', 'borrelje'], 0, 'verklein',
-        'After an unstressed -el the diminutive is -tje, as in tafeltje: borreltje.'), 'op de Grote Markt.'] },
+      { en: 'We will take two small beers.', parts: ['We nemen twee', FK(['biertjes', 'bierties', 'biertjen'], 0, 'verklein', 'The plural of a diminutive is -jes: biertje, biertjes.', 'spell'), '.'] },
+      { en: 'After work we have a little drink on the Grote Markt.', parts: ['Na het werk drinken we een', FK(['borreltje', 'borrelje'], 0, 'verklein', 'After an unstressed -el the diminutive is -tje, as in tafeltje: borreltje.', 'spell'), 'op de Grote Markt.'] },
 
       // ---- builds: the adjective -e
       { en: 'We had a cosy little party in a student room.', parts: ['We hadden een', FK(['gezellig', 'gezellige'], 0, 'adj',
@@ -747,14 +701,10 @@
         'huis is a het-word, and after een a het-word takes no -e: een oud huis.'), 'huis met een grote tuin.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'Yesterday the neighbour came by and we talked for hours.', parts: ['Gisteren kwam de buurvrouw langs en we', FK(['praatten', 'praatden', 'praaten'], 0, 'imp',
-        'praat ends in a t, a ketchup letter, so the imperfectum takes -te: praatte, praatten for we.'), 'urenlang.'] },
-      { en: 'My neighbour called me yesterday about the hedge.', parts: ['Mijn buurman heeft me gisteren', FK(['opgebeld', 'geopbeld', 'opgebelt'], 0, 'perf',
-        'The ge goes in the middle: op + gebeld. bel ends in l, no ketchup letter, so -d.'), 'over de heg.'] },
-      { en: 'He is bored at the neighbours\' borrel.', parts: ['Hij', FK(['verveelt zich', 'vervelen zich', 'verveeld zich'], 0, 'refl',
-        'zich vervelen is reflexive, and with hij the verb takes -t: verveelt zich.'), 'op de borrel van de buren.'] },
-      { en: 'Paola is still taller than me.', parts: ['Paola is nog steeds', FK(['groter', 'meer groot', 'grotter'], 0, 'vergelijk',
-        'Add -er to groot and the double o shrinks to a single o: groter, followed by dan. grotter has the wrong spelling.'), 'dan ik.'] },
+      { en: 'Yesterday the neighbour came by and we talked for hours.', parts: ['Gisteren kwam de buurvrouw langs en we', FK(['praatten', 'praatden', 'praaten'], 0, 'imp', 'praat ends in t, a ketchup letter, so the past takes -te: praatten for we.', 'spell'), 'urenlang.'] },
+      { en: 'My neighbour called me yesterday about the hedge.', parts: ['Mijn buurman heeft me gisteren', FK(['opgebeld', 'opgebelt'], 0, 'perf', 'bel ends in l, not a ketchup letter, so the participle ends in d: opgebeld.', 'spell'), 'over de heg.'] },
+      { en: 'He is bored at the neighbours\' borrel.', parts: ['Hij', FK(['verveelt zich', 'vervelen zich', 'verveeld zich'], 0, 'refl', 'zich vervelen is reflexive, and with hij the verb takes -t: verveelt zich.', 'verb'), 'op de borrel van de buren.'] },
+      { en: 'Paola is still taller than me.', parts: ['Paola is nog steeds', FK(['groter', 'grotere', 'grootst'], 0, 'vergelijk', 'After is with dan the comparative takes no -e: groter dan ik.'), 'dan ik.'] },
 
       // ---- words: people, feelings, the borrel, the cracks
       { w: 'the student', nl: 'de student' }, { w: 'the neighbour (woman)', nl: 'de buurvrouw' },
@@ -834,44 +784,38 @@
       want: 'The dead of Groningen have opinions and they state them: ik vind dat, volgens mij, hoewel, ondanks. They say zal wel when they do not know and will not admit it. Verbs that come apart in the middle of a sentence snap back together at the end of a sub-clause. Everything small is a het-word with a -je, and every adjective in front of a noun wants its -e unless the noun is a het-word after een. The women are still taller than you. The students on their bikes are not, but they ride as if they were. Could be worse.' },
     items: [
       // ---- builds: opinions and arguments
-      { en: 'I think the Martinitoren is the most beautiful tower in the Netherlands.', parts: ['Ik vind', FK(['dat', 'omdat'], 0, 'mening',
-        'ik vind dat opens the opinion. omdat would give a reason, not a view.'), 'de Martinitoren', FK(['de mooiste toren van Nederland is', 'is de mooiste toren van Nederland'], 0, 'mening',
-        'dat sends the verb to the end of its clause: dat de Martinitoren de mooiste toren van Nederland is.'), '.'] },
-      { en: 'In my opinion the Grote Markt is too busy on Saturday.', parts: ['Volgens mij', FK(['is de Grote Markt', 'de Grote Markt is'], 0, 'v2',
-        'Volgens mij fills slot 1, so the verb comes second: is de Grote Markt. There is no dat here, so no verb at the end.'), 'op zaterdag te druk.'] },
+      { en: 'I think the Martinitoren is really beautiful.', parts: ['Ik vind', FK(['dat', 'omdat'], 0, 'mening',
+        'ik vind dat opens an opinion; omdat would give a reason, not a view.'), 'de Martinitoren', FK(['echt mooi is', 'is echt mooi'], 0, 'mening',
+        'dat sends the verb to the end of its clause: echt mooi is.'), '.'] },
+      { en: 'In my opinion it is too busy on the Grote Markt on Saturday.', parts: ['Volgens mij', FK(['is het', 'het is'], 0, 'v2',
+        'Volgens mij fills slot 1, so the verb comes second: is het.'), 'op zaterdag te druk op de Grote Markt.'] },
       { en: 'In my opinion the Martinitoren is the tallest building in the city.', parts: ['Volgens mij', FK(['is de Martinitoren', 'de Martinitoren is'], 0, 'v2',
-        'Volgens mij is slot 1, so the verb comes next: is de Martinitoren.'), 'het', FK(['hoogste', 'hoogst'], 0, 'vergelijk',
-        'Before a noun the superlative takes -e: het hoogste gebouw. The bare hoogst does not stand in front of a noun.'), 'gebouw van de stad.'] },
-      { en: 'Although it is cold, we cycle to the Grote Markt.', parts: ['Hoewel het', FK(['koud is, fietsen we', 'koud is, we fietsen', 'is koud, fietsen we'], 0, 'hoewel',
-        'hoewel sends the verb to the end: koud is. The main clause after it starts with its verb: fietsen we.'), 'naar de Grote Markt.'] },
-      { en: 'Despite the rain, the students just keep cycling.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks goes with a noun phrase (de regen). hoewel needs a whole clause with its own verb.'), 'de regen', FK(['fietsen de studenten', 'de studenten fietsen'], 0, 'v2',
+        'Volgens mij is slot 1, so the verb comes next: is de Martinitoren.'), 'het', FK(['hoogste', 'hoogst'], 0, 'vergelijk', 'Before a noun the superlative takes -e: het hoogste gebouw.'), 'gebouw van de stad.'] },
+      { en: 'Although it is cold, we cycle to the Grote Markt.', parts: ['Hoewel het', FK(['koud is', 'is koud'], 0, 'hoewel',
+        'hoewel sends the verb to the end of its clause: koud is.'), ', fietsen we naar de Grote Markt.'] },
+      { en: 'Despite the rain, the students just keep cycling.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen', FK(['fietsen de studenten', 'de studenten fietsen'], 0, 'v2',
         'The first slot is taken by Ondanks de regen, so the verb comes second: fietsen de studenten.'), 'gewoon door.'] },
-      { en: 'Although he gets up early, he still arrives too late.', parts: ['Hoewel hij vroeg', FK(['opstaat, komt hij', 'opstaat, hij komt', 'staat op, komt hij'], 0, 'sepbz',
-        'In a hoewel-clause the verb goes last and opstaat glues back together. Then the main clause starts with its verb: komt hij.'), 'toch te laat aan.'] },
+      { en: 'Although he gets up early, he still arrives too late.', parts: ['Hoewel hij vroeg', FK(['opstaat', 'staat op'], 0, 'sepbz',
+        'In a hoewel-clause the verb goes last and opstaat stays in one piece.'), ', komt hij toch te laat aan.'] },
 
       // ---- builds: zullen for probability
-      { en: 'It will probably be busy on the Grote Markt tonight.', parts: ['Het', FK(['zal', 'zul'], 0, 'zullen',
-        'het takes zal. zul belongs to je or jij after the verb, as in zul je.'), 'vanavond wel druk', FK(['zijn', 'is'], 0, 'zullen',
+      { en: 'It will probably be busy on the Grote Markt tonight.', parts: ['Het', FK(['zal', 'zul'], 0, 'zullen', 'het takes zal; zul only goes with je or jij after the verb.'), 'vanavond wel druk', FK(['zijn', 'is'], 0, 'zullen',
         'After zal the main verb is a bare infinitive at the end: zal ... zijn.'), 'op de Grote Markt.'] },
       { en: 'The students will be asleep by now.', parts: ['De studenten', FK(['zullen', 'zal'], 0, 'zullen',
         'Plural subject, so zullen: de studenten zullen.'), 'nu wel', FK(['slapen', 'te slapen'], 0, 'zullen',
         'zullen is a modal verb, so the infinitive follows bare, with no te.'), '.'] },
       { en: 'Tomorrow it will probably rain.', parts: ['Morgen', FK(['zal het', 'het zal'], 0, 'v2',
         'Morgen takes slot 1, so the verb comes second: zal het.'), 'wel regenen.'] },
-      { en: 'It will probably turn out fine, they say in Groningen.', parts: ['Het zal wel', FK(['meevallen', 'te meevallen', 'mee vallen'], 0, 'zullen',
-        'After zal the infinitive stands bare and in one piece at the end: meevallen. Probably, but nobody here will promise it.'), ', zeggen ze in Groningen.'] },
+      { en: 'It will probably turn out fine, they say in Groningen.', parts: ['Het zal wel', FK(['meevallen', 'meevalt', 'mee te vallen'], 0, 'zullen', 'After zal the infinitive stands bare and in one piece at the end: meevallen.'), ', zeggen ze in Groningen.'] },
 
       // ---- builds: separable verbs in sub-clauses
       { en: 'The student is tired because he gets up early every day.', parts: ['De student is moe omdat hij elke dag vroeg', FK(['opstaat', 'staat op', 'op staat'], 0, 'sepbz',
         'omdat sends the verb to the end, and the separable verb glues back together: omdat hij opstaat.'), '.'] },
-      { en: 'I know that my colleague is cancelling the standup tomorrow.', parts: ['Ik weet dat mijn collega de standup morgen', FK(['afzegt', 'zegt af'], 0, 'sepbz',
-        'In a dat-clause the verb goes last and afzeggen stays in one piece: dat mijn collega afzegt, not zegt af.'), '.'] },
+      { en: 'I know that my colleague is cancelling the standup tomorrow.', parts: ['Ik weet dat mijn collega de standup morgen', FK(['afzegt', 'zegt af'], 0, 'sepbz', 'In a dat-clause the verb goes last and stays in one piece: afzegt.'), '.'] },
 
       // ---- builds: diminutives and their article
       { en: 'The cup of coffee is empty.', parts: [FK(['Het', 'De'], 0, 'verklein',
-        'Every word ending in -je is a het-word: het kopje.'), FK(['kopje', 'koppje'], 0, 'verklein',
-        'kop plus -je is kopje. The p does not double in front of -je.'), 'koffie is leeg.'] },
+        'Every word ending in -je is a het-word: het kopje.'), FK(['kopje', 'koppje'], 0, 'verklein', 'kop plus -je is kopje; the p does not double before -je.', 'spell'), 'koffie is leeg.'] },
       { en: 'Many students cycle over the little bridge to the city.', parts: ['Over het', FK(['bruggetje', 'brugje'], 0, 'verklein',
         'brug has a short vowel, so the g doubles and the ending is -etje: bruggetje.'), 'fietsen veel studenten naar de stad.'] },
 
@@ -884,12 +828,10 @@
         'kom is a de-word: een warme kom. With a het-word and een the -e would drop.'), 'kom mosterdsoep.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'I used to cycle to work every day.', parts: ['Vroeger', FK(['fietste ik', 'fietsde ik', 'ik fietste'], 0, 'imp',
-        'fiets ends in s, a ketchup letter, so the past is fietste with a t. Vroeger takes slot 1, so the verb comes before ik.'), 'elke dag naar mijn werk.'] },
-      { en: 'I forgot to put on a helmet.', parts: ['Ik ben vergeten een helm', FK(['op te zetten', 'opte zetten', 'te opzetten'], 0, 'omte',
-        'With a separable verb the te sits between prefix and verb: op te zetten. No helmet, and now you know why.'), '.'] },
-      { en: 'In Groningen it is colder than in Alblasserdam.', parts: ['In Groningen is het', FK(['kouder', 'koudere', 'meer koud'], 0, 'vergelijk',
-        'After is the comparative takes no -e: kouder dan. koudere only comes before a noun.'), 'dan in Alblasserdam.'] },
+      { en: 'I used to cycle to work every day.', parts: ['Vroeger', FK(['fietste', 'fietsde'], 0, 'imp',
+        'fiets ends in s, a ketchup letter, so the past takes -te: fietste.', 'spell'), 'ik elke dag naar mijn werk.'] },
+      { en: 'I forgot to put on a helmet.', parts: ['Ik ben vergeten een helm', FK(['op te zetten', 'te opzetten'], 0, 'omte', 'With a separable verb te sits between the two parts: op te zetten.'), '.'] },
+      { en: 'In Groningen it is colder than in Alblasserdam.', parts: ['In Groningen is het', FK(['kouder', 'koudere', 'koudst'], 0, 'vergelijk', 'After is the comparative takes no -e: kouder dan.'), 'dan in Alblasserdam.'] },
 
       // ---- words: the city, the students, the food, the countryside
       { w: 'the tower', nl: 'de toren' }, { w: 'the town hall', nl: 'het stadhuis', wrong: 'de stadhuis' },
@@ -9596,10 +9538,10 @@
       want: 'Since the mist everyone who spoke Dutch has changed, and in Groningen they changed into students: they have an opinion about everything and they say it first. Ik vind dat, volgens mij, hoewel, ondanks. They want to know what you think of the house, the dogs and the neighbours, and they listen for where you put the verb. Paola, still taller than you, will probably be home already. Zal wel. The tower hears it all and says nothing. It is used to students.' },
     items: [
       // ---- builds: opinions, the verb after dat goes to the end, the verb after volgens mij comes second
-      { en: 'I think the dogs sleep too much.', parts: ['Ik vind', FK(['dat de honden te veel slapen', 'dat de honden slapen te veel', 'dat slapen de honden te veel'], 0, 'mening',
-        'dat opens a sub-clause, so the verb goes to the very end: dat de honden te veel slapen.'), '.'] },
-      { en: 'In my opinion the big couch does not fit through the door.', parts: ['Volgens mij', FK(['past de grote bank', 'de grote bank past'], 0, 'v2',
-        'Volgens mij fills slot 1, so the verb comes next: past de grote bank.'), 'niet door de deur.'] },
+      { en: 'I think the dogs sleep too much.', parts: ['Ik vind dat de honden', FK(['te veel slapen', 'slapen te veel'], 0, 'mening',
+        'dat opens a sub-clause, so the verb goes to the very end: te veel slapen.'), '.'] },
+      { en: 'In my opinion the couch does not fit through the door.', parts: ['Volgens mij', FK(['past de bank', 'de bank past'], 0, 'v2',
+        'Volgens mij fills slot 1, so the verb comes next: past de bank.'), 'niet door de deur.'] },
 
       // ---- builds: hoewel with a clause, ondanks with a noun
       { en: 'Although it is raining, I walk the dogs.', parts: [FK(['Hoewel het regent,', 'Hoewel regent het,'], 0, 'hoewel',
@@ -9608,34 +9550,31 @@
       { en: 'Although the house is old, the kitchen is brand new.', parts: ['Hoewel het huis', FK(['oud is,', 'is oud,'], 0, 'hoewel',
         'hoewel sends is to the end of its clause: oud is.'), FK(['is de keuken', 'de keuken is'], 0, 'v2',
         'After the hoewel-clause the main clause starts with its verb: is de keuken.'), 'helemaal nieuw.'] },
-      { en: 'Despite the noise of the students we like living here.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks takes a noun, het lawaai. hoewel needs a whole clause with a verb of its own.'), 'het lawaai van de studenten', FK(['wonen we', 'we wonen'], 0, 'v2',
+      { en: 'Despite the noise of the students we like living here.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks het lawaai.', 'word'), 'het lawaai van de studenten', FK(['wonen we', 'we wonen'], 0, 'v2',
         'The ondanks phrase fills slot 1, so the verb comes next: wonen we.'), 'hier graag.'] },
 
       // ---- builds: zullen for probability
-      { en: 'Paola is probably in the supermarket.', parts: ['Paola', FK(['zal', 'zult', 'zullen'], 0, 'zullen',
-        'zal wel is a guess about now. With Paola it is zal. zult goes with je and zullen with we and zij.'), 'wel in de supermarkt', FK(['zijn', 'is'], 0, 'zullen',
+      { en: 'Paola is probably in the supermarket.', parts: ['Paola', FK(['zal', 'zult', 'zullen'], 0, 'zullen', 'zal wel is a guess, and Paola takes zal: zult goes with je, zullen with we.'), 'wel in de supermarkt', FK(['zijn', 'is'], 0, 'zullen',
         'zal pushes the main verb to the end as an infinitive: zijn.'), '.'] },
       { en: 'The dogs are probably hungry by now.', parts: ['De honden', FK(['zullen', 'zal'], 0, 'zullen',
         'Two dogs, plural: zullen. zal is for one person or thing.'), 'nu wel', FK(['honger hebben', 'hebben honger'], 0, 'zullen',
         'zullen sends the infinitive to the end, so honger hebben.'), '.'] },
 
       // ---- builds: separable verbs inside sub-clauses
-      { en: 'I am tired because Paola gets up so early.', parts: ['Ik ben moe', FK(['omdat Paola zo vroeg opstaat', 'omdat Paola zo vroeg staat op', 'omdat Paola opstaat zo vroeg'], 0, 'sep',
+      { en: 'I am tired because Paola gets up so early.', parts: ['Ik ben moe omdat Paola zo vroeg', FK(['opstaat', 'staat op'], 0, 'sep',
         'In a sub-clause the separable verb stays in one piece at the very end: opstaat.'), '.'] },
-      { en: 'Paola thinks I walk the dogs too late.', parts: ['Paola vindt', FK(['dat ik de honden te laat uitlaat', 'dat ik de honden te laat laat uit', 'dat laat ik de honden te laat uit'], 0, 'sep',
+      { en: 'Paola thinks I walk the dogs too late.', parts: ['Paola vindt dat ik de honden te laat', FK(['uitlaat', 'laat uit'], 0, 'sep',
         'After dat the verb goes last and uitlaten does not split: uitlaat.'), '.'] },
-      { en: 'When the alarm goes off, I get up straight away.', parts: [FK(['Als de wekker afgaat,', 'Als de wekker gaat af,'], 0, 'sep',
-        'Inside the als-clause the separable verb stays together at the end: afgaat.'), FK(['sta ik meteen op', 'ik sta meteen op'], 0, 'v2',
-        'The clause fills slot 1, so the verb comes next: sta ik. In a main clause op goes to the end.'), '.'] },
+      { en: 'When the alarm goes off, I get up straight away.', parts: ['Als de wekker', FK(['afgaat', 'gaat af'], 0, 'sep',
+        'Inside the als-clause the separable verb stays together at the end: afgaat.'), ',', FK(['sta ik', 'ik sta'], 0, 'v2',
+        'The als-clause fills slot 1, so the verb comes next: sta ik.'), 'meteen op.'] },
 
       // ---- builds: diminutives are het
       { en: 'That little dog belongs to the neighbour.', parts: [FK(['Dat', 'Die'], 0, 'verklein',
         'A word ending in -je is always het: dat hondje, not die.'), FK(['kleine', 'klein'], 0, 'adj',
         'After dat the adjective takes -e: dat kleine hondje.'), 'hondje is van de buurvrouw.'] },
       { en: 'Our little house is small, but two dogs fit in.', parts: [FK(['Ons huisje', 'Onze huisje'], 0, 'verklein',
-        'huisje ends in -je, so it is het: ons, not onze.'), 'is klein, maar er passen twee', FK(['hondjes', 'hondjen'], 0, 'verklein',
-        'The plural of a diminutive is -s: hondjes.'), 'in.'] },
+        'huisje ends in -je, so it is het: ons, not onze.'), 'is klein, maar er passen twee', FK(['hondjes', 'hondjen'], 0, 'verklein', 'The plural of a diminutive takes -s: hondjes.', 'spell'), 'in.'] },
 
       // ---- builds: the adjective -e in all cases
       { en: 'Our old house has a big garden and a small kitchen.', parts: [FK(['Ons oude huis', 'Ons oud huis'], 0, 'adj',
@@ -9650,16 +9589,13 @@
 
       // ---- builds: review of earlier tiers
       { en: 'Yesterday we walked to the Grote Markt with the dogs.', parts: ['Gisteren', FK(['zijn we', 'we zijn'], 0, 'v2',
-        'Gisteren fills slot 1, so the verb comes second.'), 'met de honden naar de Grote Markt', FK(['gelopen', 'gelopt', 'gelopte'], 0, 'perf',
-        'lopen is irregular, so gelopen. Going to a place takes zijn.'), '.'] },
-      { en: 'I used to live in a student house without heating.', parts: ['Vroeger', FK(['woonde', 'woonte'], 0, 'kof',
-        'woon ends in n, not a ketchup letter, so the past ends in -de: woonde.'), 'ik in een studentenhuis zonder verwarming.'] },
-      { en: 'I go to the kitchen to make coffee.', parts: ['Ik ga naar de keuken', FK(['om koffie te zetten', 'om te koffie zetten', 'om koffie zetten te'], 0, 'omte',
-        'om opens the purpose and te sits right before the infinitive at the end: om koffie te zetten.'), '.'] },
-      { en: 'Of all the rooms the kitchen is the coziest.', parts: ['Van alle kamers is de keuken', FK(['de gezelligste', 'de gezelligst', 'de meest gezelligste'], 0, 'vergelijk',
-        'The superlative is -st plus -e after de: de gezelligste. meest and -ste together would double it.'), '.'] },
+        'Gisteren fills slot 1, so the verb comes second.'), 'met de honden naar de Grote Markt', FK(['gelopen', 'liepen', 'lopen'], 0, 'perf', 'zijn plus a participle makes the perfect, and lopen is irregular: gelopen.'), '.'] },
+      { en: 'I used to live in a student house without heating.', parts: ['Vroeger', FK(['woonde', 'woonte'], 0, 'kof', 'woon ends in n, not a ketchup letter, so the past ends in -de: woonde.', 'spell'), 'ik in een studentenhuis zonder verwarming.'] },
+      { en: 'I go to the kitchen to make coffee.', parts: ['Ik ga naar de keuken om koffie', FK(['te zetten', 'zetten te'], 0, 'omte',
+        'te sits right before the infinitive at the end: om koffie te zetten.'), '.'] },
+      { en: 'Of all the rooms the kitchen is the coziest.', parts: ['Van alle kamers is de keuken', FK(['de gezelligste', 'de gezelligst', 'de gezelliger'], 0, 'vergelijk', 'The superlative takes -st, plus -e after de: de gezelligste.'), '.'] },
       { en: 'I feel at home here, although the neighbours upstairs sometimes party.', parts: ['Ik voel', FK(['me', 'zich'], 0, 'refl',
-        'The self-word matches ik, so me.'), 'hier thuis,', FK(['hoewel de buren boven ons soms feesten', 'hoewel de buren boven ons feesten soms'], 0, 'hoewel',
+        'The self-word matches ik, so me.'), 'hier thuis,', 'hoewel de buren boven ons', FK(['soms feesten', 'feesten soms'], 0, 'hoewel',
         'hoewel sends feesten to the end of its clause: soms feesten.'), '.'] },
 
       // ---- words: rooms, furniture, the family, the dogs, the crack in the wall

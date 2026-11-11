@@ -32,8 +32,7 @@
     items: [
       // ---- builds: opinions and arguments
       { en: 'I think golf is a real sport.', parts: ['Ik vind dat golf een', FK(['echte', 'echt'], 0, 'adj',
-        'sport is a de-word, so after een it takes the -e: een echte sport.'), FK(['sport is', 'is sport'], 0, 'mening',
-        'ik vind dat opens a sub-clause, so the verb goes to the end: dat golf een echte sport is.'), '.'] },
+        'sport is a de-word, so after een it takes the -e: een echte sport.'), FK(['sport is', 'is sport'], 0, 'mening', 'ik vind dat opens a sub-clause, so the verb goes to the end: sport is.'), '.'] },
       { en: 'I think Groningen will win the derby tonight.', parts: ['Volgens mij', FK(['wint Groningen', 'Groningen wint'], 0, 'v2',
         'Volgens mij takes slot 1, so the verb comes second: wint Groningen.'), 'vanavond de derby.'] },
       { en: 'The referee is probably tired after ninety minutes.', parts: ['De scheidsrechter', FK(['zal', 'zult', 'zullen'], 0, 'fut',
@@ -42,29 +41,22 @@
         'Two or more people take zullen. With wel it means they will probably do it.'), 'wel naar het Paterswoldsemeer fietsen.'] },
 
       // ---- builds: hoewel and ondanks
-      { en: 'Although it is raining hard, I still cycle to the lake.', parts: ['Hoewel het hard regent,', FK(['fiets ik', 'ik fiets'], 0, 'hoewel',
-        'After a hoewel clause the main clause starts with its verb: fiets ik.'), 'toch naar het meer.'] },
-      { en: 'I am going for a run despite my muscle ache.', parts: ['Ik ga hardlopen,', FK(['ondanks', 'hoewel'], 0, 'hoewel',
-        'ondanks takes a noun and no verb: ondanks mijn spierpijn. hoewel needs a whole clause.'), 'mijn spierpijn.'] },
-      { en: 'Paola comes along, although it is cold.', parts: ['Paola gaat mee,', FK(['hoewel', 'ondanks'], 0, 'hoewel',
-        'hoewel opens a clause with a verb of its own: hoewel het koud is. ondanks only takes a noun.'), 'het', FK(['koud is', 'is koud'], 0, 'bijzin',
+      { en: 'Although it is raining hard, I still cycle to the lake.', parts: ['Hoewel het hard regent,', FK(['fiets ik', 'ik fiets'], 0, 'v2', 'The hoewel clause fills slot 1, so the main clause starts with its verb: fiets ik.'), 'toch naar het meer.'] },
+      { en: 'I am going for a run despite my muscle ache.', parts: ['Ik ga hardlopen,', FK(['ondanks', 'hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks mijn spierpijn.', 'word'), 'mijn spierpijn.'] },
+      { en: 'Paola comes along, although it is cold.', parts: ['Paola gaat mee,', FK(['hoewel', 'ondanks'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: hoewel het koud is.', 'word'), 'het', FK(['koud is', 'is koud'], 0, 'bijzin',
         'After hoewel the verb goes to the end: het koud is.'), '.'] },
 
       // ---- builds: separable verbs in sub-clauses
-      { en: 'I am tired because I get up at six every morning.', parts: ['Ik ben moe, omdat ik elke ochtend om zes uur', FK(['opsta', 'sta op', 'opstaat'], 0, 'sep',
-        'In a sub-clause the separable verb stays in one piece at the end: omdat ik opsta.'), '.'] },
-      { en: 'Paola thinks I never put my helmet on.', parts: ['Paola denkt dat ik mijn helm nooit', FK(['opzet', 'zet op', 'opzetten'], 0, 'sep',
-        'After dat the verb is last and in one piece: dat ik mijn helm nooit opzet. She is right, which is the problem.'), '.'] },
+      { en: 'I am tired because I get up at six every morning.', parts: ['Ik ben moe, omdat ik elke ochtend om zes uur', FK(['opsta', 'sta op'], 0, 'sep', 'In a sub-clause the separable verb stays in one piece at the end: omdat ik opsta.'), '.'] },
+      { en: 'Paola thinks I never put my helmet on.', parts: ['Paola denkt dat ik mijn helm nooit', FK(['opzet', 'zet op'], 0, 'sep', 'After dat the verb goes last and stays in one piece: dat ik mijn helm opzet.'), '.'] },
       { en: 'The match started late because the crowd arrived late.', parts: ['De wedstrijd begon later, omdat het publiek te laat', FK(['binnenkwam', 'kwam binnen'], 0, 'sep',
         'omdat sends the verb to the end and the prefix sticks back on: binnenkwam.'), '.'] },
 
       // ---- builds: diminutives
       { en: 'The neighbours have a small dog.', parts: ['De buren hebben een', FK(['klein', 'kleine'], 0, 'adj',
         'hondje is a diminutive, so it is a het-word: een klein hondje, no -e after een.'), 'hondje.'] },
-      { en: 'He hits the ball into the bunker.', parts: ['Hij slaat het', FK(['balletje', 'baltje'], 0, 'verklein',
-        'After a short vowel plus l the l doubles and the ending is -etje: bal becomes balletje.'), 'in de bunker.'] },
-      { en: 'Shall we walk another little round through the Noorderplantsoen?', parts: ['Zullen we nog een', FK(['rondje', 'rondtje'], 0, 'verklein',
-        'rond already ends in d, so just add -je: rondje.'), 'door het Noorderplantsoen lopen?'] },
+      { en: 'He hits the ball into the bunker.', parts: ['Hij slaat het', FK(['balletje', 'baltje'], 0, 'verklein', 'After a short vowel plus l the l doubles and the ending is -etje: balletje.', 'spell'), 'in de bunker.'] },
+      { en: 'Shall we walk another little round through the Noorderplantsoen?', parts: ['Zullen we nog een', FK(['rondje', 'rondtje'], 0, 'verklein', 'rond already ends in d, so just add -je: rondje.', 'spell'), 'door het Noorderplantsoen lopen?'] },
       { en: "Have you seen Paola's little sports bag?", parts: ['Heb je', FK(['het', 'de'], 0, 'verklein',
         'Every -je word is het, even when the original is de: de tas, het tasje.'), 'sporttasje van Paola gezien?'] },
 
@@ -72,17 +64,15 @@
       { en: "I like wearing my father's old sports shirt.", parts: ['Ik draag graag het', FK(['oude', 'oud'], 0, 'adj',
         'After het (or dit, dat, mijn) the adjective takes -e, even with a het-word: het oude sportshirt.'), 'sportshirt van mijn vader.'] },
       { en: 'Yesterday I bought new running shoes.', parts: ['Ik heb gisteren', FK(['nieuwe', 'nieuw'], 0, 'adj',
-        'A plural noun with no article always takes the -e: nieuwe hardloopschoenen.'), 'hardloopschoenen', FK(['gekocht', 'gekoopt', 'gekoch'], 0, 'perf',
-        'kopen is irregular: gekocht.'), '.'] },
+        'A plural noun with no article always takes the -e: nieuwe hardloopschoenen.'), 'hardloopschoenen', FK(['gekocht', 'kocht', 'kopen'], 0, 'perf', 'heb plus a participle makes the perfect, and kopen is irregular: gekocht.'), '.'] },
       { en: 'It is a beautiful course, but the wind is cold.', parts: ['Het is een', FK(['mooie', 'mooi'], 0, 'adj',
         'baan is a de-word: een mooie baan.'), 'baan, maar de wind is', FK(['koud', 'koude'], 0, 'adj',
         'After zijn the adjective stands alone, no -e: de wind is koud.'), '.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'I think this is the best team in the north.', parts: ['Volgens mij is dit het', FK(['beste', 'goedste'], 0, 'vergelijk',
-        'goed is irregular: beter, het beste.'), 'team van het noorden.'] },
-      { en: 'I used to skate on the Paterswoldsemeer every winter.', parts: ['Vroeger', FK(['schaatste', 'schaatsde'], 0, 'kof',
-        'schaats ends in s, a ketchup letter: schaatste with a t.'), 'ik elke winter op het Paterswoldsemeer.'] },
+      { en: 'I think this is the best team in the north.', parts: ['Volgens mij is dit het', FK(['beste', 'best'], 0, 'vergelijk', 'goed is irregular, goed, beter, best, and before a noun it is het beste.'), 'team van het noorden.'] },
+      { en: 'I used to skate on the Paterswoldsemeer every winter.', parts: ['Vroeger', FK(['schaatste ik', 'ik schaatste'], 0, 'v2',
+        'Vroeger fills slot 1, so the verb comes second, then ik.'), 'elke winter op het Paterswoldsemeer.'] },
       { en: 'You are not allowed to skate here, the ice is too thin.', parts: ['Je', FK(['mag', 'hoeft'], 0, 'mag',
         'mag niet means not allowed. hoeft would need te: hoeft niet te schaatsen.'), 'hier niet schaatsen, het ijs is te dun.'] },
 

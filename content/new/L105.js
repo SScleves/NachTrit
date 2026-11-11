@@ -48,8 +48,7 @@
       { en: 'Although the neighbour gets up early, he is always grumpy.', parts: ['Hoewel de buurman vroeg', FK(['opstaat', 'staat op'], 0, 'sep',
         'In a sub-clause a separable verb stays in one piece at the end: opstaat.'), ',', FK(['is hij', 'hij is'], 0, 'v2',
         'The sub-clause fills slot 1, so the verb jumps in right after the comma: is hij.'), 'altijd chagrijnig.'] },
-      { en: 'Despite the argument they are still friends.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks is a preposition and takes a noun, de ruzie. hoewel needs a whole clause with its own verb.'), 'de ruzie', FK(['zijn ze', 'ze zijn'], 0, 'v2',
+      { en: 'Despite the argument they are still friends.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de ruzie.', 'word'), 'de ruzie', FK(['zijn ze', 'ze zijn'], 0, 'v2',
         'Ondanks de ruzie fills slot 1, so the verb comes next: zijn ze.'), 'nog vrienden.'] },
       { en: 'Paola is grumpy because the neighbour turns on the music in the middle of the night.', parts: ['Paola is chagrijnig omdat de buurman midden in de nacht de muziek', FK(['aanzet', 'zet aan'], 0, 'sep',
         'omdat sends the verb to the end, and a separable verb stays in one piece there: aanzet.'), '.'] },
@@ -60,16 +59,13 @@
       { en: 'The neighbour is probably at home.', parts: ['De buurman', FK(['zal', 'zullen'], 0, 'fut',
         'One neighbour, singular: hij zal. zullen is for wij, jullie and zij plural.'), 'wel thuis', FK(['zijn', 'is'], 0, 'fut',
         'zal sends the next verb to the end as an infinitive: zal wel thuis zijn.'), '.'] },
-      { en: 'He probably wants a small beer.', parts: ['Hij zal wel een biertje', FK(['willen', 'wil'], 0, 'fut',
-        'After zal the second verb is an infinitive at the end: willen. wil would be a second finite verb.'), '.'] },
+      { en: 'He probably wants a small beer.', parts: ['Hij zal wel een biertje', FK(['willen', 'wil'], 0, 'fut', 'After zal the second verb is a bare infinitive at the end: willen.'), '.'] },
 
       // ---- builds: diminutives and their het
       { en: 'Will you walk the neighbours\' little dog?', parts: ['Wil jij', FK(['het', 'de'], 0, 'verklein',
         'Every word ending in -je is het, even if the animal itself is a de-word.'), 'hondje van de buren uitlaten?'] },
-      { en: 'We will take two small beers.', parts: ['We nemen twee', FK(['biertjes', 'bierties', 'biertjen'], 0, 'verklein',
-        'The plural of a diminutive is -jes: biertje, biertjes.'), '.'] },
-      { en: 'After work we have a little drink on the Grote Markt.', parts: ['Na het werk drinken we een', FK(['borreltje', 'borrelje'], 0, 'verklein',
-        'After an unstressed -el the diminutive is -tje, as in tafeltje: borreltje.'), 'op de Grote Markt.'] },
+      { en: 'We will take two small beers.', parts: ['We nemen twee', FK(['biertjes', 'bierties', 'biertjen'], 0, 'verklein', 'The plural of a diminutive is -jes: biertje, biertjes.', 'spell'), '.'] },
+      { en: 'After work we have a little drink on the Grote Markt.', parts: ['Na het werk drinken we een', FK(['borreltje', 'borrelje'], 0, 'verklein', 'After an unstressed -el the diminutive is -tje, as in tafeltje: borreltje.', 'spell'), 'op de Grote Markt.'] },
 
       // ---- builds: the adjective -e
       { en: 'We had a cosy little party in a student room.', parts: ['We hadden een', FK(['gezellig', 'gezellige'], 0, 'adj',
@@ -83,14 +79,10 @@
         'huis is a het-word, and after een a het-word takes no -e: een oud huis.'), 'huis met een grote tuin.'] },
 
       // ---- builds: review of earlier tiers
-      { en: 'Yesterday the neighbour came by and we talked for hours.', parts: ['Gisteren kwam de buurvrouw langs en we', FK(['praatten', 'praatden', 'praaten'], 0, 'imp',
-        'praat ends in a t, a ketchup letter, so the imperfectum takes -te: praatte, praatten for we.'), 'urenlang.'] },
-      { en: 'My neighbour called me yesterday about the hedge.', parts: ['Mijn buurman heeft me gisteren', FK(['opgebeld', 'geopbeld', 'opgebelt'], 0, 'perf',
-        'The ge goes in the middle: op + gebeld. bel ends in l, no ketchup letter, so -d.'), 'over de heg.'] },
-      { en: 'He is bored at the neighbours\' borrel.', parts: ['Hij', FK(['verveelt zich', 'vervelen zich', 'verveeld zich'], 0, 'refl',
-        'zich vervelen is reflexive, and with hij the verb takes -t: verveelt zich.'), 'op de borrel van de buren.'] },
-      { en: 'Paola is still taller than me.', parts: ['Paola is nog steeds', FK(['groter', 'meer groot', 'grotter'], 0, 'vergelijk',
-        'Add -er to groot and the double o shrinks to a single o: groter, followed by dan. grotter has the wrong spelling.'), 'dan ik.'] },
+      { en: 'Yesterday the neighbour came by and we talked for hours.', parts: ['Gisteren kwam de buurvrouw langs en we', FK(['praatten', 'praatden', 'praaten'], 0, 'imp', 'praat ends in t, a ketchup letter, so the past takes -te: praatten for we.', 'spell'), 'urenlang.'] },
+      { en: 'My neighbour called me yesterday about the hedge.', parts: ['Mijn buurman heeft me gisteren', FK(['opgebeld', 'opgebelt'], 0, 'perf', 'bel ends in l, not a ketchup letter, so the participle ends in d: opgebeld.', 'spell'), 'over de heg.'] },
+      { en: 'He is bored at the neighbours\' borrel.', parts: ['Hij', FK(['verveelt zich', 'vervelen zich', 'verveeld zich'], 0, 'refl', 'zich vervelen is reflexive, and with hij the verb takes -t: verveelt zich.', 'verb'), 'op de borrel van de buren.'] },
+      { en: 'Paola is still taller than me.', parts: ['Paola is nog steeds', FK(['groter', 'grotere', 'grootst'], 0, 'vergelijk', 'After is with dan the comparative takes no -e: groter dan ik.'), 'dan ik.'] },
 
       // ---- words: people, feelings, the borrel, the cracks
       { w: 'the student', nl: 'de student' }, { w: 'the neighbour (woman)', nl: 'de buurvrouw' },

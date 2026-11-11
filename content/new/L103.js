@@ -35,22 +35,18 @@
       want: 'The mist came and everyone who spoke Dutch changed. In Groningen the dead have opinions: ik vind dat, volgens mij, hoewel, ondanks, and the verb waits at the very end like a student for the first bus. Whatever breaks gets a zal wel. The women are still taller than you, and they still split the bill.' },
     items: [
       // ---- builds: opinions and contrast (new at tier 10)
-      { en: 'I think the standup takes too long.', parts: ['Ik vind', FK(['dat de standup te lang duurt', 'dat de standup duurt te lang', 'dat duurt de standup te lang'], 0, 'mening',
+      { en: 'I think the standup takes too long.', parts: ['Ik vind dat de standup', FK(['te lang duurt', 'duurt te lang'], 0, 'mening',
         'ik vind dat opens a sub-clause, so the verb goes to the very end: te lang duurt.'), '.'] },
-      { en: 'In my opinion the problem is in the network.', parts: ['Volgens mij', FK(['zit het probleem', 'het probleem zit'], 0, 'mening',
-        'Volgens mij fills slot 1, so the verb comes next: zit het probleem. It is not a sub-clause like ik vind dat.'), 'in het netwerk.'] },
+      { en: 'In my opinion the problem is in the network.', parts: ['Volgens mij', FK(['zit het probleem', 'het probleem zit'], 0, 'v2', 'Volgens mij fills slot 1, so the verb comes next: zit het probleem.'), 'in het netwerk.'] },
       { en: 'Although it is busy, I am still going to lunch.', parts: ['Hoewel het', FK(['druk is', 'is druk'], 0, 'hoewel',
         'hoewel opens a sub-clause, so the verb goes to the end: druk is.'), ',', FK(['ga ik', 'ik ga'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: ga ik.'), 'toch lunchen.'] },
-      { en: 'Despite the outage the release still went live.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel',
-        'ondanks goes in front of a noun: ondanks de storing. hoewel needs a whole clause with its own verb at the end.'), 'de storing', FK(['ging de release', 'de release ging'], 0, 'v2',
+      { en: 'Despite the outage the release still went live.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de storing.', 'word'), 'de storing', FK(['ging de release', 'de release ging'], 0, 'v2',
         'The opening phrase fills slot 1, so the verb comes next: ging de release.'), 'toch live.'] },
 
       // ---- builds: zullen for probability
-      { en: 'The connection will probably go down again.', parts: ['De verbinding', FK(['zal', 'zul', 'zullen'], 0, 'zullen',
-        'zal wel means probably. One verbinding, so zal. zul belongs to je or jij, zullen is for we, zij and other plurals.'), 'wel weer uitvallen.'] },
-      { en: 'Mark is not here. He is probably stuck in traffic.', parts: ['Mark is er niet. Hij zal wel in de file', FK(['staan', 'staat', 'gestaan'], 0, 'zullen',
-        'zal is the finite verb, so the second verb stays an infinitive at the end: zal wel staan. staat and gestaan are not infinitives.'), '.'] },
+      { en: 'The connection will probably go down again.', parts: ['De verbinding', FK(['zal', 'zul', 'zullen'], 0, 'zullen', 'zal wel means probably, and one verbinding takes zal.'), 'wel weer uitvallen.'] },
+      { en: 'Mark is not here. He is probably stuck in traffic.', parts: ['Mark is er niet. Hij zal wel in de file', FK(['staan', 'staat', 'gestaan'], 0, 'zullen', 'After zal the second verb is a bare infinitive at the end: zal wel staan.'), '.'] },
 
       // ---- builds: separable verbs in sub-clauses
       { en: 'I am tired because I get up early every day.', parts: ['Ik ben moe omdat ik elke dag vroeg', FK(['opsta', 'sta op'], 0, 'sep',
@@ -60,31 +56,25 @@
         'The sub-clause came first, so the main clause starts with its verb: merkt de klant.'), 'er niets van.'] },
 
       // ---- builds: diminutives and het
-      { en: 'Can you send me a quick email?', parts: ['Kun je me even een', FK(['mailtje', 'mailje'], 0, 'verklein',
-        'After an l the diminutive is -tje: mailtje, like tafeltje. The word is then het mailtje.'), 'sturen?'] },
-      { en: 'Shall we get a little coffee before the standup?', parts: ['Zullen we nog een', FK(['koffietje', 'koffieje'], 0, 'verklein',
-        'koffie ends in a vowel, so the diminutive takes -tje: koffietje.'), 'halen voor de standup?'] },
+      { en: 'Can you send me a quick email?', parts: ['Kun je me even een', FK(['mailtje', 'mailje'], 0, 'verklein', 'After an l the diminutive is -tje: mailtje, like tafeltje.', 'spell'), 'sturen?'] },
+      { en: 'Shall we get a little coffee before the standup?', parts: ['Zullen we nog een', FK(['koffietje', 'koffieje'], 0, 'verklein', 'koffie ends in a vowel, so the diminutive takes -tje: koffietje.', 'spell'), 'halen voor de standup?'] },
       { en: 'The little mistake is not so bad.', parts: [FK(['Het', 'De'], 0, 'verklein',
         'Every -je word is het, even though de fout is de: het foutje.'), 'foutje is niet zo erg.'] },
 
       // ---- builds: the adjective -e
       { en: 'The new colleague has a new screen.', parts: ['De', FK(['nieuwe', 'nieuw'], 0, 'adj',
-        'After de the adjective takes -e: de nieuwe collega.'), 'collega heeft een', FK(['nieuw', 'nieuwe'], 0, 'adj',
-        'scherm is a het-word, and after een it stays bare: een nieuw scherm. A de-word would be een nieuwe laptop.'), 'scherm.'] },
+        'After de the adjective takes -e: de nieuwe collega.'), 'collega heeft een', FK(['nieuw', 'nieuwe'], 0, 'adj', 'scherm is a het-word, so after een the adjective stays bare: een nieuw scherm.'), 'scherm.'] },
       { en: 'I work on the customer\'s old dashboard.', parts: ['Ik werk aan het', FK(['oude', 'oud'], 0, 'adj',
         'After het the adjective still takes -e: het oude dashboard. Only after een does a het-word lose it.'), 'dashboard van de klant.'] },
-      { en: 'This is not a good plan.', parts: ['Dit is geen', FK(['goed', 'goede'], 0, 'adj',
-        'plan is a het-word, so after geen it stays bare: geen goed plan. For a de-word it would be geen goede oplader.'), 'plan.'] },
+      { en: 'This is not a good plan.', parts: ['Dit is geen', FK(['goed', 'goede'], 0, 'adj', 'plan is a het-word, so after geen the adjective stays bare: geen goed plan.'), 'plan.'] },
       { en: 'My new boss likes long meetings.', parts: ['Mijn', FK(['nieuwe', 'nieuw'], 0, 'adj',
         'baas is a de-word, so after mijn it takes -e: mijn nieuwe baas.'), 'baas houdt van', FK(['lange', 'lang'], 0, 'adj',
         'A plural always takes -e: lange vergaderingen.'), 'vergaderingen.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'This morning I picked up the alert.', parts: ['Vanochtend', FK(['heb ik', 'ik heb'], 0, 'v2',
-        'Vanochtend fills slot 1, so the verb comes second: heb ik.'), 'de melding', FK(['opgepakt', 'geoppakt', 'oppgepakt'], 0, 'sep',
-        'The ge goes in the middle: op + gepakt, written as one word at the end.'), '.'] },
-      { en: 'The new laptop is faster than the old one.', parts: ['De nieuwe laptop is', FK(['sneller', 'snelder', 'meer snel'], 0, 'vergelijk',
-        'snel takes -er for the comparative: sneller dan.'), 'dan de oude.'] },
+        'Vanochtend fills slot 1, so the verb comes second: heb ik.'), 'de melding', FK(['opgepakt', 'oppakte', 'oppakken'], 0, 'sep', 'heb plus a participle makes the perfect, with ge in the middle: op-ge-pakt.'), '.'] },
+      { en: 'The new laptop is faster than the old one.', parts: ['De nieuwe laptop is', FK(['sneller', 'snel', 'snelst'], 0, 'vergelijk', 'snel takes -er for the comparative, then dan: sneller dan de oude.'), 'dan de oude.'] },
       { en: 'When the server went down, I called the boss.', parts: ['Toen de server', FK(['uitviel', 'viel uit'], 0, 'sep',
         'toen opens a sub-clause: the verb goes to the end and the prefix glues back on, uitviel.'), ',', FK(['belde ik', 'ik belde'], 0, 'bijzin',
         'The sub-clause came first, so the main clause starts with its verb: belde ik.'), 'de baas.'] },

@@ -43,20 +43,17 @@
       want: 'The dead on the platform have opinions and say them loudly: ik vind dat, volgens mij, hoewel, ondanks. They park the verb at the end of the clause and glue the prefix back on (omdat de trein te laat aankomt). The board says zal wel to everything. Anything with a little -je is het, even a bench. The women on the platform are still taller than you, and they are not in a hurry either. Say Moi, take your seat, and get the grammar right before the 17:07 leaves. Could be worse.' },
     items: [
       // ---- builds: opinions, ik vind dat and volgens mij
-      { en: 'I think the train is too expensive.', parts: ['Ik vind', FK(['dat de trein te duur is', 'dat de trein is te duur', 'dat is de trein te duur'], 0, 'mening',
-        'ik vind dat opens a sub-clause, so the verb goes to the end: dat de trein te duur is.'), '.'] },
+      { en: 'I think the train is too expensive.', parts: ['Ik vind dat de trein', FK(['te duur is', 'is te duur'], 0, 'mening',
+        'ik vind dat opens a sub-clause, so the verb goes to the end: te duur is.'), '.'] },
       { en: 'In my opinion the bike is faster than the bus in the city.', parts: ['Volgens mij', FK(['is de fiets', 'de fiets is'], 0, 'v2',
-        'Volgens mij takes slot 1, so the verb comes second, then the subject: is de fiets.'), 'in de stad', FK(['sneller', 'meer snel'], 0, 'vergelijk',
-        'Short adjectives add -er and use dan: sneller dan de bus.'), 'dan de bus.'] },
+        'Volgens mij takes slot 1, so the verb comes second, then the subject: is de fiets.'), 'in de stad', FK(['sneller', 'snel', 'snelst'], 0, 'vergelijk', 'Short adjectives add -er to compare, then dan: sneller dan de bus.'), 'dan de bus.'] },
 
       // ---- builds: hoewel and ondanks
       { en: 'Although the train is late, I am in no hurry.', parts: ['Hoewel de trein', FK(['te laat is', 'is te laat'], 0, 'hoewel',
         'hoewel opens a sub-clause, so the verb goes last: te laat is.'), ',', FK(['heb ik', 'ik heb'], 0, 'v2',
         'After a sub-clause the main clause starts with its verb: heb ik geen haast.'), 'geen haast.'] },
-      { en: 'Despite the rain we cycle to the station.', parts: ['Ondanks', FK(['de regen', 'het regent'], 0, 'hoewel',
-        'ondanks takes a noun: ondanks de regen. With a whole clause you use hoewel het regent.'), 'fietsen we naar het station.'] },
-      { en: 'Although the bus always arrives early, we still wait inside.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel',
-        'A clause with its own verb needs hoewel. ondanks only goes with a noun.'), 'de bus altijd vroeg', FK(['aankomt', 'komt aan'], 0, 'sep',
+      { en: 'Despite the rain we cycle to the station.', parts: [FK(['Ondanks', 'Hoewel'], 0, 'hoewel', 'ondanks goes before a noun, hoewel before a whole clause with its own verb: ondanks de regen.', 'word'), 'de regen fietsen we naar het station.'] },
+      { en: 'Although the bus always arrives early, we still wait inside.', parts: [FK(['Hoewel', 'Ondanks'], 0, 'hoewel', 'hoewel opens a whole clause with its own verb; ondanks only goes before a noun.', 'word'), 'de bus altijd vroeg', FK(['aankomt', 'komt aan'], 0, 'sep',
         'In a sub-clause the verb sits at the end and the prefix glues back on: aankomt.'), ', wachten we toch binnen.'] },
 
       // ---- builds: separable verbs in sub-clauses
@@ -81,25 +78,20 @@
       { en: 'Groningen has a beautiful old station.', parts: ['Groningen heeft een', FK(['mooi oud', 'mooie oude', 'mooi oude'], 0, 'adj',
         'station is a het-word and een is indefinite, so no -e: een mooi oud station.'), 'station.'] },
       { en: 'I think the old station is more beautiful than the new one.', parts: ['Ik vind het', FK(['oude', 'oud'], 0, 'adj',
-        'After het (or de) the adjective always takes -e: het oude station.'), 'station', FK(['mooier', 'mooi', 'meer mooi'], 0, 'vergelijk',
-        'Comparing takes -er and dan: mooier dan het nieuwe.'), 'dan het nieuwe.'] },
+        'After het (or de) the adjective always takes -e: het oude station.'), 'station', FK(['mooier', 'mooi', 'mooist'], 0, 'vergelijk', 'Comparing takes -er and dan: mooier dan het nieuwe.'), 'dan het nieuwe.'] },
       { en: 'In Groningen many students ride old bikes without a light.', parts: ['In Groningen', FK(['rijden', 'rijdt'], 0, 'presens',
         'veel studenten is plural, so the verb is rijden.'), 'veel studenten op', FK(['oude', 'oud'], 0, 'adj',
         'Plural without an article still takes -e: oude fietsen.'), 'fietsen zonder licht.'] },
 
       // ---- builds: review of earlier tiers
       { en: 'I just missed the last train.', parts: ['Ik', FK(['heb', 'ben'], 0, 'aux',
-        'Missing a train is not movement, so hebben: ik heb gemist.'), 'de laatste trein net', FK(['gemist', 'gemisd', 'gemissen'], 0, 'kof',
-        'mis ends in s, a ketchup letter, so the participle takes -t: gemist.'), '.'] },
-      { en: 'The bus stopped at the stop and we got on.', parts: ['De bus', FK(['stopte', 'stopde'], 0, 'imp',
-        'stop ends in p, a ketchup letter, so the past takes -te: stopte.'), 'bij de halte en wij', FK(['stapten', 'stapden'], 0, 'imp',
-        'stap ends in p too: stapten. The prefix in stays at the end.'), 'in.'] },
+        'Missing a train is not movement, so hebben: ik heb gemist.'), 'de laatste trein net', FK(['gemist', 'gemisd'], 0, 'kof', 'mis ends in s, a ketchup letter, so the participle takes -t: gemist.', 'spell'), '.'] },
+      { en: 'The bus stopped at the stop and we got on.', parts: ['De bus', FK(['stopte', 'stopde'], 0, 'kof', 'stop ends in p, a ketchup letter, so the past takes -te: stopte.', 'spell'), 'bij de halte en wij', FK(['stapten', 'stapden'], 0, 'kof', 'stap ends in p, a ketchup letter, so the past takes -ten: stapten.', 'spell'), 'in.'] },
       { en: 'Walk straight on and turn left at the bridge.', parts: [FK(['Loop', 'Te lopen'], 0, 'gebod',
         'The imperative is the bare stem: loop.'), 'rechtdoor en sla bij de brug links', FK(['af', 'afslaan'], 0, 'sep',
         'afslaan splits in the imperative and the prefix goes to the end: sla ... af.'), '.'] },
-      { en: 'It is difficult to find a spot for your bike in the city.', parts: ['Het is lastig om in de stad een plek voor je fiets', FK(['te vinden', 'vinden te', 'vindt te'], 0, 'omte',
-        'om opens the clause and te stands right before the infinitive at the end: te vinden.'), '.'] },
-      { en: 'The train to Zwolle leaves at 10:20.', parts: ['De trein naar Zwolle vertrekt om', FK(['tien voor half elf', 'tien over half elf', 'tien voor elf'], 0, 'klok',
+      { en: 'It is difficult to find a spot for your bike in the city.', parts: ['Het is lastig om in de stad een plek voor je fiets', FK(['te vinden', 'vinden te'], 0, 'omte', 'te stands right before the infinitive at the end: om ... te vinden.'), '.'] },
+      { en: 'The train to Zwolle leaves at 10:20.', parts: ['De trein naar Zwolle vertrekt om tien', FK(['voor', 'over'], 0, 'klok',
         'Half elf is 10:30. Ten minutes before that is tien voor half elf, 10:20.'), '.'] },
 
       // ---- words: the station, the tracks, the bike shed, the roads
