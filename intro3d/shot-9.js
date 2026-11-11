@@ -171,7 +171,7 @@
     for (const ch of b.children) if (ch !== torso && ch !== u.head && ch.visible) { ch.visible = false; st.bikeHidden.push(ch); }
     // his coat a little self-lit, so its orange stays the one saturated colour in the room: his own copy, given back at the end
     const shirt = ownMat(W.Mat({ color: W.M.shirt.color.getHex() })); shirt.emissive.copy(W.M.shirt.color).multiplyScalar(0.28);
-    if (torso) { torso.material = shirt; st.coat = torso; }
+    if (torso) { torso.material = shirt; st.coat = torso; st.torsoWas = torso.visible; torso.visible = true; }   // the rider model hides the game's own torso: this shot needs it back
     const k = W.kit(), legs = W.M.rider, fy = FLOOR;
     for (const s of [-1, 1]) {   // s = 1 is his right (the bike's plus x)
       const hip = [s * 0.1, 1.04, 0.24], knee = [s * 0.13, 1.05, -0.25], ankle = [s * 0.15, fy + 0.07, -0.31];
@@ -421,7 +421,7 @@
       if (!st) return;
       if (W && W.bike) {
         for (const ch of st.bikeHidden) ch.visible = true;
-        if (st.coat) st.coat.material = W.M.shirt;
+        if (st.coat) { st.coat.material = W.M.shirt; st.coat.visible = st.torsoWas; }
         if (st.limbs) { W.bike.remove(st.limbs); st.limbs.traverse(m => { if (m.isMesh && m.geometry) m.geometry.dispose(); }); }
         const h = W.bike.userData.head; h.rotation.set(0, 0, 0); h.rotation.order = 'XYZ';
       }
