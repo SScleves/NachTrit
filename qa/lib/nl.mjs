@@ -194,6 +194,10 @@ export function sameLemma(a, b) {
   if (ia && ia === sb || ib && ib === sa) return true;
   if (Math.min(sa.length, sb.length) >= 4 && (sa.startsWith(sb) || sb.startsWith(sa)) && Math.abs(sa.length - sb.length) <= 2) return true;
   if (Math.min(a.length, b.length) >= 5 && lev(a, b) <= 1) return true;
+  // degrees of one adjective: groot / groter / grootst, duur / duurder / duurst (the open syllable undoubles the vowel)
+  const deg = x => { const y = x.replace(/(d?er|ste?)$/, ''); return y.length >= 4 ? y.replace(/([a-z])\1/g, '$1') : null; };
+  const da = deg(a) || (a.length >= 4 ? a.replace(/([a-z])\1/g, '$1') : null), db = deg(b) || (b.length >= 4 ? b.replace(/([a-z])\1/g, '$1') : null);
+  if (da && db && da.length >= 3 && da === db) return true;
   return false;
 }
 export const lemmaKey = w => stem(w);
