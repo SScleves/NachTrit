@@ -1,9 +1,9 @@
 // Speech: the rendered Dutch lines (voice/<id>.mp3, listed in voice/ids.json) fetched and played through the audio context,
 // with speechSynthesis when a file is missing or fails; speak and speakSeq. Which file plays a line is voiceFileOf in voice.js.
-import { voiceFileOf, VOICES } from './voice.js?v=41';
-import { $ } from './engine.js?v=41';
-import { S } from './state.js?v=41';
-import { audioCtx, nlVoice } from './audio.js?v=41';
+import { voiceFileOf, VOICES } from './voice.js?v=42';
+import { $ } from './engine.js?v=42';
+import { S } from './state.js?v=42';
+import { audioCtx, nlVoice } from './audio.js?v=42';
 
 // ---------- voice: pre-rendered neural Dutch (voice/<id>.mp3), speechSynthesis when a file is missing or fails ----------
 // id = voiceId(voice, text) from voice/hash.js, the same sha1 qa/voice-batch.mjs used. voice/ids.json lists the rendered ids.

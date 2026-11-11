@@ -2,26 +2,26 @@
 // teaching and the lamp hint, die() and the summary card with stars and scores, and resolveFork, the verdict on each fork.
 // The learning core (PLAN.md 3a, 3d) is here too: a missed item goes back in the queue (sendBack), a wrong answer gets the why
 // card, every fork is noted for the end card's list of misses by rule (noteFork, missedHtml). Its pure rules: src/review.js.
-import { refuelRight, TUNE } from './lamp.js?v=41';
-import { levelQueue } from './forks.js?v=41';
-import { whyBudget } from './reading.js?v=41';
-import { TASKS } from './tasks.js?v=41';
-import { VOICES } from './voice.js?v=41';
-import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=41';
-import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=41';
-import { camera, scene } from './render.js?v=41';
-import { setRoadLook } from './road.js?v=41';
-import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=41';
-import { buildScenery, theme, THEMES } from './scenery.js?v=41';
-import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=41';
-import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=41';
-import { plan, unplanFinish } from './plan.js?v=41';
-import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=41';
-import { chime, initAudio } from './audio.js?v=41';
-import { speak, speakSeq } from './speech.js?v=41';
-import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=41';
-import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=41';
-import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=41';   // later modules, through the hub
+import { refuelRight, TUNE } from './lamp.js?v=42';
+import { levelQueue } from './forks.js?v=42';
+import { whyBudget } from './reading.js?v=42';
+import { TASKS } from './tasks.js?v=42';
+import { VOICES } from './voice.js?v=42';
+import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=42';
+import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=42';
+import { camera, scene } from './render.js?v=42';
+import { setRoadLook } from './road.js?v=42';
+import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=42';
+import { buildScenery, theme, THEMES } from './scenery.js?v=42';
+import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=42';
+import { BASE, L, LANE_X, MAXS, progress, S, saveProgress, saveScores, scores, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=42';
+import { plan, unplanFinish } from './plan.js?v=42';
+import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=42';
+import { chime, initAudio } from './audio.js?v=42';
+import { speak, speakSeq } from './speech.js?v=42';
+import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=42';
+import { openMap, openMission, pendingLevel, TOWN_OF, towns } from './map.js?v=42';
+import { handed, paidLine, payFare, settleRide, whyLine } from './main.js?v=42';   // later modules, through the hub
 
 // ---------- game flow ----------
 function start(lv) {

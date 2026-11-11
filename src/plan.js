@@ -2,18 +2,18 @@
 // signs stay legible for its whole reading budget at the tier's speed (planFork, planSentence, placeFork). The pure rules it
 // uses are in forks.js (the level queue), reading.js (budget, legibility) and tasks.js (the task label). A missed item that
 // comes back (src/review.js, put in the queue by src/flow.js) rides on review road: a quiet stretch, half fare.
-import { taskOf } from './tasks.js?v=41';
-import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=41';
-import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=41';
-import { camera, scene } from './render.js?v=41';
-import { mistTex } from './road.js?v=41';
-import { PG } from './props.js?v=41';
-import { PROPS } from './houses.js?v=41';
-import { footprint, scenery } from './scenery.js?v=41';
-import { bigSign, G, signFit, signpost } from './signs.js?v=41';
-import { ghostFigure } from './cast.js?v=41';
-import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=41';
-import { BASE, L, LANE_X, S } from './state.js?v=41';
+import { taskOf } from './tasks.js?v=42';
+import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=42';
+import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=42';
+import { camera, scene } from './render.js?v=42';
+import { mistTex } from './road.js?v=42';
+import { PG } from './props.js?v=42';
+import { PROPS } from './houses.js?v=42';
+import { footprint, scenery } from './scenery.js?v=42';
+import { bigSign, G, signFit, signpost } from './signs.js?v=42';
+import { ghostFigure } from './cast.js?v=42';
+import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=42';
+import { BASE, L, LANE_X, S } from './state.js?v=42';
 
 // itemToEntry and levelQueue (level items to the entries the planner rides) are in src/forks.js
 

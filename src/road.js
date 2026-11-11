@@ -1,9 +1,9 @@
 // The road and the ground: the road textures per lane count and town look, the ribbons (road, kerbs, verges, the land of a
 // hill town, the canal) whose rows follow the bend and the hills every frame, and bend(), hillAt() and rise().
-import { LANES2, LANES3, ROAD_W, THREE } from './engine.js?v=41';
-import { MAX_ANISO, scene } from './render.js?v=41';
-import { M, Mat } from './materials.js?v=41';
-import { S, T3 } from './main.js?v=41';   // later modules, through the hub
+import { LANES2, LANES3, ROAD_W, THREE } from './engine.js?v=42';
+import { MAX_ANISO, scene } from './render.js?v=42';
+import { M, Mat } from './materials.js?v=42';
+import { S, T3 } from './main.js?v=42';   // later modules, through the hub
 
 // ---------- world ----------
 // road: wet asphalt with reflective paint. One colour map and one paint mask per lane count, swapped in start().

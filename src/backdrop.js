@@ -1,14 +1,14 @@
 // What stands behind the street and what only one town has: the landmarks (tower, lighthouse, crane, sheep, the flag), the
 // second row of houses, tree cards, the painted skyline cards and their haze tint, the canal bridge, and each town's shops and
 // signs.
-import { pick, rnd, THREE } from './engine.js?v=41';
-import { scene } from './render.js?v=41';
-import { M, Mat } from './materials.js?v=41';
-import { PG, PM } from './props.js?v=41';
-import { kadd, kat, kb, kbuild, kit, ktube, PK } from './kit.js?v=41';
-import { bikeRow, ducks, moorings, T3, townId, townStyle, windmill } from './furniture.js?v=41';
-import { boat, brickMat, graffitiWall, house, reeds } from './houses.js?v=41';
-import { allWords, MIST_BANDS, SHOP_SIGNS, theme, townKit, zombieParts } from './main.js?v=41';   // later modules, through the hub
+import { pick, rnd, THREE } from './engine.js?v=42';
+import { scene } from './render.js?v=42';
+import { M, Mat } from './materials.js?v=42';
+import { PG, PM } from './props.js?v=42';
+import { kadd, kat, kb, kbuild, kit, ktube, PK } from './kit.js?v=42';
+import { bikeRow, ducks, moorings, T3, townId, townStyle, windmill } from './furniture.js?v=42';
+import { boat, brickMat, graffitiWall, house, reeds } from './houses.js?v=42';
+import { allWords, MIST_BANDS, SHOP_SIGNS, theme, townKit, zombieParts } from './main.js?v=42';   // later modules, through the hub
 
 // ---------- landmarks and props only one town has ----------
 function tower(w, h, mat, spireH) { const g = new THREE.Group(); const t = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); t.position.y = h / 2; g.add(t); if (spireH) { const sp = new THREE.Mesh(new THREE.ConeGeometry(w * 0.72, spireH, 4), PM.roof); sp.rotation.y = Math.PI / 4; sp.position.y = h + spireH / 2; g.add(sp); } for (let i = 0; i < 2; i++) { const win = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.2, w * 0.5), PM.window); win.position.set(0, h * 0.75 - i * w * 0.7, w / 2 + 0.01); g.add(win); } return g; }
