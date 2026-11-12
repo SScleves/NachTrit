@@ -41,6 +41,17 @@ The combined branch `dt/all` is merged into `main` and live.
   the rider's head, ground mist costs 17 fewer draw calls. GPU run of 1, 12, 58, 75, 123 with 0 errors at
   59-60 fps; all 14 intro shots checked.
 
+## On branch `dt/payoff`, waiting for the GPU check and merge (NR_VERSION 44)
+
+Phase 5 items 1, 2 and 5 (`reports/dt-payoff.md`). Items 3 (Amsterdam ending) and 4 (shop) wait for Santi.
+- Words come back: a ride starts with two street lamps in three dead and the shop boards blank. A right answer sends its
+  Dutch word up the street as a small golden glyph; the nearest dark lamp or blank board ahead catches and stays lit.
+- The bus stop: a lit stop after half the deliveries. A dead lamp after it starts the ride again there, once, with half a
+  lamp; that ride earns two stars at most.
+- Town dawn: when every place in a town has three stars, its rides play at dawn (pale haze, every window lit, the dead with
+  faces again, every lamp lit) with a card that leaves the rumour unconfirmed; the town glows on the map. `?dawn=gouda` shows it.
+- Seeded rides of levels 1 and 75 are identical to main field by field; only the new `words` and `checkpoint` fields are added.
+
 ## On branch `dt/save`, waiting for the GPU check and merge (NR_VERSION 43)
 
 Phase 4: save, learner model, word book, spaced review (`reports/dt-save.md`).

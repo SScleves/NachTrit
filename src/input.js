@@ -1,10 +1,10 @@
 // Input: steering (arrow keys, A and D, swipes, taps, clicks) and the go key (up, W, swipe up) that ends a fork's reading wait
 // and the why card after a wrong answer.
-import { $, clamp } from './engine.js?v=43';
-import { renderer } from './render.js?v=43';
-import { flag, LANE_X, S, setFlag } from './state.js?v=43';
-import { card, endWhy, setToastT, toastT } from './hud.js?v=43';
-import './speech.js?v=43';   // keeps the order the game's code runs in
+import { $, clamp } from './engine.js?v=44';
+import { renderer } from './render.js?v=44';
+import { flag, LANE_X, S, setFlag } from './state.js?v=44';
+import { card, endWhy, setToastT, toastT } from './hud.js?v=44';
+import './speech.js?v=44';   // keeps the order the game's code runs in
 
 // ---------- input ----------
 function steer(dir) { if (S.mode !== 'ride') return; S.lane = clamp(S.lane + dir, 0, LANE_X.length - 1); }

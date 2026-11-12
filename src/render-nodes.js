@@ -1,8 +1,8 @@
 // The node render path, opt-in with ?renderer=webgpu (or webgl2): the legacy light units and the cel lighting model as nodes,
 // the fog and vertex helpers the towns use through W.NODE, and the post chain built in TSL. On the default WebGL path NODEFX is
 // null and nothing here runs.
-import { ADD, NODES, THREE, TSL } from './engine.js?v=43';
-import { camera, renderer, scene } from './main.js?v=43';   // later modules, through the hub
+import { ADD, NODES, THREE, TSL } from './engine.js?v=44';
+import { camera, renderer, scene } from './main.js?v=44';   // later modules, through the hub
 
 // ---------- the node path's own pieces: legacy light units, the cel lighting model, fog and vertex helpers for node materials ----------
 // FOG_D / FOG_C follow scene.fog every frame; NODEFX is also handed to the towns (W.NODE) for their own patches.

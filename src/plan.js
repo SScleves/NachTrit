@@ -2,20 +2,20 @@
 // signs stay legible for its whole reading budget at the tier's speed (planFork, planSentence, placeFork). The pure rules it
 // uses are in forks.js (the level queue), reading.js (budget, legibility) and tasks.js (the task label). A missed item that
 // comes back (src/review.js, put in the queue by src/flow.js) rides on review road: a quiet stretch, half fare.
-import { taskOf } from './tasks.js?v=43';
-import { halfway, ownDraws } from './payoff.js?v=43';
-import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=43';
-import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=43';
-import { camera, scene } from './render.js?v=43';
-import { mistTex } from './road.js?v=43';
-import { LAMP_HALO_MAT, LAMP_POOL_MAT, PG, PM } from './props.js?v=43';
-import { Mat } from './materials.js?v=43';
-import { PROPS } from './houses.js?v=43';
-import { footprint, scenery } from './scenery.js?v=43';
-import { bigSign, G, labelTexture, signFit, signpost } from './signs.js?v=43';
-import { ghostFigure } from './cast.js?v=43';
-import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=43';
-import { BASE, L, LANE_X, S } from './state.js?v=43';
+import { taskOf } from './tasks.js?v=44';
+import { halfway, ownDraws } from './payoff.js?v=44';
+import { legDist, READ_AHEAD, readBudget, wordsIn } from './reading.js?v=44';
+import { clamp, FARES, LOOK, pick, rnd, ROAD_W, THREE } from './engine.js?v=44';
+import { camera, scene } from './render.js?v=44';
+import { mistTex } from './road.js?v=44';
+import { LAMP_HALO_MAT, LAMP_POOL_MAT, PG, PM } from './props.js?v=44';
+import { Mat } from './materials.js?v=44';
+import { PROPS } from './houses.js?v=44';
+import { footprint, scenery } from './scenery.js?v=44';
+import { bigSign, G, labelTexture, signFit, signpost } from './signs.js?v=44';
+import { ghostFigure } from './cast.js?v=44';
+import { cart, fence, HINT_HALO_MAT, puddle, roadArrow, TEACH_HALO_MAT, wisp, zombie, zombieBike } from './zombies.js?v=44';
+import { BASE, L, LANE_X, S } from './state.js?v=44';
 
 // itemToEntry and levelQueue (level items to the entries the planner rides) are in src/forks.js
 

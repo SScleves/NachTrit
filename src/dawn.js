@@ -4,12 +4,12 @@
 // sign starts lit (src/words.js), and src/loop.js lifts the haze to the pale grey of concept image A from the fog, sky and
 // night-depth numbers it already drives. A card resolves the town's rumour, still unconfirmed. Every buildScenery (an intro shot,
 // the title, the next ride) puts the night back first, so the intro is never touched.
-import { PM } from './props.js?v=43';
-import { PK } from './kit.js?v=43';
-import { sceneryHooks } from './scenery.js?v=43';
-import { ZEYE_MAT } from './zombies.js?v=43';
-import { S } from './state.js?v=43';
-import './words.js?v=43';   // keeps the order the game's code runs in
+import { PM } from './props.js?v=44';
+import { PK } from './kit.js?v=44';
+import { sceneryHooks } from './scenery.js?v=44';
+import { ZEYE_MAT } from './zombies.js?v=44';
+import { S } from './state.js?v=44';
+import './words.js?v=44';   // keeps the order the game's code runs in
 
 // the window atlas (src/houses.js): cells 0 to 2 are lit panes, 3 a dim room, 4 and 5 dark. At dawn 3, 4 and 5 take the lit ones.
 let winSaved = null;

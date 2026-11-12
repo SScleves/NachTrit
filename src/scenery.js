@@ -1,19 +1,19 @@
 // The themes (what lines the road per place) and buildScenery, which dresses the world for a theme and a town: houses, props,
 // the backdrop, the dead, the mist bands, the sky and the light. Also the recycling of scenery ahead as the ride rolls on.
-import { clamp, lerp, pick, rnd, ROAD_W, smooth, THREE } from './engine.js?v=43';
-import { scene } from './render.js?v=43';
-import { aurora, paintSky, skyDome } from './sky.js?v=43';
-import { GlowMat, glowTex, M, Mat } from './materials.js?v=43';
-import { ground, hills, KERB_W, LAND_MAT, landL, landR, setHills } from './road.js?v=43';
-import { PG, PM, setTownLight } from './props.js?v=43';
-import { kadd, kb, kbuild, KG, kit, kmerge, ktube, PK } from './kit.js?v=43';
+import { clamp, lerp, pick, rnd, ROAD_W, smooth, THREE } from './engine.js?v=44';
+import { scene } from './render.js?v=44';
+import { aurora, paintSky, skyDome } from './sky.js?v=44';
+import { GlowMat, glowTex, M, Mat } from './materials.js?v=44';
+import { ground, hills, KERB_W, LAND_MAT, landL, landR, setHills } from './road.js?v=44';
+import { PG, PM, setTownLight } from './props.js?v=44';
+import { kadd, kb, kbuild, KG, kit, kmerge, ktube, PK } from './kit.js?v=44';
 import { bakfiets, bikeLaneSign, bikeRow, bins, crates, deadTree, ducks, fencePost, lampLights, lamppost, moorings, T3, TOWN_STYLE, townId,
-  townStyle, tree, windmill } from './furniture.js?v=43';
+  townStyle, tree, windmill } from './furniture.js?v=44';
 import { bench, bikeProp, boat, bollard, brickMat, bridge, cheeseCart, church, dogProp, drawbridge, fingerpost, graffitiWall, house, reeds, seeded,
-  surfUV, tulipBox } from './houses.js?v=43';
+  surfUV, tulipBox } from './houses.js?v=44';
 import { backRow, canalBridge, crane, flagNL, GRACHT_TOWNS, LANDMARK, lighthouse, paintSkyline, sheep, SKY_MARKS, terrace, tintFar, tower,
-  TOWN_EXTRA, townShops, townSigns, treeCard } from './backdrop.js?v=43';
-import { deadPool, fence, G, ghostFigure, labelTexture, TOWN_OF, wisp, zombie, ZOMBIE_VARIANTS, zombieParts } from './main.js?v=43';   // later modules, through the hub
+  TOWN_EXTRA, townShops, townSigns, treeCard } from './backdrop.js?v=44';
+import { deadPool, fence, G, ghostFigure, labelTexture, TOWN_OF, wisp, zombie, ZOMBIE_VARIANTS, zombieParts } from './main.js?v=44';   // later modules, through the hub
 
 // ---------- themes: what lines the road per place ----------
 // street furniture sits on the pavement with a footprint under 1, so it never pushes a house away; houses stand back a little for front gardens

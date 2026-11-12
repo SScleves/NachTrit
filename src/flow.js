@@ -5,32 +5,32 @@
 // The learner model (PLAN.md phase 4, src/learn.js): a level ride counts in the save's ride counter, items due from earlier
 // levels replace up to a quarter of its deliveries (addReview), each item's first try moves its box (noteLearn), and the
 // save is written when the end card shows.
-import { refuelRight, TUNE } from './lamp.js?v=43';
-import { canRestart, capStars, CHECKPOINT } from './payoff.js?v=43';
-import { itemToEntry, levelQueue } from './forks.js?v=43';
-import { duePositions, noteItem, noteRule, reviewCap, selectDue } from './learn.js?v=43';
-import { whyBudget } from './reading.js?v=43';
-import { TASKS } from './tasks.js?v=43';
-import { VOICES } from './voice.js?v=43';
-import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=43';
-import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=43';
-import { camera, scene } from './render.js?v=43';
-import { setRoadLook } from './road.js?v=43';
-import { PG } from './props.js?v=43';
-import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=43';
-import { buildScenery, theme, THEMES } from './scenery.js?v=43';
-import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=43';
-import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=43';
-import { placeStop, plan, unplanFinish } from './plan.js?v=43';
-import { wordBack, wordsStart } from './words.js?v=43';
-import { setDawn } from './dawn.js?v=43';
-import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=43';
-import { chime, initAudio } from './audio.js?v=43';
-import { speak, speakSeq } from './speech.js?v=43';
-import { G } from './signs.js?v=43';
-import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=43';
-import { openMap, openMission, pendingLevel, TOWN_OF, townAtDawn, towns } from './map.js?v=43';
-import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=43';   // later modules, through the hub
+import { refuelRight, TUNE } from './lamp.js?v=44';
+import { canRestart, capStars, CHECKPOINT } from './payoff.js?v=44';
+import { itemToEntry, levelQueue } from './forks.js?v=44';
+import { duePositions, noteItem, noteRule, reviewCap, selectDue } from './learn.js?v=44';
+import { whyBudget } from './reading.js?v=44';
+import { TASKS } from './tasks.js?v=44';
+import { VOICES } from './voice.js?v=44';
+import { groupMisses, markRight, returnSlot, shouldReturn, weakLine } from './review.js?v=44';
+import { $, BASE_SPEED, clamp, FARES, LANES2, LANES3, MAX_SPEED, today } from './engine.js?v=44';
+import { camera, scene } from './render.js?v=44';
+import { setRoadLook } from './road.js?v=44';
+import { PG } from './props.js?v=44';
+import { setTownId, setTownStyle, townId, townStyleOf } from './furniture.js?v=44';
+import { buildScenery, theme, THEMES } from './scenery.js?v=44';
+import { bike, dropPassenger, follower, rackGhost, setFace, setRackGhost } from './rider.js?v=44';
+import { BASE, contentIndex, flag, keyOf, L, LANE_X, MAXS, persist, progress, S, SAVE, saveProgress, scores, setFlag, setL, setLaneX, setSpeeds, unlocked } from './state.js?v=44';
+import { placeStop, plan, unplanFinish } from './plan.js?v=44';
+import { wordBack, wordsStart } from './words.js?v=44';
+import { setDawn } from './dawn.js?v=44';
+import { assembled, esc, fareRow, flash, hideCard, say, toast, whyCard } from './hud.js?v=44';
+import { chime, initAudio } from './audio.js?v=44';
+import { speak, speakSeq } from './speech.js?v=44';
+import { G } from './signs.js?v=44';
+import { introSeen, setIntroSeen, showIntro, showLevelIntro, startArt } from './intro.js?v=44';
+import { openMap, openMission, pendingLevel, TOWN_OF, townAtDawn, towns } from './map.js?v=44';
+import { handed, openPractice, paidLine, payFare, settleRide, whyLine } from './main.js?v=44';   // later modules, through the hub
 
 // ---------- game flow ----------
 function start(lv) {

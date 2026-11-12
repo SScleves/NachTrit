@@ -1,13 +1,13 @@
 // The .glb models from tools/models: one loader fetches them all at start (modelsReady), and every user falls back to its
 // primitive while a model is missing. Static models go through the kit by slot (kModel, kGable, windmillModel); cloned scene
 // graphs (modelClone) take the game's materials by slot name.
-import { GLTFLoader, pick, rnd, THREE } from './engine.js?v=43';
-import { M, Mat, TINT } from './materials.js?v=43';
-import { PG, PM, WIN_GLOW_MAT } from './props.js?v=43';
-import { kadd, kbuild, KG, kit, kmerge, MODELS } from './kit.js?v=43';
-import { brickMat, WIN_LIT } from './houses.js?v=43';
-import './scenery.js?v=43';   // keeps the order the game's code runs in
-import { riderModel } from './main.js?v=43';   // later modules, through the hub
+import { GLTFLoader, pick, rnd, THREE } from './engine.js?v=44';
+import { M, Mat, TINT } from './materials.js?v=44';
+import { PG, PM, WIN_GLOW_MAT } from './props.js?v=44';
+import { kadd, kbuild, KG, kit, kmerge, MODELS } from './kit.js?v=44';
+import { brickMat, WIN_LIT } from './houses.js?v=44';
+import './scenery.js?v=44';   // keeps the order the game's code runs in
+import { riderModel } from './main.js?v=44';   // later modules, through the hub
 
 // ---------- models ----------
 // The .glb files in assets/models are written by tools/models (npm run models) and committed. One loader fetches them all at start;

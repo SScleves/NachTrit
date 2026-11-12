@@ -5,13 +5,13 @@
 // for a dim one and its cone, pool and reflection hidden, a lit one is the shared lamp materials again; the glyph is a pooled
 // sprite. The pure rules (which lamps start dead, which one a word flies to) are in src/payoff.js.
 // No Math.random here: a seeded ride draws the same numbers with or without it.
-import { deadAtStart, GLYPH, glyphNear, ownDraws, pickGlyphTarget } from './payoff.js?v=43';
-import { clamp, smooth, THREE } from './engine.js?v=43';
-import { scene } from './render.js?v=43';
-import { GlowMat, glowTex } from './materials.js?v=43';
-import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PM } from './props.js?v=43';
-import { scenery } from './scenery.js?v=43';
-import './plan.js?v=43';   // keeps the order the game's code runs in
+import { deadAtStart, GLYPH, glyphNear, ownDraws, pickGlyphTarget } from './payoff.js?v=44';
+import { clamp, smooth, THREE } from './engine.js?v=44';
+import { scene } from './render.js?v=44';
+import { GlowMat, glowTex } from './materials.js?v=44';
+import { LAMP_CONE_MAT, LAMP_HALO_MAT, LAMP_POOL_MAT, LAMP_STREAK_MAT, PM } from './props.js?v=44';
+import { scenery } from './scenery.js?v=44';
+import './plan.js?v=44';   // keeps the order the game's code runs in
 
 // ---------- shared materials: a dead lamp, a blank sign, the glyph's halo ----------
 // (all made in ownDraws: three.js draws Math.random for every uuid, and a seeded ride must not see these)

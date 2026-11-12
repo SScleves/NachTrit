@@ -296,3 +296,39 @@ Report: `reports/dt-save.md`. What the game keeps about a player, and the rules 
   `node qa/ride.mjs 1,2,3,4,5 --keep --miss 3 --miss-only 3` rides in one profile and checks that every first-try miss comes
   back as a tagged review fork within two rides. `node qa/dt/save-ui.mjs` does the migration, the word book count and the
   file and code round trips in Chrome, with screenshots.
+
+## 13. Story payoff and stakes (phase 5 items 1, 2 and 5, branch `dt/payoff`, 12 Nov 2026)
+
+Report: `reports/dt-payoff.md`. Items 3 (the Amsterdam ending) and 4 (the shop) are not built; they wait for Santi.
+- **Pure rules** in `src/payoff.js` (`// @ts-check`, tested in `qa/test/payoff.test.mjs`): which lamps start dead
+  (`deadAtStart`), where a word may fly and which lamp or sign it picks (`GLYPH`, `glyphNear`, `pickGlyphTarget`), the bus
+  stop (`halfway`, `canRestart`, `capStars`, `CHECKPOINT`), the town dawn (`townDawn`, `DAWN`) and `ownDraws`.
+- **ownDraws: a rule for every new object.** three.js draws four `Math.random` numbers for the uuid of every object,
+  material, texture and geometry. Anything made at load or during a ride that the old game did not make must be made inside
+  `ownDraws(() => ...)`, or every seeded ride after it changes. `src/words.js` and the bus stop in `src/plan.js` do this.
+  The first try without it moved level 1 by 23 m.
+- **Words come back** (`src/words.js`): `wordsStart(dawn)` in `start()` finds the street's lamps (every `LAMP_HALO_MAT` sprite and
+  the cone, pool and streak beside it, from `lampLights`) and shop boards (`userData.shopWord`, set in `house()`), puts two lamps
+  in three out (halo swapped to a dim shared material, the rest hidden) and blanks the boards (shared blank texture). A right
+  answer calls `wordBack(text, post, speed)`: one of four pooled glyph sprites flies 1.1 s to the nearest dark one 16 m or more
+  ahead, which catches with a flare and stays lit as the scenery recycles it. All lit: the nearest lamp flares. `NRwords()`
+  counts them; `S.wordsBack` logs each answer. A town's own lamp that does not use `lampLights`, or its own shop boards, take
+  no part. `scenery.js` disposes `userData.ownMap` (the word texture), never the shared blank.
+- **The bus stop** (`placeStop` in `src/plan.js`, `passStop` and `restartFromStop` in `src/flow.js`): placed 4 m after the
+  entry that makes half the level's own deliveries (returns and review forks do not count), before the next filler, without
+  moving `planCursor`, so the road is the same. Passing it saves: the entries already planned beyond it (in road order) plus
+  the queue, the counters, review road, returns. A dead lamp after it (`dying` reaching 3.4 s) restarts 30 m before the stop
+  with lamp 50, once a ride; the end card then caps stars at 2. Misses made after the stop stay on the end card and in the
+  learner model. Keep `restartFromStop` in step with `reset()` when you add ride state.
+- **Town dawn** (`src/dawn.js`, `townAtDawn` in `src/map.js`): a town whose places (ids under 1000, not soon) all have three
+  stars plays at dawn. `setDawn(town)` repaints the window atlas's dark panes lit, gives `PK.skin` skin tones and puts out the
+  eyes; `src/loop.js` reads `S.dawn` for the fog colour and density, the sky dome, the hemisphere light and the window glow.
+  The lamp's drain still uses the real night depth. Every `buildScenery` runs `sceneryHooks`, which puts the night back, so
+  intro shots never see dawn. `?dawn=<town id>` forces one town (map and rides), `?dawn=0` turns dawn off;
+  `qa/dt/gpu-shot.mjs` now sets `dawn=0`, because it seeds three stars everywhere.
+- **Voice**: a Dutch literal spoken through a variable or `speakSeq` is marked `/* voice */ 'text'` so `qa/voice-batch.mjs`
+  finds it.
+- **Checks.** `node qa/ride.mjs <levels>` prints the bus stop and the words for each level (report fields `checkpoint`,
+  `words`); `--die-after-stop` puts the lamp out 40 m after the stop. In the always-right collecting mode a restart counts as a
+  death (FAIL). `qa/dt/lamp-balance.mjs` rides through a restart and has a column for it. `node qa/dt/payoff-shots.mjs`
+  saves the phase 5 frames on the GPU (`--jobs word,signs,dawn,stop`, `--probe ids` lists lamps and shop signs per level).

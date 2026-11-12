@@ -1,7 +1,7 @@
 // The sky: a painted dome that follows the camera, the aurora band, and paintSky, which repaints the dome for a town's haze,
 // stars, glows, clouds and moon.
-import { clamp, THREE } from './engine.js?v=43';
-import { scene } from './render.js?v=43';
+import { clamp, THREE } from './engine.js?v=44';
+import { scene } from './render.js?v=44';
 
 // ---------- the sky: a painted dome that follows the camera ----------
 // pale haze at the horizon (exactly the fog colour, so the far town melts into it), a little bluer above, a darker cold slate overhead,

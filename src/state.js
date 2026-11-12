@@ -2,14 +2,14 @@
 // its lanes and speeds, and what is saved: the one save (src/save.js, under nachtrit.save: stars, best scores, the flags, the
 // settings, the ride counter and the learner model), read here once, written by persist(). The first dressing of the world,
 // the polder, happens here as it always did.
-import { nightAt } from './lamp.js?v=43';
-import { loadSave, writeSave } from './save.js?v=43';
-import { buildIndex, itemKey } from './learn.js?v=43';
-import { entryText } from './forks.js?v=43';
-import { BASE_SPEED, clamp, LANES3, MAX_SPEED } from './engine.js?v=43';
-import { buildScenery, THEMES } from './scenery.js?v=43';
-import './zombies.js?v=43';   // keeps the order the game's code runs in
-import { TOWN_OF, townOpen, towns } from './main.js?v=43';   // later modules, through the hub
+import { nightAt } from './lamp.js?v=44';
+import { loadSave, writeSave } from './save.js?v=44';
+import { buildIndex, itemKey } from './learn.js?v=44';
+import { entryText } from './forks.js?v=44';
+import { BASE_SPEED, clamp, LANES3, MAX_SPEED } from './engine.js?v=44';
+import { buildScenery, THEMES } from './scenery.js?v=44';
+import './zombies.js?v=44';   // keeps the order the game's code runs in
+import { TOWN_OF, townOpen, towns } from './main.js?v=44';   // later modules, through the hub
 
 // ---------- state ----------
 const S = {

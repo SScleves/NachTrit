@@ -1,9 +1,9 @@
 // The kit: small parts merged into one mesh per material at build time, so a street full of detail costs a handful of draw
 // calls. Also MODELS (filled by models.js), the sign pictogram atlas and the small kit builders (parked bike, tulip box, crate).
-import { rnd, THREE } from './engine.js?v=43';
-import { M, Mat } from './materials.js?v=43';
-import { PM } from './props.js?v=43';
-import { kModel } from './main.js?v=43';   // later modules, through the hub
+import { rnd, THREE } from './engine.js?v=44';
+import { M, Mat } from './materials.js?v=44';
+import { PM } from './props.js?v=44';
+import { kModel } from './main.js?v=44';   // later modules, through the hub
 
 // ---------- kit: small parts merged into one mesh per material, so a street full of detail costs a handful of draw calls ----------
 // build-time only: kits run when the scenery is built, never inside update()

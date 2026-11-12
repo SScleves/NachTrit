@@ -1,21 +1,21 @@
 // The debug and qa hooks on window, in one place: NR (the state), NRstep (step the world without the clock), NRbright, NRinfo,
 // NRbackend, NRpost, NRbike, NRface, NRcam, NRsnap, NRsetDPR, NRTUNE, NRfare, NRfareFns, NRread, NRgo, NRmodels, goLevel. qa/ and
 // qa/dt/ depend on them. Three live next to what they show: NRW (cine.js, the towns use it too), NRmapBike (map.js), NRTK (scenery.js).
-import { legDist, READ_AHEAD, READ_THR } from './reading.js?v=43';
-import { TUNE } from './lamp.js?v=43';
-import { NODES, THREE } from './engine.js?v=43';
-import { MSAA } from './render-nodes.js?v=43';
-import { bloomPass, camera, composer, DPR, gradePass, inkPass, postSize, render, renderer, setDPR } from './render.js?v=43';
-import { MODELS } from './kit.js?v=43';
-import { modelsReady } from './models.js?v=43';
-import { bike, dogs, faceState, setFace } from './rider.js?v=43';
-import { signFit } from './signs.js?v=43';
-import { S, SAVE } from './state.js?v=43';
-import { wordsInfo } from './words.js?v=43';
-import { goNow } from './input.js?v=43';
-import { openMission } from './map.js?v=43';
-import { paidLine, payTikkie } from './wallet.js?v=43';
-import { update } from './main.js?v=43';   // later modules, through the hub
+import { legDist, READ_AHEAD, READ_THR } from './reading.js?v=44';
+import { TUNE } from './lamp.js?v=44';
+import { NODES, THREE } from './engine.js?v=44';
+import { MSAA } from './render-nodes.js?v=44';
+import { bloomPass, camera, composer, DPR, gradePass, inkPass, postSize, render, renderer, setDPR } from './render.js?v=44';
+import { MODELS } from './kit.js?v=44';
+import { modelsReady } from './models.js?v=44';
+import { bike, dogs, faceState, setFace } from './rider.js?v=44';
+import { signFit } from './signs.js?v=44';
+import { S, SAVE } from './state.js?v=44';
+import { wordsInfo } from './words.js?v=44';
+import { goNow } from './input.js?v=44';
+import { openMission } from './map.js?v=44';
+import { paidLine, payTikkie } from './wallet.js?v=44';
+import { update } from './main.js?v=44';   // later modules, through the hub
 
 // the lamp's numbers (drain, wisp, right-answer refuel, cap, go-key bonus) are TUNE in src/lamp.js; the bots change them through NRTUNE
 window.NRTUNE = TUNE;
