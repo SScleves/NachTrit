@@ -112,3 +112,13 @@ Not touched
 - The premise and fix sections are English only; left as they were.
 - Panel 9 ("...") left empty as it was.
 - No exclamation marks anywhere, as per voice.
+
+## Ending (draft, awaiting Santi)
+
+Two drafts of the Amsterdam ending, written and not built, are in
+`Opus 5.5 DT/drafts/ending-drafts.md` (branch `dt/ending`). Draft A: he opens the grammar book and gets to page two.
+Draft B: he leaves it on the shelf in its plastic. Both: dawn on the gracht after level 130, the dead as people again,
+one exchange in Dutch that lands and nobody switches, the ride home over the dyke, the one-cent Tikkie left
+unexplained, the dogs on the sofa, the title. Twelve panels each, English and Dutch, with a stage line per panel in the
+terms of `intro3d/README.md`. Nobody learns the cause in either. The recommendation in that file is A, with the
+tourist beat from B moved in. Santi decides; nothing above this heading changes until he does.
